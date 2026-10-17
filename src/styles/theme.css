@@ -1,0 +1,65 @@
+/* Shared surfaces follow the same root theme as the toggle and saved preference. */
+:root { --hero-wave-fill: var(--p-surface); }
+[data-theme="dark"] {
+  --hero-wave-fill: var(--p-surface);
+  --surface: #162235;
+  --bg: #0b1120;
+  --ink: #eef4fb;
+  --muted: #adbdce;
+  --border: #334155;
+  --border-input: #52657d;
+  --soft: #1b2a40;
+  --primary-tint: #183653;
+  --primary-dark: #9bcaff;
+  --ink-3: #b4c6db;
+  --warn-bg: #3b2b18;
+  --warn-text: #f5d29d;
+  --learning-tint: #36281c;
+  --new-tint: #18324b;
+  --p-dim: #a1b1c4;
+  --shadow: 0 12px 38px #0003;
+}
+[data-theme="dark"] .landing-chapter-nav,
+[data-theme="dark"] .landing-tabs-section,
+[data-theme="dark"] .landing-audience-revamped {
+  background: var(--p-surface);
+  border-color: var(--p-line);
+}
+[data-theme="dark"] :is(.landing-tabs-nav,.landing-tab-content-panel,.audience-card-wrapper,.role-chip-card,.modern-callout-box,.modern-preview-workspace) {
+  background: var(--p-card);
+  border-color: var(--p-line);
+  color: var(--p-ink);
+}
+[data-theme="dark"] :is(.landing-tab-bubble,.modern-window-bar) {
+  background: var(--p-soft);
+  border-color: var(--p-line);
+}
+[data-theme="dark"] :is(.landing-tab-btn,.role-chip-card,.modern-source-btn) {
+  color: var(--p-ink);
+  border-color: var(--p-line);
+}
+[data-theme="dark"] :is(.landing-tab-btn.active,.modern-source-btn,.sim-case-opt.selected) {
+  background: #153c56;
+  color: #c1e9ff;
+  border-color: #3a87aa;
+}
+[data-theme="dark"] :is(.tab-feature-tag,.comp-group-pill,.arch-layer-tag,.sim-case-step-badge) {
+  background: #163b52;
+  color: #a5dfff;
+}
+[data-theme="dark"] :is(.review-step-num,.sim-window-title,.landing-tab-subtitle) { color: #8fcefa; }
+[data-theme="dark"] :is(.audience-card-wrapper,.role-chip-card,.modern-callout-box) p { color: var(--p-muted); }
+[data-theme="dark"] :is(.audience-card-wrapper,.role-chip-card,.modern-callout-box) :is(h3,h4,strong) { color: var(--p-ink); }
+.theme-toggle { flex-shrink: 0; background: var(--p-soft); color: var(--p-ink); border: 1px solid var(--p-line); }
+.theme-toggle > span { display: flex; align-items: center; justify-content: center; }
+/* Crossfade the complete palette together, without a bright intermediate frame. */
+::view-transition-old(root) { animation: theme-out 180ms ease-out both; }
+::view-transition-new(root) { animation: theme-in 180ms ease-in both; }
+@keyframes theme-out { to { opacity: 0; } }
+@keyframes theme-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+[data-theme="dark"] .tab-feature-bullets li { color: #c5d3e3; }
+[data-theme="dark"] :is(.tab-feature-sub,.bullet-icon,.sim-cbt-saved) { color: #8fd4f5; }
+[data-theme="dark"] :is(.sim-card-answer,.sim-citation-badge) { background: #123c32; color: #b4efd5; border-color: #367a60; }

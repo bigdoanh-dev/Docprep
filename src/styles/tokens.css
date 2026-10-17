@@ -1,0 +1,78 @@
+:root {
+  --primary: #1765cc;
+  --primary-dark: #123e74;
+  --primary-tint: #edf5ff;
+  --surface: #ffffff;
+  --bg: #f5f8fc;
+  --ink: #182e4a;
+  --muted: #60738a;
+  --border: #dfe7f1;
+  --border-input: #bfcee0;
+  --warn-bg: #fff4e4;
+  --warn-text: #85551d;
+  --learning: #bc6b23;
+  --learning-dark: #93501b;
+  --learning-tint: #fff3e7;
+  --new: #376fba;
+  --new-tint: #f0f6ff;
+  --radius: 12px;
+  --shadow: 0 12px 38px #123e7410;
+  --divider: var(--border);
+  --ink-3: #48627e;
+  --text-2: var(--muted);
+  --soft: #f2f7fd;
+  --primary-on-dark: #c4ddff;
+  --forget: #bc6b23;
+  --forget-on-dark: #eeb578;
+  --chart-1: #1765cc;
+  --chart-2: #83b4ef;
+  --chart-3: #bc6b23;
+
+  /* Project semantic palette */
+  --p-surface: #ffffff;
+  --p-page: #f8fafc;
+  --p-soft: #f1f5f9;
+  --p-wash: #f8fafc;
+  --p-ink: #0f172a;
+  --p-muted: #475569;
+  --p-dim: #64748b;
+  --p-line: #e2e8f0;
+  --p-link: #0284c7;
+  --p-teal: #0f766e;
+  --p-button: #0284c7;
+  --p-button-hover: #0369a1;
+  --p-on-solid: #ffffff;
+  --p-bubble: #e0f2fe;
+  --p-good-bg: #ecfdf5;
+  --p-good-line: #a7f3d0;
+  --p-track: #e2e8f0;
+  --p-solid-bg: #0f172a;
+  --p-card: #ffffff;
+
+  font-family: "Be Vietnam Pro", Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  font-synthesis: none;
+}
+
+[data-theme="dark"] {
+  --p-surface: #0f172a;
+  --p-page: #0b1120;
+  --p-soft: #1e293b;
+  --p-wash: #131d31;
+  --p-ink: #f8fafc;
+  --p-muted: #94a3b8;
+  --p-dim: #64748b;
+  --p-line: #334155;
+  --p-link: #38bdf8;
+  --p-teal: #2dd4bf;
+  --p-button: #0284c7;
+  --p-button-hover: #0369a1;
+  --p-on-solid: #ffffff;
+  --p-bubble: #1e293b;
+  --p-good-bg: #064e3b;
+  --p-good-line: #047857;
+  --p-track: #334155;
+  --p-solid-bg: #1e293b;
+  --p-card: #1e293b;
+}

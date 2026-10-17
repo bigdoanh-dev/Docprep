@@ -1,0 +1,868 @@
+{
+  "Me": {
+    "audience": "student",
+    "consent": {
+      "service_given_at": "2026-10-10T02:05:00Z",
+      "version": "2026-10"
+    },
+    "diagnostic_prompt_dismissed": false,
+    "display_name": "Thu Hà",
+    "exam_date": "2027-03-01",
+    "focus_module_ids": ["g1"],
+    "max_reviews_per_day": 200,
+    "new_cards_per_day": 20,
+    "organisation": "CSĐT A",
+    "pseudonym_id": "HV-000123",
+    "target_retention": 0.9
+  },
+  "ConsentText": {
+    "research_text_vi": "Văn bản mẫu: tôi đồng ý cho phép dùng nhật ký sử dụng đã ẩn danh của tôi cho nghiên cứu. Tôi có thể rút lại bất cứ lúc nào.",
+    "service_text_vi": "Văn bản mẫu: tôi đồng ý để ứng dụng lưu kết quả học tập của tôi nhằm cung cấp dịch vụ ôn thi.",
+    "version": "2026-10"
+  },
+  "ProgressSkills": {
+    "coverage": {
+      "assessed_topics": 2,
+      "modules": [
+        {
+          "module_id": "g1",
+          "short_name": "Sức khỏe quần thể và dự phòng",
+          "topics_assessed": 2,
+          "topics_total": 5
+        },
+        {
+          "module_id": "g2",
+          "short_name": "Cấp cứu và sơ cấp cứu",
+          "topics_assessed": 0,
+          "topics_total": 11
+        },
+        {
+          "module_id": "g3",
+          "short_name": "Dinh dưỡng và an toàn thực phẩm",
+          "topics_assessed": 0,
+          "topics_total": 3
+        },
+        {
+          "module_id": "g4",
+          "short_name": "Bệnh truyền nhiễm",
+          "topics_assessed": 0,
+          "topics_total": 8
+        },
+        {
+          "module_id": "g5",
+          "short_name": "Sức khỏe nghề nghiệp",
+          "topics_assessed": 0,
+          "topics_total": 2
+        },
+        {
+          "module_id": "g6",
+          "short_name": "Sức khỏe cộng đồng và y học gia đình",
+          "topics_assessed": 0,
+          "topics_total": 19
+        },
+        {
+          "module_id": "g7",
+          "short_name": "Sức khỏe tâm thần và hành vi",
+          "topics_assessed": 0,
+          "topics_total": 3
+        },
+        {
+          "module_id": "g8",
+          "short_name": "Giao tiếp và cộng tác",
+          "topics_assessed": 0,
+          "topics_total": 3
+        }
+      ],
+      "total_topics": 54
+    },
+    "days_to_exam": 142,
+    "levels": [
+      {
+        "correct": 12,
+        "label_vi": "Nhớ, Hiểu",
+        "level": 1,
+        "total": 15
+      },
+      {
+        "correct": 19,
+        "label_vi": "Vận dụng",
+        "level": 2,
+        "total": 32
+      },
+      {
+        "correct": 4,
+        "label_vi": "Phân tích, Đánh giá",
+        "level": 3,
+        "total": 9
+      }
+    ],
+    "mock_scores": [
+      {
+        "attempt_id": 3,
+        "score": 29,
+        "submitted_at": "2026-09-28T03:50:00Z",
+        "title": "Đề thi thử số 1",
+        "total": 40
+      },
+      {
+        "attempt_id": 4,
+        "score": 33,
+        "submitted_at": "2026-10-06T03:48:00Z",
+        "title": "Đề thi thử số 1",
+        "total": 40
+      }
+    ],
+    "priorities": [
+      {
+        "competency_code": "FND",
+        "correct": 4,
+        "module_id": "g1",
+        "name": "Khái niệm cơ bản của y học dự phòng",
+        "rank": 1,
+        "total": 8,
+        "weakest_vi": "Đo lường tần suất bệnh"
+      },
+      {
+        "competency_code": "CI-04",
+        "correct": 3,
+        "module_id": "g1",
+        "name": "Tiêm phòng/Tiêm chủng trẻ em và người lớn",
+        "rank": 2,
+        "total": 5
+      },
+      {
+        "competency_code": "CI-01",
+        "correct": 2,
+        "module_id": "g1",
+        "name": "Bệnh truyền nhiễm có nguy cơ gây dịch",
+        "rank": 3,
+        "total": 3
+      }
+    ],
+    "scope": "latest3"
+  },
+  "ProgressRhythm": {
+    "activity": [
+      {
+        "kind": "unit",
+        "minutes": 14,
+        "occurred_at": "2026-10-09T12:40:00Z",
+        "result_vi": "Hoàn thành",
+        "title": "Sức khỏe quần thể và dự phòng · Đo lường tần suất bệnh"
+      },
+      {
+        "kind": "practice",
+        "minutes": 8,
+        "occurred_at": "2026-10-09T12:20:00Z",
+        "result_vi": "4/6",
+        "title": "Luyện điểm yếu: Đo lường tần suất bệnh"
+      },
+      {
+        "kind": "chat",
+        "occurred_at": "2026-10-08T08:12:00Z",
+        "title": "Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?"
+      },
+      {
+        "kind": "cards",
+        "minutes": 11,
+        "occurred_at": "2026-10-07T13:05:00Z",
+        "result_vi": "20/23",
+        "title": "Ôn 23 thẻ"
+      },
+      {
+        "kind": "exam",
+        "minutes": 48,
+        "occurred_at": "2026-10-06T03:48:00Z",
+        "result_vi": "33/40",
+        "title": "Đề thi thử số 1"
+      }
+    ],
+    "curve": [
+      {
+        "date": "2026-09-20",
+        "kind": "review",
+        "recall": 1.0
+      },
+      {
+        "date": "2026-09-27",
+        "kind": "decay",
+        "recall": 0.9
+      },
+      {
+        "date": "2026-09-27",
+        "kind": "review",
+        "recall": 1.0
+      },
+      {
+        "date": "2026-10-10",
+        "kind": "decay",
+        "recall": 0.9
+      },
+      {
+        "date": "2026-10-17",
+        "kind": "projected",
+        "recall": 0.78
+      }
+    ],
+    "days_to_exam": 142,
+    "due_forecast": [
+      {
+        "count": 12,
+        "date": "2026-10-10"
+      },
+      {
+        "count": 5,
+        "date": "2026-10-11"
+      },
+      {
+        "count": 9,
+        "date": "2026-10-12"
+      },
+      {
+        "count": 3,
+        "date": "2026-10-13"
+      },
+      {
+        "count": 7,
+        "date": "2026-10-14"
+      },
+      {
+        "count": 4,
+        "date": "2026-10-15"
+      },
+      {
+        "count": 6,
+        "date": "2026-10-16"
+      }
+    ],
+    "heatmap": [
+      {
+        "date": "2026-08-16",
+        "minutes": 0
+      },
+      {
+        "date": "2026-08-17",
+        "minutes": 15
+      },
+      {
+        "date": "2026-08-18",
+        "minutes": 30
+      },
+      {
+        "date": "2026-08-19",
+        "minutes": 0
+      },
+      {
+        "date": "2026-08-20",
+        "minutes": 45
+      },
+      {
+        "date": "2026-08-21",
+        "minutes": 20
+      },
+      {
+        "date": "2026-08-22",
+        "minutes": 10
+      },
+      {
+        "date": "2026-08-23",
+        "minutes": 0
+      },
+      {
+        "date": "2026-08-24",
+        "minutes": 15
+      },
+      {
+        "date": "2026-08-25",
+        "minutes": 30
+      },
+      {
+        "date": "2026-08-26",
+        "minutes": 0
+      },
+      {
+        "date": "2026-08-27",
+        "minutes": 45
+      },
+      {
+        "date": "2026-08-28",
+        "minutes": 20
+      },
+      {
+        "date": "2026-08-29",
+        "minutes": 10
+      },
+      {
+        "date": "2026-08-30",
+        "minutes": 0
+      },
+      {
+        "date": "2026-08-31",
+        "minutes": 15
+      },
+      {
+        "date": "2026-09-01",
+        "minutes": 30
+      },
+      {
+        "date": "2026-09-02",
+        "minutes": 0
+      },
+      {
+        "date": "2026-09-03",
+        "minutes": 45
+      },
+      {
+        "date": "2026-09-04",
+        "minutes": 20
+      },
+      {
+        "date": "2026-09-05",
+        "minutes": 10
+      },
+      {
+        "date": "2026-09-06",
+        "minutes": 0
+      },
+      {
+        "date": "2026-09-07",
+        "minutes": 15
+      },
+      {
+        "date": "2026-09-08",
+        "minutes": 30
+      },
+      {
+        "date": "2026-09-09",
+        "minutes": 0
+      },
+      {
+        "date": "2026-09-10",
+        "minutes": 45
+      },
+      {
+        "date": "2026-09-11",
+        "minutes": 20
+      },
+      {
+        "date": "2026-09-12",
+        "minutes": 10
+      },
+      {
+        "date": "2026-09-13",
+        "minutes": 0
+      },
+      {
+        "date": "2026-09-14",
+        "minutes": 15
+      },
+      {
+        "date": "2026-09-15",
+        "minutes": 30
+      },
+      {
+        "date": "2026-09-16",
+        "minutes": 0
+      },
+      {
+        "date": "2026-09-17",
+        "minutes": 45
+      },
+      {
+        "date": "2026-09-18",
+        "minutes": 20
+      },
+      {
+        "date": "2026-09-19",
+        "minutes": 10
+      },
+      {
+        "date": "2026-09-20",
+        "minutes": 0
+      },
+      {
+        "date": "2026-09-21",
+        "minutes": 15
+      },
+      {
+        "date": "2026-09-22",
+        "minutes": 30
+      },
+      {
+        "date": "2026-09-23",
+        "minutes": 0
+      },
+      {
+        "date": "2026-09-24",
+        "minutes": 45
+      },
+      {
+        "date": "2026-09-25",
+        "minutes": 20
+      },
+      {
+        "date": "2026-09-26",
+        "minutes": 10
+      },
+      {
+        "date": "2026-09-27",
+        "minutes": 0
+      },
+      {
+        "date": "2026-09-28",
+        "minutes": 15
+      },
+      {
+        "date": "2026-09-29",
+        "minutes": 30
+      },
+      {
+        "date": "2026-09-30",
+        "minutes": 0
+      },
+      {
+        "date": "2026-10-01",
+        "minutes": 45
+      },
+      {
+        "date": "2026-10-02",
+        "minutes": 20
+      },
+      {
+        "date": "2026-10-03",
+        "minutes": 10
+      },
+      {
+        "date": "2026-10-04",
+        "minutes": 0
+      },
+      {
+        "date": "2026-10-05",
+        "minutes": 15
+      },
+      {
+        "date": "2026-10-06",
+        "minutes": 30
+      },
+      {
+        "date": "2026-10-07",
+        "minutes": 0
+      },
+      {
+        "date": "2026-10-08",
+        "minutes": 45
+      },
+      {
+        "date": "2026-10-09",
+        "minutes": 20
+      },
+      {
+        "date": "2026-10-10",
+        "minutes": 10
+      }
+    ],
+    "memory": {
+      "due_today": 12,
+      "learning": 24,
+      "mastered": 62,
+      "new": 18,
+      "recall_rate": 0.86,
+      "reviews": 214,
+      "window_days": 30
+    },
+    "recall_by_module": [
+      {
+        "in_7_days": 0.85,
+        "module_id": "g1",
+        "now": 0.93,
+        "short_name": "Sức khỏe quần thể và dự phòng"
+      }
+    ],
+    "week": {
+      "days_elapsed": 6,
+      "minutes": 200,
+      "previous_minutes": 165,
+      "study_days": 5
+    }
+  },
+  "AdminOverview": {
+    "accuracy_by_module": {
+      "items": [
+        {
+          "learners": 184,
+          "low": false,
+          "module_id": "g1",
+          "share": 0.71,
+          "short_name": "Sức khỏe quần thể và dự phòng"
+        },
+        {
+          "learners": 184,
+          "low": false,
+          "module_id": "g2",
+          "share": 0.64,
+          "short_name": "Cấp cứu và sơ cấp cứu"
+        },
+        {
+          "learners": 184,
+          "low": true,
+          "module_id": "g3",
+          "share": 0.58,
+          "short_name": "Dinh dưỡng và an toàn thực phẩm"
+        },
+        {
+          "learners": 184,
+          "low": false,
+          "module_id": "g4",
+          "share": 0.69,
+          "short_name": "Bệnh truyền nhiễm"
+        },
+        {
+          "learners": 184,
+          "low": false,
+          "module_id": "g5",
+          "share": 0.8,
+          "short_name": "Sức khỏe nghề nghiệp"
+        },
+        {
+          "learners": 184,
+          "low": false,
+          "module_id": "g6",
+          "share": 0.66,
+          "short_name": "Sức khỏe cộng đồng và y học gia đình"
+        },
+        {
+          "learners": 184,
+          "low": true,
+          "module_id": "g7",
+          "share": 0.52,
+          "short_name": "Sức khỏe tâm thần và hành vi"
+        },
+        {
+          "learners": 184,
+          "low": false,
+          "module_id": "g8",
+          "share": 0.74,
+          "short_name": "Giao tiếp và cộng tác"
+        }
+      ],
+      "learners": 184
+    },
+    "ai_safety": {
+      "answers": 3120,
+      "cited_claims_share": 0.972,
+      "cited_claims_target": 0.95,
+      "corpus_versions": ["demo-2026-10-09"],
+      "declined_share": 0.004,
+      "flagged_share": 0.012,
+      "insufficient_share": 0.031,
+      "model_versions": ["claude-sonnet-5-5"],
+      "reports_per_1000": 1.8
+    },
+    "alerts": [
+      {
+        "detail_vi": "20 / 49 tài khoản · các cơ sở khác 75–87%",
+        "kind": "low_activation",
+        "title_vi": "CSĐT E: mới 41% tài khoản được kích hoạt"
+      },
+      {
+        "detail_vi": "Mục tiêu 7 ngày · 60 câu đang chờ",
+        "kind": "slow_review",
+        "title_vi": "Duyệt vòng 2 chậm: trung vị 9 ngày"
+      },
+      {
+        "detail_vi": "2 về câu hỏi, 1 về câu trả lời hỏi đáp",
+        "kind": "old_reports",
+        "title_vi": "3 báo lỗi của học viên quá 14 ngày chưa xử lý"
+      }
+    ],
+    "compliance": {
+      "chat_p95_ms": 11800,
+      "chat_target_ms": 15000,
+      "consent_withdrawals": 5,
+      "deletion_median_days": 0.0,
+      "deletion_requests": 3,
+      "research_consent_learners": 192,
+      "research_consent_share": 0.64
+    },
+    "computed_at": "2026-10-12T07:32:00Z",
+    "filters": {
+      "audiences": [
+        {
+          "label_vi": "Sinh viên",
+          "value": "student"
+        },
+        {
+          "label_vi": "Đã tốt nghiệp",
+          "value": "graduate"
+        }
+      ],
+      "periods": [
+        {
+          "label_vi": "Tháng 10/2026",
+          "value": "2026-10"
+        },
+        {
+          "label_vi": "Tháng 9/2026",
+          "value": "2026-09"
+        },
+        {
+          "label_vi": "Tháng 8/2026",
+          "value": "2026-08"
+        }
+      ],
+      "regions": [
+        {
+          "label_vi": "Miền Bắc",
+          "value": "Miền Bắc"
+        },
+        {
+          "label_vi": "Miền Trung",
+          "value": "Miền Trung"
+        },
+        {
+          "label_vi": "Miền Nam",
+          "value": "Miền Nam"
+        }
+      ],
+      "schools": [
+        {
+          "label_vi": "CSĐT A",
+          "value": "CSDT-A"
+        },
+        {
+          "label_vi": "CSĐT B",
+          "value": "CSDT-B"
+        },
+        {
+          "label_vi": "CSĐT C",
+          "value": "CSDT-C"
+        },
+        {
+          "label_vi": "CSĐT D",
+          "value": "CSDT-D"
+        },
+        {
+          "label_vi": "CSĐT E",
+          "value": "CSDT-E"
+        }
+      ]
+    },
+    "kpis": {
+      "accounts_activated": 300,
+      "accounts_issued": 396,
+      "active_learners": 241,
+      "active_learners_previous": 204,
+      "cited_claims_share": 0.972,
+      "cited_claims_target": 0.95,
+      "mock_attempts": 412,
+      "mock_median": {
+        "form_size": 40,
+        "learners": 184,
+        "share": 0.675
+      },
+      "practice_items": 13250
+    },
+    "period": "2026-09",
+    "question_bank": {
+      "approved": 666,
+      "draft": 200,
+      "in_review": 150,
+      "issues_covered": 48,
+      "issues_total": 54,
+      "min_approved_per_issue": 10,
+      "rejected": 40,
+      "reports_received": 41,
+      "reports_resolved": 35,
+      "round1_median_days": 4.0,
+      "round2_median_days": 9.0,
+      "round2_target_days": 7,
+      "rounds_agree_share": 0.81
+    },
+    "sample_data": true,
+    "schools": {
+      "hidden": [
+        {
+          "learners": 8,
+          "name": "CSĐT F",
+          "region": "Tây Nguyên"
+        }
+      ],
+      "rows": [
+        {
+          "accounts_activated": 91,
+          "accounts_issued": 105,
+          "activation_low": false,
+          "code": "CSDT-A",
+          "first_to_latest": {
+            "form_size": 40,
+            "learners": 58,
+            "share": 0.1
+          },
+          "mock_attempts": 131,
+          "mock_median": {
+            "form_size": 40,
+            "learners": 58,
+            "share": 0.7
+          },
+          "name": "CSĐT A",
+          "region": "Miền Bắc",
+          "weekly_active": 62.5
+        },
+        {
+          "accounts_activated": 79,
+          "accounts_issued": 98,
+          "activation_low": false,
+          "code": "CSDT-B",
+          "first_to_latest": {
+            "form_size": 40,
+            "learners": 51,
+            "share": 0.075
+          },
+          "mock_attempts": 112,
+          "mock_median": {
+            "form_size": 40,
+            "learners": 51,
+            "share": 0.675
+          },
+          "name": "CSĐT B",
+          "region": "Miền Nam",
+          "weekly_active": 53.0
+        },
+        {
+          "accounts_activated": 58,
+          "accounts_issued": 74,
+          "activation_low": false,
+          "code": "CSDT-C",
+          "first_to_latest": {
+            "form_size": 40,
+            "learners": 36,
+            "share": 0.075
+          },
+          "mock_attempts": 79,
+          "mock_median": {
+            "form_size": 40,
+            "learners": 36,
+            "share": 0.675
+          },
+          "name": "CSĐT C",
+          "region": "Miền Bắc",
+          "weekly_active": 37.5
+        },
+        {
+          "accounts_activated": 44,
+          "accounts_issued": 59,
+          "activation_low": false,
+          "code": "CSDT-D",
+          "first_to_latest": {
+            "form_size": 40,
+            "learners": 27,
+            "share": 0.05
+          },
+          "mock_attempts": 58,
+          "mock_median": {
+            "form_size": 40,
+            "learners": 27,
+            "share": 0.65
+          },
+          "name": "CSĐT D",
+          "region": "Miền Trung",
+          "weekly_active": 30.0
+        },
+        {
+          "accounts_activated": 20,
+          "accounts_issued": 49,
+          "activation_low": true,
+          "code": "CSDT-E",
+          "first_to_latest": {
+            "form_size": 40,
+            "learners": 12,
+            "share": 0.05
+          },
+          "mock_attempts": 26,
+          "mock_median": {
+            "form_size": 40,
+            "learners": 12,
+            "share": 0.625
+          },
+          "name": "CSĐT E",
+          "region": "Miền Nam",
+          "weekly_active": 11.5
+        }
+      ]
+    },
+    "selected": {
+      "period": "2026-09"
+    },
+    "suppressed": false,
+    "suppression_min": 10,
+    "weekly_active": {
+      "retention": [
+        {
+          "learners": 290,
+          "share": 0.81,
+          "weeks": 1
+        },
+        {
+          "learners": 262,
+          "share": 0.62,
+          "weeks": 4
+        },
+        {
+          "learners": 171,
+          "share": 0.48,
+          "weeks": 8
+        }
+      ],
+      "weeks": [
+        {
+          "active_learners": 58,
+          "week_start": "2026-07-20"
+        },
+        {
+          "active_learners": 66,
+          "week_start": "2026-07-27"
+        },
+        {
+          "active_learners": 75,
+          "week_start": "2026-08-03"
+        },
+        {
+          "active_learners": 86,
+          "week_start": "2026-08-10"
+        },
+        {
+          "active_learners": 107,
+          "week_start": "2026-08-17"
+        },
+        {
+          "active_learners": 126,
+          "week_start": "2026-08-24"
+        },
+        {
+          "active_learners": 145,
+          "week_start": "2026-08-31"
+        },
+        {
+          "active_learners": 163,
+          "week_start": "2026-09-07"
+        },
+        {
+          "active_learners": 177,
+          "week_start": "2026-09-14"
+        },
+        {
+          "active_learners": 188,
+          "week_start": "2026-09-21"
+        },
+        {
+          "active_learners": 196,
+          "week_start": "2026-09-28"
+        },
+        {
+          "active_learners": 202,
+          "week_start": "2026-10-05"
+        }
+      ]
+    }
+  }
+}

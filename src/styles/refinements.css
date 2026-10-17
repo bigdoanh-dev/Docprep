@@ -1,0 +1,626 @@
+/* Medical photography, restrained surfaces and motion that follows user actions. */
+:root {
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+.portal-page-wrapper {
+  --photo-radius: 14px;
+}
+.portal-page-wrapper svg {
+  flex-shrink: 0;
+  stroke-width: 1.65;
+}
+.portal-page-wrapper :is(a, button):focus-visible {
+  outline: 3px solid #087cb0;
+  outline-offset: 4px;
+}
+.portal-page-wrapper button {
+  -webkit-tap-highlight-color: transparent;
+}
+.portal-header {
+  transition:
+    background 240ms ease,
+    box-shadow 240ms ease,
+    border-color 240ms ease;
+}
+.portal-nav-link {
+  white-space: nowrap;
+}
+.portal-nav-indicator {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 2px;
+  height: 2px;
+  background: #087ba2;
+  border-radius: 2px;
+}
+.portal-mobile-drawer {
+  max-height: calc(100dvh - 68px);
+  overflow-y: auto;
+}
+
+.landing-hero-revamped {
+  background: #102e49;
+  min-height: 660px;
+}
+.hero-img-container {
+  left: 37%;
+  width: 63%;
+  overflow: hidden;
+}
+.hero-background-img {
+  display: block;
+  height: calc(100% + 80px);
+  margin-top: -80px;
+  object-position: 48% 44%;
+  animation: none;
+}
+.hero-gradient-overlay {
+  background:
+    linear-gradient(
+      90deg,
+      #102e49 0%,
+      rgba(16, 46, 73, 0.93) 4%,
+      rgba(16, 46, 73, 0.4) 30%,
+      rgba(16, 46, 73, 0.05) 65%
+    ),
+    linear-gradient(0deg, rgba(16, 46, 73, 0.23), transparent 40%);
+}
+.hero-inner-container {
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+.hero-tag-badge {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  padding: 7px 12px;
+}
+.badge-pulse-dot {
+  animation: none;
+  box-shadow: none;
+  background: #8bd5dc;
+}
+.hero-main-title {
+  max-width: 670px;
+  font-size: clamp(36px, 3.7vw, 52px);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.text-gradient-cyan {
+  color: #fff;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+.hero-subtext {
+  max-width: 565px;
+  color: #e2eaf0;
+  font-size: 16px;
+}
+.hero-cta-group {
+  max-width: 650px;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+.btn-hero-primary,
+.btn-hero-outline {
+  font-size: 14px;
+  padding: 14px 18px;
+  border-radius: 8px;
+}
+.hero-stats-strip {
+  gap: 20px;
+  max-width: 680px;
+}
+.stat-pill {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  backdrop-filter: none;
+  gap: 9px;
+}
+.stat-pill strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+.stat-pill small {
+  color: #bdcedb;
+  margin-top: 4px;
+}
+.stat-pill-icon {
+  color: #9cdae1;
+}
+.section-pill,
+.tab-feature-tag,
+.feature-kicker {
+  text-transform: none;
+  letter-spacing: 0;
+}
+.section-head-center h2 {
+  font-size: clamp(26px, 3vw, 36px);
+  font-weight: 700;
+  line-height: 1.4;
+}
+.landing-tabs-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.landing-tab-btn {
+  min-height: 54px;
+  justify-content: center;
+}
+.landing-tab-content-panel {
+  min-height: 580px;
+  padding: 40px;
+  overflow: hidden;
+  box-shadow: none;
+  border-radius: 16px;
+}
+.landing-tab-grid {
+  min-height: 498px;
+  gap: 40px;
+}
+.landing-tab-text h3 {
+  font-weight: 700;
+}
+.tab-image-card {
+  box-shadow: none;
+  border-radius: var(--photo-radius);
+}
+.tab-image-card img {
+  aspect-ratio: 4/5;
+  object-position: center 38%;
+}
+.tab-image-badge {
+  font-size: 12px;
+  padding: 12px;
+  background: rgba(16, 46, 73, 0.88);
+}
+.portal-feature-img {
+  border-radius: var(--photo-radius);
+  object-position: center 38%;
+  box-shadow: 0 8px 24px rgba(16, 46, 73, 0.08);
+}
+.portal-banner-img {
+  object-position: center 38%;
+}
+.community-photo-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+.community-card {
+  background: #fff;
+  border: 0;
+  border-radius: 0;
+}
+.community-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+.community-card img {
+  aspect-ratio: 16/10;
+  object-position: center 38%;
+  border-radius: var(--photo-radius);
+}
+.community-card .card-info {
+  padding: 18px 0 0;
+}
+.community-card h4 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.community-card p {
+  max-width: 55ch;
+}
+.community-cta-box {
+  margin-top: 40px;
+}
+.audience-card-wrapper {
+  box-shadow: none;
+}
+.audience-header > .audience-icon {
+  display: none;
+}
+.role-chip-card {
+  text-align: left;
+}
+.role-icon {
+  margin-left: 0;
+}
+.portal-course-card {
+  box-shadow: none;
+}
+.portal-course-thumb img {
+  object-position: center 36%;
+}
+.portal-course-meta {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+.portal-course-footer {
+  margin-top: auto;
+}
+.portal-gallery-item {
+  padding: 0;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  box-shadow: none;
+}
+.portal-gallery-item:focus-visible {
+  outline: 3px solid #087cb0;
+  outline-offset: 5px;
+}
+.portal-gallery-item:focus-visible .portal-gallery-overlay {
+  opacity: 1;
+}
+.portal-gallery-thumb-wrap img {
+  display: block;
+  object-position: center 34%;
+}
+.portal-gallery-overlay {
+  opacity: 1;
+  padding: 20px;
+  background: linear-gradient(0deg, rgba(8, 28, 43, 0.88), transparent 76%);
+}
+.portal-gallery-overlay p {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-bottom: 0;
+  transition:
+    max-height 280ms var(--motion-ease),
+    opacity 200ms ease;
+}
+.portal-gallery-item:is(:hover, :focus-visible) .portal-gallery-overlay p {
+  max-height: 90px;
+  opacity: 1;
+}
+.portal-gallery-tag {
+  font-size: 11px;
+}
+.portal-gallery-item:hover .portal-gallery-thumb-wrap img {
+  transform: scale(1.035);
+}
+.scrim:has(.gallery-preview) {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(8, 24, 38, 0.85);
+  backdrop-filter: blur(8px);
+}
+.sheet:has(.gallery-preview) {
+  width: min(100%, 1040px);
+  height: auto;
+  max-height: calc(100dvh - 48px);
+  border-radius: 16px;
+}
+.sheet:has(.gallery-preview) .sheet-body {
+  padding: 0;
+  overflow: auto;
+}
+.gallery-preview > img {
+  display: block;
+  width: 100%;
+  height: min(58dvh, 660px);
+  object-fit: contain;
+  background: #102638;
+}
+.gallery-preview-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+}
+.gallery-preview-footer p {
+  margin: 6px 0 0;
+  color: #526174;
+  font-size: 14px;
+}
+.gallery-preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.gallery-preview-controls span {
+  font-size: 13px;
+  color: #526174;
+  white-space: nowrap;
+}
+.login-background {
+  animation: none;
+  object-position: center 35%;
+}
+
+@media (max-width: 1200px) and (min-width: 1025px) {
+  .portal-header-container {
+    gap: 12px;
+    padding-inline: 20px;
+  }
+  .portal-desktop-nav {
+    gap: 0;
+  }
+  .portal-nav-link {
+    padding-inline: 10px;
+    font-size: 13px;
+  }
+  .portal-help-link .help-text,
+  .portal-header .brand-subtitle {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .landing-hero-revamped {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    align-items: stretch;
+  }
+  .hero-content-wrapper {
+    order: 0;
+  }
+  .hero-inner-container {
+    padding: 44px 24px;
+  }
+  .hero-img-container {
+    order: 1;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 320px;
+  }
+  .hero-background-img {
+    object-position: center 36%;
+  }
+  .hero-gradient-overlay {
+    background: linear-gradient(0deg, transparent 85%, rgba(16, 46, 73, 0.25));
+  }
+  .hero-main-title {
+    font-size: clamp(32px, 5.8vw, 48px);
+  }
+  .hero-subtext {
+    max-width: 620px;
+  }
+  .landing-tabs-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 6px;
+    gap: 4px;
+    scrollbar-width: thin;
+  }
+  .landing-tab-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding-inline: 18px;
+  }
+  .landing-tab-content-panel {
+    padding: 28px;
+  }
+  .landing-tab-grid {
+    min-height: 780px;
+    align-content: start;
+  }
+  .landing-tab-visual {
+    grid-row: 1;
+  }
+  .tab-image-card img {
+    aspect-ratio: 16/8;
+  }
+  .landing-tabs-section,
+  .landing-community-section {
+    padding-block: 60px;
+  }
+}
+@media (max-width: 640px) {
+  html {
+    scroll-padding-top: 84px;
+  }
+  .portal-header-container {
+    padding-inline: 16px;
+    gap: 10px;
+  }
+  .portal-header .brand-subtitle,
+  .portal-header .portal-help-link {
+    display: none;
+  }
+  .portal-header .brand-identity {
+    gap: 8px;
+  }
+  .portal-header .brand-identity > svg {
+    width: 30px;
+    height: 34px;
+  }
+  .portal-header .brand-accent {
+    font-size: 19px;
+  }
+  .portal-header-actions {
+    gap: 8px;
+  }
+  .portal-cta-btn {
+    font-size: 12px;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  .hero-inner-container {
+    padding: 36px 20px;
+  }
+  .hero-main-title {
+    font-size: 32px;
+  }
+  .hero-subtext {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .hero-tag-badge {
+    font-size: 10px;
+    padding-inline: 10px;
+    margin-bottom: 20px;
+  }
+  .hero-cta-group {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 30px;
+  }
+  .hero-cta-group > a {
+    justify-content: center;
+  }
+  .hero-stats-strip {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 18px 24px;
+  }
+  .stat-pill {
+    max-width: 100%;
+  }
+  .hero-img-container {
+    height: 250px;
+  }
+  .portal-container {
+    padding-inline: 20px;
+  }
+  .landing-tab-content-panel {
+    padding: 20px;
+  }
+  .landing-tab-grid {
+    gap: 24px;
+    min-height: 900px;
+  }
+  .landing-tab-text h3 {
+    font-size: 23px;
+  }
+  .tab-image-card img {
+    aspect-ratio: 4/3;
+  }
+  .community-photo-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .portal-page-hero {
+    padding: 44px 20px;
+  }
+  .portal-hero-title {
+    font-size: 30px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+  .portal-hero-desc {
+    font-size: 14px;
+  }
+  .portal-gallery-overlay p {
+    max-height: none;
+    opacity: 1;
+  }
+  .portal-tabs-wrapper,
+  .portal-cat-pills {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .floating-metric-card {
+    right: 10px;
+    bottom: -14px;
+    padding: 12px;
+    max-width: calc(100% - 20px);
+    gap: 10px;
+  }
+  .floating-metric-card strong {
+    font-size: 12px;
+  }
+  .floating-metric-card small {
+    font-size: 10px;
+  }
+  .gallery-preview-footer {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .scrim:has(.gallery-preview) {
+    padding: 12px;
+  }
+  .sheet:has(.gallery-preview) {
+    max-height: calc(100dvh - 24px);
+  }
+  .gallery-preview > img {
+    height: 48dvh;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .hero-background-img,
+  .badge-pulse-dot {
+    animation: none;
+    transform: none !important;
+  }
+  .portal-page-wrapper *,
+  .portal-page-wrapper *::before,
+  .portal-page-wrapper *::after {
+    transition-duration: 0.01ms !important;
+  }
+  .scroll-reveal.reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Consistent image crops in the learner workspace. */
+.module-card img {
+  object-fit: cover;
+  object-position: center 36%;
+  aspect-ratio: 16/10;
+}
+.study-entry > img {
+  object-fit: cover;
+  object-position: center;
+}
+.study-banner img {
+  object-fit: cover;
+  object-position: center 35%;
+  border-radius: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-background {
+    animation: none;
+  }
+}
+.module-card > div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.module-card > div > :is(.progress, .module-meta, .btn) {
+  width: 100%;
+}
+.module-card > div > .progress {
+  margin-top: auto;
+}
+.module-card > div > .module-meta {
+  margin-bottom: 12px;
+}
+.module-card > div > p {
+  margin-bottom: 16px;
+}
+.module-card .status-tag {
+  align-self: flex-start;
+}
+.module-card > div > .module-meta {
+  margin-top: auto;
+  flex: 0 0 auto;
+}
+.module-card > div > .progress {
+  flex: 0 0 4px;
+  height: 4px;
+  margin-top: 0;
+}

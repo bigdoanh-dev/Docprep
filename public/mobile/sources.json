@@ -1,0 +1,16 @@
+{
+  "library": "page-mascot@0.1.0",
+  "repository": "https://github.com/nilbuild/page-mascot",
+  "observed_commit": "76a44ed9180063bf4852b9dd724b656f4a828ac7",
+  "license": "MIT",
+  "characters": [
+    "robot",
+    "cat",
+    "owl",
+    "panda",
+    "scientist",
+    "fox"
+  ],
+  "assets": "characters/{character}/{directions,reactions}.png",
+  "note": "Served locally. Default robot. Doctor illustrations carried forward from approved design assets."
+}

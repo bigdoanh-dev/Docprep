@@ -1,0 +1,2111 @@
+{
+  "questions": [
+    {
+      "id": "q-dt-01",
+      "stem": "Một xã có 2.000 dân; ngày 1/1 có 50 người đang mắc lao. Tỷ lệ hiện mắc là?",
+      "options": [
+        {
+          "key": "a",
+          "text": "2,5%",
+          "correct": true,
+          "rationale": "50 ÷ 2.000 = 0,025 = 2,5%."
+        },
+        {
+          "key": "b",
+          "text": "5%",
+          "correct": false,
+          "rationale": "5% là kết quả của 50 ÷ 1.000; mẫu số phải là toàn bộ 2.000 dân của xã."
+        },
+        {
+          "key": "c",
+          "text": "0,25%",
+          "correct": false,
+          "rationale": "Đặt sai dấu thập phân: 50 ÷ 2.000 = 0,025, tức 2,5% chứ không phải 0,25%."
+        },
+        {
+          "key": "d",
+          "text": "25%",
+          "correct": false,
+          "rationale": "25% là kết quả của 50 ÷ 200; mẫu số phải là 2.000 dân."
+        }
+      ],
+      "explanation": "50 ÷ 2.000 = 2,5%. Tử số là mọi người đang mắc vào ngày 1/1; mẫu số là toàn bộ dân số xã tại thời điểm đó.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p01"]
+    },
+    {
+      "id": "q-dt-02",
+      "stem": "Chỉ số nào chỉ đếm các ca bệnh mới xuất hiện trong một khoảng thời gian, trên quần thể có nguy cơ?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Tỷ lệ hiện mắc",
+          "correct": false,
+          "rationale": "Hiện mắc đếm mọi người đang mắc tại một thời điểm, cả ca cũ lẫn ca mới."
+        },
+        {
+          "key": "b",
+          "text": "Tỷ lệ mới mắc",
+          "correct": true,
+          "rationale": "Mới mắc chỉ đếm ca mới trong một khoảng thời gian, trên quần thể có nguy cơ."
+        },
+        {
+          "key": "c",
+          "text": "Tỷ lệ tử vong trên số mắc",
+          "correct": false,
+          "rationale": "Chỉ số này lấy số tử vong chia cho số người mắc; nó đo mức độ nặng của bệnh."
+        },
+        {
+          "key": "d",
+          "text": "Nguy cơ tương đối",
+          "correct": false,
+          "rationale": "Nguy cơ tương đối là tỷ số giữa hai tỷ lệ mới mắc, không phải số đo tần suất."
+        }
+      ],
+      "explanation": "Tỷ lệ mới mắc chỉ đếm ca mới trong một khoảng thời gian; mẫu số là những người có nguy cơ mắc bệnh.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["dt-p02"]
+    },
+    {
+      "id": "q-dt-03",
+      "stem": "Một bệnh mạn tính có tỷ lệ mới mắc không đổi. Nhờ thuốc mới, người bệnh sống lâu hơn nhưng không khỏi bệnh. Tỷ lệ hiện mắc sẽ thay đổi thế nào?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Tăng",
+          "correct": true,
+          "rationale": "Thời gian mắc bệnh dài hơn nên số người đang mắc tích lũy nhiều hơn."
+        },
+        {
+          "key": "b",
+          "text": "Giảm",
+          "correct": false,
+          "rationale": "Hiện mắc chỉ giảm khi mới mắc giảm hoặc thời gian mắc bệnh ngắn lại do khỏi nhanh hoặc tử vong nhanh."
+        },
+        {
+          "key": "c",
+          "text": "Không đổi",
+          "correct": false,
+          "rationale": "Mới mắc không đổi nhưng thời gian mắc bệnh thay đổi, nên hiện mắc thay đổi theo."
+        },
+        {
+          "key": "d",
+          "text": "Không xác định được vì hiện mắc không phụ thuộc thời gian mắc bệnh",
+          "correct": false,
+          "rationale": "Hiện mắc phụ thuộc cả mới mắc và thời gian mắc bệnh: P ≈ I × D."
+        }
+      ],
+      "explanation": "P ≈ I × D. Mới mắc không đổi, thời gian mắc bệnh kéo dài, nên tỷ lệ hiện mắc tăng.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p03"]
+    },
+    {
+      "id": "q-dt-04",
+      "stem": "Một nghiên cứu thuần tập về tiêm vắc xin và mắc bệnh cho RR = 0,5. Diễn giải nào đúng?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Người được tiêm có nguy cơ mắc bệnh bằng một nửa người không tiêm",
+          "correct": true,
+          "rationale": "RR nhỏ hơn 1: phơi nhiễm (tiêm vắc xin) là yếu tố bảo vệ; 0,5 nghĩa là nguy cơ bằng một nửa."
+        },
+        {
+          "key": "b",
+          "text": "Người được tiêm có nguy cơ mắc bệnh cao gấp 2 lần",
+          "correct": false,
+          "rationale": "Đó là diễn giải của RR = 2, không phải RR = 0,5."
+        },
+        {
+          "key": "c",
+          "text": "Tiêm vắc xin không liên quan đến mắc bệnh",
+          "correct": false,
+          "rationale": "Không có sự kết hợp khi RR = 1."
+        },
+        {
+          "key": "d",
+          "text": "50% người được tiêm sẽ mắc bệnh",
+          "correct": false,
+          "rationale": "RR là tỷ số giữa hai tỷ lệ mới mắc, không phải tỷ lệ mắc trong nhóm được tiêm."
+        }
+      ],
+      "explanation": "RR = tỷ lệ mới mắc ở nhóm phơi nhiễm ÷ tỷ lệ mới mắc ở nhóm không phơi nhiễm. RR = 0,5 nghĩa là nguy cơ ở nhóm được tiêm bằng một nửa.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p06"]
+    },
+    {
+      "id": "q-dt-05",
+      "stem": "Nghiên cứu một bệnh hiếm: chọn người bệnh và người không bệnh, rồi hỏi về phơi nhiễm trong quá khứ. Số đo kết hợp phù hợp là?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Nguy cơ tương đối tính trực tiếp từ tỷ lệ mới mắc",
+          "correct": false,
+          "rationale": "Nghiên cứu bệnh–chứng không đo được tỷ lệ mới mắc nên không tính trực tiếp được RR."
+        },
+        {
+          "key": "b",
+          "text": "Tỷ suất chênh (OR)",
+          "correct": true,
+          "rationale": "Bệnh–chứng so sánh chênh phơi nhiễm giữa nhóm bệnh và nhóm chứng bằng OR."
+        },
+        {
+          "key": "c",
+          "text": "Tỷ lệ hiện mắc",
+          "correct": false,
+          "rationale": "Hiện mắc là số đo tần suất của nghiên cứu cắt ngang, không phải số đo kết hợp."
+        },
+        {
+          "key": "d",
+          "text": "Tỷ lệ tấn công",
+          "correct": false,
+          "rationale": "Tỷ lệ tấn công là tỷ lệ mới mắc tích lũy trong vụ dịch."
+        }
+      ],
+      "explanation": "Đây là nghiên cứu bệnh–chứng. Thiết kế này dùng tỷ suất chênh; khi bệnh hiếm, OR xấp xỉ RR.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "kho",
+      "sources": ["dt-p07", "dt-p10"]
+    },
+    {
+      "id": "q-dt-06",
+      "stem": "Một test sàng lọc được thử trên 200 người có bệnh và cho kết quả dương tính ở 180 người. Độ nhạy của test là?",
+      "options": [
+        {
+          "key": "a",
+          "text": "90%",
+          "correct": true,
+          "rationale": "Độ nhạy = dương tính thật ÷ tổng số người có bệnh = 180 ÷ 200."
+        },
+        {
+          "key": "b",
+          "text": "10%",
+          "correct": false,
+          "rationale": "10% là tỷ lệ âm tính giả (20 ÷ 200), không phải độ nhạy."
+        },
+        {
+          "key": "c",
+          "text": "80%",
+          "correct": false,
+          "rationale": "Tính sai: 180 ÷ 200 = 0,9."
+        },
+        {
+          "key": "d",
+          "text": "Không tính được vì thiếu số người không có bệnh",
+          "correct": false,
+          "rationale": "Số người không có bệnh cần cho độ đặc hiệu; độ nhạy chỉ cần nhóm có bệnh."
+        }
+      ],
+      "explanation": "Độ nhạy = dương tính thật ÷ tổng số người có bệnh = 180 ÷ 200 = 90%.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "de",
+      "sources": ["dt-p13"]
+    },
+    {
+      "id": "q-dt-07",
+      "stem": "Sau một bữa cỗ có 150 người dự, 45 người bị tiêu chảy cấp. Tỷ lệ tấn công là?",
+      "options": [
+        {
+          "key": "a",
+          "text": "30%",
+          "correct": true,
+          "rationale": "45 ÷ 150 = 0,3 = 30%."
+        },
+        {
+          "key": "b",
+          "text": "3%",
+          "correct": false,
+          "rationale": "Đặt sai dấu thập phân: 45 ÷ 150 = 0,3, tức 30%."
+        },
+        {
+          "key": "c",
+          "text": "45%",
+          "correct": false,
+          "rationale": "45 là số ca mắc, chưa chia cho số người phơi nhiễm."
+        },
+        {
+          "key": "d",
+          "text": "15%",
+          "correct": false,
+          "rationale": "Tính sai mẫu số; mẫu số là 150 người dự bữa cỗ."
+        }
+      ],
+      "explanation": "Tỷ lệ tấn công = số ca mắc mới ÷ số người phơi nhiễm = 45 ÷ 150 = 30%.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "de",
+      "sources": ["dt-p04"]
+    },
+    {
+      "id": "q-dt-08",
+      "stem": "Một vụ dịch có 250 ca mắc và 5 ca tử vong. Chỉ số 5 ÷ 250 = 2% được gọi là gì?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Tỷ suất tử vong thô",
+          "correct": false,
+          "rationale": "Tỷ suất tử vong thô lấy tổng số tử vong do mọi nguyên nhân chia cho dân số trung bình."
+        },
+        {
+          "key": "b",
+          "text": "Tỷ lệ tử vong trên số mắc",
+          "correct": true,
+          "rationale": "Số tử vong do bệnh chia cho số người mắc bệnh đó."
+        },
+        {
+          "key": "c",
+          "text": "Tỷ lệ tấn công",
+          "correct": false,
+          "rationale": "Tỷ lệ tấn công lấy số ca mắc mới chia cho số người phơi nhiễm."
+        },
+        {
+          "key": "d",
+          "text": "Tỷ suất tử vong đặc hiệu theo nguyên nhân",
+          "correct": false,
+          "rationale": "Chỉ số này có mẫu số là dân số trung bình, không phải số người mắc."
+        }
+      ],
+      "explanation": "Mẫu số là số người mắc bệnh, nên đây là tỷ lệ tử vong trên số mắc; chỉ số này phản ánh mức độ nặng của bệnh.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p05"]
+    },
+    {
+      "id": "q-dt-09",
+      "stem": "Tỷ lệ mới mắc ở nhóm phơi nhiễm là 30 trên 1.000, ở nhóm không phơi nhiễm là 10 trên 1.000. Nguy cơ quy thuộc (AR) là?",
+      "options": [
+        {
+          "key": "a",
+          "text": "20 trên 1.000",
+          "correct": true,
+          "rationale": "AR = 30 − 10 = 20 trên 1.000."
+        },
+        {
+          "key": "b",
+          "text": "3",
+          "correct": false,
+          "rationale": "3 là nguy cơ tương đối (30 ÷ 10), không phải nguy cơ quy thuộc."
+        },
+        {
+          "key": "c",
+          "text": "40 trên 1.000",
+          "correct": false,
+          "rationale": "AR là hiệu chứ không phải tổng của hai tỷ lệ mới mắc."
+        },
+        {
+          "key": "d",
+          "text": "0,33",
+          "correct": false,
+          "rationale": "0,33 là 10 ÷ 30, không phải số đo nào trong bài."
+        }
+      ],
+      "explanation": "Nguy cơ quy thuộc = tỷ lệ mới mắc ở nhóm phơi nhiễm − tỷ lệ mới mắc ở nhóm không phơi nhiễm = 20 trên 1.000.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "kho",
+      "sources": ["dt-p08"]
+    },
+    {
+      "id": "q-dt-10",
+      "stem": "Thiết kế nghiên cứu nào phù hợp nhất để tìm yếu tố nguy cơ của một bệnh hiếm?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Nghiên cứu thuần tập tương lai",
+          "correct": false,
+          "rationale": "Với bệnh hiếm, thuần tập cần cỡ mẫu rất lớn và theo dõi rất lâu mới đủ số ca."
+        },
+        {
+          "key": "b",
+          "text": "Nghiên cứu bệnh–chứng",
+          "correct": true,
+          "rationale": "Bắt đầu từ những người đã mắc bệnh nên phù hợp nhất với bệnh hiếm."
+        },
+        {
+          "key": "c",
+          "text": "Nghiên cứu cắt ngang",
+          "correct": false,
+          "rationale": "Cắt ngang không phù hợp với bệnh hiếm và không xác định được trình tự thời gian."
+        },
+        {
+          "key": "d",
+          "text": "Thử nghiệm ngẫu nhiên có đối chứng",
+          "correct": false,
+          "rationale": "Không thể chủ động cho đối tượng phơi nhiễm với yếu tố có hại."
+        }
+      ],
+      "explanation": "Nghiên cứu bệnh–chứng chọn sẵn người bệnh rồi tìm ngược về phơi nhiễm, nên phù hợp nhất với bệnh hiếm.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p10"]
+    },
+    {
+      "id": "q-dt-11",
+      "stem": "Đặc điểm nào là của nghiên cứu thuần tập?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Chọn người chưa mắc bệnh, phân theo tình trạng phơi nhiễm và theo dõi sự xuất hiện bệnh",
+          "correct": true,
+          "rationale": "Thuần tập bắt đầu từ phơi nhiễm và theo dõi đến khi xuất hiện bệnh."
+        },
+        {
+          "key": "b",
+          "text": "Chọn người bệnh và người chứng, rồi hỏi ngược về phơi nhiễm",
+          "correct": false,
+          "rationale": "Đây là nghiên cứu bệnh–chứng."
+        },
+        {
+          "key": "c",
+          "text": "Đo phơi nhiễm và bệnh tại cùng một thời điểm",
+          "correct": false,
+          "rationale": "Đây là nghiên cứu cắt ngang."
+        },
+        {
+          "key": "d",
+          "text": "Nhà nghiên cứu phân bổ ngẫu nhiên can thiệp cho đối tượng",
+          "correct": false,
+          "rationale": "Đây là thử nghiệm ngẫu nhiên có đối chứng."
+        }
+      ],
+      "explanation": "Nghiên cứu thuần tập đi từ phơi nhiễm đến bệnh: chọn người chưa mắc bệnh, phân nhóm theo phơi nhiễm và theo dõi theo thời gian.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["dt-p11"]
+    },
+    {
+      "id": "q-dt-12",
+      "stem": "Cùng một test (độ nhạy 90%, độ đặc hiệu 90%) được dùng ở cộng đồng có tỷ lệ hiện mắc 1% thay vì 10%. Giá trị dự đoán dương sẽ thế nào?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Giảm",
+          "correct": true,
+          "rationale": "Tỷ lệ hiện mắc thấp hơn thì phần lớn kết quả dương tính là dương tính giả."
+        },
+        {
+          "key": "b",
+          "text": "Tăng",
+          "correct": false,
+          "rationale": "Giá trị dự đoán dương tăng khi tỷ lệ hiện mắc tăng, không phải khi giảm."
+        },
+        {
+          "key": "c",
+          "text": "Không đổi vì độ nhạy và độ đặc hiệu không đổi",
+          "correct": false,
+          "rationale": "Độ nhạy và độ đặc hiệu không đổi, nhưng giá trị dự đoán phụ thuộc mạnh vào tỷ lệ hiện mắc."
+        },
+        {
+          "key": "d",
+          "text": "Luôn bằng độ nhạy",
+          "correct": false,
+          "rationale": "Giá trị dự đoán dương và độ nhạy có mẫu số khác nhau."
+        }
+      ],
+      "explanation": "Giá trị dự đoán dương phụ thuộc vào tỷ lệ hiện mắc: hiện mắc 10% cho khoảng 50%, hiện mắc 1% chỉ còn khoảng 8,3%.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 3,
+      "difficulty": "kho",
+      "sources": ["dt-p15"]
+    },
+    {
+      "id": "q-tc-01",
+      "stem": "Theo lịch Tiêm chủng mở rộng, vắc xin viêm gan B mũi sơ sinh được tiêm khi nào?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Trong vòng 24 giờ đầu sau sinh",
+          "correct": true,
+          "rationale": "Tiêm sớm trong 24 giờ đầu để phòng lây truyền từ mẹ sang con."
+        },
+        {
+          "key": "b",
+          "text": "Khi trẻ đủ 1 tháng tuổi",
+          "correct": false,
+          "rationale": "Mốc 1 tháng là giới hạn của vắc xin BCG, không phải của mũi viêm gan B sơ sinh."
+        },
+        {
+          "key": "c",
+          "text": "Khi trẻ đủ 2 tháng tuổi",
+          "correct": false,
+          "rationale": "2 tháng tuổi là mũi DPT-VGB-Hib thứ nhất."
+        },
+        {
+          "key": "d",
+          "text": "Trong vòng 7 ngày sau sinh",
+          "correct": false,
+          "rationale": "Lịch quy định trong vòng 24 giờ đầu; tiêm muộn làm giảm hiệu quả phòng bệnh."
+        }
+      ],
+      "explanation": "Vắc xin viêm gan B mũi sơ sinh được tiêm trong vòng 24 giờ đầu sau sinh.",
+      "competency_code": "CI-04",
+      "exam_competency_component": 7,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["tc-p02"]
+    },
+    {
+      "id": "q-tc-02",
+      "stem": "Ba mũi vắc xin phối hợp DPT-VGB-Hib được tiêm khi trẻ đủ mấy tháng tuổi?",
+      "options": [
+        {
+          "key": "a",
+          "text": "2, 3 và 4 tháng",
+          "correct": true,
+          "rationale": "Mũi 1, 2, 3 tiêm lúc trẻ đủ 2, 3 và 4 tháng tuổi."
+        },
+        {
+          "key": "b",
+          "text": "1, 2 và 3 tháng",
+          "correct": false,
+          "rationale": "Mũi đầu tiên tiêm khi trẻ đủ 2 tháng tuổi."
+        },
+        {
+          "key": "c",
+          "text": "2, 4 và 6 tháng",
+          "correct": false,
+          "rationale": "Lịch Tiêm chủng mở rộng của Việt Nam tiêm cách nhau 1 tháng: 2, 3, 4 tháng."
+        },
+        {
+          "key": "d",
+          "text": "3, 5 và 9 tháng",
+          "correct": false,
+          "rationale": "5 tháng là mũi bại liệt tiêm, 9 tháng là mũi sởi."
+        }
+      ],
+      "explanation": "DPT-VGB-Hib mũi 1, 2, 3 được tiêm khi trẻ đủ 2, 3 và 4 tháng tuổi, cùng với vắc xin bại liệt uống.",
+      "competency_code": "CI-04",
+      "exam_competency_component": 7,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["tc-p03"]
+    },
+    {
+      "id": "q-tc-03",
+      "stem": "Trong dây chuyền lạnh, phần lớn vắc xin của chương trình Tiêm chủng mở rộng được bảo quản ở nhiệt độ nào?",
+      "options": [
+        {
+          "key": "a",
+          "text": "+2 °C đến +8 °C",
+          "correct": true,
+          "rationale": "Đây là khoảng nhiệt độ bảo quản quy định cho phần lớn vắc xin."
+        },
+        {
+          "key": "b",
+          "text": "−20 °C đến −15 °C",
+          "correct": false,
+          "rationale": "Nhiệt độ âm làm đông băng và hỏng các vắc xin như DPT-VGB-Hib, viêm gan B, uốn ván."
+        },
+        {
+          "key": "c",
+          "text": "0 °C đến +2 °C",
+          "correct": false,
+          "rationale": "Gần 0 °C có nguy cơ đông băng vắc xin."
+        },
+        {
+          "key": "d",
+          "text": "+8 °C đến +15 °C",
+          "correct": false,
+          "rationale": "Nhiệt độ cao hơn +8 °C làm vắc xin giảm hiệu lực."
+        }
+      ],
+      "explanation": "Phần lớn vắc xin được bảo quản ở +2 °C đến +8 °C; không để vắc xin nhạy cảm với đông băng bị đông băng.",
+      "competency_code": "CI-04",
+      "exam_competency_component": 7,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["tc-p08"]
+    },
+    {
+      "id": "q-tc-04",
+      "stem": "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, bệnh nào sau đây thuộc nhóm A?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Bệnh tả",
+          "correct": true,
+          "rationale": "Bệnh tả thuộc danh mục bệnh truyền nhiễm nhóm A."
+        },
+        {
+          "key": "b",
+          "text": "Bệnh sởi",
+          "correct": false,
+          "rationale": "Bệnh sởi thuộc nhóm B."
+        },
+        {
+          "key": "c",
+          "text": "Bệnh dại",
+          "correct": false,
+          "rationale": "Bệnh dại thuộc nhóm B."
+        },
+        {
+          "key": "d",
+          "text": "Bệnh sốt xuất huyết Dengue",
+          "correct": false,
+          "rationale": "Sốt xuất huyết Dengue thuộc nhóm B."
+        }
+      ],
+      "explanation": "Nhóm A gồm các bệnh đặc biệt nguy hiểm, lây truyền rất nhanh, phát tán rộng; bệnh tả thuộc nhóm này. Sởi, dại và sốt xuất huyết Dengue thuộc nhóm B.",
+      "competency_code": "CI-01",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "kho",
+      "sources": ["lt-p01", "lt-p02"]
+    },
+    {
+      "id": "q-dt-13",
+      "stem": "Tỷ lệ tấn công thứ phát phản ánh điều gì?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Khả năng lây truyền của bệnh trong những người tiếp xúc với ca bệnh đầu tiên",
+          "correct": true,
+          "rationale": "Chỉ số này lấy số ca mới trong những người tiếp xúc chia cho số người tiếp xúc còn cảm nhiễm."
+        },
+        {
+          "key": "b",
+          "text": "Mức độ nặng của bệnh",
+          "correct": false,
+          "rationale": "Mức độ nặng được phản ánh bằng tỷ lệ tử vong trên số mắc."
+        },
+        {
+          "key": "c",
+          "text": "Gánh nặng bệnh tật trong cộng đồng tại một thời điểm",
+          "correct": false,
+          "rationale": "Đó là ý nghĩa của tỷ lệ hiện mắc."
+        },
+        {
+          "key": "d",
+          "text": "Nguy cơ tử vong của cả quần thể",
+          "correct": false,
+          "rationale": "Đó là ý nghĩa của tỷ suất tử vong thô."
+        }
+      ],
+      "explanation": "Tỷ lệ tấn công thứ phát đo số ca mới trong những người tiếp xúc với ca đầu tiên, nên phản ánh khả năng lây truyền của bệnh trong hộ gia đình hoặc tập thể.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p04"]
+    },
+    {
+      "id": "q-dt-14",
+      "stem": "Theo dõi 500 người chưa mắc bệnh trong 2 năm, tổng cộng 1.000 người-năm, có 10 ca mắc mới. Tỷ suất mới mắc là?",
+      "options": [
+        {
+          "key": "a",
+          "text": "10 trên 1.000 người-năm",
+          "correct": true,
+          "rationale": "Số ca mới chia cho tổng thời gian theo dõi: 10 ÷ 1.000 người-năm."
+        },
+        {
+          "key": "b",
+          "text": "20 trên 1.000 người-năm",
+          "correct": false,
+          "rationale": "20 trên 1.000 là 10 ÷ 500 người; cách tính này bỏ qua thời gian theo dõi 2 năm."
+        },
+        {
+          "key": "c",
+          "text": "5 trên 1.000 người-năm",
+          "correct": false,
+          "rationale": "Mẫu số 1.000 người-năm đã tính cả thời gian, không chia cho 2 năm thêm lần nữa."
+        },
+        {
+          "key": "d",
+          "text": "10 trên 500 người-năm",
+          "correct": false,
+          "rationale": "Mẫu số là tổng người-thời gian (1.000 người-năm), không phải số người."
+        }
+      ],
+      "explanation": "Tỷ suất mới mắc bằng số ca mới chia cho tổng thời gian theo dõi của những người có nguy cơ: 10 ÷ 1.000 người-năm.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "kho",
+      "sources": ["dt-p02"]
+    },
+    {
+      "id": "q-dt-15",
+      "stem": "Nguy cơ tương đối RR = 1 có nghĩa là gì?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Không có sự kết hợp giữa phơi nhiễm và bệnh",
+          "correct": true,
+          "rationale": "Tỷ lệ mới mắc ở hai nhóm bằng nhau nên tỷ số bằng 1."
+        },
+        {
+          "key": "b",
+          "text": "Phơi nhiễm chắc chắn gây bệnh",
+          "correct": false,
+          "rationale": "RR đo độ mạnh của sự kết hợp, không khẳng định quan hệ nhân quả; và RR = 1 là không có kết hợp."
+        },
+        {
+          "key": "c",
+          "text": "Phơi nhiễm là yếu tố bảo vệ",
+          "correct": false,
+          "rationale": "Yếu tố bảo vệ ứng với RR nhỏ hơn 1."
+        },
+        {
+          "key": "d",
+          "text": "Phơi nhiễm là yếu tố nguy cơ",
+          "correct": false,
+          "rationale": "Yếu tố nguy cơ ứng với RR lớn hơn 1."
+        }
+      ],
+      "explanation": "RR bằng 1 nghĩa là tỷ lệ mới mắc ở nhóm phơi nhiễm và nhóm không phơi nhiễm như nhau: không có sự kết hợp.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["dt-p06"]
+    },
+    {
+      "id": "q-dt-16",
+      "stem": "Trong một nghiên cứu bệnh–chứng, 40 trong 100 người bệnh có phơi nhiễm và 20 trong 100 người chứng có phơi nhiễm. Tỷ suất chênh (OR) xấp xỉ bằng?",
+      "options": [
+        {
+          "key": "a",
+          "text": "2,7",
+          "correct": true,
+          "rationale": "OR = (40 × 80) ÷ (20 × 60) ≈ 2,7."
+        },
+        {
+          "key": "b",
+          "text": "2,0",
+          "correct": false,
+          "rationale": "2,0 là tỷ số của hai tỷ lệ phơi nhiễm (40% ÷ 20%), không phải tỷ suất chênh."
+        },
+        {
+          "key": "c",
+          "text": "0,38",
+          "correct": false,
+          "rationale": "0,38 là nghịch đảo của OR, do đặt ngược tử số và mẫu số."
+        },
+        {
+          "key": "d",
+          "text": "1,5",
+          "correct": false,
+          "rationale": "1,5 là 60 ÷ 40, không phải công thức (a × d) ÷ (b × c)."
+        }
+      ],
+      "explanation": "Với a = 40, b = 20, c = 60, d = 80: OR = (a × d) ÷ (b × c) = 3.200 ÷ 1.200 ≈ 2,7.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "kho",
+      "sources": ["dt-p07"]
+    },
+    {
+      "id": "q-dt-17",
+      "stem": "Phần trăm nguy cơ quy thuộc có thể tính từ nguy cơ tương đối (RR) bằng công thức nào?",
+      "options": [
+        {
+          "key": "a",
+          "text": "(RR − 1) ÷ RR × 100",
+          "correct": true,
+          "rationale": "Đây là cách viết khác của AR chia cho tỷ lệ mới mắc ở nhóm phơi nhiễm."
+        },
+        {
+          "key": "b",
+          "text": "RR × 100",
+          "correct": false,
+          "rationale": "RR là một tỷ số, nhân 100 không cho ra phần nguy cơ do phơi nhiễm."
+        },
+        {
+          "key": "c",
+          "text": "(RR + 1) ÷ RR × 100",
+          "correct": false,
+          "rationale": "Tử số phải là RR − 1, tức phần nguy cơ tăng thêm."
+        },
+        {
+          "key": "d",
+          "text": "1 ÷ RR × 100",
+          "correct": false,
+          "rationale": "1 ÷ RR là phần nguy cơ nền, không phải phần quy cho phơi nhiễm."
+        }
+      ],
+      "explanation": "Phần trăm nguy cơ quy thuộc bằng AR chia cho tỷ lệ mới mắc ở nhóm phơi nhiễm, nhân 100; viết theo RR là (RR − 1) ÷ RR × 100.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p08"]
+    },
+    {
+      "id": "q-dt-18",
+      "stem": "Số đo nào cho biết số ca bệnh có thể phòng được trong nhóm phơi nhiễm nếu loại bỏ phơi nhiễm?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Nguy cơ quy thuộc",
+          "correct": true,
+          "rationale": "AR là phần nguy cơ tuyệt đối do phơi nhiễm gây ra, đo tác động về y tế công cộng."
+        },
+        {
+          "key": "b",
+          "text": "Nguy cơ tương đối",
+          "correct": false,
+          "rationale": "RR đo độ mạnh của sự kết hợp, có ý nghĩa về căn nguyên."
+        },
+        {
+          "key": "c",
+          "text": "Tỷ suất chênh",
+          "correct": false,
+          "rationale": "OR là số đo kết hợp của nghiên cứu bệnh–chứng."
+        },
+        {
+          "key": "d",
+          "text": "Tỷ lệ hiện mắc",
+          "correct": false,
+          "rationale": "Hiện mắc là số đo tần suất, không so sánh hai nhóm."
+        }
+      ],
+      "explanation": "Nguy cơ quy thuộc là hiệu của hai tỷ lệ mới mắc, cho biết phần nguy cơ do phơi nhiễm và số ca có thể phòng được.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p08"]
+    },
+    {
+      "id": "q-dt-19",
+      "stem": "Thiết kế nghiên cứu cắt ngang phù hợp nhất để ước lượng chỉ số nào?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Tỷ lệ hiện mắc",
+          "correct": true,
+          "rationale": "Cắt ngang đo phơi nhiễm và bệnh tại cùng một thời điểm nên cho biết tỷ lệ hiện mắc."
+        },
+        {
+          "key": "b",
+          "text": "Tỷ lệ mới mắc",
+          "correct": false,
+          "rationale": "Mới mắc cần theo dõi theo thời gian, như trong nghiên cứu thuần tập."
+        },
+        {
+          "key": "c",
+          "text": "Nguy cơ tương đối",
+          "correct": false,
+          "rationale": "RR cần tỷ lệ mới mắc ở hai nhóm, tính được trong nghiên cứu thuần tập."
+        },
+        {
+          "key": "d",
+          "text": "Tỷ lệ tử vong trên số mắc",
+          "correct": false,
+          "rationale": "Chỉ số này cần theo dõi kết cục của những người mắc bệnh."
+        }
+      ],
+      "explanation": "Nghiên cứu cắt ngang đo tình trạng bệnh tại một thời điểm nên còn gọi là nghiên cứu tỷ lệ hiện mắc.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["dt-p09"]
+    },
+    {
+      "id": "q-dt-20",
+      "stem": "Sai số nhớ lại là hạn chế điển hình của thiết kế nghiên cứu nào?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Nghiên cứu bệnh–chứng",
+          "correct": true,
+          "rationale": "Thông tin phơi nhiễm được hỏi hồi cứu, sau khi đã biết ai mắc bệnh."
+        },
+        {
+          "key": "b",
+          "text": "Nghiên cứu thuần tập tương lai",
+          "correct": false,
+          "rationale": "Phơi nhiễm được ghi nhận trước khi bệnh xuất hiện."
+        },
+        {
+          "key": "c",
+          "text": "Thử nghiệm ngẫu nhiên có đối chứng",
+          "correct": false,
+          "rationale": "Can thiệp do nhà nghiên cứu phân bổ nên không phải hỏi lại phơi nhiễm."
+        },
+        {
+          "key": "d",
+          "text": "Nghiên cứu thuần tập hồi cứu dựa trên hồ sơ phơi nhiễm đã ghi nhận",
+          "correct": false,
+          "rationale": "Thiết kế này dùng hồ sơ có sẵn, không dựa vào trí nhớ của đối tượng."
+        }
+      ],
+      "explanation": "Nghiên cứu bệnh–chứng thu thập thông tin phơi nhiễm trong quá khứ sau khi bệnh đã xảy ra, nên dễ gặp sai số nhớ lại.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p10"]
+    },
+    {
+      "id": "q-dt-21",
+      "stem": "Mục đích chính của phân bổ ngẫu nhiên trong thử nghiệm ngẫu nhiên có đối chứng là gì?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Làm cho các yếu tố nhiễu, kể cả yếu tố chưa biết, phân bố tương đương giữa hai nhóm",
+          "correct": true,
+          "rationale": "Nhờ đó khác biệt về kết quả có thể quy cho can thiệp."
+        },
+        {
+          "key": "b",
+          "text": "Giữ cho đối tượng không biết mình thuộc nhóm nào",
+          "correct": false,
+          "rationale": "Đó là làm mù, không phải phân bổ ngẫu nhiên."
+        },
+        {
+          "key": "c",
+          "text": "Giảm cỡ mẫu cần thiết",
+          "correct": false,
+          "rationale": "Phân bổ ngẫu nhiên không nhằm giảm cỡ mẫu."
+        },
+        {
+          "key": "d",
+          "text": "Giúp kết quả khái quát được cho mọi quần thể",
+          "correct": false,
+          "rationale": "Khả năng khái quát vẫn là một hạn chế của thử nghiệm."
+        }
+      ],
+      "explanation": "Phân bổ ngẫu nhiên làm cho các yếu tố nhiễu, kể cả những yếu tố chưa biết, phân bố tương đương giữa nhóm can thiệp và nhóm chứng.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p12"]
+    },
+    {
+      "id": "q-dt-22",
+      "stem": "Một phơi nhiễm hiếm gặp, chỉ có ở công nhân vài nhà máy. Thiết kế nào phù hợp nhất để nghiên cứu các bệnh do phơi nhiễm này?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Nghiên cứu thuần tập",
+          "correct": true,
+          "rationale": "Bắt đầu từ nhóm có phơi nhiễm nên phù hợp với phơi nhiễm hiếm và nghiên cứu được nhiều bệnh."
+        },
+        {
+          "key": "b",
+          "text": "Nghiên cứu bệnh–chứng",
+          "correct": false,
+          "rationale": "Bệnh–chứng không phù hợp với phơi nhiễm hiếm: trong nhóm bệnh và nhóm chứng sẽ có rất ít người phơi nhiễm."
+        },
+        {
+          "key": "c",
+          "text": "Nghiên cứu cắt ngang trên mẫu dân số chung",
+          "correct": false,
+          "rationale": "Mẫu dân số chung gần như không có người phơi nhiễm, và không xác định được trình tự thời gian."
+        },
+        {
+          "key": "d",
+          "text": "Thử nghiệm ngẫu nhiên có đối chứng",
+          "correct": false,
+          "rationale": "Không thể chủ động cho đối tượng phơi nhiễm với yếu tố có hại."
+        }
+      ],
+      "explanation": "Nghiên cứu thuần tập chọn đối tượng theo tình trạng phơi nhiễm nên phù hợp với phơi nhiễm hiếm; bệnh–chứng thì ngược lại, phù hợp với bệnh hiếm.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 3,
+      "difficulty": "kho",
+      "sources": ["dt-p11", "dt-p10"]
+    },
+    {
+      "id": "q-dt-23",
+      "stem": "Hạn chế chính của nghiên cứu cắt ngang khi tìm nguyên nhân của bệnh là gì?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Không xác định được phơi nhiễm có trước bệnh hay không",
+          "correct": true,
+          "rationale": "Phơi nhiễm và bệnh được đo cùng lúc nên không biết trình tự thời gian."
+        },
+        {
+          "key": "b",
+          "text": "Tốn nhiều thời gian theo dõi",
+          "correct": false,
+          "rationale": "Cắt ngang thực hiện nhanh; tốn thời gian là hạn chế của thuần tập."
+        },
+        {
+          "key": "c",
+          "text": "Dễ mất đối tượng trong quá trình theo dõi",
+          "correct": false,
+          "rationale": "Cắt ngang không theo dõi đối tượng theo thời gian."
+        },
+        {
+          "key": "d",
+          "text": "Không đo được tỷ lệ hiện mắc",
+          "correct": false,
+          "rationale": "Cắt ngang chính là thiết kế đo tỷ lệ hiện mắc."
+        }
+      ],
+      "explanation": "Vì phơi nhiễm và bệnh được đo tại cùng một thời điểm, nghiên cứu cắt ngang không xác định được trình tự thời gian nên khó kết luận quan hệ nhân quả.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "de",
+      "sources": ["dt-p09"]
+    },
+    {
+      "id": "q-dt-24",
+      "stem": "Trong 400 người không có bệnh, test cho kết quả âm tính ở 360 người. Độ đặc hiệu của test là?",
+      "options": [
+        {
+          "key": "a",
+          "text": "90%",
+          "correct": true,
+          "rationale": "Độ đặc hiệu = âm tính thật ÷ tổng số người không có bệnh = 360 ÷ 400."
+        },
+        {
+          "key": "b",
+          "text": "10%",
+          "correct": false,
+          "rationale": "10% là tỷ lệ dương tính giả (40 ÷ 400)."
+        },
+        {
+          "key": "c",
+          "text": "40%",
+          "correct": false,
+          "rationale": "40 là số dương tính giả, không phải một tỷ lệ của test."
+        },
+        {
+          "key": "d",
+          "text": "Không tính được vì thiếu số người có bệnh",
+          "correct": false,
+          "rationale": "Số người có bệnh cần cho độ nhạy; độ đặc hiệu chỉ cần nhóm không có bệnh."
+        }
+      ],
+      "explanation": "Độ đặc hiệu = âm tính thật ÷ tổng số người không có bệnh = 360 ÷ 400 = 90%.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "de",
+      "sources": ["dt-p13"]
+    },
+    {
+      "id": "q-dt-25",
+      "stem": "Một đợt sàng lọc cho 80 kết quả dương tính thật và 120 kết quả dương tính giả. Giá trị dự đoán dương là?",
+      "options": [
+        {
+          "key": "a",
+          "text": "40%",
+          "correct": true,
+          "rationale": "80 ÷ (80 + 120) = 40%."
+        },
+        {
+          "key": "b",
+          "text": "60%",
+          "correct": false,
+          "rationale": "60% là phần dương tính giả trong tổng số dương tính."
+        },
+        {
+          "key": "c",
+          "text": "67%",
+          "correct": false,
+          "rationale": "67% là 80 ÷ 120; mẫu số phải là tổng số kết quả dương tính."
+        },
+        {
+          "key": "d",
+          "text": "80%",
+          "correct": false,
+          "rationale": "80 là số dương tính thật, chưa chia cho tổng số dương tính."
+        }
+      ],
+      "explanation": "Giá trị dự đoán dương = dương tính thật ÷ tổng số kết quả dương tính = 80 ÷ 200 = 40%.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p14"]
+    },
+    {
+      "id": "q-dt-26",
+      "stem": "Vì sao sàng lọc ban đầu thường chọn test có độ nhạy cao?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Vì test ít bỏ sót người bệnh",
+          "correct": true,
+          "rationale": "Độ nhạy cao nghĩa là ít âm tính giả."
+        },
+        {
+          "key": "b",
+          "text": "Vì test ít cho kết quả dương tính giả",
+          "correct": false,
+          "rationale": "Ít dương tính giả là đặc điểm của test có độ đặc hiệu cao."
+        },
+        {
+          "key": "c",
+          "text": "Vì không cần xét nghiệm khẳng định sau đó",
+          "correct": false,
+          "rationale": "Kết quả dương tính trong sàng lọc vẫn cần xét nghiệm khẳng định."
+        },
+        {
+          "key": "d",
+          "text": "Vì giá trị dự đoán dương luôn cao",
+          "correct": false,
+          "rationale": "Giá trị dự đoán dương còn phụ thuộc vào tỷ lệ hiện mắc."
+        }
+      ],
+      "explanation": "Test có độ nhạy cao ít bỏ sót người bệnh nên phù hợp cho sàng lọc ban đầu; test có độ đặc hiệu cao phù hợp để khẳng định chẩn đoán.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p13"]
+    },
+    {
+      "id": "q-dt-27",
+      "stem": "Giá trị dự đoán âm là gì?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Xác suất một người thực sự không có bệnh khi kết quả test âm tính",
+          "correct": true,
+          "rationale": "Bằng âm tính thật chia cho tổng số kết quả âm tính."
+        },
+        {
+          "key": "b",
+          "text": "Xác suất test âm tính ở người không có bệnh",
+          "correct": false,
+          "rationale": "Đó là độ đặc hiệu."
+        },
+        {
+          "key": "c",
+          "text": "Xác suất test dương tính ở người có bệnh",
+          "correct": false,
+          "rationale": "Đó là độ nhạy."
+        },
+        {
+          "key": "d",
+          "text": "Xác suất một người thực sự có bệnh khi kết quả test dương tính",
+          "correct": false,
+          "rationale": "Đó là giá trị dự đoán dương."
+        }
+      ],
+      "explanation": "Giá trị dự đoán âm là xác suất một người thực sự không có bệnh khi test âm tính: d ÷ (c + d).",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["dt-p14"]
+    },
+    {
+      "id": "q-dt-28",
+      "stem": "Điều nào sau đây KHÔNG thuộc các tiêu chuẩn kinh điển để triển khai một chương trình sàng lọc?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Bệnh phải hiếm gặp trong cộng đồng",
+          "correct": true,
+          "rationale": "Tiêu chuẩn là bệnh phải là vấn đề sức khỏe quan trọng, không phải bệnh hiếm."
+        },
+        {
+          "key": "b",
+          "text": "Có biện pháp điều trị hiệu quả và được chấp nhận",
+          "correct": false,
+          "rationale": "Đây là một tiêu chuẩn về điều trị."
+        },
+        {
+          "key": "c",
+          "text": "Có giai đoạn sớm có thể phát hiện được",
+          "correct": false,
+          "rationale": "Đây là một tiêu chuẩn về bệnh."
+        },
+        {
+          "key": "d",
+          "text": "Test sàng lọc được cộng đồng chấp nhận",
+          "correct": false,
+          "rationale": "Đây là một tiêu chuẩn về test."
+        }
+      ],
+      "explanation": "Các tiêu chuẩn của Wilson và Jungner yêu cầu bệnh là vấn đề sức khỏe quan trọng, có giai đoạn sớm phát hiện được, có test phù hợp và có điều trị hiệu quả; không có tiêu chuẩn nào yêu cầu bệnh hiếm.",
+      "competency_code": "FND",
+      "exam_competency_component": 2,
+      "bloom_level": 2,
+      "difficulty": "kho",
+      "sources": ["dt-p16"]
+    },
+    {
+      "id": "q-tc-05",
+      "stem": "Theo lịch Tiêm chủng mở rộng, vắc xin BCG phòng bệnh lao được tiêm như thế nào?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Một mũi duy nhất, càng sớm càng tốt và trong vòng 1 tháng sau sinh",
+          "correct": true,
+          "rationale": "BCG chỉ tiêm một mũi cho trẻ sơ sinh."
+        },
+        {
+          "key": "b",
+          "text": "Ba mũi lúc 2, 3 và 4 tháng tuổi",
+          "correct": false,
+          "rationale": "Đó là lịch của vắc xin DPT-VGB-Hib."
+        },
+        {
+          "key": "c",
+          "text": "Một mũi lúc 9 tháng tuổi",
+          "correct": false,
+          "rationale": "9 tháng tuổi là mũi sởi thứ nhất."
+        },
+        {
+          "key": "d",
+          "text": "Hai mũi lúc 9 và 18 tháng tuổi",
+          "correct": false,
+          "rationale": "Đó là các mốc của vắc xin sởi và sởi–rubella."
+        }
+      ],
+      "explanation": "Vắc xin BCG được tiêm một mũi duy nhất, càng sớm càng tốt và trong vòng 1 tháng sau sinh.",
+      "competency_code": "CI-04",
+      "exam_competency_component": 7,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["tc-p02"]
+    },
+    {
+      "id": "q-tc-06",
+      "stem": "Mũi vắc xin sởi thứ nhất trong chương trình Tiêm chủng mở rộng được tiêm khi trẻ đủ mấy tháng tuổi?",
+      "options": [
+        {
+          "key": "a",
+          "text": "9 tháng",
+          "correct": true,
+          "rationale": "Lúc này kháng thể từ mẹ truyền sang đã giảm."
+        },
+        {
+          "key": "b",
+          "text": "5 tháng",
+          "correct": false,
+          "rationale": "5 tháng tuổi là mũi bại liệt tiêm thứ nhất."
+        },
+        {
+          "key": "c",
+          "text": "12 tháng",
+          "correct": false,
+          "rationale": "12 tháng tuổi là mũi viêm não Nhật Bản thứ nhất."
+        },
+        {
+          "key": "d",
+          "text": "18 tháng",
+          "correct": false,
+          "rationale": "18 tháng tuổi là mũi sởi–rubella, tức mũi sởi thứ hai."
+        }
+      ],
+      "explanation": "Trẻ được tiêm vắc xin sởi mũi 1 khi đủ 9 tháng tuổi; mũi sởi–rubella lúc 18 tháng là mũi thứ hai.",
+      "competency_code": "CI-04",
+      "exam_competency_component": 7,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["tc-p04"]
+    },
+    {
+      "id": "q-tc-07",
+      "stem": "Khi trẻ đủ 18 tháng tuổi, trẻ được tiêm những vắc xin nào trong chương trình Tiêm chủng mở rộng?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Sởi–rubella và DPT mũi 4",
+          "correct": true,
+          "rationale": "Đây là hai mũi nhắc lại ở mốc 18 tháng tuổi."
+        },
+        {
+          "key": "b",
+          "text": "BCG và viêm gan B",
+          "correct": false,
+          "rationale": "Đó là các vắc xin tiêm cho trẻ sơ sinh."
+        },
+        {
+          "key": "c",
+          "text": "DPT-VGB-Hib mũi 3 và bại liệt uống lần 3",
+          "correct": false,
+          "rationale": "Đó là các vắc xin ở mốc 4 tháng tuổi."
+        },
+        {
+          "key": "d",
+          "text": "Sởi mũi 1 và bại liệt tiêm mũi 2",
+          "correct": false,
+          "rationale": "Đó là các vắc xin ở mốc 9 tháng tuổi."
+        }
+      ],
+      "explanation": "Khi đủ 18 tháng tuổi, trẻ được tiêm vắc xin sởi–rubella và vắc xin DPT mũi 4.",
+      "competency_code": "CI-04",
+      "exam_competency_component": 7,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["tc-p06"]
+    },
+    {
+      "id": "q-tc-08",
+      "stem": "Trong lịch tiêm vắc xin viêm não Nhật Bản của chương trình Tiêm chủng mở rộng, mũi 2 được tiêm sau mũi 1 bao lâu?",
+      "options": [
+        {
+          "key": "a",
+          "text": "1 đến 2 tuần",
+          "correct": true,
+          "rationale": "Mũi 1 khi trẻ đủ 1 tuổi, mũi 2 sau đó 1 đến 2 tuần."
+        },
+        {
+          "key": "b",
+          "text": "1 tháng",
+          "correct": false,
+          "rationale": "Khoảng cách 1 tháng là giữa các mũi DPT-VGB-Hib."
+        },
+        {
+          "key": "c",
+          "text": "6 tháng",
+          "correct": false,
+          "rationale": "Lịch viêm não Nhật Bản không có khoảng cách 6 tháng."
+        },
+        {
+          "key": "d",
+          "text": "1 năm",
+          "correct": false,
+          "rationale": "1 năm là khoảng cách giữa mũi 2 và mũi 3."
+        }
+      ],
+      "explanation": "Lịch gồm ba mũi: mũi 1 khi trẻ đủ 1 tuổi, mũi 2 sau mũi 1 từ 1 đến 2 tuần, mũi 3 sau mũi 2 một năm.",
+      "competency_code": "CI-04",
+      "exam_competency_component": 7,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["tc-p05"]
+    },
+    {
+      "id": "q-tc-09",
+      "stem": "Sau khi tiêm chủng, người được tiêm cần được theo dõi tại điểm tiêm chủng ít nhất bao lâu?",
+      "options": [
+        {
+          "key": "a",
+          "text": "30 phút",
+          "correct": true,
+          "rationale": "Để phát hiện và xử trí kịp thời tai biến nặng như sốc phản vệ."
+        },
+        {
+          "key": "b",
+          "text": "5 phút",
+          "correct": false,
+          "rationale": "Thời gian này quá ngắn so với quy định."
+        },
+        {
+          "key": "c",
+          "text": "2 giờ",
+          "correct": false,
+          "rationale": "Quy định tại điểm tiêm là ít nhất 30 phút."
+        },
+        {
+          "key": "d",
+          "text": "24 giờ",
+          "correct": false,
+          "rationale": "24 giờ là thời gian tiếp tục theo dõi tại nhà."
+        }
+      ],
+      "explanation": "Người được tiêm chủng cần được theo dõi ít nhất 30 phút tại điểm tiêm và tiếp tục được theo dõi tại nhà ít nhất 24 giờ.",
+      "competency_code": "CI-04",
+      "exam_competency_component": 7,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["tc-p09"]
+    },
+    {
+      "id": "q-tc-10",
+      "stem": "Vắc xin nào sau đây dễ hỏng do đông băng và tuyệt đối không được để đông băng?",
+      "options": [
+        {
+          "key": "a",
+          "text": "DPT-VGB-Hib",
+          "correct": true,
+          "rationale": "Cùng với vắc xin viêm gan B và uốn ván, đây là vắc xin dễ hỏng do đông băng."
+        },
+        {
+          "key": "b",
+          "text": "Bại liệt uống",
+          "correct": false,
+          "rationale": "Vắc xin bại liệt uống dễ hỏng do nhiệt độ cao và ánh sáng."
+        },
+        {
+          "key": "c",
+          "text": "Sởi",
+          "correct": false,
+          "rationale": "Vắc xin sởi dễ hỏng do nhiệt độ cao và ánh sáng."
+        },
+        {
+          "key": "d",
+          "text": "BCG",
+          "correct": false,
+          "rationale": "Vắc xin BCG dễ hỏng do nhiệt độ cao và ánh sáng."
+        }
+      ],
+      "explanation": "DPT-VGB-Hib, viêm gan B và uốn ván dễ hỏng do đông băng; bại liệt uống, sởi và BCG dễ hỏng do nhiệt độ cao và ánh sáng.",
+      "competency_code": "CI-04",
+      "exam_competency_component": 7,
+      "bloom_level": 2,
+      "difficulty": "kho",
+      "sources": ["tc-p08"]
+    },
+    {
+      "id": "q-tc-11",
+      "stem": "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, bệnh truyền nhiễm nhóm A có đặc điểm gì?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Đặc biệt nguy hiểm, lây truyền rất nhanh, phát tán rộng và tỷ lệ tử vong cao hoặc chưa rõ tác nhân gây bệnh",
+          "correct": true,
+          "rationale": "Đây là tiêu chí của nhóm A."
+        },
+        {
+          "key": "b",
+          "text": "Nguy hiểm, lây truyền nhanh và có thể gây tử vong",
+          "correct": false,
+          "rationale": "Đây là tiêu chí của nhóm B."
+        },
+        {
+          "key": "c",
+          "text": "Ít nguy hiểm, khả năng lây truyền không nhanh",
+          "correct": false,
+          "rationale": "Đây là tiêu chí của nhóm C."
+        },
+        {
+          "key": "d",
+          "text": "Chỉ lây truyền qua đường máu",
+          "correct": false,
+          "rationale": "Luật phân nhóm theo mức độ nguy hiểm và khả năng lây truyền, không theo đường lây."
+        }
+      ],
+      "explanation": "Nhóm A gồm các bệnh đặc biệt nguy hiểm, có khả năng lây truyền rất nhanh, phát tán rộng và tỷ lệ tử vong cao hoặc chưa rõ tác nhân gây bệnh.",
+      "competency_code": "CI-01",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["lt-p01", "lt-p02", "lt-p03"]
+    },
+    {
+      "id": "q-tc-12",
+      "stem": "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, bệnh sởi thuộc nhóm nào?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Nhóm B",
+          "correct": true,
+          "rationale": "Bệnh sởi nằm trong danh mục bệnh truyền nhiễm nhóm B."
+        },
+        {
+          "key": "b",
+          "text": "Nhóm A",
+          "correct": false,
+          "rationale": "Nhóm A gồm các bệnh như tả, dịch hạch, bại liệt."
+        },
+        {
+          "key": "c",
+          "text": "Nhóm C",
+          "correct": false,
+          "rationale": "Nhóm C gồm các bệnh ít nguy hiểm, lây truyền không nhanh."
+        },
+        {
+          "key": "d",
+          "text": "Không thuộc nhóm nào",
+          "correct": false,
+          "rationale": "Bệnh sởi được nêu tên trong danh mục nhóm B."
+        }
+      ],
+      "explanation": "Bệnh sởi thuộc nhóm B: bệnh truyền nhiễm nguy hiểm, có khả năng lây truyền nhanh và có thể gây tử vong.",
+      "competency_code": "CI-01",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["lt-p02"]
+    },
+    {
+      "id": "q-tc-13",
+      "stem": "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, bệnh nào sau đây thuộc nhóm C?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Bệnh phong",
+          "correct": true,
+          "rationale": "Bệnh phong nằm trong danh mục nhóm C."
+        },
+        {
+          "key": "b",
+          "text": "Bệnh dại",
+          "correct": false,
+          "rationale": "Bệnh dại thuộc nhóm B."
+        },
+        {
+          "key": "c",
+          "text": "Bệnh dịch hạch",
+          "correct": false,
+          "rationale": "Bệnh dịch hạch thuộc nhóm A."
+        },
+        {
+          "key": "d",
+          "text": "Bệnh thương hàn",
+          "correct": false,
+          "rationale": "Bệnh thương hàn thuộc nhóm B."
+        }
+      ],
+      "explanation": "Nhóm C gồm các bệnh truyền nhiễm ít nguy hiểm, khả năng lây truyền không nhanh; bệnh phong thuộc nhóm này.",
+      "competency_code": "CI-01",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "trung_binh",
+      "sources": ["lt-p03", "lt-p01", "lt-p02"]
+    },
+    {
+      "id": "q-tc-14",
+      "stem": "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, ai quyết định điều chỉnh, bổ sung danh mục bệnh truyền nhiễm thuộc các nhóm?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Bộ trưởng Bộ Y tế",
+          "correct": true,
+          "rationale": "Điều 3, khoản 2 giao thẩm quyền này cho Bộ trưởng Bộ Y tế."
+        },
+        {
+          "key": "b",
+          "text": "Thủ tướng Chính phủ",
+          "correct": false,
+          "rationale": "Luật giao việc này cho Bộ trưởng Bộ Y tế."
+        },
+        {
+          "key": "c",
+          "text": "Ủy ban nhân dân cấp tỉnh",
+          "correct": false,
+          "rationale": "Danh mục áp dụng chung cả nước, do Bộ trưởng Bộ Y tế quyết định."
+        },
+        {
+          "key": "d",
+          "text": "Quốc hội",
+          "correct": false,
+          "rationale": "Quốc hội ban hành Luật; việc điều chỉnh danh mục được giao cho Bộ trưởng Bộ Y tế."
+        }
+      ],
+      "explanation": "Bộ trưởng Bộ Y tế quyết định điều chỉnh, bổ sung danh mục bệnh truyền nhiễm thuộc các nhóm.",
+      "competency_code": "CI-01",
+      "exam_competency_component": 2,
+      "bloom_level": 1,
+      "difficulty": "de",
+      "sources": ["lt-p04"]
+    }
+  ],
+  "modules": [
+    {
+      "module": "g1",
+      "extra_competency_codes": ["FND"],
+      "units": [
+        {
+          "id": "u-dt-01",
+          "topic": "Đo lường tần suất bệnh",
+          "competency_code": "FND",
+          "items": [
+            {
+              "id": "u1-c1",
+              "kind": "content",
+              "content": {
+                "id": "ci-dt-01",
+                "title": "Tỷ lệ hiện mắc",
+                "sources": ["dt-p01"],
+                "body": "Bao nhiêu người **đang mắc bệnh** trong quần thể tại một thời điểm — cả ca cũ lẫn ca mới.\n\n> **Tỷ lệ hiện mắc** = số người đang mắc ÷ tổng số người tại thời điểm đó\n"
+              }
+            },
+            { "id": "u1-q1", "kind": "quiz", "question": "q-dt-01" },
+            {
+              "id": "u1-r1",
+              "kind": "remediation",
+              "after": "u1-q1",
+              "note": "hãy xem lại mẫu số",
+              "content": {
+                "id": "ci-dt-01r",
+                "title": "Ví dụ · Tính từng bước",
+                "sources": ["dt-p01"],
+                "body": "1. Tử số: **50** người đang mắc\n2. Mẫu số: **2.000** dân tại ngày 1/1\n3. 50 ÷ 2.000 = 0,025 = **2,5%**\n"
+              }
+            },
+            {
+              "id": "u1-c2",
+              "kind": "content",
+              "content": {
+                "id": "ci-dt-02",
+                "title": "Tỷ lệ mới mắc",
+                "sources": ["dt-p02"],
+                "body": "Chỉ đếm **ca mới** xuất hiện trong một khoảng thời gian, trên quần thể có nguy cơ.\n\n> **Tỷ lệ mới mắc** = số ca mới trong khoảng thời gian ÷ quần thể có nguy cơ\n"
+              }
+            },
+            { "id": "u1-q2", "kind": "quiz", "question": "q-dt-02" },
+            {
+              "id": "u1-c3",
+              "kind": "content",
+              "content": {
+                "id": "ci-dt-03",
+                "title": "Liên quan giữa hiện mắc và mới mắc",
+                "sources": ["dt-p03"],
+                "body": "Khi bệnh ổn định, tỷ lệ hiện mắc xấp xỉ bằng tỷ suất mới mắc nhân với thời gian mắc bệnh trung bình.\n\n> **P ≈ I × D**\n\nBệnh kéo dài hơn thì hiện mắc tăng, dù số ca mới không đổi.\n"
+              }
+            },
+            { "id": "u1-q3", "kind": "quiz", "question": "q-dt-03" }
+          ]
+        },
+        {
+          "id": "u-dt-02",
+          "topic": "Đo lường kết hợp và sàng lọc",
+          "competency_code": "FND",
+          "items": [
+            {
+              "id": "u2-c1",
+              "kind": "content",
+              "content": {
+                "id": "ci-dt-04",
+                "title": "Nguy cơ tương đối và tỷ suất chênh",
+                "sources": ["dt-p06", "dt-p07"],
+                "body": "**Nguy cơ tương đối (RR)** = tỷ lệ mới mắc ở nhóm phơi nhiễm ÷ tỷ lệ mới mắc ở nhóm không phơi nhiễm.\n\nNghiên cứu bệnh–chứng không đo được tỷ lệ mới mắc, nên dùng **tỷ suất chênh (OR)**.\n\n> **OR** = (a × d) ÷ (b × c)\n"
+              }
+            },
+            { "id": "u2-q1", "kind": "quiz", "question": "q-dt-04" },
+            { "id": "u2-q2", "kind": "quiz", "question": "q-dt-05" },
+            {
+              "id": "u2-c2",
+              "kind": "content",
+              "content": {
+                "id": "ci-dt-05",
+                "title": "Độ nhạy và độ đặc hiệu",
+                "sources": ["dt-p13"],
+                "body": "**Độ nhạy**: test phát hiện đúng bao nhiêu người **có bệnh**.\n\n> **Độ nhạy** = dương tính thật ÷ tổng số người có bệnh\n\n**Độ đặc hiệu**: test xác định đúng bao nhiêu người **không có bệnh**.\n\n> **Độ đặc hiệu** = âm tính thật ÷ tổng số người không có bệnh\n"
+              }
+            },
+            { "id": "u2-q3", "kind": "quiz", "question": "q-dt-06" }
+          ]
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "DT-DEMO",
+      "title": "Dịch tễ học cơ bản",
+      "edition": "demo",
+      "demo_label": "Tài liệu demo – chưa thẩm định",
+      "excerpt_limit": null,
+      "passages": [
+        {
+          "id": "dt-p01",
+          "chapter": "Chương 2. Đo lường bệnh trạng",
+          "section": "2.1 Tỷ lệ hiện mắc",
+          "page": 58,
+          "competency_code": "FND",
+          "text": "Tỷ lệ hiện mắc (prevalence) cho biết có bao nhiêu người đang mắc bệnh trong quần thể tại một thời điểm, bao gồm cả ca cũ lẫn ca mới. Công thức: tỷ lệ hiện mắc bằng số người đang mắc bệnh tại thời điểm đó chia cho tổng số người trong quần thể tại thời điểm đó. Tử số gồm mọi người đang mắc bệnh, không phân biệt họ mắc từ khi nào. Mẫu số là toàn bộ quần thể được khảo sát, gồm cả người mắc và người không mắc. Ví dụ với số liệu giả định: một xã có 2.000 dân; ngày 1/1 có 50 người đang mắc lao. Tỷ lệ hiện mắc lao của xã tại ngày 1/1 là 50 ÷ 2.000 = 0,025 = 2,5%. Tỷ lệ hiện mắc đo tại một thời điểm gọi là hiện mắc điểm; đo trong một khoảng thời gian gọi là hiện mắc kỳ. Tỷ lệ hiện mắc phản ánh gánh nặng bệnh tật trong cộng đồng và được dùng để lập kế hoạch nguồn lực y tế, nhưng không cho biết nguy cơ xuất hiện bệnh mới."
+        },
+        {
+          "id": "dt-p02",
+          "chapter": "Chương 2. Đo lường bệnh trạng",
+          "section": "2.2 Tỷ lệ mới mắc",
+          "page": 59,
+          "competency_code": "FND",
+          "text": "Tỷ lệ mới mắc (incidence) chỉ đếm các ca bệnh mới xuất hiện trong một khoảng thời gian, trên quần thể có nguy cơ. Có hai cách đo. Tỷ lệ mới mắc tích lũy (nguy cơ) bằng số ca mới trong khoảng thời gian chia cho số người có nguy cơ vào đầu khoảng thời gian đó. Tỷ suất mới mắc (mật độ mới mắc) bằng số ca mới chia cho tổng thời gian theo dõi của những người có nguy cơ, tính bằng người-thời gian, ví dụ người-năm. Mẫu số chỉ gồm những người có nguy cơ mắc bệnh: người đã mắc bệnh hoặc đã có miễn dịch không thuộc quần thể có nguy cơ. Ví dụ với số liệu giả định: theo dõi 1.000 người chưa mắc bệnh trong 1 năm, có 20 người mắc mới; tỷ lệ mới mắc tích lũy là 20 ÷ 1.000 = 2% trong 1 năm. Tỷ lệ mới mắc phản ánh nguy cơ phát triển bệnh, được dùng để nghiên cứu nguyên nhân và đánh giá hiệu quả của các biện pháp dự phòng."
+        },
+        {
+          "id": "dt-p03",
+          "chapter": "Chương 2. Đo lường bệnh trạng",
+          "section": "2.3 Liên quan giữa hiện mắc và mới mắc",
+          "page": 60,
+          "competency_code": "FND",
+          "text": "Khi tỷ suất mới mắc và thời gian mắc bệnh trung bình tương đối ổn định và bệnh không quá phổ biến, tỷ lệ hiện mắc xấp xỉ bằng tỷ suất mới mắc nhân với thời gian mắc bệnh trung bình: P ≈ I × D. Tỷ lệ hiện mắc tăng khi số ca mới tăng, khi thời gian mắc bệnh kéo dài (ví dụ điều trị giúp người bệnh sống lâu hơn nhưng không khỏi bệnh), hoặc khi người bệnh từ nơi khác chuyển đến. Tỷ lệ hiện mắc giảm khi tỷ lệ mới mắc giảm, khi thời gian mắc bệnh ngắn lại do khỏi nhanh hoặc tử vong nhanh, hoặc khi người bệnh rời khỏi quần thể. Vì vậy bệnh mạn tính có thể có tỷ lệ hiện mắc cao dù tỷ lệ mới mắc thấp, còn bệnh cấp tính ngắn ngày có tỷ lệ hiện mắc thấp dù tỷ lệ mới mắc cao. Ví dụ với số liệu giả định: bệnh có tỷ suất mới mắc 2 trên 1.000 người-năm và thời gian mắc trung bình 5 năm thì tỷ lệ hiện mắc xấp xỉ 10 trên 1.000 người."
+        },
+        {
+          "id": "dt-p04",
+          "chapter": "Chương 2. Đo lường bệnh trạng",
+          "section": "2.4 Tỷ lệ tấn công",
+          "page": 61,
+          "competency_code": "FND",
+          "text": "Tỷ lệ tấn công là một dạng tỷ lệ mới mắc tích lũy dùng trong vụ dịch, khi quần thể phơi nhiễm được theo dõi trong một thời gian ngắn. Tỷ lệ tấn công bằng số ca mắc mới trong vụ dịch chia cho số người có nguy cơ (số người phơi nhiễm), thường tính theo phần trăm. Ví dụ với số liệu giả định: 200 người dự một bữa tiệc, 60 người bị ngộ độc thực phẩm; tỷ lệ tấn công là 60 ÷ 200 = 30%. Trong điều tra ngộ độc thực phẩm, người ta tính tỷ lệ tấn công riêng cho từng món ăn và so sánh giữa nhóm ăn và nhóm không ăn để tìm món nghi ngờ. Tỷ lệ tấn công thứ phát bằng số ca mới xuất hiện trong những người tiếp xúc với ca bệnh đầu tiên chia cho số người tiếp xúc còn cảm nhiễm; chỉ số này phản ánh khả năng lây truyền của bệnh trong hộ gia đình hoặc tập thể."
+        },
+        {
+          "id": "dt-p05",
+          "chapter": "Chương 2. Đo lường bệnh trạng",
+          "section": "2.5 Các chỉ số tử vong",
+          "page": 62,
+          "competency_code": "FND",
+          "text": "Tỷ suất tử vong thô bằng tổng số người tử vong do mọi nguyên nhân trong một năm chia cho dân số trung bình của năm đó, thường tính trên 1.000 dân. Tỷ suất tử vong đặc hiệu theo nguyên nhân bằng số tử vong do một nguyên nhân chia cho dân số trung bình, thường tính trên 100.000 dân. Tỷ lệ tử vong trên số mắc (còn gọi là tỷ lệ chết/mắc) bằng số người tử vong do một bệnh chia cho số người mắc bệnh đó, tính theo phần trăm. Chỉ số này phản ánh mức độ nặng của bệnh, không phải nguy cơ tử vong của cả quần thể. Ví dụ với số liệu giả định: một vụ dịch có 80 ca mắc và 4 ca tử vong; tỷ lệ tử vong trên số mắc là 4 ÷ 80 = 5%. Tỷ suất tử vong trẻ em dưới 1 tuổi bằng số trẻ chết dưới 1 tuổi trong năm chia cho số trẻ đẻ sống trong năm đó, tính trên 1.000 trẻ đẻ sống."
+        },
+        {
+          "id": "dt-p17",
+          "chapter": "Chương 2. Đo lường bệnh trạng",
+          "section": "2.6 Các bước điều tra một vụ dịch",
+          "page": 63,
+          "competency_code": "FND",
+          "text": "Điều tra một vụ dịch thường gồm các bước sau. Một, chuẩn bị nhân lực, vật tư và phối hợp với các đơn vị liên quan. Hai, xác định có vụ dịch hay không bằng cách so sánh số ca hiện tại với số ca thường gặp ở cùng địa điểm, cùng thời kỳ. Ba, xác minh chẩn đoán bằng lâm sàng và xét nghiệm. Bốn, xây dựng định nghĩa ca bệnh và tìm kiếm ca bệnh một cách hệ thống. Năm, mô tả vụ dịch theo thời gian, địa điểm và con người; đường cong dịch giúp nhận định kiểu lây truyền và thời kỳ phơi nhiễm. Sáu, hình thành giả thuyết về nguồn lây và đường lây. Bảy, kiểm định giả thuyết bằng nghiên cứu phân tích như bệnh–chứng hoặc thuần tập. Tám, triển khai các biện pháp kiểm soát và phòng ngừa; các biện pháp này có thể bắt đầu sớm, không cần chờ kết thúc điều tra. Chín, thông báo kết quả. Mười, duy trì giám sát để đánh giá hiệu quả."
+        },
+        {
+          "id": "dt-p06",
+          "chapter": "Chương 3. Đo lường sự kết hợp",
+          "section": "3.1 Nguy cơ tương đối",
+          "page": 70,
+          "competency_code": "FND",
+          "text": "Nguy cơ tương đối (RR) bằng tỷ lệ mới mắc ở nhóm phơi nhiễm chia cho tỷ lệ mới mắc ở nhóm không phơi nhiễm. RR bằng 1 nghĩa là không có sự kết hợp giữa phơi nhiễm và bệnh. RR lớn hơn 1 nghĩa là phơi nhiễm làm tăng nguy cơ mắc bệnh (yếu tố nguy cơ). RR nhỏ hơn 1 nghĩa là phơi nhiễm làm giảm nguy cơ mắc bệnh (yếu tố bảo vệ), ví dụ RR bằng 0,5 nghĩa là nhóm phơi nhiễm có nguy cơ mắc bệnh bằng một nửa nhóm không phơi nhiễm. RR đo độ mạnh của sự kết hợp và được tính trực tiếp trong nghiên cứu thuần tập và thử nghiệm can thiệp, vì các thiết kế này đo được tỷ lệ mới mắc. Ví dụ với số liệu giả định: tỷ lệ mới mắc bệnh mạch vành ở người hút thuốc là 20 trên 10.000 người-năm, ở người không hút thuốc là 10 trên 10.000 người-năm; RR = 20 ÷ 10 = 2, nghĩa là người hút thuốc có nguy cơ mắc bệnh cao gấp 2 lần."
+        },
+        {
+          "id": "dt-p07",
+          "chapter": "Chương 3. Đo lường sự kết hợp",
+          "section": "3.2 Tỷ suất chênh",
+          "page": 71,
+          "competency_code": "FND",
+          "text": "Trong nghiên cứu bệnh–chứng, nhà nghiên cứu chọn sẵn người bệnh và người không bệnh nên không tính được tỷ lệ mới mắc và không tính trực tiếp được nguy cơ tương đối. Thay vào đó, người ta dùng tỷ suất chênh (OR) để so sánh chênh phơi nhiễm ở nhóm bệnh với chênh phơi nhiễm ở nhóm chứng. Với bảng 2×2, gọi a là số người bệnh có phơi nhiễm, b là số người chứng có phơi nhiễm, c là số người bệnh không phơi nhiễm, d là số người chứng không phơi nhiễm, thì OR = (a × d) ÷ (b × c). OR bằng 1 nghĩa là không có sự kết hợp; OR lớn hơn 1 gợi ý phơi nhiễm là yếu tố nguy cơ. Khi bệnh hiếm, OR xấp xỉ bằng RR. Ví dụ với số liệu giả định: trong 100 người bệnh có 60 người phơi nhiễm, trong 100 người chứng có 30 người phơi nhiễm; OR = (60 × 70) ÷ (30 × 40) = 3,5."
+        },
+        {
+          "id": "dt-p08",
+          "chapter": "Chương 3. Đo lường sự kết hợp",
+          "section": "3.3 Nguy cơ quy thuộc",
+          "page": 72,
+          "competency_code": "FND",
+          "text": "Nguy cơ quy thuộc (AR) bằng tỷ lệ mới mắc ở nhóm phơi nhiễm trừ đi tỷ lệ mới mắc ở nhóm không phơi nhiễm. AR cho biết phần nguy cơ tuyệt đối do phơi nhiễm gây ra, tức là số ca bệnh có thể phòng được trong nhóm phơi nhiễm nếu loại bỏ phơi nhiễm. Phần trăm nguy cơ quy thuộc bằng AR chia cho tỷ lệ mới mắc ở nhóm phơi nhiễm, nhân với 100; cũng có thể tính bằng (RR − 1) ÷ RR × 100. Nguy cơ tương đối đo độ mạnh của sự kết hợp và có ý nghĩa về căn nguyên, còn nguy cơ quy thuộc đo tác động về y tế công cộng. Ví dụ với số liệu giả định: tỷ lệ mới mắc ở nhóm phơi nhiễm là 30 trên 1.000, ở nhóm không phơi nhiễm là 10 trên 1.000; AR = 30 − 10 = 20 trên 1.000 và phần trăm nguy cơ quy thuộc là 20 ÷ 30 ≈ 67%."
+        },
+        {
+          "id": "dt-p09",
+          "chapter": "Chương 4. Thiết kế nghiên cứu dịch tễ học",
+          "section": "4.1 Nghiên cứu cắt ngang",
+          "page": 78,
+          "competency_code": "FND",
+          "text": "Nghiên cứu cắt ngang đo tình trạng phơi nhiễm và tình trạng bệnh của từng người tại cùng một thời điểm, trên một mẫu đại diện cho quần thể. Thiết kế này cho biết tỷ lệ hiện mắc nên còn gọi là nghiên cứu tỷ lệ hiện mắc. Ưu điểm: thực hiện nhanh, chi phí thấp, mô tả được gánh nặng bệnh tật và nhu cầu chăm sóc sức khỏe, có thể khảo sát nhiều phơi nhiễm và nhiều bệnh cùng lúc. Hạn chế: không xác định được trình tự thời gian giữa phơi nhiễm và bệnh nên khó kết luận quan hệ nhân quả; không phù hợp với bệnh hiếm hoặc bệnh diễn biến ngắn; dễ bỏ sót những ca tử vong nhanh hoặc khỏi nhanh. Nghiên cứu cắt ngang thường dùng để hình thành giả thuyết cho các nghiên cứu phân tích tiếp theo."
+        },
+        {
+          "id": "dt-p10",
+          "chapter": "Chương 4. Thiết kế nghiên cứu dịch tễ học",
+          "section": "4.2 Nghiên cứu bệnh–chứng",
+          "page": 79,
+          "competency_code": "FND",
+          "text": "Nghiên cứu bệnh–chứng bắt đầu từ tình trạng bệnh: chọn một nhóm người mắc bệnh (nhóm bệnh) và một nhóm người không mắc bệnh (nhóm chứng), rồi hỏi hoặc tra cứu ngược về phơi nhiễm trong quá khứ để so sánh giữa hai nhóm. Số đo kết hợp là tỷ suất chênh (OR). Ưu điểm: phù hợp nhất với bệnh hiếm và bệnh có thời kỳ tiềm tàng dài; thực hiện nhanh, ít tốn kém, cần cỡ mẫu nhỏ; có thể khảo sát nhiều yếu tố phơi nhiễm cho một bệnh. Hạn chế: dễ gặp sai số nhớ lại vì thông tin phơi nhiễm được thu thập hồi cứu; khó chọn nhóm chứng phù hợp nên dễ gặp sai số chọn; không tính được tỷ lệ mới mắc; không phù hợp với phơi nhiễm hiếm."
+        },
+        {
+          "id": "dt-p11",
+          "chapter": "Chương 4. Thiết kế nghiên cứu dịch tễ học",
+          "section": "4.3 Nghiên cứu thuần tập",
+          "page": 80,
+          "competency_code": "FND",
+          "text": "Nghiên cứu thuần tập bắt đầu từ tình trạng phơi nhiễm: chọn những người chưa mắc bệnh, phân thành nhóm có phơi nhiễm và nhóm không phơi nhiễm, rồi theo dõi theo thời gian để ghi nhận sự xuất hiện bệnh ở mỗi nhóm. Thiết kế này tính được tỷ lệ mới mắc, nguy cơ tương đối và nguy cơ quy thuộc. Ưu điểm: xác định rõ phơi nhiễm có trước bệnh; phù hợp với phơi nhiễm hiếm; có thể nghiên cứu nhiều bệnh do cùng một phơi nhiễm. Hạn chế: tốn thời gian và chi phí, cần cỡ mẫu lớn; không phù hợp với bệnh hiếm; dễ mất đối tượng trong quá trình theo dõi. Nghiên cứu thuần tập có thể là tương lai (theo dõi từ hiện tại) hoặc hồi cứu (dùng hồ sơ phơi nhiễm đã ghi nhận trong quá khứ)."
+        },
+        {
+          "id": "dt-p12",
+          "chapter": "Chương 4. Thiết kế nghiên cứu dịch tễ học",
+          "section": "4.4 Thử nghiệm ngẫu nhiên có đối chứng",
+          "page": 81,
+          "competency_code": "FND",
+          "text": "Thử nghiệm ngẫu nhiên có đối chứng là nghiên cứu can thiệp trong đó nhà nghiên cứu phân bổ ngẫu nhiên đối tượng vào nhóm can thiệp hoặc nhóm chứng, rồi theo dõi và so sánh kết quả giữa hai nhóm. Phân bổ ngẫu nhiên làm cho các yếu tố nhiễu, kể cả những yếu tố chưa biết, phân bố tương đương giữa hai nhóm; vì vậy đây là thiết kế cho bằng chứng mạnh nhất về quan hệ nhân quả. Làm mù (đối tượng, người đánh giá hoặc cả hai không biết ai thuộc nhóm nào) giúp giảm sai số đo lường. Phân tích theo phân bổ ban đầu giữ được lợi ích của việc ngẫu nhiên hóa. Hạn chế: chi phí cao, có ràng buộc về đạo đức (không thể chủ động cho đối tượng phơi nhiễm với yếu tố có hại), và kết quả có thể khó khái quát cho quần thể rộng hơn."
+        },
+        {
+          "id": "dt-p13",
+          "chapter": "Chương 5. Sàng lọc",
+          "section": "5.1 Độ nhạy và độ đặc hiệu",
+          "page": 88,
+          "competency_code": "FND",
+          "text": "Giá trị của một test sàng lọc được đánh giá bằng cách so sánh với chuẩn vàng trong bảng 2×2: a là dương tính thật, b là dương tính giả, c là âm tính giả, d là âm tính thật. Độ nhạy là khả năng của test phát hiện đúng người có bệnh, bằng số dương tính thật chia cho tổng số người có bệnh: a ÷ (a + c). Độ đặc hiệu là khả năng của test xác định đúng người không có bệnh, bằng số âm tính thật chia cho tổng số người không có bệnh: d ÷ (b + d). Test có độ nhạy cao ít bỏ sót người bệnh nên phù hợp cho sàng lọc ban đầu; test có độ đặc hiệu cao ít gây dương tính giả nên phù hợp để khẳng định chẩn đoán. Ví dụ với số liệu giả định: trong 200 người có bệnh, test dương tính ở 180 người, độ nhạy là 180 ÷ 200 = 90%."
+        },
+        {
+          "id": "dt-p14",
+          "chapter": "Chương 5. Sàng lọc",
+          "section": "5.2 Giá trị dự đoán",
+          "page": 89,
+          "competency_code": "FND",
+          "text": "Giá trị dự đoán dương là xác suất một người thực sự có bệnh khi kết quả test dương tính, bằng số dương tính thật chia cho tổng số người có kết quả dương tính: a ÷ (a + b). Giá trị dự đoán âm là xác suất một người thực sự không có bệnh khi kết quả test âm tính, bằng số âm tính thật chia cho tổng số người có kết quả âm tính: d ÷ (c + d). Hai chỉ số này trả lời câu hỏi của người làm lâm sàng và của người được xét nghiệm: kết quả này đáng tin đến mức nào. Ví dụ với số liệu giả định: sàng lọc 1.000 người, trong đó 100 người có bệnh; test có độ nhạy 90% và độ đặc hiệu 90% cho 90 dương tính thật và 90 dương tính giả, nên giá trị dự đoán dương là 90 ÷ 180 = 50%."
+        },
+        {
+          "id": "dt-p15",
+          "chapter": "Chương 5. Sàng lọc",
+          "section": "5.3 Ảnh hưởng của tỷ lệ hiện mắc",
+          "page": 90,
+          "competency_code": "FND",
+          "text": "Độ nhạy và độ đặc hiệu là đặc tính của test, ít phụ thuộc vào tỷ lệ hiện mắc của bệnh trong quần thể. Ngược lại, giá trị dự đoán phụ thuộc mạnh vào tỷ lệ hiện mắc. Khi tỷ lệ hiện mắc giảm, giá trị dự đoán dương giảm và giá trị dự đoán âm tăng; khi tỷ lệ hiện mắc tăng, giá trị dự đoán dương tăng. Ví dụ với số liệu giả định, cùng một test có độ nhạy 90% và độ đặc hiệu 90%: ở quần thể có tỷ lệ hiện mắc 10%, giá trị dự đoán dương là 50%; ở quần thể có tỷ lệ hiện mắc 1%, giá trị dự đoán dương chỉ còn khoảng 8,3%, tức là phần lớn kết quả dương tính là dương tính giả. Vì vậy sàng lọc nên tập trung vào nhóm có nguy cơ cao, nơi tỷ lệ hiện mắc cao hơn, để tăng giá trị dự đoán dương và giảm số người phải làm xét nghiệm khẳng định không cần thiết."
+        },
+        {
+          "id": "dt-p16",
+          "chapter": "Chương 5. Sàng lọc",
+          "section": "5.4 Tiêu chuẩn của một chương trình sàng lọc",
+          "page": 91,
+          "competency_code": "FND",
+          "text": "Một chương trình sàng lọc chỉ nên triển khai khi đáp ứng các tiêu chuẩn kinh điển do Wilson và Jungner đề xuất. Về bệnh: bệnh là vấn đề sức khỏe quan trọng; diễn biến tự nhiên của bệnh được hiểu rõ; có giai đoạn tiềm tàng hoặc giai đoạn sớm có thể phát hiện được. Về test: có test sàng lọc phù hợp, đơn giản, an toàn, có giá trị và được cộng đồng chấp nhận. Về điều trị: có biện pháp điều trị hiệu quả và được chấp nhận; điều trị ở giai đoạn sớm cho kết quả tốt hơn điều trị muộn; có sẵn cơ sở chẩn đoán và điều trị. Về chương trình: có chính sách thống nhất về đối tượng cần điều trị; chi phí phát hiện ca bệnh cân đối với tổng chi phí y tế; việc tìm ca bệnh là một quá trình liên tục chứ không phải làm một lần."
+        }
+      ]
+    },
+    {
+      "id": "TC-DEMO",
+      "title": "Lịch tiêm chủng mở rộng",
+      "edition": "demo",
+      "demo_label": "Tài liệu demo – chưa thẩm định",
+      "excerpt_limit": null,
+      "passages": [
+        {
+          "id": "tc-p01",
+          "chapter": "Phần 1. Chương trình Tiêm chủng mở rộng",
+          "section": "1.1 Giới thiệu chương trình",
+          "page": 5,
+          "competency_code": "CI-04",
+          "text": "Chương trình Tiêm chủng mở rộng (TCMR) ở Việt Nam bắt đầu triển khai từ năm 1981 với sự hỗ trợ của Tổ chức Y tế Thế giới và UNICEF, và được mở rộng ra cả nước từ năm 1985. Ban đầu chương trình cung cấp vắc xin phòng sáu bệnh: lao, bạch hầu, ho gà, uốn ván, bại liệt và sởi. Về sau chương trình bổ sung thêm các vắc xin khác như viêm gan B, viêm não Nhật Bản, Hib và rubella; gần đây vắc xin Rota uống cũng được đưa vào chương trình và triển khai theo lộ trình ở từng địa phương. Vắc xin trong chương trình được tiêm miễn phí cho trẻ em và phụ nữ có thai tại trạm y tế xã, phường. Mục tiêu của chương trình là giảm tỷ lệ mắc và tử vong do các bệnh truyền nhiễm có vắc xin phòng bệnh. Việt Nam đã thanh toán bệnh bại liệt vào năm 2000 và loại trừ uốn ván sơ sinh vào năm 2005."
+        },
+        {
+          "id": "tc-p02",
+          "chapter": "Phần 2. Lịch tiêm chủng cho trẻ em",
+          "section": "2.1 Vắc xin tiêm cho trẻ sơ sinh",
+          "page": 8,
+          "competency_code": "CI-04",
+          "text": "Trẻ sơ sinh được tiêm hai loại vắc xin. Vắc xin viêm gan B mũi sơ sinh được tiêm trong vòng 24 giờ đầu sau sinh. Tiêm mũi sơ sinh sớm giúp phòng lây truyền vi rút viêm gan B từ mẹ sang con; hiệu quả phòng bệnh giảm dần nếu tiêm muộn, vì vậy cần tiêm càng sớm càng tốt sau khi trẻ ra đời. Vắc xin BCG phòng bệnh lao được tiêm một mũi duy nhất, càng sớm càng tốt và trong vòng 1 tháng sau sinh. Các mũi vắc xin viêm gan B tiếp theo được tiêm trong vắc xin phối hợp DPT-VGB-Hib theo lịch Tiêm chủng mở rộng."
+        },
+        {
+          "id": "tc-p03",
+          "chapter": "Phần 2. Lịch tiêm chủng cho trẻ em",
+          "section": "2.2 Trẻ 2, 3 và 4 tháng tuổi",
+          "page": 9,
+          "competency_code": "CI-04",
+          "text": "Khi trẻ đủ 2 tháng tuổi, trẻ được tiêm vắc xin phối hợp DPT-VGB-Hib mũi 1 và uống vắc xin bại liệt (OPV) lần 1. Khi trẻ đủ 3 tháng tuổi, trẻ được tiêm DPT-VGB-Hib mũi 2 và uống OPV lần 2. Khi trẻ đủ 4 tháng tuổi, trẻ được tiêm DPT-VGB-Hib mũi 3 và uống OPV lần 3. Vắc xin DPT-VGB-Hib là vắc xin phối hợp 5 trong 1, phòng năm bệnh: bạch hầu, ho gà, uốn ván, viêm gan B và viêm phổi, viêm màng não mủ do vi khuẩn Hib. Các mũi tiêm của cùng một loại vắc xin cách nhau tối thiểu 1 tháng. Nếu trẻ bị lỡ lịch, cần tiêm bù sớm nhất có thể và không phải tiêm lại từ đầu."
+        },
+        {
+          "id": "tc-p04",
+          "chapter": "Phần 2. Lịch tiêm chủng cho trẻ em",
+          "section": "2.3 Trẻ 5 tháng và 9 tháng tuổi",
+          "page": 10,
+          "competency_code": "CI-04",
+          "text": "Khi trẻ đủ 5 tháng tuổi, trẻ được tiêm vắc xin bại liệt tiêm (IPV) mũi 1. Khi trẻ đủ 9 tháng tuổi, trẻ được tiêm vắc xin sởi mũi 1 và vắc xin bại liệt tiêm (IPV) mũi 2. Vắc xin sởi là vắc xin sống giảm độc lực; mũi tiêm lúc 9 tháng tuổi bảo vệ trẻ trong giai đoạn kháng thể từ mẹ truyền sang đã giảm. Vắc xin bại liệt tiêm là vắc xin bất hoạt, được dùng phối hợp với vắc xin bại liệt uống để tăng cường miễn dịch phòng bệnh bại liệt."
+        },
+        {
+          "id": "tc-p05",
+          "chapter": "Phần 2. Lịch tiêm chủng cho trẻ em",
+          "section": "2.4 Vắc xin viêm não Nhật Bản",
+          "page": 11,
+          "competency_code": "CI-04",
+          "text": "Vắc xin viêm não Nhật Bản trong chương trình Tiêm chủng mở rộng được tiêm cho trẻ từ 1 tuổi. Lịch tiêm gồm ba mũi: mũi 1 khi trẻ đủ 1 tuổi; mũi 2 sau mũi 1 từ 1 đến 2 tuần; mũi 3 sau mũi 2 một năm. Bệnh viêm não Nhật Bản do vi rút gây ra và lây truyền qua muỗi Culex; bệnh thường gặp ở trẻ em, có thể gây tử vong hoặc để lại di chứng thần kinh nặng. Tiêm đủ ba mũi cơ bản giúp tạo miễn dịch bảo vệ cho trẻ."
+        },
+        {
+          "id": "tc-p06",
+          "chapter": "Phần 2. Lịch tiêm chủng cho trẻ em",
+          "section": "2.5 Trẻ 18 tháng tuổi",
+          "page": 12,
+          "competency_code": "CI-04",
+          "text": "Khi trẻ đủ 18 tháng tuổi, trẻ được tiêm vắc xin sởi–rubella (MR) và vắc xin DPT mũi 4. Mũi sởi– rubella lúc 18 tháng là mũi sởi thứ hai, giúp bảo vệ những trẻ chưa có đáp ứng miễn dịch sau mũi sởi lúc 9 tháng tuổi và phòng thêm bệnh rubella. Mũi DPT thứ tư là mũi nhắc lại phòng bạch hầu, ho gà và uốn ván sau ba mũi cơ bản lúc 2, 3 và 4 tháng tuổi."
+        },
+        {
+          "id": "tc-p07",
+          "chapter": "Phần 3. Tiêm chủng cho phụ nữ",
+          "section": "3.1 Vắc xin uốn ván cho phụ nữ có thai",
+          "page": 13,
+          "competency_code": "CI-04",
+          "text": "Tiêm vắc xin uốn ván cho phụ nữ có thai nhằm phòng uốn ván cho mẹ và uốn ván sơ sinh cho con. Với phụ nữ chưa tiêm hoặc không rõ tiền sử tiêm vắc xin có thành phần uốn ván, lịch tiêm gồm năm mũi. Mũi 1 tiêm sớm khi có thai lần đầu. Mũi 2 tiêm ít nhất 1 tháng sau mũi 1 và trước khi sinh ít nhất 1 tháng. Mũi 3 tiêm ít nhất 6 tháng sau mũi 2 hoặc trong lần có thai sau. Mũi 4 tiêm ít nhất 1 năm sau mũi 3 hoặc trong lần có thai sau. Mũi 5 tiêm ít nhất 1 năm sau mũi 4 hoặc trong lần có thai sau. Tiêm đủ năm mũi giúp bảo vệ trong suốt thời kỳ sinh đẻ."
+        },
+        {
+          "id": "tc-p08",
+          "chapter": "Phần 4. Bảo quản vắc xin và an toàn tiêm chủng",
+          "section": "4.1 Dây chuyền lạnh",
+          "page": 20,
+          "competency_code": "CI-04",
+          "text": "Dây chuyền lạnh là hệ thống thiết bị và quy trình giữ vắc xin ở nhiệt độ quy định từ nơi sản xuất đến khi tiêm cho người được tiêm chủng. Phần lớn vắc xin của chương trình Tiêm chủng mở rộng được bảo quản ở nhiệt độ từ +2 °C đến +8 °C. Một số vắc xin dễ hỏng do đông băng, như DPT-VGB-Hib, viêm gan B và uốn ván; tuyệt đối không để các vắc xin này bị đông băng. Một số vắc xin dễ hỏng do nhiệt độ cao và ánh sáng, như vắc xin bại liệt uống, sởi và BCG. Nhiệt độ bảo quản phải được theo dõi và ghi lại hằng ngày. Chỉ thị nhiệt độ lọ vắc xin cho biết lọ vắc xin đã tiếp xúc với nhiệt độ cao quá mức hay chưa."
+        },
+        {
+          "id": "tc-p10",
+          "chapter": "Phần 4. Bảo quản vắc xin và an toàn tiêm chủng",
+          "section": "4.2 Chống chỉ định và tạm hoãn tiêm chủng",
+          "page": 22,
+          "competency_code": "CI-04",
+          "text": "Trước mỗi buổi tiêm chủng, cán bộ y tế phải khám sàng lọc để phát hiện các trường hợp chống chỉ định hoặc cần tạm hoãn. Chống chỉ định khi trẻ có tiền sử sốc hoặc phản ứng nặng sau lần tiêm trước của cùng loại vắc xin hoặc với thành phần của vắc xin. Vắc xin sống giảm độc lực không dùng cho người suy giảm miễn dịch nặng. Tạm hoãn tiêm khi trẻ đang mắc bệnh cấp tính, đặc biệt là bệnh nhiễm trùng, hoặc khi trẻ đang sốt hoặc hạ thân nhiệt. Trẻ được tiêm bù sau khi sức khỏe ổn định. Bệnh nhẹ thông thường không kèm sốt không phải là lý do để hoãn tiêm kéo dài, vì hoãn tiêm không cần thiết làm trẻ chậm được bảo vệ."
+        },
+        {
+          "id": "tc-p09",
+          "chapter": "Phần 4. Bảo quản vắc xin và an toàn tiêm chủng",
+          "section": "4.3 Phản ứng sau tiêm chủng",
+          "page": 24,
+          "competency_code": "CI-04",
+          "text": "Phản ứng sau tiêm chủng được chia thành phản ứng thông thường và tai biến nặng. Phản ứng thông thường gồm sốt nhẹ, đau, sưng hoặc đỏ tại chỗ tiêm, quấy khóc; các phản ứng này thường nhẹ và tự hết sau một vài ngày. Tai biến nặng sau tiêm chủng rất hiếm gặp, ví dụ sốc phản vệ, và có thể đe dọa tính mạng nếu không được xử trí kịp thời. Sau khi tiêm, người được tiêm chủng cần được theo dõi ít nhất 30 phút tại điểm tiêm chủng và tiếp tục được theo dõi tại nhà ít nhất 24 giờ. Cán bộ y tế hướng dẫn gia đình các dấu hiệu cần đưa trẻ đến ngay cơ sở y tế, như sốt cao, co giật, khó thở, tím tái, quấy khóc kéo dài hoặc bú kém."
+        }
+      ]
+    },
+    {
+      "id": "LUAT-PCBTN-2007",
+      "title": "Luật Phòng, chống bệnh truyền nhiễm 2007",
+      "edition": "Luật số 03/2007/QH12",
+      "demo_label": "Tài liệu demo – chưa thẩm định",
+      "excerpt_limit": null,
+      "validity_note": "Luật này đã được thay thế bởi Luật Phòng bệnh 2025 (số 114/2025/QH15) từ ngày 01/07/2026, và danh mục bệnh theo nhóm đã được Bộ Y tế điều chỉnh, bổ sung. Trích đoạn dưới đây là quy định của Luật năm 2007, chỉ để tham khảo.",
+      "passages": [
+        {
+          "id": "lt-p01",
+          "chapter": "Chương I. Những quy định chung",
+          "section": "Điều 3. Phân loại bệnh truyền nhiễm",
+          "article": "Điều 3, khoản 1, điểm a",
+          "competency_code": "CI-01",
+          "text": "Nhóm A gồm các bệnh truyền nhiễm đặc biệt nguy hiểm có khả năng lây truyền rất nhanh, phát tán rộng và tỷ lệ tử vong cao hoặc chưa rõ tác nhân gây bệnh. Các bệnh truyền nhiễm thuộc nhóm A bao gồm bệnh bại liệt; bệnh cúm A-H5N1; bệnh dịch hạch; bệnh đậu mùa; bệnh sốt xuất huyết do vi rút Ê-bô-la (Ebola), Lát-sa (Lassa) hoặc Mác-bớc (Marburg); bệnh sốt Tây sông Nin (Nile); bệnh sốt vàng; bệnh tả; bệnh viêm đường hô hấp cấp nặng do vi rút và các bệnh truyền nhiễm nguy hiểm mới phát sinh chưa rõ tác nhân gây bệnh."
+        },
+        {
+          "id": "lt-p02",
+          "chapter": "Chương I. Những quy định chung",
+          "section": "Điều 3. Phân loại bệnh truyền nhiễm",
+          "article": "Điều 3, khoản 1, điểm b",
+          "competency_code": "CI-01",
+          "text": "Nhóm B gồm các bệnh truyền nhiễm nguy hiểm có khả năng lây truyền nhanh và có thể gây tử vong. Các bệnh truyền nhiễm thuộc nhóm B bao gồm bệnh do vi rút A-đê-nô (Adeno); bệnh do vi rút gây ra hội chứng suy giảm miễn dịch mắc phải ở người (HIV/AIDS); bệnh bạch hầu; bệnh cúm; bệnh dại; bệnh ho gà; bệnh lao phổi; bệnh do liên cầu lợn ở người; bệnh lỵ A-míp (Amibe); bệnh lỵ trực trùng; bệnh quai bị; bệnh sốt Đăng gơ (Dengue), sốt xuất huyết Đăng gơ (Dengue); bệnh sốt rét; bệnh sốt phát ban; bệnh sởi; bệnh tay-chân-miệng; bệnh than; bệnh thủy đậu; bệnh thương hàn; bệnh uốn ván; bệnh Ru-bê-ôn (Rubeon); bệnh viêm gan vi rút; bệnh viêm màng não do não mô cầu; bệnh viêm não vi rút; bệnh xoắn khuẩn vàng da; bệnh tiêu chảy do vi rút Rô-ta (Rota)."
+        },
+        {
+          "id": "lt-p03",
+          "chapter": "Chương I. Những quy định chung",
+          "section": "Điều 3. Phân loại bệnh truyền nhiễm",
+          "article": "Điều 3, khoản 1, điểm c",
+          "competency_code": "CI-01",
+          "text": "Nhóm C gồm các bệnh truyền nhiễm ít nguy hiểm, khả năng lây truyền không nhanh. Các bệnh truyền nhiễm thuộc nhóm C bao gồm bệnh do Cờ-la-my-đi-a (Chlamydia); bệnh giang mai; các bệnh do giun; bệnh lậu; bệnh mắt hột; bệnh do nấm Can-đi-đa-an-bi-căng (Candida albicans); bệnh Nô-ca-đi-a (Nocardia); bệnh phong; bệnh do vi rút Xi-tô-mê-ga-lô (Cytomegalo); bệnh do vi rút Héc-péc (Herpes); bệnh sán dây; bệnh sán lá gan; bệnh sán lá phổi; bệnh sán lá ruột; bệnh sốt mò; bệnh sốt do Rích-két-si-a (Rickettsia); bệnh sốt xuất huyết do vi rút Han-ta (Hanta); bệnh do Tờ-ri-cô-mô-nát (Trichomonas); bệnh viêm da mụn mủ truyền nhiễm; bệnh viêm họng, viêm miệng, viêm tim do vi rút Cốc-xác-ki (Coxsakie); bệnh viêm ruột do Giác-đi-a (Giardia); bệnh viêm ruột do Vi-bờ-ri-ô Pa-ra-hê-mô-ly-ti-cút (Vibrio Parahaemolyticus) và các bệnh truyền nhiễm khác."
+        },
+        {
+          "id": "lt-p04",
+          "chapter": "Chương I. Những quy định chung",
+          "section": "Điều 3. Phân loại bệnh truyền nhiễm",
+          "article": "Điều 3, khoản 2",
+          "competency_code": "CI-01",
+          "text": "Bộ trưởng Bộ Y tế quyết định điều chỉnh, bổ sung danh mục bệnh truyền nhiễm thuộc các nhóm quy định tại khoản 1 Điều này."
+        }
+      ]
+    }
+  ],
+  "glossary": [
+    { "term": "viêm gan B", "synonyms": ["VGB", "HBV"] },
+    { "term": "tiêm chủng mở rộng", "synonyms": ["TCMR"] },
+    { "term": "bạch hầu ho gà uốn ván", "synonyms": ["DPT", "DTP"] },
+    { "term": "bại liệt uống", "synonyms": ["OPV"] },
+    { "term": "bại liệt tiêm", "synonyms": ["IPV"] },
+    { "term": "lao", "synonyms": ["BCG"] },
+    { "term": "viêm não Nhật Bản", "synonyms": ["VNNB"] },
+    { "term": "sởi rubella", "synonyms": ["MR"] },
+    { "term": "độ nhạy", "synonyms": ["Se", "sensitivity"] },
+    { "term": "độ đặc hiệu", "synonyms": ["Sp", "specificity"] },
+    { "term": "giá trị dự đoán dương", "synonyms": ["PPV"] },
+    { "term": "giá trị dự đoán âm", "synonyms": ["NPV"] },
+    { "term": "nguy cơ tương đối", "synonyms": ["RR"] },
+    { "term": "tỷ suất chênh", "synonyms": ["OR"] },
+    { "term": "nguy cơ quy thuộc", "synonyms": ["AR"] },
+    { "term": "tỷ lệ mắc", "ambiguous": true, "sense_group": "ty-le-mac" },
+    {
+      "term": "tỷ lệ hiện mắc",
+      "synonyms": ["prevalence", "hiện mắc"],
+      "sense_group": "ty-le-mac"
+    },
+    {
+      "term": "tỷ lệ mới mắc",
+      "synonyms": ["incidence", "mới mắc"],
+      "sense_group": "ty-le-mac"
+    },
+    { "term": "tỷ lệ tấn công", "synonyms": ["attack rate"] },
+    {
+      "term": "tỷ lệ tử vong trên số mắc",
+      "synonyms": ["CFR", "case fatality", "tỷ lệ chết mắc"]
+    },
+    {
+      "term": "phản ứng sau tiêm chủng",
+      "synonyms": ["AEFI", "phản ứng sau tiêm", "tai biến sau tiêm"]
+    },
+    { "term": "nghiên cứu bệnh chứng", "synonyms": ["case-control"] },
+    { "term": "nghiên cứu thuần tập", "synonyms": ["cohort"] },
+    { "term": "dây chuyền lạnh", "synonyms": ["cold chain"] }
+  ],
+  "blueprint": {
+    "groups": [
+      {
+        "id": 1,
+        "name": "Vấn đề sức khỏe quần thể cần can thiệp ở cấp ban đầu để ngăn ngừa tiến triển",
+        "short_name": "Sức khỏe quần thể và dự phòng",
+        "weight_min": 17,
+        "weight_max": 19,
+        "issues": [
+          { "id": 1, "name": "Bệnh truyền nhiễm có nguy cơ gây dịch" },
+          { "id": 2, "name": "Bệnh không lây nhiễm phổ biến" },
+          { "id": 3, "name": "Bệnh, tật học đường" },
+          { "id": 4, "name": "Tiêm phòng/Tiêm chủng trẻ em và người lớn" },
+          { "id": 5, "name": "Dự phòng HIV" }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Vấn đề sức khỏe cần cấp cứu, sơ cấp cứu ở cấp ban đầu",
+        "short_name": "Cấp cứu và sơ cấp cứu",
+        "weight_min": 16,
+        "weight_max": 20,
+        "issues": [
+          { "id": 6, "name": "Ngộ độc cấp thường gặp" },
+          { "id": 7, "name": "Ngừng tuần hoàn" },
+          { "id": 8, "name": "Suy hô hấp cấp" },
+          { "id": 9, "name": "Đau ngực" },
+          { "id": 10, "name": "Đột quỵ cấp" },
+          { "id": 11, "name": "Phản vệ và dị ứng nặng" },
+          { "id": 12, "name": "Sơ cấp cứu chấn thương và tai nạn" },
+          { "id": 13, "name": "Đuối nước" },
+          { "id": 14, "name": "Say nóng, say nắng" },
+          { "id": 15, "name": "Vận chuyển người bệnh an toàn" },
+          { "id": 16, "name": "Bong gân, trật khớp" }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Vấn đề dinh dưỡng, an toàn thực phẩm cần can thiệp ở cấp ban đầu",
+        "short_name": "Dinh dưỡng và an toàn thực phẩm",
+        "weight_min": 7,
+        "weight_max": 9,
+        "issues": [
+          { "id": 17, "name": "Ngộ độc thực phẩm" },
+          { "id": 18, "name": "Thừa cân/béo phì" },
+          { "id": 19, "name": "Thiếu dinh dưỡng" }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Vấn đề bệnh lý truyền nhiễm cần chẩn đoán, xử trí ở cấp ban đầu",
+        "short_name": "Bệnh truyền nhiễm",
+        "weight_min": 17,
+        "weight_max": 21,
+        "issues": [
+          { "id": 20, "name": "Điều trị duy trì HIV và lao" },
+          { "id": 21, "name": "Sốt" },
+          { "id": 22, "name": "Sốt và phát ban" },
+          { "id": 23, "name": "Hội chứng màng não" },
+          { "id": 24, "name": "Hội chứng viêm đường hô hấp trên" },
+          { "id": 25, "name": "Vết cắn/đốt do động vật/côn trùng" },
+          { "id": 26, "name": "Tiêu chảy cấp" },
+          { "id": 27, "name": "Bệnh lây truyền qua đường tình dục" }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Vấn đề sức khỏe nghề nghiệp cần phát hiện và xử trí ở cấp ban đầu",
+        "short_name": "Sức khỏe nghề nghiệp",
+        "weight_min": 2.5,
+        "weight_max": 3.5,
+        "issues": [
+          {
+            "id": 28,
+            "name": "Bệnh nghề nghiệp và bệnh liên quan đến nghề nghiệp"
+          },
+          { "id": 29, "name": "Giảm thính lực/ù tai" }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Vấn đề sức khỏe cộng đồng cần chẩn đoán và xử trí theo tiếp cận y học gia đình",
+        "short_name": "Sức khỏe cộng đồng và y học gia đình",
+        "weight_min": 23,
+        "weight_max": 27,
+        "issues": [
+          { "id": 30, "name": "Ho" },
+          { "id": 31, "name": "Ho ra máu" },
+          { "id": 32, "name": "Khó thở mạn" },
+          { "id": 33, "name": "Đau bụng" },
+          { "id": 34, "name": "Ợ nóng/khó tiêu" },
+          { "id": 35, "name": "Xuất huyết tiêu hóa" },
+          { "id": 36, "name": "Táo bón" },
+          { "id": 37, "name": "Rối loạn Lipid máu" },
+          { "id": 38, "name": "Đái tháo đường típ 2 và tiền đái tháo đường" },
+          { "id": 39, "name": "Tăng huyết áp" },
+          { "id": 40, "name": "Rối loạn đi tiểu" },
+          { "id": 41, "name": "Đau đầu" },
+          { "id": 42, "name": "Chóng mặt" },
+          { "id": 43, "name": "Giảm trí nhớ và suy giảm nhận thức" },
+          { "id": 44, "name": "Ngứa" },
+          { "id": 45, "name": "Mày đay" },
+          { "id": 46, "name": "Viêm quanh răng" },
+          { "id": 47, "name": "Sâu răng" },
+          { "id": 48, "name": "Tránh thai" }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Vấn đề sức khỏe tâm thần và hành vi cần phát hiện và can thiệp ở cấp ban đầu",
+        "short_name": "Sức khỏe tâm thần và hành vi",
+        "weight_min": 5,
+        "weight_max": 7,
+        "issues": [
+          { "id": 49, "name": "Tự tử, tự gây thương tích" },
+          { "id": 50, "name": "Rối loạn lo âu/trầm cảm/căng thẳng" },
+          {
+            "id": 51,
+            "name": "Nghiện/rối loạn sử dụng chất (ma túy, thuốc lá, rượu bia)"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Giao tiếp và Cộng tác",
+        "short_name": "Giao tiếp và cộng tác",
+        "weight_min": 2.5,
+        "weight_max": 3.5,
+        "issues": [
+          { "id": 52, "name": "Giao tiếp với người bệnh và người nhà" },
+          { "id": 53, "name": "Giao tiếp với đồng nghiệp" },
+          { "id": 54, "name": "Cộng tác liên ngành" }
+        ]
+      }
+    ],
+    "competencies": [
+      {
+        "id": 1,
+        "name": "Áp dụng khái niệm cơ bản của y học và y học dự phòng",
+        "weight_min": 18,
+        "weight_max": 22,
+        "components": [
+          "Áp dụng khái niệm cơ bản của y học",
+          "Áp dụng khái niệm cơ bản của y học dự phòng"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Chẩn đoán cấp ban đầu",
+        "weight_min": 37,
+        "weight_max": 43,
+        "components": [
+          "Bệnh sử/tiền sử/thăm khám thực thể",
+          "Cận lâm sàng/xét nghiệm chẩn đoán",
+          "Chẩn đoán",
+          "Tiên lượng/kết cục"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Xử trí cấp ban đầu",
+        "weight_min": 32,
+        "weight_max": 38,
+        "components": [
+          "Duy trì sức khỏe/phòng bệnh",
+          "Điều trị bằng thuốc",
+          "Can thiệp lâm sàng",
+          "Quản lý ca bệnh"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Cộng tác và Giao tiếp",
+        "weight_min": 4,
+        "weight_max": 6,
+        "components": [
+          "Giao tiếp người bệnh và người nhà",
+          "Giao tiếp đồng nghiệp",
+          "Cộng tác liên ngành"
+        ]
+      }
+    ],
+    "foundation": {
+      "code": "FND",
+      "name": "Khái niệm cơ bản của y học dự phòng"
+    }
+  }
+}
