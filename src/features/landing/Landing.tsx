@@ -71,13 +71,13 @@ const simulatedTabs: SimulatedTab[] = [
   },
   {
     id: "cbt-exam",
-    label: "Thi thử trên máy tính theo phạm vi đề tài",
+    label: "Thi thử theo phạm vi đề tài",
     icon: ClipboardCheck,
     tag: "Luyện cách làm bài và quản lý thời gian",
-    title: "Phần Mềm Thi Thử Trắc Nghiệm Trên Máy Tính",
+    title: "Phần Mềm Thi Thử Trắc Nghiệm",
     subtitle: "Chuẩn bị tâm lý, kỹ năng phân bổ thời gian và làm quen áp lực phòng thi",
     description:
-      "Bài thi thử giúp làm quen với cách làm bài trên máy tính với đồng hồ đếm ngược thời gian thực, tự động lưu bài làm và phân tích kết quả ngay sau khi nộp bài.",
+      "Bài thi thử giúp làm quen với cách làm bài với đồng hồ đếm ngược thời gian thực, tự động lưu bài làm và phân tích kết quả ngay sau khi nộp bài.",
     bullets: [
       "Đồng hồ đếm ngược từng giây, tự động thu bài và niêm phong kết quả khi hết giờ",
       "Báo cáo phân tích phổ điểm chi tiết từ câu hỏi lý thuyết đến xử lý ca bệnh",
@@ -359,7 +359,7 @@ export function Landing() {
                       <h4 className="track-title">Bác sĩ YHDP tham gia kiểm tra năng lực Quốc gia</h4>
                     </div>
                     <p className="track-description">
-                      Rèn luyện tư duy xử trí tình huống ca bệnh thực địa đa bước, làm quen với áp lực đồng hồ đếm ngược và giao diện thi trắc nghiệm trên máy tính để luyện cách phân bổ thời gian.
+                      Rèn luyện tư duy xử trí tình huống ca bệnh thực địa đa bước, làm quen với áp lực đồng hồ đếm ngược và giao diện thi trắc nghiệm để luyện cách phân bổ thời gian.
                     </p>
                   </div>
                 </div>
@@ -422,7 +422,7 @@ export function Landing() {
               <span className="section-pill">Đột phá Phương pháp</span>
               <h2>Học để Hiểu Bản Chất. Luyện để Vững Tay Nghề.</h2>
               <p>
-                Trải nghiệm học tập hiện đại, kết nối liên hoàn giữa hỏi đáp từng bước, thẻ nhớ giãn cách và mô phỏng bài thi trên máy tính.
+                Trải nghiệm học tập hiện đại, kết nối liên hoàn giữa hỏi đáp từng bước, thẻ nhớ giãn cách và mô phỏng bài thi thử.
               </p>
             </ScrollReveal>
 
@@ -750,7 +750,7 @@ export function Landing() {
               </div>
               <h3>Nền Tảng Số Tích Hợp & Nghiên Cứu Hiệu Quả Can Thiệp</h3>
               <p>
-                Tích hợp toàn diện ngân hàng 1.000–1.500 câu hỏi, mở rộng thi thử trên máy tính, triển khai nghiên cứu can thiệp bán thực nghiệm đánh giá hiệu quả học tập và khả năng sử dụng và duy trì tại cơ sở đào tạo.
+                Tích hợp toàn diện ngân hàng 1.000–1.500 câu hỏi, mở rộng thi thử, triển khai nghiên cứu can thiệp bán thực nghiệm đánh giá hiệu quả học tập và khả năng sử dụng và duy trì tại cơ sở đào tạo.
               </p>
             </article>
           </div>

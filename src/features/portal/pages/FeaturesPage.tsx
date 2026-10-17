@@ -42,7 +42,7 @@ export function FeaturesPage() {
             </h1>
 
             <p className="features-sub-heading">
-              Hệ thống kết nối liền hoàn giữa hỏi đáp có trích dẫn giáo trình, luyện câu hỏi theo chuẩn năng lực, ôn thẻ ghi nhớ chống quên và thi thử trắc nghiệm trên máy tính theo phạm vi đề tài dành riêng cho Bác sĩ Y học dự phòng.
+              Hệ thống kết nối liền hoàn giữa hỏi đáp có trích dẫn giáo trình, luyện câu hỏi theo chuẩn năng lực, ôn thẻ ghi nhớ chống quên và thi thử trắc nghiệm theo phạm vi đề tài dành riêng cho Bác sĩ Y học dự phòng.
             </p>
           </div>
         </div>
@@ -116,10 +116,10 @@ export function FeaturesPage() {
             <div className="pillar-icon-box">
               <ClipboardCheck size={24} />
             </div>
-            <div className="pillar-tag">THI THỬ TRÊN MÁY TÍNH</div>
+            <div className="pillar-tag">THI THỬ</div>
             <h3>Mô Phỏng Phòng Thi Quốc Gia</h3>
             <p>
-              Trải nghiệm bài thi trắc nghiệm trên máy tính với bộ đếm giờ thời gian thực, tự động lưu bài liên tục và phân tích kết quả ngay sau khi nộp bài.
+              Trải nghiệm bài thi trắc nghiệm với bộ đếm giờ thời gian thực, tự động lưu bài liên tục và phân tích kết quả ngay sau khi nộp bài.
             </p>
             <ul className="pillar-list">
               <li><CheckCircle2 size={14} /> Tự động thu bài và khóa trợ lý giải đáp khi thi</li>

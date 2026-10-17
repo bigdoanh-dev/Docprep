@@ -56,13 +56,13 @@ const methods: MethodItem[] = [
   },
   {
     id: "exam",
-    label: "Thi thử trên máy tính",
+    label: "Thi thử",
     icon: ClipboardCheck,
     tag: "Ôn tập theo phạm vi đề tài",
     badgeText: "Đếm ngược & Tự lưu bài",
-    title: "Mô phỏng áp lực phòng thi máy tính thực tế.",
+    title: "Mô phỏng áp lực phòng thi thực tế.",
     description:
-      "Rèn luyện kỹ năng phân bổ thời gian, đánh dấu câu phân vân để rà soát và trải nghiệm giao diện thi trắc nghiệm trên máy tính để luyện cách làm bài và quản lý thời gian.",
+      "Rèn luyện kỹ năng phân bổ thời gian, đánh dấu câu phân vân để rà soát và trải nghiệm giao diện thi trắc nghiệm để luyện cách làm bài và quản lý thời gian.",
     detail:
       "Khóa hoàn toàn trợ lý giải đáp trong giờ thi nhằm bảo đảm tính trung thực và phản ánh đúng năng lực hiện tại.",
   },

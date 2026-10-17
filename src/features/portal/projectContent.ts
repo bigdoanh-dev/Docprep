@@ -17,7 +17,7 @@ export const projectPages: Record<string, ProjectPageContent> = {
         title: "Bối cảnh nghiên cứu & Nhu cầu cấp thiết",
         paragraphs: [
           "Triển khai Luật Khám bệnh, chữa bệnh số 15/2023/QH15 và định hướng của Hội đồng Y khoa Quốc gia, việc kiểm tra đánh giá năng lực hành nghề là yêu cầu bắt buộc để cấp giấy phép hành nghề. Bác sĩ Y học dự phòng (BSYHDP) giữ vai trò then chốt trong y tế cơ sở và y tế công cộng, đòi hỏi phải nắm vững 8 nhóm chuẩn năng lực từ giám sát dịch tễ, kiểm soát ổ dịch, dinh dưỡng cộng đồng, bệnh nghề nghiệp đến xử trí cấp cứu ban đầu.",
-          "Nền tảng DocPrep YHDP ra đời nhằm giải quyết bài toán: kết nối học liệu chuẩn hóa, ngân hàng câu hỏi thẩm định 2 vòng, Trợ lý giải đáp có trích dẫn nguồn y văn chính thống và công cụ thi thử trắc nghiệm trên máy tính đánh giá toàn diện năng lực.",
+          "Nền tảng DocPrep YHDP ra đời nhằm giải quyết bài toán: kết nối học liệu chuẩn hóa, ngân hàng câu hỏi thẩm định 2 vòng, Trợ lý giải đáp có trích dẫn nguồn y văn chính thống và công cụ thi thử trắc nghiệm đánh giá toàn diện năng lực.",
         ],
       },
       {
@@ -43,7 +43,7 @@ export const projectPages: Record<string, ProjectPageContent> = {
         title: "Phạm vi học liệu & Chuẩn năng lực Bộ Y tế",
         paragraphs: [
           "Trọng tâm của đề tài là Bác sĩ Y học dự phòng, bám sát 8 nhóm chuẩn năng lực cơ bản theo Quyết định của Bộ Y tế và 54 vấn đề sức khỏe ưu tiên cốt lõi nêu trong thuyết minh.",
-          "Bản giao diện hiện tại cho phép trải nghiệm toàn bộ các luồng học tập, hỏi đáp AI, ôn thẻ và thi thử trên máy tính với dữ liệu minh họa bám sát tài liệu dự án.",
+          "Bản giao diện hiện tại cho phép trải nghiệm toàn bộ các luồng học tập, hỏi đáp AI, ôn thẻ và thi thử với dữ liệu minh họa bám sát tài liệu dự án.",
         ],
       },
     ],

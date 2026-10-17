@@ -61,11 +61,11 @@ const heroSlides: HeroSlide[] = [
     titlePrimary: "Áp lực thi thực tế.",
     titleHighlight: "Rèn phản xạ phòng thi trắc nghiệm.",
     subtext:
-      "Thi trắc nghiệm trên máy tính để làm quen với cách làm bài: đồng hồ đếm ngược, tự động lưu bài làm và phân tích năng lực chi tiết ngay khi nộp bài.",
-    primaryCta: { label: "Thi thử trên máy tính", to: "/thi-thu" },
+      "Thi trắc nghiệm để làm quen với cách làm bài: đồng hồ đếm ngược, tự động lưu bài làm và phân tích năng lực chi tiết ngay khi nộp bài.",
+    primaryCta: { label: "Thi thử", to: "/thi-thu" },
     secondaryCta: { label: "Các cấp độ đánh giá", href: "#chuan-nang-luc" },
     stats: [
-      { icon: Timer, title: "Đếm ngược phòng thi", sub: "Mô phỏng kỳ thi máy tính thực tế" },
+      { icon: Timer, title: "Đếm ngược phòng thi", sub: "Mô phỏng kỳ thi thực tế" },
       { icon: ChartNoAxesColumnIncreasing, title: "Đánh giá đa cấp độ", sub: "Từ nhớ kiến thức đến xử trí thực địa" },
       { icon: ShieldCheck, title: "Tự động lưu bài làm", sub: "An tâm rà soát và nộp bài" },
     ],

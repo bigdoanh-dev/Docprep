@@ -42,7 +42,7 @@ export function Exams() {
     <div className="screen">
       <div className="body stack" style={{ padding: 20 }}>
         <h1 className="title" style={{ fontSize: 26, marginTop: 12 }}>
-          Thi thử trên máy tính
+          Thi thử
         </h1>
         {error && <LoadError message={error} onRetry={reload} />}
         {!data && !error && <Loading />}
