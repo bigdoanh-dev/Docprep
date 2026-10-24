@@ -21,7 +21,11 @@ import {
 import { postSSE } from "../lib/sse";
 import { useSourceSheet } from "./Answer";
 import { AssistantTurn, type QuizContext } from "./ChatTurn";
-import { Icon } from "./Icon";
+import {
+  ArrowUp,
+  ArrowUpRight,
+  BookOpenText,
+} from "lucide-react";
 
 type Turn =
   { role: "user"; text: string } | { role: "assistant"; view: TurnView };
@@ -64,10 +68,13 @@ export function Conversation({
   const [generation, setGeneration] = useState(0);
   const source = useSourceSheet();
   const endRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const followLatest = useRef(true);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setCurrent(sessionId);
+    setDraft("");
     if (sessionId !== null && sessionId === shown.current) return; // its turns are already here
     // `shown` is set only once the turns are really here (loaded, or started on this screen): set
     // earlier, an effect run twice on mount would skip the load it had just begun.
@@ -111,8 +118,22 @@ export function Conversation({
   }, [sessionId, historyReload]);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "end" });
+    const area = scrollRef.current;
+    if (
+      turns.length > 0 &&
+      area &&
+      area.getClientRects().length &&
+      followLatest.current
+    )
+      area.scrollTop = area.scrollHeight;
   }, [turns]);
+
+  useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+    input.style.height = "24px";
+    input.style.height = `${Math.min(Math.max(24, input.scrollHeight), 120)}px`;
+  }, [draft]);
 
   const lastQuestion = [...turns]
     .reverse()
@@ -137,6 +158,7 @@ export function Conversation({
       return;
     const generationAtSend = generationRef.current;
     const update = updateFor(generationAtSend);
+    followLatest.current = true;
     setBusy(true);
     setDraft("");
     setTurns((all) => [
@@ -217,48 +239,60 @@ export function Conversation({
 
   return (
     <>
-      <div className="body" aria-live="polite">
+      <div
+        className="body tutor-messages"
+        ref={scrollRef}
+        aria-live="polite"
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          followLatest.current =
+            el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+        }}
+      >
         {intro}
-        {turns.length === 0 && (
-          <div className="stack" style={{ marginTop: 16 }}>
+        {historyLoading && (
+          <p className="tutor-loading" role="status">
+            Đang mở cuộc trò chuyện…
+          </p>
+        )}
+        {turns.length === 0 && !historyLoading && !historyError && (
+          <div className="tutor-welcome">
             {!quiz && (
-              <p className="muted">
-                Hỏi về nội dung ôn thi. Mở nguồn trong câu trả lời để đối chiếu
-                với học liệu.
-              </p>
+              <div className="tutor-welcome-intro">
+                <div className="tutor-welcome-mark">
+                  <BookOpenText size={28} strokeWidth={1.5} />
+                </div>
+                <h2>
+                  Bạn muốn hiểu rõ điều gì hôm nay?
+                </h2>
+                <p>Cùng làm rõ kiến thức, từng câu hỏi một.</p>
+              </div>
             )}
-            {starters.map((q) => (
-              <button
-                key={q}
-                className="btn block"
-                style={{
-                  justifyContent: "flex-start",
-                  textAlign: "left",
-                  padding: "10px 14px",
-                }}
-                onClick={() => send(q)}
-                disabled={busy}
-              >
-                {q}
-              </button>
-            ))}
+            <div className="tutor-starters">
+              {starters.map((q, i) => (
+                <button key={q} onClick={() => send(q)} disabled={busy}>
+                  <span>
+                    <small>
+                      {quiz
+                        ? "Tìm hiểu thêm"
+                        : [
+                            "So sánh khái niệm",
+                            "Làm rõ kiến thức",
+                            "Giải thích ý nghĩa",
+                          ][i % 3]}
+                    </small>
+                    <strong>{q}</strong>
+                  </span>
+                  <ArrowUpRight size={16} />
+                </button>
+              ))}
+            </div>
           </div>
         )}
-        <div className="stack" style={{ marginTop: 12 }}>
+        <div className="stack tutor-turns">
           {turns.map((turn, i) =>
             turn.role === "user" ? (
-              <div
-                key={`${generation}-${i}`}
-                style={{
-                  alignSelf: "flex-end",
-                  maxWidth: "85%",
-                  background: "var(--primary)",
-                  color: "#fff",
-                  padding: "10px 14px",
-                  borderRadius: "16px 16px 4px 16px",
-                  fontSize: 16,
-                }}
-              >
+              <div key={`${generation}-${i}`} className="tutor-user-message">
                 {turn.text}
               </div>
             ) : (
@@ -308,42 +342,53 @@ export function Conversation({
         <div ref={endRef} />
       </div>
 
-      <form
-        className="footer"
-        onSubmit={onSubmit}
-        style={{ alignItems: "center" }}
-      >
-        <input
-          ref={inputRef}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          disabled={busy || historyLoading || !!historyCursor || !!historyError}
-          placeholder="Hỏi về nội dung ôn thi…"
-          aria-label="Câu hỏi của bạn"
-          className="grow"
-          style={{
-            minHeight: 48,
-            padding: "0 16px",
-            borderRadius: 999,
-            border: "1px solid var(--border-input)",
-            background: "var(--bg)",
-          }}
-        />
-        <button
-          type="submit"
-          className="btn primary"
-          disabled={
-            busy ||
-            historyLoading ||
-            !!historyCursor ||
-            !!historyError ||
-            !draft.trim()
-          }
-          aria-label="Gửi"
-          style={{ width: 48, padding: 0, borderRadius: 24 }}
-        >
-          <Icon name="arrow" />
-        </button>
+      <form className="footer tutor-composer" onSubmit={onSubmit}>
+        <div className="tutor-composer-box">
+          <textarea
+            ref={inputRef}
+            rows={1}
+            value={draft}
+            onChange={(e) => {
+              setDraft(e.target.value);
+              e.target.style.height = "auto";
+              e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+            }}
+            onKeyDown={(e) => {
+              if (
+                e.key === "Enter" &&
+                !e.shiftKey &&
+                !e.nativeEvent.isComposing &&
+                window.matchMedia("(pointer: fine)").matches
+              ) {
+                e.preventDefault();
+                send(draft);
+              }
+            }}
+            disabled={
+              busy || historyLoading || !!historyCursor || !!historyError
+            }
+            placeholder="Hỏi gia sư về bài học…"
+            aria-label="Câu hỏi của bạn"
+          />
+          <div className="tutor-composer-bottom">
+            <button
+              type="submit"
+              disabled={
+                busy ||
+                historyLoading ||
+                !!historyCursor ||
+                !!historyError ||
+                !draft.trim()
+              }
+              aria-label="Gửi câu hỏi"
+            >
+              <ArrowUp size={18} />
+            </button>
+          </div>
+        </div>
+        <p className="tutor-footnote">
+          AI có thể sai. Hãy đối chiếu nguồn học liệu.
+        </p>
       </form>
       {source.sheet}
     </>

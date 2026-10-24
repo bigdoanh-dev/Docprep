@@ -37,7 +37,9 @@ export function Home() {
         : "Chào buổi tối";
   return (
     <div className="mobile-home">
-      <section className="home-greeting">
+      <section
+        className={`home-greeting${w.avatarUrl ? " has-custom-photo" : ""}`}
+      >
         <div>
           <p>{greeting},</p>
           <h1>{home.name}</h1>

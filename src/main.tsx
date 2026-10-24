@@ -18,6 +18,8 @@ import "./styles/landing-refresh.css";
 import "./styles/mobile.css";
 import "./styles/mobile-polish.css";
 import "./styles/staff.css";
+import "./styles/feedback.css";
+import "./styles/tutor.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <MotionConfig reducedMotion="user">

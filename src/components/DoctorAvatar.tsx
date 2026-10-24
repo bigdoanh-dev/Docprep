@@ -1,3 +1,4 @@
+import { useWorkspace } from "../lib/learnerWorkspace";
 import { UserRound } from "lucide-react";
 export function DoctorAvatar({
   gender,
@@ -6,9 +7,18 @@ export function DoctorAvatar({
   gender: "male" | "female" | null;
   avatar?: boolean;
 }) {
+  const { avatarUrl } = useWorkspace();
   return (
-    <div className={avatar ? "doctor-avatar" : "greeting-art"}>
-      {gender ? (
+    <div
+      className={
+        avatar
+          ? "doctor-avatar"
+          : `greeting-art${avatarUrl ? " has-photo" : ""}`
+      }
+    >
+      {avatarUrl ? (
+        <img src={avatarUrl} alt="Ảnh đại diện của bạn" />
+      ) : gender ? (
         <img
           src={`/mobile/welcome-${gender}.png`}
           alt={gender === "male" ? "Bác sĩ nam" : "Bác sĩ nữ"}

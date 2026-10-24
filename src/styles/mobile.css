@@ -31,7 +31,9 @@
   color: #182c4b;
   font-family: "Be Vietnam Pro", sans-serif;
 }
-html, body, #root {
+html,
+body,
+#root {
   width: 100%;
   max-width: 100%;
   margin: 0;
@@ -209,7 +211,9 @@ p {
   user-select: none;
   -webkit-user-select: none;
   cursor: grab;
-  transition: left 0.22s cubic-bezier(0.16, 1, 0.3, 1), top 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    left 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .assistant-launcher.dragging {
   cursor: grabbing;
@@ -494,7 +498,9 @@ p {
   font-weight: 500;
   text-decoration: none;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 .home-utilities a:hover {
   background: #f3f7fd;
@@ -3595,3 +3601,204 @@ textarea {
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
 }
 
+/* The session's adaptation step is an intentional, focused full-screen state. */
+.mobile-app.immersive-app {
+  min-height: 100dvh;
+  background: #142b4b;
+  color: #fff;
+  box-shadow: none;
+}
+.mobile-content.immersive-content {
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: #142b4b;
+  color: #fff;
+}
+.adapting-screen {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: max(14px, env(safe-area-inset-top)) 22px
+    max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  background: #142b4b;
+  color: #fff;
+}
+.adapting-topbar {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.adapting-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #dceaff;
+  font-size: 13px;
+  font-weight: 600;
+}
+.adapting-brand svg {
+  color: #f1c878;
+}
+.adapting-skip {
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid #ffffff35;
+  border-radius: 10px;
+  background: transparent;
+  color: #e0eaff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.adapting-skip:hover {
+  background: #ffffff0d;
+}
+.adapting-content {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  padding: 26px 0;
+}
+.adapting-state {
+  display: grid;
+  place-items: center;
+  min-height: 48dvh;
+}
+.adapting-state .empty {
+  color: #fff;
+  text-align: center;
+}
+.adapting-mark {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 24px;
+  display: grid;
+  place-items: center;
+  color: #f1c878;
+  border: 1px solid #cfe5ff30;
+  border-radius: 16px;
+  background: #cfe5ff12;
+}
+.adapting-kicker {
+  margin: 0 0 9px;
+  color: #f1c878;
+  font-size: 12px;
+  font-weight: 600;
+}
+.adapting-title {
+  max-width: 390px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(23px, 6vw, 28px) !important;
+  line-height: 1.32 !important;
+  letter-spacing: -0.55px;
+}
+.adapting-description {
+  margin: 12px 0 26px;
+  color: #c7d5e9;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.adapting-progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: #d8e5f6;
+  font-size: 11px;
+  font-weight: 500;
+}
+.adapting-progress {
+  height: 6px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #ffffff20;
+}
+.adapting-progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #f1c878;
+  transition: width 240ms ease-out;
+}
+.adapting-results {
+  gap: 0 !important;
+  padding: 4px 14px !important;
+  border: 1px solid #ffffff24;
+  border-radius: 14px;
+  background: #ffffff0a;
+}
+.adapting-result {
+  min-height: 48px !important;
+  gap: 11px;
+  border-bottom: 1px solid #ffffff18;
+  color: #fff;
+}
+.adapting-result:last-child {
+  border-bottom: 0;
+}
+.adapting-result-check {
+  color: #a9d2ff !important;
+}
+.adapting-result-label {
+  font-size: 12px;
+}
+.adapting-result-value {
+  max-width: 47%;
+  color: #e0eaff;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.adapting-actions {
+  width: 100%;
+  max-width: 420px;
+  margin: 14px auto 0;
+  display: grid;
+  gap: 10px;
+}
+.adapting-actions .btn {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 50px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.adapting-actions .btn.primary {
+  background: #356bb8;
+  border-color: #356bb8;
+  box-shadow: 0 5px 14px #071a322e;
+}
+.adapting-actions .btn.primary:hover {
+  background: #427bc9;
+}
+.adapting-actions .adapting-home-link {
+  background: transparent;
+  border-color: #ffffff40;
+  color: #e0eaff;
+}
+.adapting-actions .adapting-home-link:hover {
+  background: #ffffff0d;
+}
+@media (prefers-reduced-motion: reduce) {
+  .adapting-progress > span {
+    transition: none;
+  }
+}
+@media (min-width: 700px) {
+  .mobile-app.immersive-app,
+  .mobile-content.immersive-content,
+  .adapting-screen {
+    min-height: calc(100dvh - 40px);
+  }
+}

@@ -1,3 +1,4 @@
+import { ProfilePhoto } from "../../components/ProfilePhoto";
 import { LearnerProfilePanel } from "../workspace/LearnerProfilePanel";
 import {
   readWorkspace,
@@ -37,7 +38,9 @@ export function saveFile(data: unknown, name: string) {
 }
 export function Account() {
   const workspace = useWorkspace();
-  const [gender, setGender] = useState(workspace.gender);
+  const gender = workspace.gender;
+  const [examPeriod, setExamPeriod] = useState(workspace.examPeriod ?? "");
+  const currentYear = new Date().getFullYear();
   const actor = useActor()!,
     notify = useFeedback();
   const { data, error, reload } = useLoad(
@@ -72,7 +75,7 @@ export function Account() {
       const me = Object.keys(draft).length
         ? await api.patch<Me>("/me", draft)
         : data!;
-      updateWorkspace((w) => ({ ...w, gender }));
+      updateWorkspace((w) => ({ ...w, examPeriod }));
       setActor({ ...actor, name: me.display_name });
       setDraft({});
       reload();
@@ -108,30 +111,7 @@ export function Account() {
       </div>
       {actor.role === "learner" && (
         <section className="profile-appearance">
-          <fieldset>
-            <legend>Hình đại diện</legend>
-            <div className="gender-control">
-              {(
-                [
-                  ["male", "Nam"],
-                  ["female", "Nữ"],
-                  [null, "Chưa chọn"],
-                ] as const
-              ).map(([value, label]) => (
-                <button
-                  key={label}
-                  type="button"
-                  aria-pressed={gender === value}
-                  onClick={() => setGender(value)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-          <p className="muted small">
-            Hình chào đổi theo lựa chọn của bạn. Lưu trên thiết bị này.
-          </p>
+          <ProfilePhoto />
           <MascotPicker />
         </section>
       )}
@@ -162,17 +142,29 @@ export function Account() {
               />
             </label>
             <label className="field">
-              Ngày thi mục tiêu
-              <input
-                type="date"
-                value={values.exam_date ?? ""}
-                onChange={(e) =>
-                  setDraft({ ...draft, exam_date: e.target.value || null })
-                }
-              />
+              Giai đoạn thi mục tiêu
+              <select
+                value={examPeriod}
+                onChange={(e) => setExamPeriod(e.target.value)}
+              >
+                <option value="">Chưa xác định</option>
+                {examPeriod &&
+                  ![currentYear, currentYear + 1, currentYear + 2].some((y) =>
+                    examPeriod.endsWith(String(y)),
+                  ) && <option value={examPeriod}>{examPeriod}</option>}
+                {[currentYear, currentYear + 1, currentYear + 2].flatMap(
+                  (year) =>
+                    ["Đầu năm", "Giữa năm", "Cuối năm"].map((period) => (
+                      <option key={`${period} ${year}`}>
+                        {period} {year}
+                      </option>
+                    )),
+                )}
+              </select>
             </label>
             <p className="muted small">
-              Ngày do bạn đặt, không phải lịch thi quốc gia được xác nhận.
+              Mốc ôn tập cá nhân, lưu trên thiết bị này. Không phải lịch thi
+              chính thức.
             </p>
             <label className="field">
               Mức nhớ mục tiêu
@@ -230,7 +222,8 @@ export function Account() {
               className="btn primary"
               disabled={
                 busy ||
-                (!Object.keys(draft).length && gender === workspace.gender)
+                (!Object.keys(draft).length &&
+                  examPeriod === (workspace.examPeriod ?? ""))
               }
             >
               {busy ? "Đang lưu…" : "Lưu thay đổi"}

@@ -101,9 +101,12 @@ export function CardReview() {
             </h2>
             <p className="muted">
               {reviewed > 0
-                ? `Đã ôn ${reviewed} lượt thẻ.`
+                ? `Bạn đã ôn ${reviewed} lượt thẻ. Mỗi lần ôn giúp bạn ghi nhớ chắc hơn. Hẹn bạn ở lượt ôn tiếp theo!`
                 : "Thẻ ôn được tạo từ những câu bạn trả lời sai trong Luyện tập và Thi thử."}
             </p>
+            <Link to="/luyen-tap/bo-the" className="btn primary block">
+              Về bộ thẻ
+            </Link>
             <Link to="/luyen-tap" className="btn block">
               Học chủ đề mới
             </Link>

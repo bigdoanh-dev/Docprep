@@ -1,3 +1,4 @@
+import { useWorkspace } from "../../lib/learnerWorkspace";
 import { SpecialtyAnalysis } from "./SpecialtyAnalysis";
 import { useState, type ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
@@ -17,6 +18,7 @@ export function ProgressShell({
   daysToExam: number | undefined;
   children: ReactNode;
 }) {
+  const workspace = useWorkspace();
   const tab = ({ isActive }: { isActive: boolean }) =>
     `grow seg${isActive ? " active" : ""}`;
   return (
@@ -26,11 +28,15 @@ export function ProgressShell({
           <h1 className="title grow" style={{ fontSize: 26 }}>
             Thống kê học tập
           </h1>
-          {daysToExam !== undefined && (
-            <p className="muted small">
-              Còn <b style={{ color: "var(--ink)" }}>{daysToExam} ngày</b> đến
-              kỳ thi
-            </p>
+          {workspace.examPeriod ? (
+            <p className="muted small">Mục tiêu: {workspace.examPeriod}</p>
+          ) : (
+            daysToExam !== undefined && (
+              <p className="muted small">
+                Còn <b style={{ color: "var(--ink)" }}>{daysToExam} ngày</b> đến
+                kỳ thi
+              </p>
+            )
           )}
         </div>
         <nav
@@ -121,11 +127,9 @@ export function Progress() {
             ))}
           </div>
 
-          <SpecialtyAnalysis
-            specialties={data.specialties}
-            levels={data.levels}
-            bySpecialty={data.bloom_by_specialty}
-          />
+          <p className="muted small">
+            Xem mức độ đã luyện, chọn phần cần ôn rồi mở phân tích khi cần.
+          </p>
           <Block id="coverage" title="Độ phủ chương trình">
             <p>
               <b style={{ fontSize: 24 }}>{data.coverage.assessed_topics}</b> /{" "}
@@ -196,6 +200,14 @@ export function Progress() {
             ))}
           </Block>
 
+          <details className="progress-details">
+            <summary>Xem phân tích năng lực chi tiết</summary>
+            <SpecialtyAnalysis
+              specialties={data.specialties}
+              levels={data.levels}
+              bySpecialty={data.bloom_by_specialty}
+            />
+          </details>
           <Block
             id="scores"
             title="Điểm cả đề"

@@ -46,7 +46,7 @@ export function QuizChat() {
   );
 
   return (
-    <div className="screen">
+    <div className="screen tutor tutor-quiz">
       <header className="topbar">
         <button
           className="icon-btn"
@@ -57,28 +57,30 @@ export function QuizChat() {
         </button>
         <h1>Hỏi gia sư</h1>
       </header>
-      <Conversation
-        sessionId={context?.sessionId ?? null}
-        onSession={(id) =>
-          context &&
-          navigate(location.pathname, {
-            replace: true,
-            state: { ...context, sessionId: id },
-          })
-        }
-        questionId={context ? questionId : undefined}
-        starters={
-          context
-            ? [
-                context.correct
-                  ? "Giải thích thêm về câu này"
-                  : "Sao mình sai câu này?",
-              ]
-            : []
-        }
-        intro={intro}
-        quiz={context ? { back: context.back } : undefined}
-      />
+      <section className="conversation-panel" aria-label="Nội dung hội thoại">
+        <Conversation
+          sessionId={context?.sessionId ?? null}
+          onSession={(id) =>
+            context &&
+            navigate(location.pathname, {
+              replace: true,
+              state: { ...context, sessionId: id },
+            })
+          }
+          questionId={context ? questionId : undefined}
+          starters={
+            context
+              ? [
+                  context.correct
+                    ? "Giải thích thêm về câu này"
+                    : "Sao mình sai câu này?",
+                ]
+              : []
+          }
+          intro={intro}
+          quiz={context ? { back: context.back } : undefined}
+        />
+      </section>
     </div>
   );
 }

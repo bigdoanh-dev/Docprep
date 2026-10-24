@@ -5,7 +5,7 @@ import type { Option } from "../lib/api";
 const LETTERS = ["A", "B", "C", "D", "E", "F"];
 
 // The options of a multiple-choice question, in a unit and in a practice set. Before the answer the
-// learner picks one; after it the correct one is green and a wrong pick orange (never red).
+// learner picks one; after checking, navy marks the correct answer and amber marks a wrong pick.
 export function QuizOptions({
   options,
   picked,
@@ -38,31 +38,31 @@ export function QuizOptions({
         const letter = LETTERS[idx] || String.fromCharCode(65 + idx);
         const style = isCorrect
           ? {
-              background: "#ecfdf5",
-              borderColor: "#10b981",
-              boxShadow: "0 0 0 1px #10b981",
+              background: "var(--primary-tint)",
+              borderColor: "var(--primary)",
+              boxShadow: "0 0 0 1px var(--primary)",
             }
           : isWrongPick
             ? {
-                background: "#fff7ed",
-                borderColor: "#f97316",
-                boxShadow: "0 0 0 1px #f97316",
+                background: "var(--learning-tint)",
+                borderColor: "var(--learning)",
+                boxShadow: "0 0 0 1px var(--learning)",
               }
             : chosen
               ? {
-                  background: "#f0f9ff",
+                  background: "var(--primary-tint)",
                   borderColor: "var(--primary)",
                   boxShadow: "0 0 0 1px var(--primary)",
                 }
               : {
                   background: "#ffffff",
-                  borderColor: "#cbd5e1",
+                  borderColor: "var(--border-input)",
                 };
         return (
           <motion.button
             whileTap={{ scale: 0.995 }}
             animate={{
-              boxShadow: isCorrect ? "0 0 0 3px rgba(16, 185, 129, 0.15)" : "none",
+              boxShadow: isCorrect ? "0 0 0 3px rgba(40, 88, 165, 0.14)" : "none",
             }}
             key={o.key}
             role="radio"
@@ -101,13 +101,13 @@ export function QuizOptions({
                 justifyContent: "center",
                 flexShrink: 0,
                 background: isCorrect
-                  ? "#10b981"
+                  ? "var(--primary)"
                   : isWrongPick
-                    ? "#f97316"
+                    ? "var(--learning)"
                     : chosen
                       ? "var(--primary)"
-                      : "#f1f5f9",
-                color: isCorrect || isWrongPick || chosen ? "#ffffff" : "#475569",
+                      : "var(--soft)",
+                color: isCorrect || isWrongPick || chosen ? "#ffffff" : "var(--muted)",
                 transition: "all 0.15s ease",
               }}
             >
@@ -117,7 +117,7 @@ export function QuizOptions({
             {isCorrect && (
               <span
                 style={{
-                  color: "#059669",
+                  color: "var(--primary)",
                   fontWeight: 700,
                   display: "flex",
                   alignItems: "center",
@@ -131,7 +131,7 @@ export function QuizOptions({
             {isWrongPick && (
               <span
                 style={{
-                  color: "#ea580c",
+                  color: "var(--learning-dark)",
                   fontWeight: 700,
                   display: "flex",
                   alignItems: "center",

@@ -89,7 +89,7 @@ export function Heatmap({
 }) {
   return (
     <div className="stack" style={{ gap: 8 }}>
-      <table className="heat" aria-label={label}>
+      <table className="heat rhythm-heatmap" aria-label={label}>
         <thead>
           <tr>
             {WEEKDAYS.map((d) => (
@@ -122,7 +122,7 @@ export function Heatmap({
         </tbody>
       </table>
       <div
-        className="row muted"
+        className="row muted rhythm-heatmap-legend"
         style={{ gap: 6, fontSize: 12 }}
         aria-hidden="true"
       >
@@ -182,7 +182,17 @@ export function MemoryCurve({
         </div>
         <svg
           role="img"
-          aria-label={label + ": thang đo từ " + percent(CURVE_FLOOR) + " đến 100%; " + reviews + " lần ôn; hôm nay " + percent(today?.recall ?? null) + "; sau 7 ngày nếu chưa ôn " + percent(later?.recall ?? null)}
+          aria-label={
+            label +
+            ": thang đo từ " +
+            percent(CURVE_FLOOR) +
+            " đến 100%; " +
+            reviews +
+            " lần ôn; hôm nay " +
+            percent(today?.recall ?? null) +
+            "; sau 7 ngày nếu chưa ôn " +
+            percent(later?.recall ?? null)
+          }
           viewBox="-8 -8 316 126"
           style={{ width: "100%", height: "auto" }}
         >
@@ -196,7 +206,9 @@ export function MemoryCurve({
           />
           <line x1={0} x2={W} y1={H} y2={H} className="memory-curve-grid" />
           <path d={g.solid} fill="none" className="memory-curve-solid" />
-          {g.dashed && <path d={g.dashed} fill="none" className="memory-curve-projected" />}
+          {g.dashed && (
+            <path d={g.dashed} fill="none" className="memory-curve-projected" />
+          )}
           {g.today && (
             <circle
               cx={g.today.x}
@@ -208,19 +220,29 @@ export function MemoryCurve({
         </svg>
       </div>
       <div className="memory-curve-x-axis" aria-hidden="true">
-        <span className="start">{firstReview ? dayMonth(firstReview.date) : "Lần ôn"}</span>
+        <span className="start">
+          {firstReview ? dayMonth(firstReview.date) : "Lần ôn"}
+        </span>
         {todayPosition !== null && todayPosition > 12 && todayPosition < 88 && (
-          <span className="today" style={{ left: todayPosition + "%" }}>Hôm nay</span>
+          <span className="today" style={{ left: todayPosition + "%" }}>
+            Hôm nay
+          </span>
         )}
         <span className="end">{later ? dayMonth(later.date) : "+7 ngày"}</span>
       </div>
       <div className="memory-curve-legend" aria-hidden="true">
-        <span><i className="memory-curve-key solid" /> Đã ôn</span>
-        <span><i className="memory-curve-key dashed" /> Nếu chưa ôn</span>
+        <span>
+          <i className="memory-curve-key solid" /> Đã ôn
+        </span>
+        <span>
+          <i className="memory-curve-key dashed" /> Nếu chưa ôn
+        </span>
       </div>
       <p className="sr">
         {reviews} lần ôn. Hôm nay độ nhớ khoảng {percent(today?.recall ?? null)}
-        {later ? `; sau 7 ngày nếu chưa ôn còn khoảng ${percent(later.recall)}.` : "."}
+        {later
+          ? `; sau 7 ngày nếu chưa ôn còn khoảng ${percent(later.recall)}.`
+          : "."}
       </p>
     </div>
   );

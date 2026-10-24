@@ -16,12 +16,17 @@ export function AdaptationLines({
   return (
     <ul
       style={{ listStyle: "none", margin: 0, padding: 0 }}
-      className="stack"
+      className={`stack ${onDark ? "adapting-results" : ""}`}
       aria-live="polite"
     >
       {lines.map((line) => (
-        <li key={line.label} className="row" style={{ minHeight: 44 }}>
+        <li
+          key={line.label}
+          className="row adapting-result"
+          style={{ minHeight: 44 }}
+        >
           <span
+            className="adapting-result-check"
             style={{
               color: onDark ? "var(--primary-on-dark)" : "var(--primary-dark)",
               display: "flex",
@@ -29,8 +34,11 @@ export function AdaptationLines({
           >
             <Icon name="check" size={20} />
           </span>
-          <span className="grow">{line.label}</span>
-          <span style={{ fontWeight: 600, textAlign: "right" }}>
+          <span className="grow adapting-result-label">{line.label}</span>
+          <span
+            className="adapting-result-value"
+            style={{ fontWeight: 600, textAlign: "right" }}
+          >
             {line.result}
           </span>
         </li>

@@ -70,6 +70,8 @@ export function ReportIssue({
       <button
         type="button"
         className="report-issue"
+        aria-label="Báo lỗi nội dung"
+        title="Báo lỗi nội dung"
         onClick={() => {
           setOpen(true);
           setStatus("");

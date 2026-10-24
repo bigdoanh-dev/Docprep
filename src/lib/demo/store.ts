@@ -635,8 +635,8 @@ export async function demoRequest(
     }
     if (p === "/practice-sets" && method === "POST") {
       const count = Number(body.count);
-      if (![5, 10, 20].includes(count))
-        fail(422, "invalid_count", "Chọn 5, 10 hoặc 20 câu.");
+      if (![5, 10, 20, 30, 60].includes(count))
+        fail(422, "invalid_count", "Chọn 10, 20, 30 hoặc 60 câu.");
       const pool = seed.questions.filter(
         (q: any) =>
           !body.module_id ||
@@ -654,7 +654,7 @@ export async function demoRequest(
         id,
         source: "learner",
         competency_code: "",
-        topic: body.module_id ? "Ôn theo nhóm năng lực" : "Ôn tập ngẫu nhiên",
+        topic: body.module_id ? "Ôn theo nhóm năng lực" : "Ôn tập tổng hợp",
         completed: false,
         items: pool.slice(0, count).map((q: any, n: number) => ({
           question_id: q.id,

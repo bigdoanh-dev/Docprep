@@ -49,9 +49,17 @@ export function Exams() {
         {data?.items.length === 0 && (
           <p className="empty">Chưa có đề thi thử.</p>
         )}
-        {data?.items.map((form) => (
-          <FormCard key={form.id} form={form} />
-        ))}
+        {data?.items
+          .toSorted(
+            (a, b) =>
+              Number(b.open_attempt_id !== null) -
+                Number(a.open_attempt_id !== null) ||
+              Number(a.kind === "diagnostic" && a.history.length > 0) -
+                Number(b.kind === "diagnostic" && b.history.length > 0),
+          )
+          .map((form) => (
+            <FormCard key={form.id} form={form} />
+          ))}
       </div>
       <TabBar />
     </div>
@@ -97,6 +105,13 @@ function FormCard({ form }: { form: ExamForm }) {
             Mới
           </span>
         )}
+        <p className="tag exam-state">
+          {running
+            ? "Đang làm"
+            : form.history.length
+              ? `✓ Đã hoàn thành · ${form.history.length} lượt`
+              : "Chưa làm"}
+        </p>
         <p className="muted">{meta(form)}</p>
         {form.kind === "diagnostic" && (
           <p className="muted small">

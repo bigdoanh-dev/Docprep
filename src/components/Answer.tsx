@@ -50,7 +50,9 @@ export function CitationChip({
       onClick={() => onOpen(citation)}
       aria-label={`Nguồn ${citation.n}: ${citation.document}, ${where}`}
     >
-      {label ?? citation.n}
+      {label
+        ? `${citation.document} · ${where ?? "Tài liệu nguồn"}`
+        : citation.n}
     </button>
   );
 }

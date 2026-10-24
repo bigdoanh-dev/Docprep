@@ -1,3 +1,4 @@
+import { BookOpenText, Copy, Check } from "lucide-react";
 import { ReportIssue } from "./ReportIssue";
 import { useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +12,7 @@ import {
 import { chipLabel, type TurnView } from "../lib/chatTurn";
 import { dayMonth } from "../lib/format";
 import { AiStar } from "./AiStar";
-import { AnswerText } from "./Answer";
+import { AnswerText, CitationChip } from "./Answer";
 import { Icon } from "./Icon";
 
 // In a chat opened from a quiz item: where "Quay lại bài luyện" goes.
@@ -40,6 +41,8 @@ export function AssistantTurn({
   onClarify: (query: string, messageId: number) => void;
   onRetry: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState("");
   if (view.phase === "queued") {
     return (
       <div className="card stack" role="status">
@@ -79,16 +82,38 @@ export function AssistantTurn({
     <>
       {chipLabel(view) && <TraceChip view={view} />}
       {view.state === "answered" && (
-        <div className="card stack">
+        <div className="card stack tutor-answer">
+          <div className="tutor-answer-author">
+            <BookOpenText size={15} />
+            Gia sư AI
+          </div>
           <AnswerText result={result} onCite={onCite} />
+          {view.citations.length > 0 && (
+            <details className="tutor-sources">
+              <summary>
+                <BookOpenText size={14} />
+                {view.citations.length} nguồn tham khảo
+              </summary>
+              <div>
+                {view.citations.map((c) => (
+                  <CitationChip
+                    key={c.passage_id}
+                    citation={c}
+                    label={c.document}
+                    onOpen={onCite}
+                  />
+                ))}
+              </div>
+            </details>
+          )}
           {view.notice && (
-            <p className="note row" style={{ alignItems: "flex-start" }}>
-              <Icon name="shield" size={18} />
-              {view.notice}
-            </p>
+            <details className="tutor-answer-notice">
+              <summary>Lưu ý về câu trả lời</summary>
+              <p>{view.notice}</p>
+            </details>
           )}
           <div
-            className="row"
+            className="row tutor-answer-actions"
             style={{
               borderTop: "1px solid var(--divider)",
               paddingTop: 12,
@@ -105,6 +130,26 @@ export function AssistantTurn({
               )
             )}
             <span className="grow" />
+            <button
+              type="button"
+              className="tutor-icon-button"
+              aria-label={copied ? "Đã sao chép" : "Sao chép câu trả lời"}
+              title={copied ? "Đã sao chép" : "Sao chép"}
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(view.text ?? "");
+                  setCopied(true);
+                  setCopyError("");
+                } catch {
+                  setCopyError(
+                    "Chưa thể sao chép. Bạn có thể chọn phần văn bản cần dùng.",
+                  );
+                }
+              }}
+            >
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+            </button>
+
             {view.messageId !== null && (
               <>
                 <Helpful messageId={view.messageId} initial={view.helpful} />
@@ -116,6 +161,11 @@ export function AssistantTurn({
               </>
             )}
           </div>
+          {copyError && (
+            <p role="status" className="muted small">
+              {copyError}
+            </p>
+          )}
         </div>
       )}
       {view.state === "insufficient_evidence" && (
@@ -201,11 +251,11 @@ export function AssistantTurn({
   );
 }
 
-// "Phần hỏi đáp đang làm": the stages of this answer as they run, with the server's own labels.
+// "Đang tìm câu trả lời": the stages of this answer as they run, with the server's own labels.
 function WorkBox({ view }: { view: TurnView }) {
   return (
     <div className="card stack" style={{ gap: 8 }} aria-live="polite">
-      <p className="h2">Phần hỏi đáp đang làm</p>
+      <p className="h2">Đang tìm câu trả lời</p>
       {view.steps.length === 0 && (
         <span className="spinner" role="status" aria-label="Đang bắt đầu" />
       )}
@@ -244,7 +294,7 @@ function TraceChip({ view }: { view: TurnView }) {
         <span style={{ color: "var(--primary-dark)", display: "flex" }}>
           <Icon name="check" size={18} />
         </span>
-        {chipLabel(view)}
+        {view.summary ? chipLabel(view) : "Xem quá trình trả lời"}
         <Icon name={open ? "up" : "down"} size={16} />
       </button>
       <ul

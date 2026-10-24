@@ -10,11 +10,17 @@ export function Sheet({
   onClose,
   title,
   children,
+  className = "",
+  keepMounted = false,
+  hideHeader = false,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
+  className?: string;
+  keepMounted?: boolean;
+  hideHeader?: boolean;
 }) {
   const panel = useRef<HTMLDivElement>(null),
     callback = useRef(onClose);
@@ -30,7 +36,8 @@ export function Sheet({
       if (root) root.inert = true;
     }
     dialogs.push(id);
-    panel.current?.querySelector<HTMLElement>("button,input")?.focus();
+    if (hideHeader) panel.current?.focus({ preventScroll: true });
+    else panel.current?.querySelector<HTMLElement>("button,input")?.focus();
     const key = (e: KeyboardEvent) => {
       if (dialogs.at(-1) !== id) return;
       if (e.key === "Escape") callback.current();
@@ -43,7 +50,11 @@ export function Sheet({
       if (!nodes.length) return;
       const first = nodes[0],
         last = nodes[nodes.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
+      if (
+        e.shiftKey &&
+        (document.activeElement === first ||
+          document.activeElement === panel.current)
+      ) {
         e.preventDefault();
         last.focus();
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -66,9 +77,10 @@ export function Sheet({
   }, [open]);
   return createPortal(
     <AnimatePresence>
-      {open && (
+      {(open || keepMounted) && (
         <motion.div
-          className="scrim"
+          className={`scrim ${className}`}
+          hidden={!open}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -76,6 +88,7 @@ export function Sheet({
         >
           <motion.div
             ref={panel}
+            tabIndex={-1}
             className="sheet"
             role="dialog"
             aria-modal="true"
@@ -86,12 +99,18 @@ export function Sheet({
             transition={{ duration: 0.2 }}
             onMouseDown={(e) => e.stopPropagation()}
           >
-            <div className="sheet-head">
-              <h2>{title}</h2>
-              <button className="icon-btn" onClick={onClose} aria-label="Đóng">
-                <Icon name="close" />
-              </button>
-            </div>
+            {!hideHeader && (
+              <div className="sheet-head">
+                <h2>{title}</h2>
+                <button
+                  className="icon-btn"
+                  onClick={onClose}
+                  aria-label="Đóng"
+                >
+                  <Icon name="close" />
+                </button>
+              </div>
+            )}
             <div className="sheet-body">{children}</div>
           </motion.div>
         </motion.div>

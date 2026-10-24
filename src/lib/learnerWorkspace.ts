@@ -12,6 +12,8 @@ export type SavedQuestion = {
 export type Activity = { id: string; date: string; kind: string };
 export type Workspace = {
   version: 1;
+  avatarUrl?: string | null;
+  examPeriod?: string;
   gender: "male" | "female" | null;
   mascot: string;
   /** Legacy local fields retained for previously exported profiles; account /me is authoritative. */

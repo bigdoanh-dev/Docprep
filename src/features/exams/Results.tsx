@@ -75,6 +75,11 @@ export function Results() {
         {!data && !error && <Loading />}
         {data && (
           <>
+            <p className="learning-encouragement" role="status">
+              {data.total > 0 && data.score === data.total
+                ? "Bạn đã trả lời đúng tất cả câu hỏi trong lượt này. Hãy tiếp tục củng cố kiến thức ở chủ đề kế tiếp!"
+                : "Bạn đã hoàn thành bài thi. Xem lại các câu cần củng cố và thử một lượt ôn ngắn để hiểu chắc hơn."}
+            </p>
             <div className="card stack">
               <p>
                 <span style={{ fontSize: 44, fontWeight: 700, lineHeight: 1 }}>

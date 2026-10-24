@@ -40,7 +40,7 @@ export function PracticeSet() {
   const [summary, setSummary] = useState<AdaptationSummary>();
   const header = (countLabel?: string) => (
     <header className="topbar">
-      <Link to="/" className="icon-btn" aria-label="Đóng bộ câu luyện">
+      <Link to="/on-tap" className="icon-btn" aria-label="Đóng bộ câu luyện">
         <Icon name="close" />
       </Link>
       <h1>Bộ câu luyện</h1>
@@ -57,13 +57,13 @@ export function PracticeSet() {
         {header()}
         <div className="body stack">
           <h2 className="title" style={{ marginTop: 12 }}>
-            Đã xong bộ câu
+            Bạn đã hoàn thành lượt ôn!
           </h2>
           <div className="card">
             <AdaptationLines summary={summary} />
           </div>
-          <Link to="/" className="btn primary lg block">
-            Về trang chủ
+          <Link to="/on-tap" className="btn primary lg block">
+            Về trang ôn tập
           </Link>
         </div>
       </div>

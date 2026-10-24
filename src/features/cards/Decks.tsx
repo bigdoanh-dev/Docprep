@@ -20,7 +20,7 @@ export function Decks() {
   return (
     <div className="screen">
       <header className="topbar">
-        <Link to="/luyen-tap" className="icon-btn" aria-label="Về Luyện tập">
+        <Link to="/" className="icon-btn" aria-label="Về trang chủ">
           <Icon name="left" />
         </Link>
         <h1>Bộ thẻ</h1>

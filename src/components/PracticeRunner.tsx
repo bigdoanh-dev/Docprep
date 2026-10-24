@@ -233,9 +233,7 @@ export function PracticeRunner({
           </div>
         )}
         <div className="quiz-stem-wrapper">
-          <h2 className="title quiz-stem-title">
-            {item.stem}
-          </h2>
+          <h2 className="title quiz-stem-title">{item.stem}</h2>
         </div>
         <QuizOptions
           options={item.options}
@@ -301,6 +299,13 @@ export function PracticeRunner({
               ))}
             </div>
           </div>
+        )}
+        {feedback && (
+          <p className="learning-encouragement" role="status">
+            {feedback.correct
+              ? "Bạn đã trả lời đúng! Đọc lời giải để củng cố cách hiểu của mình."
+              : "Câu này là cơ hội để hiểu rõ hơn. Hãy đọc lời giải và mở nguồn trước khi tiếp tục."}
+          </p>
         )}
         {feedback?.remediation && (
           <div className="card stack">

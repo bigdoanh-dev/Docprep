@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>Setting Actor...</title>
+</head>
+<body>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const role = params.get('role') || 'learner';
+  const mode = params.get('mode') || 'demo';
+  const to = params.get('to') || '/';
+  const actor = { role, mode, name: role === 'learner' ? 'Bác sĩ nội trú' : 'Quản trị viên', id: 'demo-' + role };
+  localStorage.setItem('actor', JSON.stringify(actor));
+  localStorage.setItem('docprep.actor', JSON.stringify(actor));
+  localStorage.setItem('yhdp.actor.v1', JSON.stringify(actor));
+  localStorage.setItem('staff.session', JSON.stringify({ role, mode }));
+  window.location.href = to;
+</script>
+</body>
+</html>

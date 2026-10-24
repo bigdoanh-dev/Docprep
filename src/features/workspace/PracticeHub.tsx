@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   BookOpen,
-  Clock,
   Layers,
   Shuffle,
   SlidersHorizontal,
@@ -45,13 +44,7 @@ export function PracticeHub() {
     }
   };
   return (
-    <div className="screen stack">
-      <header className="page-heading">
-        <h1>Ôn tập theo cách của bạn</h1>
-        <p>
-          Chọn chuyên khoa hoặc trộn câu hỏi từ các nhóm có trong ngân hàng.
-        </p>
-      </header>
+    <div className="screen stack practice-page">
       <div className="practice-intro-card">
         <div className="practice-intro-main">
           <span className="practice-intro-icon" aria-hidden="true">
@@ -59,7 +52,7 @@ export function PracticeHub() {
           </span>
           <div className="practice-intro-text">
             <div className="practice-intro-badge-row">
-              <span className="practice-role-badge">Chương trình hiện tại</span>
+              <span className="practice-role-badge">Trọng tâm ôn tập</span>
               <h2>Y học dự phòng</h2>
             </div>
             <p>
@@ -74,7 +67,15 @@ export function PracticeHub() {
       </div>
       {error && <LoadError message={error} onRetry={reload} />}
       <section className="panel stack">
-        <h2>Bắt đầu một lượt ôn</h2>
+        <h2>Thiết lập lượt ôn</h2>
+        <button
+          className="btn primary practice-start"
+          disabled={busy || actor.mode !== "demo" || !data}
+          onClick={start}
+        >
+          {busy ? "Đang chuẩn bị…" : "Bắt đầu ôn tập"}
+          <ArrowRight size={18} />
+        </button>
         <div className="practice-modes">
           <button
             className={`choice-panel ${mode === "specialty" ? "selected" : ""}`}
@@ -95,8 +96,8 @@ export function PracticeHub() {
             <span className="choice-panel-icon" aria-hidden="true">
               <Shuffle size={20} />
             </span>
-            <strong>Ôn tập ngẫu nhiên</strong>
-            <span>Trộn câu hỏi từ các nhóm đang có câu trong kho.</span>
+            <strong>Ôn tập tổng hợp</strong>
+            <span>Củng cố kiến thức qua câu hỏi từ nhiều nhóm năng lực.</span>
           </button>
         </div>
         <div className="practice-config-section">
@@ -138,12 +139,6 @@ export function PracticeHub() {
                 <SlidersHorizontal size={16} className="label-icon" />
                 <strong>Số câu hỏi trong phiên</strong>
               </span>
-              <span className="label-hint-badge">
-                <Clock size={13} />
-                {count === 5 && "Dự kiến: ~8 phút · Ôn nhanh"}
-                {count === 10 && "Dự kiến: ~18 phút · Khuyên dùng"}
-                {count === 20 && "Dự kiến: ~35 phút · Chuyên sâu"}
-              </span>
             </div>
 
             <div
@@ -153,25 +148,32 @@ export function PracticeHub() {
             >
               {[
                 {
-                  val: 5,
-                  label: "5 câu",
-                  sub: "Khởi động nhanh",
-                  time: "~8 phút",
-                  badge: null,
-                },
-                {
                   val: 10,
                   label: "10 câu",
-                  sub: "Phiên tiêu chuẩn",
-                  time: "~18 phút",
+                  sub: "Ôn nhanh",
+                  time: "",
                   badge: "Khuyên dùng",
                 },
                 {
                   val: 20,
                   label: "20 câu",
-                  sub: "Luyện chuyên sâu",
-                  time: "~35 phút",
-                  badge: "Thử thách",
+                  sub: "Ôn nhanh",
+                  time: "",
+                  badge: null,
+                },
+                {
+                  val: 30,
+                  label: "30 câu",
+                  sub: "Củng cố",
+                  time: "",
+                  badge: null,
+                },
+                {
+                  val: 60,
+                  label: "60 câu",
+                  sub: "Ôn mở rộng",
+                  time: "",
+                  badge: null,
                 },
               ].map((opt) => {
                 const isSelected = count === opt.val;
@@ -208,7 +210,9 @@ export function PracticeHub() {
           </div>
         </div>
         <p className="muted small">
-          Không tính giờ. Nhận giải thích và nguồn học liệu sau từng câu.
+          Không tính giờ. Nhận giải thích và nguồn học liệu sau từng câu. Kho
+          minh họa có thể có ít câu hơn lựa chọn; phiên chỉ dùng các câu sẵn có,
+          không lặp câu.
         </p>
         {actor.mode === "live" && (
           <p className="notice">
@@ -221,14 +225,6 @@ export function PracticeHub() {
             {actionError}
           </p>
         )}
-        <button
-          className="btn primary"
-          disabled={busy || actor.mode !== "demo" || !data}
-          onClick={start}
-        >
-          {busy ? "Đang chuẩn bị…" : "Bắt đầu ôn tập"}
-          <ArrowRight size={18} />
-        </button>
       </section>
     </div>
   );
