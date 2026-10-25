@@ -762,11 +762,12 @@
 }
 @media (min-width: 700px) {
   .assistant-popup.is-expanded .sheet {
-    height: calc(100dvh - 40px) !important;
-    max-height: calc(100dvh - 40px) !important;
-    max-width: min(960px, calc(100vw - 48px)) !important;
-    margin: 20px 0;
-    border-radius: 22px !important;
+    width: min(var(--mobile-app-width), calc(100vw - 48px)) !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    max-width: min(var(--mobile-app-width), calc(100vw - 48px)) !important;
+    margin: 0;
+    border-radius: 0 !important;
   }
   .assistant-popup.is-expanded .tutor-messages > *,
   .assistant-popup.is-expanded .tutor-composer-box,
