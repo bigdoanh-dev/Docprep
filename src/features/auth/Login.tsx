@@ -246,15 +246,13 @@ export function Login() {
               </button>
             </form>
 
-            {import.meta.env.DEV && (
-              <button
-                type="button"
-                className="login-demo-link"
-                onClick={() => chooseMode("demo")}
-              >
-                Dùng dữ liệu trải nghiệm
-              </button>
-            )}
+            <button
+              type="button"
+              className="login-demo-link"
+              onClick={() => chooseMode("demo")}
+            >
+              Dùng dữ liệu trải nghiệm
+            </button>
           </>
         ) : (
           <div className="stack login-demo-list">
