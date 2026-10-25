@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { AssessmentRadar } from "../../components/Charts";
@@ -51,6 +52,13 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
           correct: shownLevels.find((l) => l.level === i + 1)?.correct ?? 0,
           total: shownLevels.find((l) => l.level === i + 1)?.total ?? 0,
         }));
+  const chartKey = [
+    perspective,
+    activeGroup?.module_id ?? "all",
+    axes
+      .map((axis) => `${axis.id}:${axis.name}:${axis.correct}/${axis.total}`)
+      .join("|"),
+  ].join(":");
   const matrix = learningMatrix(
     perspective === "bloom" ? shownGroups : groups,
     perspective,
@@ -133,13 +141,15 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
             <div className="assessment-combined">
               {axes.length >= 3 ? (
                 <AssessmentRadar
+                  key={chartKey}
                   axes={axes}
-                  label={`Biểu đồ tỷ lệ đúng theo ${perspectiveLabel}; danh sách bên dưới ghi tên, tỷ lệ và số câu đã có kết quả.`}
+                  label={`Biểu đồ tỷ lệ đúng theo ${perspectiveLabel}; chạm vào một điểm hoặc số trục để xem chi tiết.`}
                 />
               ) : (
                 <p className="muted small">Cần ít nhất 3 mục để vẽ radar.</p>
               )}
               <ol
+                key={chartKey}
                 className="assessment-bars"
                 aria-label={`Các mục có kết quả theo ${perspectiveLabel}`}
               >
@@ -147,7 +157,10 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
                   const pct = assessmentPercent(a);
                   if (pct === null) return null;
                   return (
-                    <li key={a.id}>
+                    <li
+                      key={a.id}
+                      style={{ animationDelay: `${index * 45}ms` }}
+                    >
                       <div className="assessment-bar-heading">
                         <span className="assessment-axis-name">
                           <span className="assessment-axis-number">
@@ -186,7 +199,13 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
       </div>
       {hasAssessment && (
         <details className="analysis-table-details">
-          <summary>Chi tiết theo chuyên khoa và mức độ</summary>
+          <summary>
+            <span className="analysis-table-summary-copy">
+              <strong>Chi tiết theo chuyên khoa và mức độ</strong>
+              <small>Mở bảng kết quả, số câu đúng và phần chưa có dữ liệu</small>
+            </span>
+            <ChevronDown size={19} aria-hidden="true" />
+          </summary>
           <div className="analysis-section">
             <div className="analysis-view-heading">
               <h3>So sánh kết quả</h3>

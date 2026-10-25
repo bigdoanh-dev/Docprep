@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import type { CurvePoint } from "../lib/api";
 import {
   CURVE_FLOOR,
@@ -330,9 +330,28 @@ export function AssessmentRadar({
   axes,
   label,
 }: {
-  axes: { id: string; label: string; correct: number; total: number }[];
+  axes: {
+    id: string;
+    label: string;
+    name?: string;
+    correct: number;
+    total: number;
+  }[];
   label: string;
 }) {
+  const [selectedAxisId, setSelectedAxisId] = useState<string | null>(null);
+  const selectedAxis = axes.find((axis) => axis.id === selectedAxisId);
+  const toggleAxis = (axisId: string) =>
+    setSelectedAxisId((current) => (current === axisId ? null : axisId));
+  const handleAxisKeyDown = (
+    event: KeyboardEvent<SVGCircleElement>,
+    axisId: string,
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      toggleAxis(axisId);
+    }
+  };
   const center = { x: 210, y: 178 };
   const radius = 108;
   const point = (i: number, distance: number) => {
@@ -354,109 +373,172 @@ export function AssessmentRadar({
     point(i, radius * share(axes[i].correct, axes[i].total));
   return (
     <figure className="assessment-radar">
-      <svg viewBox="0 0 420 356" role="img" aria-label={label}>
-        {[0.25, 0.5, 0.75, 1].map((scale) => (
-          <polygon
-            key={scale}
-            points={points(radius * scale)}
-            fill="none"
-            stroke="var(--border-input)"
-            strokeWidth="1"
-          />
-        ))}
-        {axes.map((axis, i) => {
-          const end = point(i, radius);
-          const name = point(i, radius + 42);
-          return (
-            <g key={axis.id}>
-              <line
-                x1={center.x}
-                y1={center.y}
-                x2={end.x}
-                y2={end.y}
-                stroke="var(--border-input)"
-              />
-              <text
-                x={name.x}
-                y={name.y + 5}
-                textAnchor="middle"
-                className="radar-axis-value"
-              >
-                {i + 1}
-              </text>
-            </g>
-          );
-        })}
-        {allAssessed && (
-          <polygon
-            points={axes
-              .map((_, i) => {
-                const p = assessedPoint(i);
-                return `${p.x},${p.y}`;
-              })
-              .join(" ")}
-            fill="var(--primary-tint)"
-            stroke="var(--primary)"
-            strokeWidth="2"
-          />
-        )}
-        {!allAssessed &&
-          axes.map((a, i) => {
-            const next = (i + 1) % axes.length;
-            if (!a.total || !axes[next].total) return null;
-            const from = assessedPoint(i),
-              to = assessedPoint(next);
+      <div className="assessment-radar-canvas">
+        <svg viewBox="0 0 420 356" role="group" aria-label={label}>
+          {[0.25, 0.5, 0.75, 1].map((scale) => (
+            <polygon
+              key={scale}
+              points={points(radius * scale)}
+              fill="none"
+              stroke="var(--border-input)"
+              strokeWidth="1"
+            />
+          ))}
+          {axes.map((axis, i) => {
+            const end = point(i, radius);
+            const name = point(i, radius + 42);
             return (
-              <line
-                key={a.id}
-                x1={from.x}
-                y1={from.y}
-                x2={to.x}
-                y2={to.y}
-                stroke="var(--primary)"
-                strokeWidth="2"
-              />
+              <g key={axis.id}>
+                <line
+                  x1={center.x}
+                  y1={center.y}
+                  x2={end.x}
+                  y2={end.y}
+                  stroke="var(--border-input)"
+                />
+                <circle
+                  className="radar-axis-hit"
+                  cx={name.x}
+                  cy={name.y}
+                  r="21"
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={selectedAxisId === axis.id}
+                  aria-label={`${axis.name ?? axis.label}: ${axis.total ? `${Math.round(share(axis.correct, axis.total) * 100)}% đúng, ${axis.correct}/${axis.total} câu` : "chưa có dữ liệu"}. Chạm để xem chi tiết.`}
+                  onClick={() => toggleAxis(axis.id)}
+                  onKeyDown={(event) => handleAxisKeyDown(event, axis.id)}
+                />
+                <text
+                  x={name.x}
+                  y={name.y + 5}
+                  textAnchor="middle"
+                  className="radar-axis-value"
+                  aria-hidden="true"
+                >
+                  {i + 1}
+                </text>
+              </g>
             );
           })}
-        {axes.map((axis, i) => {
-          if (!axis.total) return null;
-          const p = assessedPoint(i);
-          return (
-            <circle
-              key={axis.id}
-              cx={p.x}
-              cy={p.y}
-              r="4.5"
-              fill="var(--primary)"
-              stroke="white"
+          {allAssessed && (
+            <polygon
+              className="radar-data-area"
+              points={axes
+                .map((_, i) => {
+                  const p = assessedPoint(i);
+                  return `${p.x},${p.y}`;
+                })
+                .join(" ")}
+              fill="var(--primary-tint)"
+              stroke="var(--primary)"
               strokeWidth="2"
-            >
-              <title>
-                {axis.label}: {axis.correct}/{axis.total} câu đúng
-              </title>
-            </circle>
-          );
-        })}
-        <text x={center.x + 6} y={center.y - 6} className="radar-scale">
-          0
-        </text>
-        <text
-          x={center.x + 6}
-          y={center.y - radius * 0.5 - 5}
-          className="radar-scale"
+            />
+          )}
+          {!allAssessed &&
+            axes.map((a, i) => {
+              const next = (i + 1) % axes.length;
+              if (!a.total || !axes[next].total) return null;
+              const from = assessedPoint(i),
+                to = assessedPoint(next);
+              return (
+                <line
+                  key={a.id}
+                  x1={from.x}
+                  y1={from.y}
+                  x2={to.x}
+                  y2={to.y}
+                  stroke="var(--primary)"
+                  strokeWidth="2"
+                />
+              );
+            })}
+          {axes.map((axis, i) => {
+            if (!axis.total) return null;
+            const p = assessedPoint(i);
+            const name = axis.name ?? axis.label;
+            const percentage = Math.round(share(axis.correct, axis.total) * 100);
+            const isSelected = selectedAxisId === axis.id;
+            return (
+              <g key={axis.id}>
+                {isSelected && (
+                  <circle
+                    className="radar-point-halo"
+                    cx={p.x}
+                    cy={p.y}
+                    r="11"
+                    aria-hidden="true"
+                  />
+                )}
+                <circle
+                  className="radar-point-hit"
+                  cx={p.x}
+                  cy={p.y}
+                  r="21"
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
+                  aria-label={`${name}: ${percentage}% đúng, ${axis.correct}/${axis.total} câu. Chạm để xem chi tiết.`}
+                  onClick={() => toggleAxis(axis.id)}
+                  onKeyDown={(event) => handleAxisKeyDown(event, axis.id)}
+                />
+                <circle
+                  className="radar-point-mark"
+                  cx={p.x}
+                  cy={p.y}
+                  r={isSelected ? 6 : 4.5}
+                  fill="var(--primary)"
+                  stroke="white"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                />
+              </g>
+            );
+          })}
+          <text x={center.x + 6} y={center.y - 6} className="radar-scale">
+            0
+          </text>
+          <text
+            x={center.x + 6}
+            y={center.y - radius * 0.5 - 5}
+            className="radar-scale"
+          >
+            50
+          </text>
+          <text
+            x={center.x + 6}
+            y={center.y - radius - 5}
+            className="radar-scale"
+          >
+            100%
+          </text>
+        </svg>
+      </div>
+      {selectedAxis && (
+        <div
+          key={selectedAxis.id}
+          className="assessment-radar-detail"
+          role="status"
+          aria-live="polite"
         >
-          50
-        </text>
-        <text
-          x={center.x + 6}
-          y={center.y - radius - 5}
-          className="radar-scale"
-        >
-          100%
-        </text>
-      </svg>
+          <span>
+            <strong>{selectedAxis.name ?? selectedAxis.label}</strong>
+            <small>
+              {selectedAxis.total
+                ? `${selectedAxis.correct}/${selectedAxis.total} câu đúng · ${selectedAxis.total - selectedAxis.correct} câu chưa đúng hoặc bỏ trống`
+                : "Chưa có kết quả trong mục này."}
+            </small>
+          </span>
+          <strong className="assessment-radar-detail-score">
+            {selectedAxis.total
+              ? `${Math.round(share(selectedAxis.correct, selectedAxis.total) * 100)}%`
+              : "—"}
+          </strong>
+        </div>
+      )}
       <figcaption>
-        Trục được đánh số; xem tỷ lệ và số câu trong danh sách.
+        {selectedAxis
+          ? "Chạm điểm khác để so sánh; chạm lại để bỏ chọn."
+          : "Chạm vào một điểm để xem tỷ lệ đúng và số câu."}
       </figcaption>
     </figure>
   );
