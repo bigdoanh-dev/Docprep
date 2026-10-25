@@ -291,31 +291,51 @@ function ModuleContent({ id, close }: { id: string; close: () => void }) {
   if (error) return <LoadError message={error} onRetry={reload} />;
   if (!data) return <Loading />;
   return (
-    <div className="stack">
-      <p>{data.name}</p>
+    <div className="module-detail-content">
+      <p className="module-detail-description">{data.name}</p>
       {!data.units.length && (
         <p className="notice">
           Chưa có học liệu cho nhóm này trong kho hiện tại. Không tạo bài luyện
           hoặc số tiến độ giả.
         </p>
       )}
-      {data.units.map((u) => (
-        <Link
-          key={u.id}
-          className="list-row"
-          to={`/luyen-tap/${u.id}`}
-          onClick={close}
-        >
-          <BookOpen size={21} />
-          <span className="grow">
-            <strong>{u.topic}</strong>
-            <small className="muted block">
-              {u.done ? "Đã hoàn thành" : "Nội dung và câu hỏi tương tác"}
-            </small>
-          </span>
-          {u.done ? <CheckCircle2 size={18} /> : <ArrowRight size={18} />}
-        </Link>
-      ))}
+      {!!data.units.length && (
+        <section className="module-detail-lessons">
+          <div className="module-detail-lessons-heading">
+            <h3>Chủ đề học</h3>
+            <span>{data.units.length} bài</span>
+          </div>
+          <div className="module-detail-unit-list">
+            {data.units.map((u) => (
+              <Link
+                key={u.id}
+                className="module-unit-card"
+                to={`/luyen-tap/${u.id}`}
+                onClick={close}
+              >
+                <span className="module-unit-icon" aria-hidden="true">
+                  <BookOpen size={18} />
+                </span>
+                <span className="module-unit-copy">
+                  <strong>{u.topic}</strong>
+                  <small className={u.done ? "is-complete" : ""}>
+                    {u.done
+                      ? "Đã hoàn thành"
+                      : "Nội dung và câu hỏi tương tác"}
+                  </small>
+                </span>
+                <span className="module-unit-indicator" aria-hidden="true">
+                  {u.done ? (
+                    <CheckCircle2 size={19} />
+                  ) : (
+                    <ArrowRight size={19} />
+                  )}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
