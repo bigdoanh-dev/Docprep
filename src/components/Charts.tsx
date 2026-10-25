@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { CurvePoint } from "../lib/api";
 import {
   CURVE_FLOOR,
@@ -43,7 +44,14 @@ export function Bars({
   label,
   color = "var(--primary)",
 }: {
-  items: { key: string; value: number; caption: string; label: string }[];
+  items: {
+    key: string;
+    value: number;
+    caption: string;
+    label: string;
+    isToday?: boolean;
+    color?: string;
+  }[];
   max: number;
   label: string;
   color?: string;
@@ -51,17 +59,21 @@ export function Bars({
   return (
     <ol role="list" aria-label={label} className="bars">
       {items.map((item) => (
-        <li key={item.key}>
+        <li
+          key={item.key}
+          className={item.isToday ? "is-today" : undefined}
+          aria-label={`${item.label.replace("\n", " ")}: ${item.value} thẻ đến hạn`}
+        >
           <span style={{ fontWeight: 600, fontSize: 13 }}>{item.caption}</span>
           <span className="track">
             <span
               style={{
-                height: `${share(item.value, max) * 100}%`,
-                background: color,
+                height: `${item.value > 0 ? Math.max(8, share(item.value, max) * 100) : 0}%`,
+                background: item.color ?? color,
               }}
             />
           </span>
-          <span className="muted" style={{ fontSize: 11 }}>
+          <span className="muted" style={{ fontSize: 11, whiteSpace: "pre-line" }}>
             {item.label}
           </span>
         </li>
@@ -71,15 +83,36 @@ export function Bars({
 }
 
 const HEAT = [
-  "var(--soft)",
-  "var(--chart-1)",
-  "var(--chart-2)",
-  "var(--chart-3)",
-  "var(--primary)",
+  "#f5f7fa",
+  "#dce8f6",
+  "#a9c5e7",
+  "#6f99cb",
+  "#315ba3",
 ];
 const WEEKDAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+const WEEKDAY_NAMES = [
+  "Chủ nhật",
+  "Thứ Hai",
+  "Thứ Ba",
+  "Thứ Tư",
+  "Thứ Năm",
+  "Thứ Sáu",
+  "Thứ Bảy",
+];
+const HEAT_LEVELS = [
+  { color: HEAT[0], label: "0 phút" },
+  { color: HEAT[1], label: "1–15 phút" },
+  { color: HEAT[2], label: "16–45 phút" },
+  { color: HEAT[3], label: "46–75 phút" },
+  { color: HEAT[4], label: "Trên 75 phút" },
+];
 
-/** The last eight weeks, one cell per day, darker for longer study. */
+function weekdayName(date: string) {
+  const weekday = new Date(`${date}T12:00:00Z`).getUTCDay();
+  return WEEKDAY_NAMES[weekday];
+}
+
+/** Eight Monday-start calendar weeks, one cell per day, darker for longer study. */
 export function Heatmap({
   days,
   label,
@@ -87,11 +120,23 @@ export function Heatmap({
   days: { date: string; minutes: number }[];
   label: string;
 }) {
+  const weeks = calendarRows(days).slice(-8);
+  const [selectedDate, setSelectedDate] = useState(
+    () => days[days.length - 1]?.date ?? "",
+  );
+  const selectedDay = days.find((day) => day.date === selectedDate);
+
   return (
-    <div className="stack" style={{ gap: 8 }}>
+    <div className="stack rhythm-heatmap-wrap" style={{ gap: 10 }}>
+      <p className="muted small rhythm-heatmap-instructions">
+        Cột là các ngày trong tuần; mỗi dòng là một tuần. Tuần gần nhất ở cuối.
+      </p>
       <table className="heat rhythm-heatmap" aria-label={label}>
         <thead>
           <tr>
+            <th scope="col" className="rhythm-heatmap-week-head">
+              Tuần
+            </th>
             {WEEKDAYS.map((d) => (
               <th key={d} scope="col">
                 {d}
@@ -100,45 +145,77 @@ export function Heatmap({
           </tr>
         </thead>
         <tbody>
-          {calendarRows(days).map((row, r) => (
-            <tr key={r}>
-              {row.map((day, c) =>
-                day ? (
-                  <td
-                    key={c}
-                    aria-label={`${dayMonth(day.date)}: ${day.minutes} phút`}
-                    title={`${dayMonth(day.date)}: ${day.minutes} phút`}
-                  >
-                    <span
-                      style={{ background: HEAT[heatLevel(day.minutes)] }}
-                    />
-                  </td>
-                ) : (
-                  <td key={c} />
-                ),
-              )}
-            </tr>
-          ))}
+          {weeks.map((row, r) => {
+            const firstDay = row.find((day) => day !== null);
+            return (
+              <tr key={r}>
+                <th
+                  scope="row"
+                  className="rhythm-heatmap-week-label"
+                  aria-label={
+                    firstDay
+                      ? `Dòng bắt đầu ngày ${dayMonth(firstDay.date)}`
+                      : `Tuần ${r + 1}`
+                  }
+                >
+                  {firstDay ? dayMonth(firstDay.date) : "—"}
+                </th>
+                {row.map((day, c) =>
+                  day ? (
+                    <td key={c}>
+                      <button
+                        type="button"
+                        className={
+                          selectedDate === day.date ? "is-selected" : ""
+                        }
+                        aria-label={`${weekdayName(day.date)}, ${dayMonth(day.date)}: ${day.minutes === 0 ? "không học" : `${day.minutes} phút`}`}
+                        aria-pressed={selectedDate === day.date}
+                        title={`${dayMonth(day.date)}: ${day.minutes} phút`}
+                        onClick={() => setSelectedDate(day.date)}
+                      >
+                        <span
+                          style={{ background: HEAT[heatLevel(day.minutes)] }}
+                        />
+                      </button>
+                    </td>
+                  ) : (
+                    <td key={c} aria-hidden="true" />
+                  ),
+                )}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
-      <div
-        className="row muted rhythm-heatmap-legend"
-        style={{ gap: 6, fontSize: 12 }}
-        aria-hidden="true"
-      >
-        Không học
-        {HEAT.map((color) => (
+      {selectedDay && (
+        <div className="rhythm-day-detail" aria-live="polite">
           <span
-            key={color}
-            style={{
-              width: 14,
-              height: 14,
-              borderRadius: 4,
-              background: color,
-            }}
+            className="rhythm-day-detail-dot"
+            style={{ background: HEAT[heatLevel(selectedDay.minutes)] }}
+            aria-hidden="true"
           />
-        ))}
-        Trên 75 phút
+          <span>
+            <strong>
+              {weekdayName(selectedDay.date)}, {dayMonth(selectedDay.date)}
+            </strong>
+            <small>
+              {selectedDay.minutes === 0
+                ? "Chưa ghi nhận thời gian học"
+                : `Đã học ${selectedDay.minutes} phút`}
+            </small>
+          </span>
+        </div>
+      )}
+      <div className="rhythm-heatmap-key">
+        <p>Thời gian học mỗi ngày</p>
+        <ul>
+          {HEAT_LEVELS.map((level) => (
+            <li key={level.label}>
+              <span style={{ background: level.color }} aria-hidden="true" />
+              {level.label}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
