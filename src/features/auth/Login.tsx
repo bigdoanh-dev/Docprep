@@ -11,6 +11,8 @@ import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { roleHome, setActor, useActor, type Role } from "../../app/identity";
 import { publicPost, type TokenPair } from "../../lib/api";
 import { session, staffSession } from "../../lib/client";
+import { clearWorkspace } from "../../lib/learnerWorkspace";
+import { resetDemo } from "../../lib/demo/store";
 
 const demoProfiles = [
   {
@@ -52,7 +54,7 @@ function safeNextPath(next: string | null): string | null {
     : null;
 }
 
-export function Login() {
+export function Login({ onDemoStart }: { onDemoStart: () => void }) {
   const actor = useActor();
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -64,7 +66,8 @@ export function Login() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  if (actor) return <Navigate to={roleHome(actor.role)} replace />;
+  if (actor && actor.mode !== "demo")
+    return <Navigate to={roleHome(actor.role)} replace />;
 
   const chooseMode = (nextMode: "learner" | "staff" | "demo") => {
     setMode(nextMode);
@@ -265,7 +268,10 @@ export function Login() {
                 className="demo-login-row"
                 key={id}
                 onClick={() => {
+                  onDemoStart();
+                  resetDemo();
                   setActor({ role, id, name, mode: "demo" });
+                  clearWorkspace();
                   navigate(safeNextPath(params.get("next")) ?? roleHome(role));
                 }}
               >

@@ -100,10 +100,10 @@ function RoleGate({ roles }: { roles: Role[] }) {
     );
   return <Outlet />;
 }
-function RequireLogin() {
+function RequireLogin({ demoSessionStarted }: { demoSessionStarted: boolean }) {
   const actor = useActor();
   const loc = useLocation();
-  if (!actor) {
+  if (!actor || (actor.mode === "demo" && !demoSessionStarted)) {
     const next = `${loc.pathname}${loc.search}${loc.hash}`;
     return (
       <Navigate to={`/dang-nhap?next=${encodeURIComponent(next)}`} replace />
@@ -169,6 +169,7 @@ function Entry() {
   return <LearnerGate />;
 }
 export default function App() {
+  const [demoSessionStarted, setDemoSessionStarted] = useState(false);
   useEffect(() => onSignedOut(() => setActor(null)), []);
   useEffect(() => onStaffSignedOut(() => setActor(null)), []);
   return (
@@ -178,13 +179,18 @@ export default function App() {
       </a>
       <Suspense fallback={<Loading />}>
         <Routes>
-          <Route path="/dang-nhap" element={<Login />} />
+          <Route
+            path="/dang-nhap"
+            element={<Login onDemoStart={() => setDemoSessionStarted(true)} />}
+          />
           <Route
             path="/quan-ly/dang-nhap"
             element={<Navigate to="/dang-nhap" replace />}
           />
 
-          <Route element={<RequireLogin />}>
+          <Route
+            element={<RequireLogin demoSessionStarted={demoSessionStarted} />}
+          >
             {/* Static Portal Pages */}
             <Route element={<PortalLayout />}>
               <Route
