@@ -290,9 +290,6 @@ export function AssessmentRadar({
         {axes.map((axis, i) => {
           const end = point(i, radius);
           const name = point(i, radius + 42);
-          const pct = axis.total
-            ? `${Math.round(share(axis.correct, axis.total) * 100)}%`
-            : "—";
           return (
             <g key={axis.id}>
               <line
@@ -304,19 +301,11 @@ export function AssessmentRadar({
               />
               <text
                 x={name.x}
-                y={name.y - 2}
-                textAnchor="middle"
-                className="radar-axis-label"
-              >
-                {axis.label}
-              </text>
-              <text
-                x={name.x}
-                y={name.y + 16}
+                y={name.y + 5}
                 textAnchor="middle"
                 className="radar-axis-value"
               >
-                {pct}
+                {i + 1}
               </text>
             </g>
           );
@@ -390,7 +379,7 @@ export function AssessmentRadar({
         </text>
       </svg>
       <figcaption>
-        Tỷ lệ câu đúng · Thang 0–100%. Trục “—” chưa có dữ liệu.
+        Trục được đánh số; xem tỷ lệ và số câu trong danh sách.
       </figcaption>
     </figure>
   );

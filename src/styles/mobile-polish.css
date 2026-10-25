@@ -384,7 +384,7 @@
   box-shadow: none;
 }
 .mobile-analysis.panel {
-  gap: 18px;
+  gap: 14px;
 }
 .mobile-analysis .matrix-heading {
   display: grid;
@@ -393,6 +393,7 @@
 }
 .mobile-analysis .matrix-heading h2 {
   font-size: 17px;
+  line-height: 1.4;
 }
 .mobile-analysis .matrix-heading p {
   font-size: 12px;
@@ -465,7 +466,7 @@
   list-style: none;
 }
 .assessment-bars li {
-  padding: 11px 0;
+  padding: 8px 0;
   border-bottom: 1px solid #edf1f6;
 }
 .assessment-bars li:last-child {
@@ -474,7 +475,7 @@
 .assessment-bar-heading {
   display: flex;
   justify-content: space-between;
-  gap: 18px;
+  gap: 10px;
   align-items: baseline;
   font-size: 12px;
   line-height: 1.6;
@@ -485,6 +486,24 @@
   font-weight: 600;
   flex-shrink: 0;
 }
+.assessment-axis-name {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.assessment-axis-number {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: #edf4ff;
+  color: #2858a5;
+  font-size: 11px;
+  font-weight: 600;
+}
 .assessment-bars .progress {
   height: 5px;
   margin-top: 7px;
@@ -493,6 +512,11 @@
 .assessment-bars small {
   color: #667a94;
   font-size: 10px;
+}
+.analysis-note {
+  margin: 6px 0 0;
+  color: #718096;
+  font-size: 11px;
 }
 .assessment-bars .not-assessed {
   padding: 9px 0;
@@ -508,11 +532,10 @@
   max-width: 380px;
 }
 .mobile-analysis .radar-axis-label {
-  font-size: 16px;
-  font-weight: 500;
+  display: none;
 }
 .mobile-analysis .radar-axis-value {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 600;
 }
 .mobile-analysis .radar-scale {
@@ -520,6 +543,58 @@
 }
 .mobile-analysis .assessment-radar figcaption {
   font-size: 10px;
+}
+.mobile-analysis .analysis-view-heading {
+  margin-bottom: 4px;
+}
+.mobile-analysis .analysis-view-heading h3 {
+  color: #667a94;
+  font-size: 12px;
+  font-weight: 500;
+}
+.analysis-empty {
+  display: grid;
+  justify-items: start;
+  gap: 7px;
+  padding: 15px;
+  border: 1px solid #e3eaf3;
+  border-radius: 11px;
+  background: #f8fafd;
+}
+.analysis-empty strong {
+  color: #182c4b;
+  font-size: 13px;
+  font-weight: 600;
+}
+.analysis-empty p {
+  margin: 0;
+  color: #667a94;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.analysis-empty .btn {
+  min-height: 40px;
+  margin-top: 3px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.analysis-table-details {
+  border-top: 1px solid #e7edf4;
+}
+.analysis-table-details > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: #365f95;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.analysis-table-details[open] > summary {
+  margin-bottom: 12px;
+}
+.analysis-table-details .analysis-section {
+  padding-bottom: 4px;
 }
 .compact-results .field {
   font-size: 11px;

@@ -126,6 +126,7 @@
   border: 0;
   box-shadow: none;
   margin: 0;
+  padding: 4px 16px 16px;
 }
 .learning-encouragement {
   border-radius: 14px;

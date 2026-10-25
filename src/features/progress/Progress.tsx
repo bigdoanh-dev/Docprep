@@ -201,7 +201,7 @@ export function Progress() {
           </Block>
 
           <details className="progress-details">
-            <summary>Xem phân tích năng lực chi tiết</summary>
+            <summary>Phân tích chi tiết</summary>
             <SpecialtyAnalysis
               specialties={data.specialties}
               levels={data.levels}
