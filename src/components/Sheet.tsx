@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "./Icon";
 // Only the topmost dialog handles Escape/Tab. Nested source drawers keep the body locked.
@@ -24,7 +24,12 @@ export function Sheet({
 }) {
   const panel = useRef<HTMLDivElement>(null),
     callback = useRef(onClose);
+  const [keepMountedVisible, setKeepMountedVisible] = useState(open);
+  const isAssistant = className.split(/\s+/).includes("assistant-popup");
   callback.current = onClose;
+  useLayoutEffect(() => {
+    if (keepMounted && open) setKeepMountedVisible(true);
+  }, [keepMounted, open]);
   useEffect(() => {
     if (!open) return;
     const previous = document.activeElement as HTMLElement | null;
@@ -80,10 +85,14 @@ export function Sheet({
       {(open || keepMounted) && (
         <motion.div
           className={`scrim ${className}`}
-          hidden={!open}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          hidden={keepMounted && !open && !keepMountedVisible}
+          aria-hidden={keepMounted ? !open : undefined}
+          inert={keepMounted ? !open : undefined}
+          initial={keepMounted ? false : { opacity: 0 }}
+          animate={{ opacity: open ? 1 : 0 }}
+          exit={keepMounted ? undefined : { opacity: 0 }}
+          transition={{ opacity: { duration: 0.22, ease: "easeOut" } }}
+          style={keepMounted ? { pointerEvents: open ? "auto" : "none" } : undefined}
           onMouseDown={onClose}
         >
           <motion.div
@@ -93,10 +102,23 @@ export function Sheet({
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            initial={{ x: 24, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 24, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            layout={keepMounted && isAssistant}
+            initial={keepMounted ? { y: 24, opacity: 0 } : { x: 24, opacity: 0 }}
+            animate={keepMounted ? (open ? { y: 0, opacity: 1 } : { y: 24, opacity: 0 }) : { x: 0, opacity: 1 }}
+            exit={keepMounted ? undefined : { x: 24, opacity: 0 }}
+            transition={
+              keepMounted && isAssistant
+                ? {
+                    layout: { type: "spring", stiffness: 320, damping: 34 },
+                    y: { duration: 0.24, ease: [0.22, 1, 0.36, 1] },
+                    opacity: { duration: 0.18, ease: "easeOut" },
+                    x: { duration: 0.2, ease: "easeOut" },
+                  }
+                : { duration: 0.2 }
+            }
+            onAnimationComplete={() => {
+              if (keepMounted && !open) setKeepMountedVisible(false);
+            }}
             onMouseDown={(e) => e.stopPropagation()}
           >
             {!hideHeader && (

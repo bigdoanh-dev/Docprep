@@ -1157,12 +1157,91 @@
   height: 100%;
   border-radius: inherit;
   background: #315ba3;
+  transform-origin: left center;
+  animation: rhythm-summary-fill 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
   transition: width 180ms ease-out;
 }
 .mobile-progress .rhythm-summary-days > p {
   margin-top: 5px;
   color: #7b8a9e;
   font-size: 10px;
+}
+
+/* Nhịp học: chuyển động nhẹ giúp người dùng thấy thứ tự và trạng thái được chọn. */
+.mobile-progress .week-days > span.learned svg {
+  transform-origin: center;
+  animation: rhythm-check-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.mobile-progress .week-days > span:nth-child(1).learned svg { animation-delay: 0ms; }
+.mobile-progress .week-days > span:nth-child(2).learned svg { animation-delay: 35ms; }
+.mobile-progress .week-days > span:nth-child(3).learned svg { animation-delay: 70ms; }
+.mobile-progress .week-days > span:nth-child(4).learned svg { animation-delay: 105ms; }
+.mobile-progress .week-days > span:nth-child(5).learned svg { animation-delay: 140ms; }
+.mobile-progress .week-days > span:nth-child(6).learned svg { animation-delay: 175ms; }
+.mobile-progress .week-days > span:nth-child(7).learned svg { animation-delay: 210ms; }
+
+.mobile-progress .rhythm-heatmap td > button {
+  transition:
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+.mobile-progress .rhythm-heatmap td > button:active {
+  transform: scale(0.94);
+}
+.mobile-progress .rhythm-heatmap td > button > span {
+  transform-origin: center;
+  animation: rhythm-cell-in 220ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mobile-progress .rhythm-heatmap td:nth-child(2) > button > span { animation-delay: 0ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(3) > button > span { animation-delay: 20ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(4) > button > span { animation-delay: 40ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(5) > button > span { animation-delay: 60ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(6) > button > span { animation-delay: 80ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(7) > button > span { animation-delay: 100ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(8) > button > span { animation-delay: 120ms; }
+.mobile-progress .rhythm-heatmap td > button.is-selected {
+  box-shadow: 0 0 0 1px #315ba3;
+}
+.mobile-progress .rhythm-heatmap td > button.is-selected > span {
+  transform: scale(1.06);
+}
+.mobile-progress .rhythm-day-detail {
+  animation: rhythm-detail-in 200ms ease-out both;
+}
+.mobile-progress .due-forecast-chart .bars .track > span {
+  transform-origin: center bottom;
+  animation: rhythm-bar-in 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.mobile-progress .due-forecast-chart .bars > li:nth-child(1) .track > span { animation-delay: 0ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(2) .track > span { animation-delay: 45ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(3) .track > span { animation-delay: 90ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(4) .track > span { animation-delay: 135ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(5) .track > span { animation-delay: 180ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(6) .track > span { animation-delay: 225ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(7) .track > span { animation-delay: 270ms; }
+
+@keyframes rhythm-summary-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes rhythm-check-in {
+  from { opacity: 0; transform: scale(0.72); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes rhythm-cell-in {
+  from { opacity: 0.35; transform: scale(0.78); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes rhythm-detail-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes rhythm-bar-in {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
 }
 
 .mobile-progress .memory-curve-card {
