@@ -92,16 +92,23 @@ function RoleGate({ roles }: { roles: Role[] }) {
         <div className="access-denied">
           <h1>Không có quyền truy cập</h1>
           <p>Vai trò hiện tại không được mở khu vực này.</p>
-          <Link
-            className="btn"
-            to={roleHome(actor.role)}
-            viewTransition
-          >
+          <Link className="btn" to={roleHome(actor.role)} viewTransition>
             Về không gian của bạn
           </Link>
         </div>
       </Shell>
     );
+  return <Outlet />;
+}
+function RequireLogin() {
+  const actor = useActor();
+  const loc = useLocation();
+  if (!actor) {
+    const next = `${loc.pathname}${loc.search}${loc.hash}`;
+    return (
+      <Navigate to={`/dang-nhap?next=${encodeURIComponent(next)}`} replace />
+    );
+  }
   return <Outlet />;
 }
 function LearnerGate() {
@@ -171,129 +178,137 @@ export default function App() {
       </a>
       <Suspense fallback={<Loading />}>
         <Routes>
-          <Route
-            path="/gioi-thieu"
-            element={<Navigate to="/dang-nhap" replace />}
-          />
           <Route path="/dang-nhap" element={<Login />} />
           <Route
             path="/quan-ly/dang-nhap"
             element={<Navigate to="/dang-nhap" replace />}
           />
 
-          {/* Static Portal Pages */}
-          <Route element={<PortalLayout />}>
-            <Route
-              path="/khoa-hoc"
-              element={<Navigate to="/tinh-nang" replace />}
-            />
-            <Route
-              path="/courses"
-              element={<Navigate to="/tinh-nang" replace />}
-            />
-            <Route
-              path="/features"
-              element={<Navigate to="/tinh-nang" replace />}
-            />
-            <Route
-              path="/research"
-              element={<Navigate to="/nghien-cuu" replace />}
-            />
-            <Route
-              path="/about"
-              element={<Navigate to="/ve-chung-toi" replace />}
-            />
-            <Route
-              path="/thu-vien-anh"
-              element={<Navigate to="/gioi-thieu" replace />}
-            />
-            <Route
-              path="/media"
-              element={<Navigate to="/gioi-thieu" replace />}
-            />
-            <Route
-              path="/students"
-              element={<Navigate to="/hoc-vien" replace />}
-            />
-            <Route
-              path="/lecturers"
-              element={<Navigate to="/giang-vien-gioi-thieu" replace />}
-            />
-            <Route
-              path="/ai-learning"
-              element={<Navigate to="/hoc-cung-ai" replace />}
-            />
-            <Route path="/tro-giup" element={<Navigate to="/faq" replace />} />
-            <Route path="/help" element={<Navigate to="/faq" replace />} />
-            <Route path="/faq" element={<FaqPage />} />
-            <Route
-              path="/contact"
-              element={<Navigate to="/lien-he" replace />}
-            />
-            <Route path="/bao-mat" element={<SecurityCompliancePage />} />
-            <Route
-              path="/security"
-              element={<Navigate to="/bao-mat" replace />}
-            />
-            <Route path="/quyen-rieng-tu" element={<PrivacyPolicyPage />} />
-            <Route
-              path="/legal/privacy"
-              element={<Navigate to="/quyen-rieng-tu" replace />}
-            />
-            <Route path="/dieu-khoan" element={<TermsOfServicePage />} />
-            <Route
-              path="/legal/terms"
-              element={<Navigate to="/dieu-khoan" replace />}
-            />
-            <Route path="/cookie" element={<CookiePolicyPage />} />
-            <Route
-              path="/legal/cookies"
-              element={<Navigate to="/cookie" replace />}
-            />
-            <Route path="/tiep-can" element={<AccessibilityStatementPage />} />
-            <Route
-              path="/accessibility"
-              element={<Navigate to="/tiep-can" replace />}
-            />
-          </Route>
-          <Route element={<Entry />}>
-            <Route element={<Shell />}>
-              <Route path="/" element={<Home />} />
-            </Route>
-          </Route>
-          <Route element={<RoleGate roles={["learner"]} />}>
-            <Route element={<LearnerGate />}>
-              <Route element={<Shell />}>
-                {learning.map(([path, element]) => (
-                  <Route key={path} path={path} element={element} />
-                ))}
-              </Route>
-            </Route>
-          </Route>
-          <Route element={<RoleGate roles={["admin"]} />}>
-            <Route element={<Shell />}>
-              <Route path="/quan-tri/*" element={<Management />} />
-            </Route>
-          </Route>
-          <Route element={<RoleGate roles={["ministry_viewer", "admin"]} />}>
-            <Route element={<Shell />}>
-              <Route path="/quan-ly/*" element={<Management />} />
-            </Route>
-          </Route>
-          <Route
-            element={
-              <RoleGate roles={["learner", "admin", "ministry_viewer"]} />
-            }
-          >
-            <Route element={<Shell />}>
-              <Route path="/profile" element={<Account />} />
+          <Route element={<RequireLogin />}>
+            {/* Static Portal Pages */}
+            <Route element={<PortalLayout />}>
               <Route
-                path="/tai-khoan"
-                element={<Navigate to="/profile" replace />}
+                path="/gioi-thieu"
+                element={<Navigate to="/dang-nhap" replace />}
+              />
+              <Route
+                path="/khoa-hoc"
+                element={<Navigate to="/tinh-nang" replace />}
+              />
+              <Route
+                path="/courses"
+                element={<Navigate to="/tinh-nang" replace />}
+              />
+              <Route
+                path="/features"
+                element={<Navigate to="/tinh-nang" replace />}
+              />
+              <Route
+                path="/research"
+                element={<Navigate to="/nghien-cuu" replace />}
+              />
+              <Route
+                path="/about"
+                element={<Navigate to="/ve-chung-toi" replace />}
+              />
+              <Route
+                path="/thu-vien-anh"
+                element={<Navigate to="/gioi-thieu" replace />}
+              />
+              <Route
+                path="/media"
+                element={<Navigate to="/gioi-thieu" replace />}
+              />
+              <Route
+                path="/students"
+                element={<Navigate to="/hoc-vien" replace />}
+              />
+              <Route
+                path="/lecturers"
+                element={<Navigate to="/giang-vien-gioi-thieu" replace />}
+              />
+              <Route
+                path="/ai-learning"
+                element={<Navigate to="/hoc-cung-ai" replace />}
+              />
+              <Route
+                path="/tro-giup"
+                element={<Navigate to="/faq" replace />}
+              />
+              <Route path="/help" element={<Navigate to="/faq" replace />} />
+              <Route path="/faq" element={<FaqPage />} />
+              <Route
+                path="/contact"
+                element={<Navigate to="/lien-he" replace />}
+              />
+              <Route path="/bao-mat" element={<SecurityCompliancePage />} />
+              <Route
+                path="/security"
+                element={<Navigate to="/bao-mat" replace />}
+              />
+              <Route path="/quyen-rieng-tu" element={<PrivacyPolicyPage />} />
+              <Route
+                path="/legal/privacy"
+                element={<Navigate to="/quyen-rieng-tu" replace />}
+              />
+              <Route path="/dieu-khoan" element={<TermsOfServicePage />} />
+              <Route
+                path="/legal/terms"
+                element={<Navigate to="/dieu-khoan" replace />}
+              />
+              <Route path="/cookie" element={<CookiePolicyPage />} />
+              <Route
+                path="/legal/cookies"
+                element={<Navigate to="/cookie" replace />}
+              />
+              <Route
+                path="/tiep-can"
+                element={<AccessibilityStatementPage />}
+              />
+              <Route
+                path="/accessibility"
+                element={<Navigate to="/tiep-can" replace />}
               />
             </Route>
+            <Route element={<Entry />}>
+              <Route element={<Shell />}>
+                <Route path="/" element={<Home />} />
+              </Route>
+            </Route>
+            <Route element={<RoleGate roles={["learner"]} />}>
+              <Route element={<LearnerGate />}>
+                <Route element={<Shell />}>
+                  {learning.map(([path, element]) => (
+                    <Route key={path} path={path} element={element} />
+                  ))}
+                </Route>
+              </Route>
+            </Route>
+            <Route element={<RoleGate roles={["admin"]} />}>
+              <Route element={<Shell />}>
+                <Route path="/quan-tri/*" element={<Management />} />
+              </Route>
+            </Route>
+            <Route element={<RoleGate roles={["ministry_viewer", "admin"]} />}>
+              <Route element={<Shell />}>
+                <Route path="/quan-ly/*" element={<Management />} />
+              </Route>
+            </Route>
+            <Route
+              element={
+                <RoleGate roles={["learner", "admin", "ministry_viewer"]} />
+              }
+            >
+              <Route element={<Shell />}>
+                <Route path="/profile" element={<Account />} />
+                <Route
+                  path="/tai-khoan"
+                  element={<Navigate to="/profile" replace />}
+                />
+              </Route>
+            </Route>
+            <Route path="*" element={<NotFound />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

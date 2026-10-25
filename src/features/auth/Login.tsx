@@ -7,7 +7,7 @@ import {
   Settings2,
 } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { roleHome, setActor, useActor, type Role } from "../../app/identity";
 import { publicPost, type TokenPair } from "../../lib/api";
 import { session, staffSession } from "../../lib/client";
@@ -38,9 +38,24 @@ const demoProfiles = [
 
 const mobileRoles: Role[] = ["learner", "admin", "ministry_viewer"];
 
+function safeNextPath(next: string | null): string | null {
+  if (
+    !next ||
+    !next.startsWith("/") ||
+    next.startsWith("//") ||
+    next === "/dang-nhap"
+  )
+    return null;
+  const target = new URL(next, window.location.origin);
+  return target.origin === window.location.origin
+    ? `${target.pathname}${target.search}${target.hash}`
+    : null;
+}
+
 export function Login() {
   const actor = useActor();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const [mode, setMode] = useState<"learner" | "staff" | "demo">("learner");
   const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
@@ -86,8 +101,11 @@ export function Login() {
         name: pair.role === "learner" ? "Người học" : "Cán bộ",
         id: `live-${pair.role}`,
       });
+      const next = safeNextPath(params.get("next"));
       navigate(
-        pair.consent_required ? "/dong-y" : roleHome(pair.role as Role),
+        pair.consent_required
+          ? `/dong-y${next ? `?next=${encodeURIComponent(next)}` : ""}`
+          : (next ?? roleHome(pair.role as Role)),
         { replace: true },
       );
     } catch (cause) {
@@ -197,7 +215,11 @@ export function Login() {
                         aria-pressed={showPassword}
                         onClick={() => setShowPassword((visible) => !visible)}
                       >
-                        {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                        {showPassword ? (
+                          <EyeOff size={19} />
+                        ) : (
+                          <Eye size={19} />
+                        )}
                       </button>
                     </span>
                   </div>
@@ -224,13 +246,15 @@ export function Login() {
               </button>
             </form>
 
-            <button
-              type="button"
-              className="login-demo-link"
-              onClick={() => chooseMode("demo")}
-            >
-              Dùng dữ liệu trải nghiệm
-            </button>
+            {import.meta.env.DEV && (
+              <button
+                type="button"
+                className="login-demo-link"
+                onClick={() => chooseMode("demo")}
+              >
+                Dùng dữ liệu trải nghiệm
+              </button>
+            )}
           </>
         ) : (
           <div className="stack login-demo-list">
@@ -244,7 +268,7 @@ export function Login() {
                 key={id}
                 onClick={() => {
                   setActor({ role, id, name, mode: "demo" });
-                  navigate(roleHome(role));
+                  navigate(safeNextPath(params.get("next")) ?? roleHome(role));
                 }}
               >
                 <Icon size={20} aria-hidden="true" />
