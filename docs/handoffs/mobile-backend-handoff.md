@@ -1,10 +1,91 @@
-# Tài liệu bàn giao backend — DocPrep Mobile
+# Bàn giao dự án DocPrep Mobile cho team Backend
 
 **Ngày rà soát:** 25/10/2026
 **Repository:** `bigdoanh-dev/Docprep_FE`, nhánh `main`
-**Mục đích:** mô tả đầy đủ các luồng mobile đang được nối trong frontend, những request/response mà client sử dụng, quy tắc ghi dữ liệu, trường hợp lỗi và các phần chưa có API thật.
+**Mục đích:** giúp team Backend tiếp tục triển khai dịch vụ cho mobile: nắm trạng thái frontend, thứ tự công việc, contract API, điểm cần quyết định và tiêu chí hoàn thành.
 
 > Tài liệu được đối chiếu trực tiếp với mã frontend tại commit `82cbb75` và lần cập nhật này. Đây là hợp đồng mà client đang tiêu thụ, không phải xác nhận rằng backend hiện đã triển khai các API đó. Khi kiểu dữ liệu hoặc giao diện chưa xác định được semantics nghiệp vụ, phần đó được đánh dấu **Cần chốt** thay vì tự suy đoán.
+
+## Bắt đầu từ đây — hướng dẫn tiếp tục dự án cho Backend
+
+### Mục tiêu bàn giao
+
+Hoàn thiện backend `/v1` để người học và cán bộ có thể dùng **live mode** trên giao diện mobile. Backend là nguồn dữ liệu chính thức cho tài khoản, consent, bài học, câu trả lời, lịch ôn, bài thi, hội thoại AI, tiến độ và dashboard. Frontend chỉ gửi/đọc dữ liệu theo contract; localStorage không phải database dùng chung.
+
+### Tình trạng code đã kiểm chứng
+
+- Repository được rà soát là **frontend** `bigdoanh-dev/Docprep_FE`. Trong workspace này không có mã nguồn backend, migration hay OpenAPI của server; vì vậy tài liệu không khẳng định API nào đã được triển khai.
+- Nhiều màn hình live đã gọi `/api/v1/*`; chi tiết route và payload nằm ở các mục bên dưới. Cần đối chiếu server hiện có trước khi tạo endpoint trùng chức năng.
+- Vite local proxy `/api/*` tới `BACKEND_URL` và bỏ prefix `/api`; backend nhận path `/v1/*`.
+- `vercel.json` hiện là SPA catch-all. Production phải định tuyến API tới backend trước fallback này.
+- **Chưa sẵn sàng live theo code hiện tại:** nút tạo lượt luyện tự chọn bị khóa trong live; thư viện thẻ đầy đủ chưa có API; import CSV live có nhánh xử lý `501`; lịch thông báo/đã đọc và kế hoạch học còn local/demo; `/reports` có nhánh xử lý `501`.
+- Lecturer và review workspace hiện chưa được nối vào mobile route; chưa đưa vào backlog bắt buộc của đợt này.
+
+### Thứ tự triển khai đề xuất
+
+| Ưu tiên | Gói công việc | Phạm vi endpoint | Đầu ra để bàn giao |
+| --- | --- | --- | --- |
+| P0 | Chốt contract và môi trường | Base URL, `/v1`, error envelope, proxy Vercel, OpenAPI, role policy | Backend dev/staging URL; OpenAPI khớp payload ở tài liệu; xác nhận API/SSE đi tới backend |
+| P1 | Identity và quyền dữ liệu | `/auth/*`, `/me`, `/consent/*`, `/me/data` | Learner/staff đăng nhập được, refresh/logout đúng, consent gate và hồ sơ hoạt động |
+| P2 | Học và ôn tập | `/home`, `/session/today`, `/modules/*`, `/units/*`, `/practice-sets/*`, `/decks`, `/cards/*` | Học được unit, lưu đáp án, resume được set, chấm thẻ và cập nhật lịch ôn |
+| P3 | Thi thử | `/exams/*`, `/attempts/*` | Start/resume, autosave, đóng bài đúng hạn, trả kết quả và review item |
+| P4 | Gia sư AI và nguồn | `/chat/*`, `/items/*/hint|explain`, `/passages/*`, rating/suggestion | SSE stream thật, final event, citations mở được, hội thoại lưu bền vững |
+| P5 | Tiến độ và dữ liệu hoạt động | `/progress/skills`, `/progress/rhythm` | Một nguồn số liệu nhất quán giữa thiết bị; đúng timezone, null/zero và forecast |
+| P6 | Vận hành và compliance | `/admin/dashboard/*`, `/admin/users/import/*`, `/reports`, deletion/export | Dashboard có suppression, XLSX đúng quyền, nhập CSV an toàn, hoàn tất các luồng dữ liệu cá nhân |
+
+P0 là điều kiện để test tích hợp; có thể làm song song việc thiết kế data model. P1–P4 tạo đường học end-to-end. P5–P6 hoàn thiện báo cáo, quản trị và vận hành. Các ưu tiên là thứ tự phụ thuộc đề xuất cho backend, không phải tuyên bố về tiến độ server hiện có.
+
+### Việc đầu tiên team Backend nên làm
+
+1. Đối chiếu OpenAPI/routes hiện có với mục **Hợp đồng API chi tiết**; đánh dấu endpoint nào đã có, thiếu, khác schema hoặc đang trả `501`.
+2. Chốt API base URL cho local, staging và production; cấu hình proxy `/api/v1/*` trên Vercel trước SPA fallback.
+3. Chốt các semantics có thể làm sai dữ liệu: token refresh rotation, consent version, idempotency, timezone Việt Nam, hết giờ bài thi, `null` so với `0`, suppression dashboard.
+4. Tạo backlog backend theo P0–P6; mỗi endpoint kèm OpenAPI schema, authorization, migration/ownership dữ liệu, test tích hợp và status code.
+5. Kết nối frontend với backend staging và nghiệm thu theo checklist cuối tài liệu. Bật UI live cho tính năng hiện đang khóa chỉ sau khi API tương ứng sẵn sàng.
+
+### Các miền dữ liệu backend cần sở hữu
+
+Đây là **ranh giới nghiệp vụ**, không áp đặt database hay framework cụ thể:
+
+- **Identity:** learner, staff, role, activation code, access/refresh token và phiên thiết bị.
+- **Consent/profile:** phiên bản consent, thời điểm đồng ý/rút, hồ sơ learner, học phần trọng tâm và cài đặt ôn.
+- **Learning:** module/unit/item, session trong ngày, đáp án, feedback và completion state.
+- **Practice/adaptation:** practice set, câu hỏi, response, trạng thái hoàn tất, competency mastery và summary điều chỉnh.
+- **Spaced repetition:** card, nguồn tạo/citation, suspended state, review history, due queue và lịch FSRS.
+- **Exam:** form/blueprint, attempt, deadline, answer map, kết quả và snapshot review.
+- **AI/content:** chat session/message, stream status/trace, answer state, suggestion, citation và passage/version nguồn.
+- **Analytics:** study activity, skill aggregates, recall/forecast. Backend là nguồn số liệu đồng bộ giữa thiết bị; activity local của frontend chỉ là bản hiển thị phụ.
+- **Governance:** reports, audit, deletion/export request, consent research, suppression và CSV import batch.
+
+### Cách chạy frontend để tích hợp local
+
+Trong repo frontend, backend team có thể kết nối FE vào backend local/staging để kiểm tra contract:
+
+```bash
+npm ci
+cp .env.example .env.local
+# Sửa BACKEND_URL trong .env.local, ví dụ http://127.0.0.1:8000
+npm run dev
+```
+
+Vite phục vụ FE tại `http://127.0.0.1:5190`; request trình duyệt `/api/v1/me` được proxy thành `{BACKEND_URL}/v1/me`. Khi tích hợp production, staging và Vercel phải dùng cùng semantics API; không đưa secret AI/database vào frontend.
+
+### Điều kiện hoàn tất bàn giao backend
+
+- Mobile live đăng nhập được learner và staff theo role; consent bắt buộc chặn đúng; refresh và logout không tạo phiên mồ côi.
+- Người học tải được trang chủ, tiếp tục session, học unit, trả lời/retry an toàn, ôn thẻ và resume bài làm sau reload.
+- Bài thi được server quản lý deadline; không mất answer đã được xác nhận; kết quả và review item nhất quán.
+- AI trả stream khi đang chạy, có `final` ở mọi nhánh, citations truy xuất được; lỗi stream không lưu câu trả lời nửa chừng như hoàn chỉnh.
+- Tiến độ không lấy từ localStorage; ngày/timestamp và các trường chưa có dữ liệu được biểu diễn chính xác.
+- Endpoint staff được authorize server-side; dữ liệu nhóm nhỏ bị suppression cả ở dashboard lẫn file export.
+- Các tính năng chưa có backend được ghi rõ là chưa bật live; không dùng dữ liệu demo để thay thế response production.
+
+## Phạm vi và quy ước trong phụ lục API
+
+- Phần **Phạm vi và màn hình mobile** mô tả các route frontend để backend hiểu API phục vụ màn hình nào.
+- Phần **Luồng nghiệp vụ xuyên màn hình** mô tả thứ tự request và trạng thái resume.
+- Phần **Hợp đồng API chi tiết** là danh sách field frontend đang đọc/gửi; đây là contract mục tiêu để đối chiếu, không có nghĩa tất cả phải tạo mới nếu backend đã có equivalent.
+- Phần **Việc backend cần chốt trước tích hợp** và **Tiêu chí tích hợp** là checklist cho backlog/review.
 
 ## 1. Cách đọc tài liệu
 
