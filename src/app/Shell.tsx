@@ -161,9 +161,6 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
         id="main-content"
         className={`mobile-content route-${loc.pathname.split("/")[1] || "home"} ${actor.role !== "learner" ? "staff-content" : ""} ${immersive ? "immersive-content" : ""}`}
       >
-        {!immersive && actor.mode === "demo" && (
-          <p className="mobile-demo">Dữ liệu minh họa · lưu trên trình duyệt</p>
-        )}
         {children ?? <Outlet context={context} />}
       </main>
       {!immersive && actor.role === "learner" ? (
