@@ -139,7 +139,7 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
         {hasAssessment ? (
           <>
             <div className="analysis-view-heading">
-              <h3>Tỷ lệ đúng</h3>
+              <h3>Tỷ lệ đúng theo {perspectiveLabel}</h3>
             </div>
             <div className="assessment-combined">
               {axes.length >= 3 ? (
