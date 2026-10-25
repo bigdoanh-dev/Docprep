@@ -588,6 +588,12 @@
 .assessment-bars li:last-child {
   border-bottom: 0;
 }
+.assessment-bars li.is-selected {
+  padding-inline: 8px;
+  border-radius: 8px;
+  background: #f4f8fd;
+  box-shadow: inset 3px 0 #315ba8;
+}
 .assessment-bar-heading {
   display: flex;
   justify-content: space-between;
@@ -686,40 +692,6 @@
 .mobile-analysis .radar-point-mark {
   pointer-events: none;
 }
-.mobile-analysis .assessment-radar-detail {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 2px;
-  padding: 10px 12px;
-  border: 1px solid #d5e1f0;
-  border-radius: 10px;
-  background: #f4f7fc;
-  animation: analysis-detail-in 200ms ease-out both;
-}
-.mobile-analysis .assessment-radar-detail > span {
-  display: grid;
-  min-width: 0;
-  gap: 2px;
-}
-.mobile-analysis .assessment-radar-detail > span > strong {
-  color: #233b5e;
-  font-size: 12px;
-  line-height: 1.45;
-}
-.mobile-analysis .assessment-radar-detail small {
-  color: #63758d;
-  font-size: 10px;
-  line-height: 1.45;
-}
-.mobile-analysis .assessment-radar-detail-score {
-  flex: none;
-  color: #2858a5;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-}
 .mobile-analysis .radar-axis-label {
   display: none;
 }
@@ -729,11 +701,6 @@
 }
 .mobile-analysis .radar-scale {
   font-size: 10px;
-}
-.mobile-analysis .assessment-radar figcaption {
-  margin-top: 5px;
-  font-size: 10px;
-  line-height: 1.5;
 }
 .mobile-analysis .analysis-view-heading {
   margin-bottom: 4px;

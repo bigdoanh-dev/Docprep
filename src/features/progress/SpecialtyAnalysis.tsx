@@ -25,6 +25,7 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
   const [tableView, setTableView] = useState<"compact" | "full">("compact");
   const [selectedRow, setSelectedRow] = useState("");
   const [selectedCell, setSelectedCell] = useState<string | null>(null);
+  const [selectedAxisId, setSelectedAxisId] = useState<string | null>(null);
   const groups = bySpecialty ?? [];
   // A scope change can remove a group; fall back to all instead of showing stale data.
   const activeGroup = groups.find((g) => g.module_id === selected);
@@ -80,6 +81,7 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
     setSelected("all");
     setSelectedCell(null);
     setSelectedRow("");
+    setSelectedAxisId(null);
   }
 
   return (
@@ -121,6 +123,7 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
             onChange={(e) => {
               setSelected(e.target.value);
               setSelectedCell(null);
+              setSelectedAxisId(null);
             }}
           >
             <option value="all">Tất cả chuyên khoa</option>
@@ -143,7 +146,13 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
                 <AssessmentRadar
                   key={chartKey}
                   axes={axes}
-                  label={`Biểu đồ tỷ lệ đúng theo ${perspectiveLabel}; chạm vào một điểm hoặc số trục để xem chi tiết.`}
+                  label={`Biểu đồ tỷ lệ đúng theo ${perspectiveLabel}; danh sách bên dưới ghi tên, tỷ lệ và số câu đã có kết quả.`}
+                  selectedAxisId={selectedAxisId}
+                  onSelectAxis={(axisId) =>
+                    setSelectedAxisId((current) =>
+                      current === axisId ? null : axisId,
+                    )
+                  }
                 />
               ) : (
                 <p className="muted small">Cần ít nhất 3 mục để vẽ radar.</p>
@@ -159,6 +168,7 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
                   return (
                     <li
                       key={a.id}
+                      className={selectedAxisId === a.id ? "is-selected" : ""}
                       style={{ animationDelay: `${index * 45}ms` }}
                     >
                       <div className="assessment-bar-heading">

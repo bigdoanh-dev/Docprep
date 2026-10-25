@@ -329,6 +329,8 @@ export function MemoryCurve({
 export function AssessmentRadar({
   axes,
   label,
+  selectedAxisId,
+  onSelectAxis,
 }: {
   axes: {
     id: string;
@@ -338,18 +340,16 @@ export function AssessmentRadar({
     total: number;
   }[];
   label: string;
+  selectedAxisId: string | null;
+  onSelectAxis: (axisId: string) => void;
 }) {
-  const [selectedAxisId, setSelectedAxisId] = useState<string | null>(null);
-  const selectedAxis = axes.find((axis) => axis.id === selectedAxisId);
-  const toggleAxis = (axisId: string) =>
-    setSelectedAxisId((current) => (current === axisId ? null : axisId));
   const handleAxisKeyDown = (
     event: KeyboardEvent<SVGCircleElement>,
     axisId: string,
   ) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      toggleAxis(axisId);
+      onSelectAxis(axisId);
     }
   };
   const center = { x: 210, y: 178 };
@@ -396,18 +396,20 @@ export function AssessmentRadar({
                   y2={end.y}
                   stroke="var(--border-input)"
                 />
-                <circle
-                  className="radar-axis-hit"
-                  cx={name.x}
-                  cy={name.y}
-                  r="21"
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={selectedAxisId === axis.id}
-                  aria-label={`${axis.name ?? axis.label}: ${axis.total ? `${Math.round(share(axis.correct, axis.total) * 100)}% đúng, ${axis.correct}/${axis.total} câu` : "chưa có dữ liệu"}. Chạm để xem chi tiết.`}
-                  onClick={() => toggleAxis(axis.id)}
-                  onKeyDown={(event) => handleAxisKeyDown(event, axis.id)}
-                />
+                {axis.total > 0 && (
+                  <circle
+                    className="radar-axis-hit"
+                    cx={name.x}
+                    cy={name.y}
+                    r="21"
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={selectedAxisId === axis.id}
+                    aria-label={`${axis.name ?? axis.label}: ${Math.round(share(axis.correct, axis.total) * 100)}% đúng, ${axis.correct}/${axis.total} câu`}
+                    onClick={() => onSelectAxis(axis.id)}
+                    onKeyDown={(event) => handleAxisKeyDown(event, axis.id)}
+                  />
+                )}
                 <text
                   x={name.x}
                   y={name.y + 5}
@@ -477,8 +479,8 @@ export function AssessmentRadar({
                   role="button"
                   tabIndex={0}
                   aria-pressed={isSelected}
-                  aria-label={`${name}: ${percentage}% đúng, ${axis.correct}/${axis.total} câu. Chạm để xem chi tiết.`}
-                  onClick={() => toggleAxis(axis.id)}
+                  aria-label={`${name}: ${percentage}% đúng, ${axis.correct}/${axis.total} câu đúng`}
+                  onClick={() => onSelectAxis(axis.id)}
                   onKeyDown={(event) => handleAxisKeyDown(event, axis.id)}
                 />
                 <circle
@@ -513,33 +515,6 @@ export function AssessmentRadar({
           </text>
         </svg>
       </div>
-      {selectedAxis && (
-        <div
-          key={selectedAxis.id}
-          className="assessment-radar-detail"
-          role="status"
-          aria-live="polite"
-        >
-          <span>
-            <strong>{selectedAxis.name ?? selectedAxis.label}</strong>
-            <small>
-              {selectedAxis.total
-                ? `${selectedAxis.correct}/${selectedAxis.total} câu đúng · ${selectedAxis.total - selectedAxis.correct} câu chưa đúng hoặc bỏ trống`
-                : "Chưa có kết quả trong mục này."}
-            </small>
-          </span>
-          <strong className="assessment-radar-detail-score">
-            {selectedAxis.total
-              ? `${Math.round(share(selectedAxis.correct, selectedAxis.total) * 100)}%`
-              : "—"}
-          </strong>
-        </div>
-      )}
-      <figcaption>
-        {selectedAxis
-          ? "Chạm điểm khác để so sánh; chạm lại để bỏ chọn."
-          : "Chạm vào một điểm để xem tỷ lệ đúng và số câu."}
-      </figcaption>
     </figure>
   );
 }
