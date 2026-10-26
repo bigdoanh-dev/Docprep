@@ -2,14 +2,10 @@ import { Link } from "react-router-dom";
 import { Bars, Heatmap, MemoryCurve } from "../../components/Charts";
 import { LoadError, Loading } from "../../components/Status";
 import { api, type ProgressRhythm as Rhythm } from "../../lib/api";
-import {
-  dayMonth,
-  formatDate,
-  formatTime,
-  percent,
-} from "../../lib/format";
+import { dayMonth, formatDate, formatTime, percent } from "../../lib/format";
 import { useLoad } from "../../lib/hooks";
 import { LearningRhythm } from "../workspace/LearningRhythm";
+import { useActor } from "../../app/identity";
 import { Block, ProgressShell } from "./Progress";
 
 const KIND: Record<Rhythm["activity"][number]["kind"], string> = {
@@ -24,9 +20,7 @@ function readableStudyTime(minutes: number) {
   const hours = Math.floor(minutes / 60);
   const remainder = minutes % 60;
   if (hours === 0) return `${remainder} phút`;
-  return remainder === 0
-    ? `${hours} giờ`
-    : `${hours} giờ ${remainder} phút`;
+  return remainder === 0 ? `${hours} giờ` : `${hours} giờ ${remainder} phút`;
 }
 
 const WEEKDAY_SHORT = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
@@ -38,7 +32,9 @@ function todayInVietnam() {
     month: "2-digit",
     day: "2-digit",
   }).formatToParts(new Date());
-  const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  const value = Object.fromEntries(
+    parts.map((part) => [part.type, part.value]),
+  );
   return `${value.year}-${value.month}-${value.day}`;
 }
 
@@ -61,6 +57,7 @@ function nextSevenDates(startDate: string) {
 // log, memory from the learner's own cards. The only forward-looking figures are what happens to
 // memory without a review, and the cards already scheduled; nothing predicts the exam.
 export function ProgressRhythm() {
+  const actor = useActor();
   const { data, error, reload } = useLoad(
     () => api.get<Rhythm>("/progress/rhythm"),
     [],
@@ -85,8 +82,11 @@ export function ProgressRhythm() {
       {!data && !error && <Loading />}
       {data && (
         <>
-          <LearningRhythm />
-          <section className="card rhythm-summary" aria-labelledby="rhythm-week">
+          {actor?.mode === "demo" && <LearningRhythm />}
+          <section
+            className="card rhythm-summary"
+            aria-labelledby="rhythm-week"
+          >
             <div className="rhythm-summary-time">
               <h2 id="rhythm-week" className="muted small">
                 Thời gian học tuần này
@@ -121,7 +121,9 @@ export function ProgressRhythm() {
                   }}
                 />
               </div>
-              <p className="muted small">trong {data.week.days_elapsed} ngày đã qua</p>
+              <p className="muted small">
+                trong {data.week.days_elapsed} ngày đã qua
+              </p>
             </div>
           </section>
 
@@ -164,7 +166,10 @@ export function ProgressRhythm() {
             </div>
           </Block>
 
-          <section className="card memory-curve-card stack" aria-labelledby="curve">
+          <section
+            className="card memory-curve-card stack"
+            aria-labelledby="curve"
+          >
             <div>
               <h2 id="curve" className="h2">
                 Độ nhớ của một thẻ
@@ -174,7 +179,10 @@ export function ProgressRhythm() {
             {data.curve.length === 0 ? (
               <p className="muted small">Ôn thẻ để xem biểu đồ.</p>
             ) : (
-              <MemoryCurve points={data.curve} label="Độ nhớ của thẻ theo thời gian" />
+              <MemoryCurve
+                points={data.curve}
+                label="Độ nhớ của thẻ theo thời gian"
+              />
             )}
           </section>
 
@@ -226,9 +234,18 @@ export function ProgressRhythm() {
                   );
                 })}
               </div>
-              <ul className="recall-legend" aria-label="Chú giải biểu đồ độ nhớ">
-                <li><span className="remembered" />Mức nhớ dự kiến</li>
-                <li><span className="change" />Phần có thể giảm</li>
+              <ul
+                className="recall-legend"
+                aria-label="Chú giải biểu đồ độ nhớ"
+              >
+                <li>
+                  <span className="remembered" />
+                  Mức nhớ dự kiến
+                </li>
+                <li>
+                  <span className="change" />
+                  Phần có thể giảm
+                </li>
               </ul>
             </Block>
           )}

@@ -1,0 +1,11 @@
+# Stopgap content: blueprint tags are provisional and not expert-reviewed.
+- id: FX-DOC
+  title: Tài liệu thử
+  edition: demo
+  demo_label: Tài liệu demo – chưa thẩm định
+  excerpt_limit: null
+  passages:
+    - {id: fx-p01, chapter: "Chương 1", section: "1.1 Tỷ lệ hiện mắc", page: 10, competency_code: FND,
+       text: "Tỷ lệ hiện mắc bằng số người đang mắc chia cho tổng số người tại thời điểm đó."}
+    - {id: fx-p02, article: "Điều 3, khoản 1", competency_code: CI-01,
+       text: "Nhóm A gồm các bệnh truyền nhiễm đặc biệt nguy hiểm."}

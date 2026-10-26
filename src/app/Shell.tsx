@@ -20,6 +20,7 @@ import { useActor } from "./identity";
 import { Sheet } from "../components/Sheet";
 import { Chat } from "../features/chat/Chat";
 import { AssistantLauncher } from "../components/AssistantLauncher";
+import { RuntimeNotice } from "../components/RuntimeNotice";
 
 const learnerTabs = [
   ["/", "Trang chủ", Home],
@@ -93,6 +94,7 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
           {actor.mode === "demo" && "Bài thi minh họa · "}Thời gian tiếp tục
           chạy khi rời trang.
         </p>
+        <RuntimeNotice />
         <Outlet context={context} />
       </main>
     );
@@ -124,10 +126,16 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
                 <Link
                   to="/tien-do/nhip-hoc"
                   className="streak-badge"
-                  aria-label={`Chuỗi ôn tập ${streak(w.activity.map((a) => a.date))} ngày`}
+                  aria-label={
+                    actor.mode === "demo"
+                      ? `Chuỗi ôn tập ${streak(w.activity.map((a) => a.date))} ngày`
+                      : "Xem nhịp học từ máy chủ"
+                  }
                 >
                   <Flame size={18} fill="currentColor" />
-                  {streak(w.activity.map((a) => a.date))}
+                  {actor.mode === "demo"
+                    ? streak(w.activity.map((a) => a.date))
+                    : "Nhịp học"}
                 </Link>
                 <Link
                   className="header-bell"
@@ -161,6 +169,7 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
         id="main-content"
         className={`mobile-content route-${loc.pathname.split("/")[1] || "home"} ${actor.role !== "learner" ? "staff-content" : ""} ${immersive ? "immersive-content" : ""}`}
       >
+        <RuntimeNotice />
         {children ?? <Outlet context={context} />}
       </main>
       {!immersive && actor.role === "learner" ? (

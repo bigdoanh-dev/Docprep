@@ -1,0 +1,27 @@
+# Demo fixture: status 'approved' set by seed, not by expert review.
+# Stopgap content: blueprint tags are provisional and not expert-reviewed.
+# kind demo_short: ten questions cannot meet the blueprint ranges, so this form is not checked against
+# them. A form of kind mock must pass the blueprint check or the seed refuses it.
+- id: de-thi-thu-1
+  title: Đề thi thử số 1
+  kind: demo_short
+  seconds_per_question: 60
+  max_attempts: null
+  questions: [q-dt-07, q-dt-08, q-dt-09, q-dt-10, q-dt-11, q-dt-12, q-tc-01, q-tc-02, q-tc-03, q-tc-04]
+
+- id: danh-gia-nang-luc
+  title: Bài đánh giá năng lực
+  kind: diagnostic
+  seconds_per_question: 60
+  max_attempts: null
+  questions: [q-dt-01, q-dt-04, q-dt-06, q-dt-07, q-tc-01, q-tc-04]
+
+# Assembled per learner from the whole approved bank (backend/app/engine/assembly.py):
+# no fixed question list, only a size.
+- id: de-tu-rap
+  title: Đề tự ráp
+  kind: assembled
+  n_questions: 10
+  seconds_per_question: 60
+  max_attempts: null
+  questions: []

@@ -1,0 +1,17 @@
+[
+  {
+    "questions": ["Tỷ lệ hiện mắc là gì?", "Tỷ lệ hiện mắc được tính như thế nào?", "Định nghĩa tỷ lệ hiện mắc"],
+    "passage_id": "dt-p01",
+    "quote": "Tỷ lệ hiện mắc (prevalence) cho biết có bao nhiêu người đang mắc bệnh trong quần thể tại một thời điểm, bao gồm cả ca cũ lẫn ca mới."
+  },
+  {
+    "questions": ["Tỷ lệ mới mắc là gì?", "Tỷ lệ mới mắc được tính như thế nào?"],
+    "passage_id": "dt-p02",
+    "quote": "Tỷ lệ mới mắc (incidence) chỉ đếm các ca bệnh mới xuất hiện trong một khoảng thời gian, trên quần thể có nguy cơ."
+  },
+  {
+    "questions": ["Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?", "Viêm gan B mũi sơ sinh tiêm khi nào?"],
+    "passage_id": "tc-p02",
+    "quote": "Vắc xin viêm gan B mũi sơ sinh được tiêm trong vòng 24 giờ đầu sau sinh."
+  }
+]

@@ -1,0 +1,23 @@
+# Stopgap content: blueprint tags are provisional and not expert-reviewed.
+- id: fx-q-01
+  stem: "Câu hỏi thử 1?"
+  options:
+    - {key: a, text: "Đúng", correct: true, rationale: "Lý do đúng."}
+    - {key: b, text: "Sai", correct: false, rationale: "Lý do sai."}
+  explanation: "Giải thích thử."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: de
+  sources: [fx-p01]
+- id: fx-q-02
+  stem: "Câu hỏi thử 2?"
+  options:
+    - {key: a, text: "Nhóm A", correct: true, rationale: "Lý do đúng."}
+    - {key: b, text: "Nhóm C", correct: false, rationale: "Lý do sai."}
+  explanation: "Giải thích thử."
+  competency_code: CI-01
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: kho
+  sources: [fx-p02]

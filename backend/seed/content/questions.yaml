@@ -1,0 +1,595 @@
+# Demo fixture: status 'approved' set by seed, not by expert review.
+# Stopgap content: blueprint tags are provisional and not expert-reviewed.
+
+# ---- Unit u-dt-01 ----
+- id: q-dt-01
+  stem: "Một xã có 2.000 dân; ngày 1/1 có 50 người đang mắc lao. Tỷ lệ hiện mắc là?"
+  options:
+    - {key: a, text: "2,5%", correct: true, rationale: "50 ÷ 2.000 = 0,025 = 2,5%."}
+    - {key: b, text: "5%", correct: false, rationale: "5% là kết quả của 50 ÷ 1.000; mẫu số phải là toàn bộ 2.000 dân của xã."}
+    - {key: c, text: "0,25%", correct: false, rationale: "Đặt sai dấu thập phân: 50 ÷ 2.000 = 0,025, tức 2,5% chứ không phải 0,25%."}
+    - {key: d, text: "25%", correct: false, rationale: "25% là kết quả của 50 ÷ 200; mẫu số phải là 2.000 dân."}
+  explanation: "50 ÷ 2.000 = 2,5%. Tử số là mọi người đang mắc vào ngày 1/1; mẫu số là toàn bộ dân số xã tại thời điểm đó."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: trung_binh
+  sources: [dt-p01]
+
+- id: q-dt-02
+  stem: "Chỉ số nào chỉ đếm các ca bệnh mới xuất hiện trong một khoảng thời gian, trên quần thể có nguy cơ?"
+  options:
+    - {key: a, text: "Tỷ lệ hiện mắc", correct: false, rationale: "Hiện mắc đếm mọi người đang mắc tại một thời điểm, cả ca cũ lẫn ca mới."}
+    - {key: b, text: "Tỷ lệ mới mắc", correct: true, rationale: "Mới mắc chỉ đếm ca mới trong một khoảng thời gian, trên quần thể có nguy cơ."}
+    - {key: c, text: "Tỷ lệ tử vong trên số mắc", correct: false, rationale: "Chỉ số này lấy số tử vong chia cho số người mắc; nó đo mức độ nặng của bệnh."}
+    - {key: d, text: "Nguy cơ tương đối", correct: false, rationale: "Nguy cơ tương đối là tỷ số giữa hai tỷ lệ mới mắc, không phải số đo tần suất."}
+  explanation: "Tỷ lệ mới mắc chỉ đếm ca mới trong một khoảng thời gian; mẫu số là những người có nguy cơ mắc bệnh."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: de
+  sources: [dt-p02]
+
+- id: q-dt-03
+  stem: "Một bệnh mạn tính có tỷ lệ mới mắc không đổi. Nhờ thuốc mới, người bệnh sống lâu hơn nhưng không khỏi bệnh. Tỷ lệ hiện mắc sẽ thay đổi thế nào?"
+  options:
+    - {key: a, text: "Tăng", correct: true, rationale: "Thời gian mắc bệnh dài hơn nên số người đang mắc tích lũy nhiều hơn."}
+    - {key: b, text: "Giảm", correct: false, rationale: "Hiện mắc chỉ giảm khi mới mắc giảm hoặc thời gian mắc bệnh ngắn lại do khỏi nhanh hoặc tử vong nhanh."}
+    - {key: c, text: "Không đổi", correct: false, rationale: "Mới mắc không đổi nhưng thời gian mắc bệnh thay đổi, nên hiện mắc thay đổi theo."}
+    - {key: d, text: "Không xác định được vì hiện mắc không phụ thuộc thời gian mắc bệnh", correct: false, rationale: "Hiện mắc phụ thuộc cả mới mắc và thời gian mắc bệnh: P ≈ I × D."}
+  explanation: "P ≈ I × D. Mới mắc không đổi, thời gian mắc bệnh kéo dài, nên tỷ lệ hiện mắc tăng."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: trung_binh
+  sources: [dt-p03]
+
+# ---- Unit u-dt-02 ----
+- id: q-dt-04
+  stem: "Một nghiên cứu thuần tập về tiêm vắc xin và mắc bệnh cho RR = 0,5. Diễn giải nào đúng?"
+  options:
+    - {key: a, text: "Người được tiêm có nguy cơ mắc bệnh bằng một nửa người không tiêm", correct: true, rationale: "RR nhỏ hơn 1: phơi nhiễm (tiêm vắc xin) là yếu tố bảo vệ; 0,5 nghĩa là nguy cơ bằng một nửa."}
+    - {key: b, text: "Người được tiêm có nguy cơ mắc bệnh cao gấp 2 lần", correct: false, rationale: "Đó là diễn giải của RR = 2, không phải RR = 0,5."}
+    - {key: c, text: "Tiêm vắc xin không liên quan đến mắc bệnh", correct: false, rationale: "Không có sự kết hợp khi RR = 1."}
+    - {key: d, text: "50% người được tiêm sẽ mắc bệnh", correct: false, rationale: "RR là tỷ số giữa hai tỷ lệ mới mắc, không phải tỷ lệ mắc trong nhóm được tiêm."}
+  explanation: "RR = tỷ lệ mới mắc ở nhóm phơi nhiễm ÷ tỷ lệ mới mắc ở nhóm không phơi nhiễm. RR = 0,5 nghĩa là nguy cơ ở nhóm được tiêm bằng một nửa."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: trung_binh
+  sources: [dt-p06]
+
+- id: q-dt-05
+  stem: "Nghiên cứu một bệnh hiếm: chọn người bệnh và người không bệnh, rồi hỏi về phơi nhiễm trong quá khứ. Số đo kết hợp phù hợp là?"
+  options:
+    - {key: a, text: "Nguy cơ tương đối tính trực tiếp từ tỷ lệ mới mắc", correct: false, rationale: "Nghiên cứu bệnh–chứng không đo được tỷ lệ mới mắc nên không tính trực tiếp được RR."}
+    - {key: b, text: "Tỷ suất chênh (OR)", correct: true, rationale: "Bệnh–chứng so sánh chênh phơi nhiễm giữa nhóm bệnh và nhóm chứng bằng OR."}
+    - {key: c, text: "Tỷ lệ hiện mắc", correct: false, rationale: "Hiện mắc là số đo tần suất của nghiên cứu cắt ngang, không phải số đo kết hợp."}
+    - {key: d, text: "Tỷ lệ tấn công", correct: false, rationale: "Tỷ lệ tấn công là tỷ lệ mới mắc tích lũy trong vụ dịch."}
+  explanation: "Đây là nghiên cứu bệnh–chứng. Thiết kế này dùng tỷ suất chênh; khi bệnh hiếm, OR xấp xỉ RR."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: kho
+  sources: [dt-p07, dt-p10]
+
+- id: q-dt-06
+  stem: "Một test sàng lọc được thử trên 200 người có bệnh và cho kết quả dương tính ở 180 người. Độ nhạy của test là?"
+  options:
+    - {key: a, text: "90%", correct: true, rationale: "Độ nhạy = dương tính thật ÷ tổng số người có bệnh = 180 ÷ 200."}
+    - {key: b, text: "10%", correct: false, rationale: "10% là tỷ lệ âm tính giả (20 ÷ 200), không phải độ nhạy."}
+    - {key: c, text: "80%", correct: false, rationale: "Tính sai: 180 ÷ 200 = 0,9."}
+    - {key: d, text: "Không tính được vì thiếu số người không có bệnh", correct: false, rationale: "Số người không có bệnh cần cho độ đặc hiệu; độ nhạy chỉ cần nhóm có bệnh."}
+  explanation: "Độ nhạy = dương tính thật ÷ tổng số người có bệnh = 180 ÷ 200 = 90%."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: de
+  sources: [dt-p13]
+
+# ---- Mock form de-thi-thu-1 ----
+- id: q-dt-07
+  stem: "Sau một bữa cỗ có 150 người dự, 45 người bị tiêu chảy cấp. Tỷ lệ tấn công là?"
+  options:
+    - {key: a, text: "30%", correct: true, rationale: "45 ÷ 150 = 0,3 = 30%."}
+    - {key: b, text: "3%", correct: false, rationale: "Đặt sai dấu thập phân: 45 ÷ 150 = 0,3, tức 30%."}
+    - {key: c, text: "45%", correct: false, rationale: "45 là số ca mắc, chưa chia cho số người phơi nhiễm."}
+    - {key: d, text: "15%", correct: false, rationale: "Tính sai mẫu số; mẫu số là 150 người dự bữa cỗ."}
+  explanation: "Tỷ lệ tấn công = số ca mắc mới ÷ số người phơi nhiễm = 45 ÷ 150 = 30%."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: de
+  sources: [dt-p04]
+
+- id: q-dt-08
+  stem: "Một vụ dịch có 250 ca mắc và 5 ca tử vong. Chỉ số 5 ÷ 250 = 2% được gọi là gì?"
+  options:
+    - {key: a, text: "Tỷ suất tử vong thô", correct: false, rationale: "Tỷ suất tử vong thô lấy tổng số tử vong do mọi nguyên nhân chia cho dân số trung bình."}
+    - {key: b, text: "Tỷ lệ tử vong trên số mắc", correct: true, rationale: "Số tử vong do bệnh chia cho số người mắc bệnh đó."}
+    - {key: c, text: "Tỷ lệ tấn công", correct: false, rationale: "Tỷ lệ tấn công lấy số ca mắc mới chia cho số người phơi nhiễm."}
+    - {key: d, text: "Tỷ suất tử vong đặc hiệu theo nguyên nhân", correct: false, rationale: "Chỉ số này có mẫu số là dân số trung bình, không phải số người mắc."}
+  explanation: "Mẫu số là số người mắc bệnh, nên đây là tỷ lệ tử vong trên số mắc; chỉ số này phản ánh mức độ nặng của bệnh."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [dt-p05]
+
+- id: q-dt-09
+  stem: "Tỷ lệ mới mắc ở nhóm phơi nhiễm là 30 trên 1.000, ở nhóm không phơi nhiễm là 10 trên 1.000. Nguy cơ quy thuộc (AR) là?"
+  options:
+    - {key: a, text: "20 trên 1.000", correct: true, rationale: "AR = 30 − 10 = 20 trên 1.000."}
+    - {key: b, text: "3", correct: false, rationale: "3 là nguy cơ tương đối (30 ÷ 10), không phải nguy cơ quy thuộc."}
+    - {key: c, text: "40 trên 1.000", correct: false, rationale: "AR là hiệu chứ không phải tổng của hai tỷ lệ mới mắc."}
+    - {key: d, text: "0,33", correct: false, rationale: "0,33 là 10 ÷ 30, không phải số đo nào trong bài."}
+  explanation: "Nguy cơ quy thuộc = tỷ lệ mới mắc ở nhóm phơi nhiễm − tỷ lệ mới mắc ở nhóm không phơi nhiễm = 20 trên 1.000."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: kho
+  sources: [dt-p08]
+
+- id: q-dt-10
+  stem: "Thiết kế nghiên cứu nào phù hợp nhất để tìm yếu tố nguy cơ của một bệnh hiếm?"
+  options:
+    - {key: a, text: "Nghiên cứu thuần tập tương lai", correct: false, rationale: "Với bệnh hiếm, thuần tập cần cỡ mẫu rất lớn và theo dõi rất lâu mới đủ số ca."}
+    - {key: b, text: "Nghiên cứu bệnh–chứng", correct: true, rationale: "Bắt đầu từ những người đã mắc bệnh nên phù hợp nhất với bệnh hiếm."}
+    - {key: c, text: "Nghiên cứu cắt ngang", correct: false, rationale: "Cắt ngang không phù hợp với bệnh hiếm và không xác định được trình tự thời gian."}
+    - {key: d, text: "Thử nghiệm ngẫu nhiên có đối chứng", correct: false, rationale: "Không thể chủ động cho đối tượng phơi nhiễm với yếu tố có hại."}
+  explanation: "Nghiên cứu bệnh–chứng chọn sẵn người bệnh rồi tìm ngược về phơi nhiễm, nên phù hợp nhất với bệnh hiếm."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: trung_binh
+  sources: [dt-p10]
+
+- id: q-dt-11
+  stem: "Đặc điểm nào là của nghiên cứu thuần tập?"
+  options:
+    - {key: a, text: "Chọn người chưa mắc bệnh, phân theo tình trạng phơi nhiễm và theo dõi sự xuất hiện bệnh", correct: true, rationale: "Thuần tập bắt đầu từ phơi nhiễm và theo dõi đến khi xuất hiện bệnh."}
+    - {key: b, text: "Chọn người bệnh và người chứng, rồi hỏi ngược về phơi nhiễm", correct: false, rationale: "Đây là nghiên cứu bệnh–chứng."}
+    - {key: c, text: "Đo phơi nhiễm và bệnh tại cùng một thời điểm", correct: false, rationale: "Đây là nghiên cứu cắt ngang."}
+    - {key: d, text: "Nhà nghiên cứu phân bổ ngẫu nhiên can thiệp cho đối tượng", correct: false, rationale: "Đây là thử nghiệm ngẫu nhiên có đối chứng."}
+  explanation: "Nghiên cứu thuần tập đi từ phơi nhiễm đến bệnh: chọn người chưa mắc bệnh, phân nhóm theo phơi nhiễm và theo dõi theo thời gian."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: de
+  sources: [dt-p11]
+
+- id: q-dt-12
+  stem: "Cùng một test (độ nhạy 90%, độ đặc hiệu 90%) được dùng ở cộng đồng có tỷ lệ hiện mắc 1% thay vì 10%. Giá trị dự đoán dương sẽ thế nào?"
+  options:
+    - {key: a, text: "Giảm", correct: true, rationale: "Tỷ lệ hiện mắc thấp hơn thì phần lớn kết quả dương tính là dương tính giả."}
+    - {key: b, text: "Tăng", correct: false, rationale: "Giá trị dự đoán dương tăng khi tỷ lệ hiện mắc tăng, không phải khi giảm."}
+    - {key: c, text: "Không đổi vì độ nhạy và độ đặc hiệu không đổi", correct: false, rationale: "Độ nhạy và độ đặc hiệu không đổi, nhưng giá trị dự đoán phụ thuộc mạnh vào tỷ lệ hiện mắc."}
+    - {key: d, text: "Luôn bằng độ nhạy", correct: false, rationale: "Giá trị dự đoán dương và độ nhạy có mẫu số khác nhau."}
+  explanation: "Giá trị dự đoán dương phụ thuộc vào tỷ lệ hiện mắc: hiện mắc 10% cho khoảng 50%, hiện mắc 1% chỉ còn khoảng 8,3%."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 3
+  difficulty: kho
+  sources: [dt-p15]
+
+- id: q-tc-01
+  stem: "Theo lịch Tiêm chủng mở rộng, vắc xin viêm gan B mũi sơ sinh được tiêm khi nào?"
+  options:
+    - {key: a, text: "Trong vòng 24 giờ đầu sau sinh", correct: true, rationale: "Tiêm sớm trong 24 giờ đầu để phòng lây truyền từ mẹ sang con."}
+    - {key: b, text: "Khi trẻ đủ 1 tháng tuổi", correct: false, rationale: "Mốc 1 tháng là giới hạn của vắc xin BCG, không phải của mũi viêm gan B sơ sinh."}
+    - {key: c, text: "Khi trẻ đủ 2 tháng tuổi", correct: false, rationale: "2 tháng tuổi là mũi DPT-VGB-Hib thứ nhất."}
+    - {key: d, text: "Trong vòng 7 ngày sau sinh", correct: false, rationale: "Lịch quy định trong vòng 24 giờ đầu; tiêm muộn làm giảm hiệu quả phòng bệnh."}
+  explanation: "Vắc xin viêm gan B mũi sơ sinh được tiêm trong vòng 24 giờ đầu sau sinh."
+  competency_code: CI-04
+  exam_competency_component: 7
+  bloom_level: 1
+  difficulty: de
+  sources: [tc-p02]
+
+- id: q-tc-02
+  stem: "Ba mũi vắc xin phối hợp DPT-VGB-Hib được tiêm khi trẻ đủ mấy tháng tuổi?"
+  options:
+    - {key: a, text: "2, 3 và 4 tháng", correct: true, rationale: "Mũi 1, 2, 3 tiêm lúc trẻ đủ 2, 3 và 4 tháng tuổi."}
+    - {key: b, text: "1, 2 và 3 tháng", correct: false, rationale: "Mũi đầu tiên tiêm khi trẻ đủ 2 tháng tuổi."}
+    - {key: c, text: "2, 4 và 6 tháng", correct: false, rationale: "Lịch Tiêm chủng mở rộng của Việt Nam tiêm cách nhau 1 tháng: 2, 3, 4 tháng."}
+    - {key: d, text: "3, 5 và 9 tháng", correct: false, rationale: "5 tháng là mũi bại liệt tiêm, 9 tháng là mũi sởi."}
+  explanation: "DPT-VGB-Hib mũi 1, 2, 3 được tiêm khi trẻ đủ 2, 3 và 4 tháng tuổi, cùng với vắc xin bại liệt uống."
+  competency_code: CI-04
+  exam_competency_component: 7
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [tc-p03]
+
+- id: q-tc-03
+  stem: "Trong dây chuyền lạnh, phần lớn vắc xin của chương trình Tiêm chủng mở rộng được bảo quản ở nhiệt độ nào?"
+  options:
+    - {key: a, text: "+2 °C đến +8 °C", correct: true, rationale: "Đây là khoảng nhiệt độ bảo quản quy định cho phần lớn vắc xin."}
+    - {key: b, text: "−20 °C đến −15 °C", correct: false, rationale: "Nhiệt độ âm làm đông băng và hỏng các vắc xin như DPT-VGB-Hib, viêm gan B, uốn ván."}
+    - {key: c, text: "0 °C đến +2 °C", correct: false, rationale: "Gần 0 °C có nguy cơ đông băng vắc xin."}
+    - {key: d, text: "+8 °C đến +15 °C", correct: false, rationale: "Nhiệt độ cao hơn +8 °C làm vắc xin giảm hiệu lực."}
+  explanation: "Phần lớn vắc xin được bảo quản ở +2 °C đến +8 °C; không để vắc xin nhạy cảm với đông băng bị đông băng."
+  competency_code: CI-04
+  exam_competency_component: 7
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [tc-p08]
+
+- id: q-tc-04
+  stem: "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, bệnh nào sau đây thuộc nhóm A?"
+  options:
+    - {key: a, text: "Bệnh tả", correct: true, rationale: "Bệnh tả thuộc danh mục bệnh truyền nhiễm nhóm A."}
+    - {key: b, text: "Bệnh sởi", correct: false, rationale: "Bệnh sởi thuộc nhóm B."}
+    - {key: c, text: "Bệnh dại", correct: false, rationale: "Bệnh dại thuộc nhóm B."}
+    - {key: d, text: "Bệnh sốt xuất huyết Dengue", correct: false, rationale: "Sốt xuất huyết Dengue thuộc nhóm B."}
+  explanation: "Nhóm A gồm các bệnh đặc biệt nguy hiểm, lây truyền rất nhanh, phát tán rộng; bệnh tả thuộc nhóm này. Sởi, dại và sốt xuất huyết Dengue thuộc nhóm B."
+  competency_code: CI-01
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: kho
+  sources: [lt-p01, lt-p02]
+
+# ---- Question bank for the assembled exam (added 09/10/2026; demo content, not expert-reviewed) ----
+
+- id: q-dt-13
+  stem: "Tỷ lệ tấn công thứ phát phản ánh điều gì?"
+  options:
+    - {key: a, text: "Khả năng lây truyền của bệnh trong những người tiếp xúc với ca bệnh đầu tiên", correct: true, rationale: "Chỉ số này lấy số ca mới trong những người tiếp xúc chia cho số người tiếp xúc còn cảm nhiễm."}
+    - {key: b, text: "Mức độ nặng của bệnh", correct: false, rationale: "Mức độ nặng được phản ánh bằng tỷ lệ tử vong trên số mắc."}
+    - {key: c, text: "Gánh nặng bệnh tật trong cộng đồng tại một thời điểm", correct: false, rationale: "Đó là ý nghĩa của tỷ lệ hiện mắc."}
+    - {key: d, text: "Nguy cơ tử vong của cả quần thể", correct: false, rationale: "Đó là ý nghĩa của tỷ suất tử vong thô."}
+  explanation: "Tỷ lệ tấn công thứ phát đo số ca mới trong những người tiếp xúc với ca đầu tiên, nên phản ánh khả năng lây truyền của bệnh trong hộ gia đình hoặc tập thể."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [dt-p04]
+
+- id: q-dt-14
+  stem: "Theo dõi 500 người chưa mắc bệnh trong 2 năm, tổng cộng 1.000 người-năm, có 10 ca mắc mới. Tỷ suất mới mắc là?"
+  options:
+    - {key: a, text: "10 trên 1.000 người-năm", correct: true, rationale: "Số ca mới chia cho tổng thời gian theo dõi: 10 ÷ 1.000 người-năm."}
+    - {key: b, text: "20 trên 1.000 người-năm", correct: false, rationale: "20 trên 1.000 là 10 ÷ 500 người; cách tính này bỏ qua thời gian theo dõi 2 năm."}
+    - {key: c, text: "5 trên 1.000 người-năm", correct: false, rationale: "Mẫu số 1.000 người-năm đã tính cả thời gian, không chia cho 2 năm thêm lần nữa."}
+    - {key: d, text: "10 trên 500 người-năm", correct: false, rationale: "Mẫu số là tổng người-thời gian (1.000 người-năm), không phải số người."}
+  explanation: "Tỷ suất mới mắc bằng số ca mới chia cho tổng thời gian theo dõi của những người có nguy cơ: 10 ÷ 1.000 người-năm."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: kho
+  sources: [dt-p02]
+
+- id: q-dt-15
+  stem: "Nguy cơ tương đối RR = 1 có nghĩa là gì?"
+  options:
+    - {key: a, text: "Không có sự kết hợp giữa phơi nhiễm và bệnh", correct: true, rationale: "Tỷ lệ mới mắc ở hai nhóm bằng nhau nên tỷ số bằng 1."}
+    - {key: b, text: "Phơi nhiễm chắc chắn gây bệnh", correct: false, rationale: "RR đo độ mạnh của sự kết hợp, không khẳng định quan hệ nhân quả; và RR = 1 là không có kết hợp."}
+    - {key: c, text: "Phơi nhiễm là yếu tố bảo vệ", correct: false, rationale: "Yếu tố bảo vệ ứng với RR nhỏ hơn 1."}
+    - {key: d, text: "Phơi nhiễm là yếu tố nguy cơ", correct: false, rationale: "Yếu tố nguy cơ ứng với RR lớn hơn 1."}
+  explanation: "RR bằng 1 nghĩa là tỷ lệ mới mắc ở nhóm phơi nhiễm và nhóm không phơi nhiễm như nhau: không có sự kết hợp."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: de
+  sources: [dt-p06]
+
+- id: q-dt-16
+  stem: "Trong một nghiên cứu bệnh–chứng, 40 trong 100 người bệnh có phơi nhiễm và 20 trong 100 người chứng có phơi nhiễm. Tỷ suất chênh (OR) xấp xỉ bằng?"
+  options:
+    - {key: a, text: "2,7", correct: true, rationale: "OR = (40 × 80) ÷ (20 × 60) ≈ 2,7."}
+    - {key: b, text: "2,0", correct: false, rationale: "2,0 là tỷ số của hai tỷ lệ phơi nhiễm (40% ÷ 20%), không phải tỷ suất chênh."}
+    - {key: c, text: "0,38", correct: false, rationale: "0,38 là nghịch đảo của OR, do đặt ngược tử số và mẫu số."}
+    - {key: d, text: "1,5", correct: false, rationale: "1,5 là 60 ÷ 40, không phải công thức (a × d) ÷ (b × c)."}
+  explanation: "Với a = 40, b = 20, c = 60, d = 80: OR = (a × d) ÷ (b × c) = 3.200 ÷ 1.200 ≈ 2,7."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: kho
+  sources: [dt-p07]
+
+- id: q-dt-17
+  stem: "Phần trăm nguy cơ quy thuộc có thể tính từ nguy cơ tương đối (RR) bằng công thức nào?"
+  options:
+    - {key: a, text: "(RR − 1) ÷ RR × 100", correct: true, rationale: "Đây là cách viết khác của AR chia cho tỷ lệ mới mắc ở nhóm phơi nhiễm."}
+    - {key: b, text: "RR × 100", correct: false, rationale: "RR là một tỷ số, nhân 100 không cho ra phần nguy cơ do phơi nhiễm."}
+    - {key: c, text: "(RR + 1) ÷ RR × 100", correct: false, rationale: "Tử số phải là RR − 1, tức phần nguy cơ tăng thêm."}
+    - {key: d, text: "1 ÷ RR × 100", correct: false, rationale: "1 ÷ RR là phần nguy cơ nền, không phải phần quy cho phơi nhiễm."}
+  explanation: "Phần trăm nguy cơ quy thuộc bằng AR chia cho tỷ lệ mới mắc ở nhóm phơi nhiễm, nhân 100; viết theo RR là (RR − 1) ÷ RR × 100."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [dt-p08]
+
+- id: q-dt-18
+  stem: "Số đo nào cho biết số ca bệnh có thể phòng được trong nhóm phơi nhiễm nếu loại bỏ phơi nhiễm?"
+  options:
+    - {key: a, text: "Nguy cơ quy thuộc", correct: true, rationale: "AR là phần nguy cơ tuyệt đối do phơi nhiễm gây ra, đo tác động về y tế công cộng."}
+    - {key: b, text: "Nguy cơ tương đối", correct: false, rationale: "RR đo độ mạnh của sự kết hợp, có ý nghĩa về căn nguyên."}
+    - {key: c, text: "Tỷ suất chênh", correct: false, rationale: "OR là số đo kết hợp của nghiên cứu bệnh–chứng."}
+    - {key: d, text: "Tỷ lệ hiện mắc", correct: false, rationale: "Hiện mắc là số đo tần suất, không so sánh hai nhóm."}
+  explanation: "Nguy cơ quy thuộc là hiệu của hai tỷ lệ mới mắc, cho biết phần nguy cơ do phơi nhiễm và số ca có thể phòng được."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: trung_binh
+  sources: [dt-p08]
+
+- id: q-dt-19
+  stem: "Thiết kế nghiên cứu cắt ngang phù hợp nhất để ước lượng chỉ số nào?"
+  options:
+    - {key: a, text: "Tỷ lệ hiện mắc", correct: true, rationale: "Cắt ngang đo phơi nhiễm và bệnh tại cùng một thời điểm nên cho biết tỷ lệ hiện mắc."}
+    - {key: b, text: "Tỷ lệ mới mắc", correct: false, rationale: "Mới mắc cần theo dõi theo thời gian, như trong nghiên cứu thuần tập."}
+    - {key: c, text: "Nguy cơ tương đối", correct: false, rationale: "RR cần tỷ lệ mới mắc ở hai nhóm, tính được trong nghiên cứu thuần tập."}
+    - {key: d, text: "Tỷ lệ tử vong trên số mắc", correct: false, rationale: "Chỉ số này cần theo dõi kết cục của những người mắc bệnh."}
+  explanation: "Nghiên cứu cắt ngang đo tình trạng bệnh tại một thời điểm nên còn gọi là nghiên cứu tỷ lệ hiện mắc."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: de
+  sources: [dt-p09]
+
+- id: q-dt-20
+  stem: "Sai số nhớ lại là hạn chế điển hình của thiết kế nghiên cứu nào?"
+  options:
+    - {key: a, text: "Nghiên cứu bệnh–chứng", correct: true, rationale: "Thông tin phơi nhiễm được hỏi hồi cứu, sau khi đã biết ai mắc bệnh."}
+    - {key: b, text: "Nghiên cứu thuần tập tương lai", correct: false, rationale: "Phơi nhiễm được ghi nhận trước khi bệnh xuất hiện."}
+    - {key: c, text: "Thử nghiệm ngẫu nhiên có đối chứng", correct: false, rationale: "Can thiệp do nhà nghiên cứu phân bổ nên không phải hỏi lại phơi nhiễm."}
+    - {key: d, text: "Nghiên cứu thuần tập hồi cứu dựa trên hồ sơ phơi nhiễm đã ghi nhận", correct: false, rationale: "Thiết kế này dùng hồ sơ có sẵn, không dựa vào trí nhớ của đối tượng."}
+  explanation: "Nghiên cứu bệnh–chứng thu thập thông tin phơi nhiễm trong quá khứ sau khi bệnh đã xảy ra, nên dễ gặp sai số nhớ lại."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: trung_binh
+  sources: [dt-p10]
+
+- id: q-dt-21
+  stem: "Mục đích chính của phân bổ ngẫu nhiên trong thử nghiệm ngẫu nhiên có đối chứng là gì?"
+  options:
+    - {key: a, text: "Làm cho các yếu tố nhiễu, kể cả yếu tố chưa biết, phân bố tương đương giữa hai nhóm", correct: true, rationale: "Nhờ đó khác biệt về kết quả có thể quy cho can thiệp."}
+    - {key: b, text: "Giữ cho đối tượng không biết mình thuộc nhóm nào", correct: false, rationale: "Đó là làm mù, không phải phân bổ ngẫu nhiên."}
+    - {key: c, text: "Giảm cỡ mẫu cần thiết", correct: false, rationale: "Phân bổ ngẫu nhiên không nhằm giảm cỡ mẫu."}
+    - {key: d, text: "Giúp kết quả khái quát được cho mọi quần thể", correct: false, rationale: "Khả năng khái quát vẫn là một hạn chế của thử nghiệm."}
+  explanation: "Phân bổ ngẫu nhiên làm cho các yếu tố nhiễu, kể cả những yếu tố chưa biết, phân bố tương đương giữa nhóm can thiệp và nhóm chứng."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: trung_binh
+  sources: [dt-p12]
+
+- id: q-dt-22
+  stem: "Một phơi nhiễm hiếm gặp, chỉ có ở công nhân vài nhà máy. Thiết kế nào phù hợp nhất để nghiên cứu các bệnh do phơi nhiễm này?"
+  options:
+    - {key: a, text: "Nghiên cứu thuần tập", correct: true, rationale: "Bắt đầu từ nhóm có phơi nhiễm nên phù hợp với phơi nhiễm hiếm và nghiên cứu được nhiều bệnh."}
+    - {key: b, text: "Nghiên cứu bệnh–chứng", correct: false, rationale: "Bệnh–chứng không phù hợp với phơi nhiễm hiếm: trong nhóm bệnh và nhóm chứng sẽ có rất ít người phơi nhiễm."}
+    - {key: c, text: "Nghiên cứu cắt ngang trên mẫu dân số chung", correct: false, rationale: "Mẫu dân số chung gần như không có người phơi nhiễm, và không xác định được trình tự thời gian."}
+    - {key: d, text: "Thử nghiệm ngẫu nhiên có đối chứng", correct: false, rationale: "Không thể chủ động cho đối tượng phơi nhiễm với yếu tố có hại."}
+  explanation: "Nghiên cứu thuần tập chọn đối tượng theo tình trạng phơi nhiễm nên phù hợp với phơi nhiễm hiếm; bệnh–chứng thì ngược lại, phù hợp với bệnh hiếm."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 3
+  difficulty: kho
+  sources: [dt-p11, dt-p10]
+
+- id: q-dt-23
+  stem: "Hạn chế chính của nghiên cứu cắt ngang khi tìm nguyên nhân của bệnh là gì?"
+  options:
+    - {key: a, text: "Không xác định được phơi nhiễm có trước bệnh hay không", correct: true, rationale: "Phơi nhiễm và bệnh được đo cùng lúc nên không biết trình tự thời gian."}
+    - {key: b, text: "Tốn nhiều thời gian theo dõi", correct: false, rationale: "Cắt ngang thực hiện nhanh; tốn thời gian là hạn chế của thuần tập."}
+    - {key: c, text: "Dễ mất đối tượng trong quá trình theo dõi", correct: false, rationale: "Cắt ngang không theo dõi đối tượng theo thời gian."}
+    - {key: d, text: "Không đo được tỷ lệ hiện mắc", correct: false, rationale: "Cắt ngang chính là thiết kế đo tỷ lệ hiện mắc."}
+  explanation: "Vì phơi nhiễm và bệnh được đo tại cùng một thời điểm, nghiên cứu cắt ngang không xác định được trình tự thời gian nên khó kết luận quan hệ nhân quả."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: de
+  sources: [dt-p09]
+
+- id: q-dt-24
+  stem: "Trong 400 người không có bệnh, test cho kết quả âm tính ở 360 người. Độ đặc hiệu của test là?"
+  options:
+    - {key: a, text: "90%", correct: true, rationale: "Độ đặc hiệu = âm tính thật ÷ tổng số người không có bệnh = 360 ÷ 400."}
+    - {key: b, text: "10%", correct: false, rationale: "10% là tỷ lệ dương tính giả (40 ÷ 400)."}
+    - {key: c, text: "40%", correct: false, rationale: "40 là số dương tính giả, không phải một tỷ lệ của test."}
+    - {key: d, text: "Không tính được vì thiếu số người có bệnh", correct: false, rationale: "Số người có bệnh cần cho độ nhạy; độ đặc hiệu chỉ cần nhóm không có bệnh."}
+  explanation: "Độ đặc hiệu = âm tính thật ÷ tổng số người không có bệnh = 360 ÷ 400 = 90%."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: de
+  sources: [dt-p13]
+
+- id: q-dt-25
+  stem: "Một đợt sàng lọc cho 80 kết quả dương tính thật và 120 kết quả dương tính giả. Giá trị dự đoán dương là?"
+  options:
+    - {key: a, text: "40%", correct: true, rationale: "80 ÷ (80 + 120) = 40%."}
+    - {key: b, text: "60%", correct: false, rationale: "60% là phần dương tính giả trong tổng số dương tính."}
+    - {key: c, text: "67%", correct: false, rationale: "67% là 80 ÷ 120; mẫu số phải là tổng số kết quả dương tính."}
+    - {key: d, text: "80%", correct: false, rationale: "80 là số dương tính thật, chưa chia cho tổng số dương tính."}
+  explanation: "Giá trị dự đoán dương = dương tính thật ÷ tổng số kết quả dương tính = 80 ÷ 200 = 40%."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: trung_binh
+  sources: [dt-p14]
+
+- id: q-dt-26
+  stem: "Vì sao sàng lọc ban đầu thường chọn test có độ nhạy cao?"
+  options:
+    - {key: a, text: "Vì test ít bỏ sót người bệnh", correct: true, rationale: "Độ nhạy cao nghĩa là ít âm tính giả."}
+    - {key: b, text: "Vì test ít cho kết quả dương tính giả", correct: false, rationale: "Ít dương tính giả là đặc điểm của test có độ đặc hiệu cao."}
+    - {key: c, text: "Vì không cần xét nghiệm khẳng định sau đó", correct: false, rationale: "Kết quả dương tính trong sàng lọc vẫn cần xét nghiệm khẳng định."}
+    - {key: d, text: "Vì giá trị dự đoán dương luôn cao", correct: false, rationale: "Giá trị dự đoán dương còn phụ thuộc vào tỷ lệ hiện mắc."}
+  explanation: "Test có độ nhạy cao ít bỏ sót người bệnh nên phù hợp cho sàng lọc ban đầu; test có độ đặc hiệu cao phù hợp để khẳng định chẩn đoán."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: trung_binh
+  sources: [dt-p13]
+
+- id: q-dt-27
+  stem: "Giá trị dự đoán âm là gì?"
+  options:
+    - {key: a, text: "Xác suất một người thực sự không có bệnh khi kết quả test âm tính", correct: true, rationale: "Bằng âm tính thật chia cho tổng số kết quả âm tính."}
+    - {key: b, text: "Xác suất test âm tính ở người không có bệnh", correct: false, rationale: "Đó là độ đặc hiệu."}
+    - {key: c, text: "Xác suất test dương tính ở người có bệnh", correct: false, rationale: "Đó là độ nhạy."}
+    - {key: d, text: "Xác suất một người thực sự có bệnh khi kết quả test dương tính", correct: false, rationale: "Đó là giá trị dự đoán dương."}
+  explanation: "Giá trị dự đoán âm là xác suất một người thực sự không có bệnh khi test âm tính: d ÷ (c + d)."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [dt-p14]
+
+- id: q-dt-28
+  stem: "Điều nào sau đây KHÔNG thuộc các tiêu chuẩn kinh điển để triển khai một chương trình sàng lọc?"
+  options:
+    - {key: a, text: "Bệnh phải hiếm gặp trong cộng đồng", correct: true, rationale: "Tiêu chuẩn là bệnh phải là vấn đề sức khỏe quan trọng, không phải bệnh hiếm."}
+    - {key: b, text: "Có biện pháp điều trị hiệu quả và được chấp nhận", correct: false, rationale: "Đây là một tiêu chuẩn về điều trị."}
+    - {key: c, text: "Có giai đoạn sớm có thể phát hiện được", correct: false, rationale: "Đây là một tiêu chuẩn về bệnh."}
+    - {key: d, text: "Test sàng lọc được cộng đồng chấp nhận", correct: false, rationale: "Đây là một tiêu chuẩn về test."}
+  explanation: "Các tiêu chuẩn của Wilson và Jungner yêu cầu bệnh là vấn đề sức khỏe quan trọng, có giai đoạn sớm phát hiện được, có test phù hợp và có điều trị hiệu quả; không có tiêu chuẩn nào yêu cầu bệnh hiếm."
+  competency_code: FND
+  exam_competency_component: 2
+  bloom_level: 2
+  difficulty: kho
+  sources: [dt-p16]
+
+- id: q-tc-05
+  stem: "Theo lịch Tiêm chủng mở rộng, vắc xin BCG phòng bệnh lao được tiêm như thế nào?"
+  options:
+    - {key: a, text: "Một mũi duy nhất, càng sớm càng tốt và trong vòng 1 tháng sau sinh", correct: true, rationale: "BCG chỉ tiêm một mũi cho trẻ sơ sinh."}
+    - {key: b, text: "Ba mũi lúc 2, 3 và 4 tháng tuổi", correct: false, rationale: "Đó là lịch của vắc xin DPT-VGB-Hib."}
+    - {key: c, text: "Một mũi lúc 9 tháng tuổi", correct: false, rationale: "9 tháng tuổi là mũi sởi thứ nhất."}
+    - {key: d, text: "Hai mũi lúc 9 và 18 tháng tuổi", correct: false, rationale: "Đó là các mốc của vắc xin sởi và sởi–rubella."}
+  explanation: "Vắc xin BCG được tiêm một mũi duy nhất, càng sớm càng tốt và trong vòng 1 tháng sau sinh."
+  competency_code: CI-04
+  exam_competency_component: 7
+  bloom_level: 1
+  difficulty: de
+  sources: [tc-p02]
+
+- id: q-tc-06
+  stem: "Mũi vắc xin sởi thứ nhất trong chương trình Tiêm chủng mở rộng được tiêm khi trẻ đủ mấy tháng tuổi?"
+  options:
+    - {key: a, text: "9 tháng", correct: true, rationale: "Lúc này kháng thể từ mẹ truyền sang đã giảm."}
+    - {key: b, text: "5 tháng", correct: false, rationale: "5 tháng tuổi là mũi bại liệt tiêm thứ nhất."}
+    - {key: c, text: "12 tháng", correct: false, rationale: "12 tháng tuổi là mũi viêm não Nhật Bản thứ nhất."}
+    - {key: d, text: "18 tháng", correct: false, rationale: "18 tháng tuổi là mũi sởi–rubella, tức mũi sởi thứ hai."}
+  explanation: "Trẻ được tiêm vắc xin sởi mũi 1 khi đủ 9 tháng tuổi; mũi sởi–rubella lúc 18 tháng là mũi thứ hai."
+  competency_code: CI-04
+  exam_competency_component: 7
+  bloom_level: 1
+  difficulty: de
+  sources: [tc-p04]
+
+- id: q-tc-07
+  stem: "Khi trẻ đủ 18 tháng tuổi, trẻ được tiêm những vắc xin nào trong chương trình Tiêm chủng mở rộng?"
+  options:
+    - {key: a, text: "Sởi–rubella và DPT mũi 4", correct: true, rationale: "Đây là hai mũi nhắc lại ở mốc 18 tháng tuổi."}
+    - {key: b, text: "BCG và viêm gan B", correct: false, rationale: "Đó là các vắc xin tiêm cho trẻ sơ sinh."}
+    - {key: c, text: "DPT-VGB-Hib mũi 3 và bại liệt uống lần 3", correct: false, rationale: "Đó là các vắc xin ở mốc 4 tháng tuổi."}
+    - {key: d, text: "Sởi mũi 1 và bại liệt tiêm mũi 2", correct: false, rationale: "Đó là các vắc xin ở mốc 9 tháng tuổi."}
+  explanation: "Khi đủ 18 tháng tuổi, trẻ được tiêm vắc xin sởi–rubella và vắc xin DPT mũi 4."
+  competency_code: CI-04
+  exam_competency_component: 7
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [tc-p06]
+
+- id: q-tc-08
+  stem: "Trong lịch tiêm vắc xin viêm não Nhật Bản của chương trình Tiêm chủng mở rộng, mũi 2 được tiêm sau mũi 1 bao lâu?"
+  options:
+    - {key: a, text: "1 đến 2 tuần", correct: true, rationale: "Mũi 1 khi trẻ đủ 1 tuổi, mũi 2 sau đó 1 đến 2 tuần."}
+    - {key: b, text: "1 tháng", correct: false, rationale: "Khoảng cách 1 tháng là giữa các mũi DPT-VGB-Hib."}
+    - {key: c, text: "6 tháng", correct: false, rationale: "Lịch viêm não Nhật Bản không có khoảng cách 6 tháng."}
+    - {key: d, text: "1 năm", correct: false, rationale: "1 năm là khoảng cách giữa mũi 2 và mũi 3."}
+  explanation: "Lịch gồm ba mũi: mũi 1 khi trẻ đủ 1 tuổi, mũi 2 sau mũi 1 từ 1 đến 2 tuần, mũi 3 sau mũi 2 một năm."
+  competency_code: CI-04
+  exam_competency_component: 7
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [tc-p05]
+
+- id: q-tc-09
+  stem: "Sau khi tiêm chủng, người được tiêm cần được theo dõi tại điểm tiêm chủng ít nhất bao lâu?"
+  options:
+    - {key: a, text: "30 phút", correct: true, rationale: "Để phát hiện và xử trí kịp thời tai biến nặng như sốc phản vệ."}
+    - {key: b, text: "5 phút", correct: false, rationale: "Thời gian này quá ngắn so với quy định."}
+    - {key: c, text: "2 giờ", correct: false, rationale: "Quy định tại điểm tiêm là ít nhất 30 phút."}
+    - {key: d, text: "24 giờ", correct: false, rationale: "24 giờ là thời gian tiếp tục theo dõi tại nhà."}
+  explanation: "Người được tiêm chủng cần được theo dõi ít nhất 30 phút tại điểm tiêm và tiếp tục được theo dõi tại nhà ít nhất 24 giờ."
+  competency_code: CI-04
+  exam_competency_component: 7
+  bloom_level: 1
+  difficulty: de
+  sources: [tc-p09]
+
+- id: q-tc-10
+  stem: "Vắc xin nào sau đây dễ hỏng do đông băng và tuyệt đối không được để đông băng?"
+  options:
+    - {key: a, text: "DPT-VGB-Hib", correct: true, rationale: "Cùng với vắc xin viêm gan B và uốn ván, đây là vắc xin dễ hỏng do đông băng."}
+    - {key: b, text: "Bại liệt uống", correct: false, rationale: "Vắc xin bại liệt uống dễ hỏng do nhiệt độ cao và ánh sáng."}
+    - {key: c, text: "Sởi", correct: false, rationale: "Vắc xin sởi dễ hỏng do nhiệt độ cao và ánh sáng."}
+    - {key: d, text: "BCG", correct: false, rationale: "Vắc xin BCG dễ hỏng do nhiệt độ cao và ánh sáng."}
+  explanation: "DPT-VGB-Hib, viêm gan B và uốn ván dễ hỏng do đông băng; bại liệt uống, sởi và BCG dễ hỏng do nhiệt độ cao và ánh sáng."
+  competency_code: CI-04
+  exam_competency_component: 7
+  bloom_level: 2
+  difficulty: kho
+  sources: [tc-p08]
+
+- id: q-tc-11
+  stem: "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, bệnh truyền nhiễm nhóm A có đặc điểm gì?"
+  options:
+    - {key: a, text: "Đặc biệt nguy hiểm, lây truyền rất nhanh, phát tán rộng và tỷ lệ tử vong cao hoặc chưa rõ tác nhân gây bệnh", correct: true, rationale: "Đây là tiêu chí của nhóm A."}
+    - {key: b, text: "Nguy hiểm, lây truyền nhanh và có thể gây tử vong", correct: false, rationale: "Đây là tiêu chí của nhóm B."}
+    - {key: c, text: "Ít nguy hiểm, khả năng lây truyền không nhanh", correct: false, rationale: "Đây là tiêu chí của nhóm C."}
+    - {key: d, text: "Chỉ lây truyền qua đường máu", correct: false, rationale: "Luật phân nhóm theo mức độ nguy hiểm và khả năng lây truyền, không theo đường lây."}
+  explanation: "Nhóm A gồm các bệnh đặc biệt nguy hiểm, có khả năng lây truyền rất nhanh, phát tán rộng và tỷ lệ tử vong cao hoặc chưa rõ tác nhân gây bệnh."
+  competency_code: CI-01
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [lt-p01, lt-p02, lt-p03]
+
+- id: q-tc-12
+  stem: "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, bệnh sởi thuộc nhóm nào?"
+  options:
+    - {key: a, text: "Nhóm B", correct: true, rationale: "Bệnh sởi nằm trong danh mục bệnh truyền nhiễm nhóm B."}
+    - {key: b, text: "Nhóm A", correct: false, rationale: "Nhóm A gồm các bệnh như tả, dịch hạch, bại liệt."}
+    - {key: c, text: "Nhóm C", correct: false, rationale: "Nhóm C gồm các bệnh ít nguy hiểm, lây truyền không nhanh."}
+    - {key: d, text: "Không thuộc nhóm nào", correct: false, rationale: "Bệnh sởi được nêu tên trong danh mục nhóm B."}
+  explanation: "Bệnh sởi thuộc nhóm B: bệnh truyền nhiễm nguy hiểm, có khả năng lây truyền nhanh và có thể gây tử vong."
+  competency_code: CI-01
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: de
+  sources: [lt-p02]
+
+- id: q-tc-13
+  stem: "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, bệnh nào sau đây thuộc nhóm C?"
+  options:
+    - {key: a, text: "Bệnh phong", correct: true, rationale: "Bệnh phong nằm trong danh mục nhóm C."}
+    - {key: b, text: "Bệnh dại", correct: false, rationale: "Bệnh dại thuộc nhóm B."}
+    - {key: c, text: "Bệnh dịch hạch", correct: false, rationale: "Bệnh dịch hạch thuộc nhóm A."}
+    - {key: d, text: "Bệnh thương hàn", correct: false, rationale: "Bệnh thương hàn thuộc nhóm B."}
+  explanation: "Nhóm C gồm các bệnh truyền nhiễm ít nguy hiểm, khả năng lây truyền không nhanh; bệnh phong thuộc nhóm này."
+  competency_code: CI-01
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: trung_binh
+  sources: [lt-p03, lt-p01, lt-p02]
+
+- id: q-tc-14
+  stem: "Theo Luật Phòng, chống bệnh truyền nhiễm 2007, ai quyết định điều chỉnh, bổ sung danh mục bệnh truyền nhiễm thuộc các nhóm?"
+  options:
+    - {key: a, text: "Bộ trưởng Bộ Y tế", correct: true, rationale: "Điều 3, khoản 2 giao thẩm quyền này cho Bộ trưởng Bộ Y tế."}
+    - {key: b, text: "Thủ tướng Chính phủ", correct: false, rationale: "Luật giao việc này cho Bộ trưởng Bộ Y tế."}
+    - {key: c, text: "Ủy ban nhân dân cấp tỉnh", correct: false, rationale: "Danh mục áp dụng chung cả nước, do Bộ trưởng Bộ Y tế quyết định."}
+    - {key: d, text: "Quốc hội", correct: false, rationale: "Quốc hội ban hành Luật; việc điều chỉnh danh mục được giao cho Bộ trưởng Bộ Y tế."}
+  explanation: "Bộ trưởng Bộ Y tế quyết định điều chỉnh, bổ sung danh mục bệnh truyền nhiễm thuộc các nhóm."
+  competency_code: CI-01
+  exam_competency_component: 2
+  bloom_level: 1
+  difficulty: de
+  sources: [lt-p04]

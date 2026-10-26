@@ -1,0 +1,149 @@
+# The HĐYKQG exam blueprint for preventive medicine, transcribed from docs/reference/core_issues.md.
+# Names are the official text; short_name is a display label written for this project.
+# Core issues 20 and 21 are read as group 4: the source note asks for a check against the original
+# (docs/handover/09-open-issues.md, issue 25).
+groups:
+  - id: 1
+    name: "Vấn đề sức khỏe quần thể cần can thiệp ở cấp ban đầu để ngăn ngừa tiến triển"
+    short_name: "Sức khỏe quần thể và dự phòng"
+    weight_min: 17
+    weight_max: 19
+    issues:
+      - {id: 1, name: "Bệnh truyền nhiễm có nguy cơ gây dịch"}
+      - {id: 2, name: "Bệnh không lây nhiễm phổ biến"}
+      - {id: 3, name: "Bệnh, tật học đường"}
+      - {id: 4, name: "Tiêm phòng/Tiêm chủng trẻ em và người lớn"}
+      - {id: 5, name: "Dự phòng HIV"}
+  - id: 2
+    name: "Vấn đề sức khỏe cần cấp cứu, sơ cấp cứu ở cấp ban đầu"
+    short_name: "Cấp cứu và sơ cấp cứu"
+    weight_min: 16
+    weight_max: 20
+    issues:
+      - {id: 6, name: "Ngộ độc cấp thường gặp"}
+      - {id: 7, name: "Ngừng tuần hoàn"}
+      - {id: 8, name: "Suy hô hấp cấp"}
+      - {id: 9, name: "Đau ngực"}
+      - {id: 10, name: "Đột quỵ cấp"}
+      - {id: 11, name: "Phản vệ và dị ứng nặng"}
+      - {id: 12, name: "Sơ cấp cứu chấn thương và tai nạn"}
+      - {id: 13, name: "Đuối nước"}
+      - {id: 14, name: "Say nóng, say nắng"}
+      - {id: 15, name: "Vận chuyển người bệnh an toàn"}
+      - {id: 16, name: "Bong gân, trật khớp"}
+  - id: 3
+    name: "Vấn đề dinh dưỡng, an toàn thực phẩm cần can thiệp ở cấp ban đầu"
+    short_name: "Dinh dưỡng và an toàn thực phẩm"
+    weight_min: 7
+    weight_max: 9
+    issues:
+      - {id: 17, name: "Ngộ độc thực phẩm"}
+      - {id: 18, name: "Thừa cân/béo phì"}
+      - {id: 19, name: "Thiếu dinh dưỡng"}
+  - id: 4
+    name: "Vấn đề bệnh lý truyền nhiễm cần chẩn đoán, xử trí ở cấp ban đầu"
+    short_name: "Bệnh truyền nhiễm"
+    weight_min: 17
+    weight_max: 21
+    issues:
+      - {id: 20, name: "Điều trị duy trì HIV và lao"}
+      - {id: 21, name: "Sốt"}
+      - {id: 22, name: "Sốt và phát ban"}
+      - {id: 23, name: "Hội chứng màng não"}
+      - {id: 24, name: "Hội chứng viêm đường hô hấp trên"}
+      - {id: 25, name: "Vết cắn/đốt do động vật/côn trùng"}
+      - {id: 26, name: "Tiêu chảy cấp"}
+      - {id: 27, name: "Bệnh lây truyền qua đường tình dục"}
+  - id: 5
+    name: "Vấn đề sức khỏe nghề nghiệp cần phát hiện và xử trí ở cấp ban đầu"
+    short_name: "Sức khỏe nghề nghiệp"
+    weight_min: 2.5
+    weight_max: 3.5
+    issues:
+      - {id: 28, name: "Bệnh nghề nghiệp và bệnh liên quan đến nghề nghiệp"}
+      - {id: 29, name: "Giảm thính lực/ù tai"}
+  - id: 6
+    name: "Vấn đề sức khỏe cộng đồng cần chẩn đoán và xử trí theo tiếp cận y học gia đình"
+    short_name: "Sức khỏe cộng đồng và y học gia đình"
+    weight_min: 23
+    weight_max: 27
+    issues:
+      - {id: 30, name: "Ho"}
+      - {id: 31, name: "Ho ra máu"}
+      - {id: 32, name: "Khó thở mạn"}
+      - {id: 33, name: "Đau bụng"}
+      - {id: 34, name: "Ợ nóng/khó tiêu"}
+      - {id: 35, name: "Xuất huyết tiêu hóa"}
+      - {id: 36, name: "Táo bón"}
+      - {id: 37, name: "Rối loạn Lipid máu"}
+      - {id: 38, name: "Đái tháo đường típ 2 và tiền đái tháo đường"}
+      - {id: 39, name: "Tăng huyết áp"}
+      - {id: 40, name: "Rối loạn đi tiểu"}
+      - {id: 41, name: "Đau đầu"}
+      - {id: 42, name: "Chóng mặt"}
+      - {id: 43, name: "Giảm trí nhớ và suy giảm nhận thức"}
+      - {id: 44, name: "Ngứa"}
+      - {id: 45, name: "Mày đay"}
+      - {id: 46, name: "Viêm quanh răng"}
+      - {id: 47, name: "Sâu răng"}
+      - {id: 48, name: "Tránh thai"}
+  - id: 7
+    name: "Vấn đề sức khỏe tâm thần và hành vi cần phát hiện và can thiệp ở cấp ban đầu"
+    short_name: "Sức khỏe tâm thần và hành vi"
+    weight_min: 5
+    weight_max: 7
+    issues:
+      - {id: 49, name: "Tự tử, tự gây thương tích"}
+      - {id: 50, name: "Rối loạn lo âu/trầm cảm/căng thẳng"}
+      - {id: 51, name: "Nghiện/rối loạn sử dụng chất (ma túy, thuốc lá, rượu bia)"}
+  - id: 8
+    name: "Giao tiếp và Cộng tác"
+    short_name: "Giao tiếp và cộng tác"
+    weight_min: 2.5
+    weight_max: 3.5
+    issues:
+      - {id: 52, name: "Giao tiếp với người bệnh và người nhà"}
+      - {id: 53, name: "Giao tiếp với đồng nghiệp"}
+      - {id: 54, name: "Cộng tác liên ngành"}
+
+# Components are numbered 1–13 in the order they appear here.
+competencies:
+  - id: 1
+    name: "Áp dụng khái niệm cơ bản của y học và y học dự phòng"
+    weight_min: 18
+    weight_max: 22
+    components:
+      - "Áp dụng khái niệm cơ bản của y học"
+      - "Áp dụng khái niệm cơ bản của y học dự phòng"
+  - id: 2
+    name: "Chẩn đoán cấp ban đầu"
+    weight_min: 37
+    weight_max: 43
+    components:
+      - "Bệnh sử/tiền sử/thăm khám thực thể"
+      - "Cận lâm sàng/xét nghiệm chẩn đoán"
+      - "Chẩn đoán"
+      - "Tiên lượng/kết cục"
+  - id: 3
+    name: "Xử trí cấp ban đầu"
+    weight_min: 32
+    weight_max: 38
+    components:
+      - "Duy trì sức khỏe/phòng bệnh"
+      - "Điều trị bằng thuốc"
+      - "Can thiệp lâm sàng"
+      - "Quản lý ca bệnh"
+  - id: 4
+    name: "Cộng tác và Giao tiếp"
+    weight_min: 4
+    weight_max: 6
+    components:
+      - "Giao tiếp người bệnh và người nhà"
+      - "Giao tiếp đồng nghiệp"
+      - "Cộng tác liên ngành"
+
+# A topic for content that fits exam competency 1 but none of the 54 core issues (basic epidemiology,
+# for example). Not part of the published blueprint.
+foundation:
+  code: FND
+  name: "Khái niệm cơ bản của y học dự phòng"

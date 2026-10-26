@@ -1,0 +1,27 @@
+# Demo fixture: status 'approved' set by seed, not by expert review.
+- {term: viêm gan B, synonyms: [VGB, HBV]}
+- {term: tiêm chủng mở rộng, synonyms: [TCMR]}
+- {term: bạch hầu ho gà uốn ván, synonyms: [DPT, DTP]}
+- {term: bại liệt uống, synonyms: [OPV]}
+- {term: bại liệt tiêm, synonyms: [IPV]}
+- {term: lao, synonyms: [BCG]}
+- {term: viêm não Nhật Bản, synonyms: [VNNB]}
+- {term: sởi rubella, synonyms: [MR]}
+- {term: độ nhạy, synonyms: [Se, sensitivity]}
+- {term: độ đặc hiệu, synonyms: [Sp, specificity]}
+- {term: giá trị dự đoán dương, synonyms: [PPV]}
+- {term: giá trị dự đoán âm, synonyms: [NPV]}
+- {term: nguy cơ tương đối, synonyms: [RR]}
+- {term: tỷ suất chênh, synonyms: [OR]}
+- {term: nguy cơ quy thuộc, synonyms: [AR]}
+# An ambiguous term makes the chat ask which sense is meant; its senses share its sense_group.
+# Fixture from the handover's own example, until experts flag terms.
+- {term: tỷ lệ mắc, ambiguous: true, sense_group: ty-le-mac}
+- {term: tỷ lệ hiện mắc, synonyms: [prevalence, hiện mắc], sense_group: ty-le-mac}
+- {term: tỷ lệ mới mắc, synonyms: [incidence, mới mắc], sense_group: ty-le-mac}
+- {term: tỷ lệ tấn công, synonyms: [attack rate]}
+- {term: tỷ lệ tử vong trên số mắc, synonyms: [CFR, case fatality, tỷ lệ chết mắc]}
+- {term: phản ứng sau tiêm chủng, synonyms: [AEFI, phản ứng sau tiêm, tai biến sau tiêm]}
+- {term: nghiên cứu bệnh chứng, synonyms: [case-control]}
+- {term: nghiên cứu thuần tập, synonyms: [cohort]}
+- {term: dây chuyền lạnh, synonyms: [cold chain]}

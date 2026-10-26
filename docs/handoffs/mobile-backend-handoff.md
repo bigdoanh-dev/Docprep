@@ -1,5 +1,7 @@
 # Bàn giao dự án DocPrep Mobile cho team Backend
 
+> **Cập nhật Alpha V1 — 26/10/2026:** repo hiện đã tiếp nhận backend từ ZIP và có cấu hình tích hợp local. Các mô tả “chưa có backend trong workspace” bên dưới là ghi nhận trước đợt tích hợp; contract frontend vẫn dùng để đối chiếu. Xem [phạm vi Alpha](../alpha-v1/handover.md), [ma trận API](../alpha-v1/api-matrix.md) và [kết quả kiểm thử](../alpha-v1/verification.md) để biết trạng thái hiện tại.
+
 **Ngày rà soát:** 25/10/2026
 **Repository:** `bigdoanh-dev/Docprep_FE`, nhánh `main`
 **Mục đích:** giúp team Backend tiếp tục triển khai dịch vụ cho mobile: nắm trạng thái frontend, thứ tự công việc, contract API, điểm cần quyết định và tiêu chí hoàn thành.

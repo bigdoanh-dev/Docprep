@@ -13,6 +13,7 @@ import { publicPost, type TokenPair } from "../../lib/api";
 import { session, staffSession } from "../../lib/client";
 import { clearWorkspace } from "../../lib/learnerWorkspace";
 import { resetDemo } from "../../lib/demo/store";
+import { RuntimeNotice } from "../../components/RuntimeNotice";
 
 const demoProfiles = [
   {
@@ -126,6 +127,7 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
       </header>
 
       <section className="login-body" aria-labelledby="login-title">
+        <RuntimeNotice />
         <div className="login-intro">
           <h1 id="login-title">
             {mode === "demo" ? "Trải nghiệm DocPrep" : "Đăng nhập"}

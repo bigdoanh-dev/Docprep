@@ -1,0 +1,79 @@
+db: {pool_min: 1, pool_max: 10}     # the server's connection pool
+local_timezone: Asia/Ho_Chi_Minh    # the learner's day: daily session, "today" for dates
+auth:
+  access_minutes: 30
+  refresh_days: 30
+  max_failures: 5              # failed sign-ins per IP address within the window, then 429
+  failure_window_minutes: 15
+consent:                        # TODO open issue 17: the legal texts are deliverable D1
+  version: "2026-10"
+  service_text_vi: "Văn bản mẫu: tôi đồng ý để ứng dụng lưu kết quả học tập của tôi nhằm cung cấp dịch vụ ôn thi."
+  research_text_vi: "Văn bản mẫu: tôi đồng ý cho phép dùng nhật ký sử dụng đã ẩn danh của tôi cho nghiên cứu. Tôi có thể rút lại bất cứ lúc nào."
+account_deletion: {learning_records: erase}   # erase | keep_pseudonymous. TODO open issue 13
+# The dev learner created by `python -m app.cli seed`. Học phần ids are g1–g8, the blueprint groups.
+# activation_code signs this learner in on a development machine; it is not a secret.
+learner: {pseudonym: HV-DEMO-001, display_name: Minh, focus_module_ids: [g1], activation_code: DEMO-0001}
+# max_duration_ms: a reported duration above this is stored as this.
+# visit_gap_minutes: opening Home again within this time counts as the same visit.
+activity: {max_duration_ms: 600000, visit_gap_minutes: 30}
+exam_date: "2027-03-15"        # TODO open issue 18
+corpus_version: demo-2026-10-09
+elo: {theta_k0: 0.8, theta_decay: 0.1, b_k0: 0.4, b_decay: 0.05,
+      initial_b: {de: -1.0, trung_binh: 0.0, kho: 1.0}}
+mastery: {min_responses: 3}      # TODO open issue 8
+priority: {neutral_mastery: 0.5}
+fsrs: {desired_retention: 0.9}
+gateway:
+  timeout_s: 20
+  max_retries: 0
+  max_concurrent: 4               # model calls at once, for chat and the tutor; the next turn waits in line
+  queue_timeout_s: 60             # the longest a turn waits in line before it is told the system is busy
+  max_waiting: 20                 # the longest the line may be; each waiting turn holds one of the server's threads
+  max_tokens: 8000
+  models:                         # provider/model switch is configuration only (open issue 2)
+    answer: {id: claude-sonnet-5-5, effort: low}
+    tutor: {id: claude-sonnet-5-5, effort: low}
+    hint: {id: claude-sonnet-5-5, effort: low}
+    quiz_chat: {id: claude-sonnet-5-5, effort: low}
+    check: {id: claude-haiku-4-5}
+  price_per_mtok:                 # USD, list prices cached 2026-09-25
+    claude-sonnet-5-5: {in: 2.0, out: 10.0}
+    claude-haiku-4-5: {in: 1.0, out: 5.0}
+prompt_versions: {answer: answer-v1, tutor: tutor-v1, check: check-v1, hint: hint-v1, quiz_chat: quiz-chat-v1}
+# min_score = share of the question's content a passage must cover to count as evidence;
+# heading_boost = ranking bonus when the passage's heading names what was asked
+# Topic weights come from the blueprint (seed/blueprint.yaml): a core issue gets its group's midpoint
+# shared among the group's issues. The foundation topic is outside the blueprint, so its weight is set here.
+blueprint: {foundation_weight: 2.0}    # TODO open issue 26
+retrieval: {top_k: 5, min_score: 0.45, heading_boost: 0.15}
+postcheck: {tier2_enabled: false}
+# max_steps: the most lines the work trace of one answer may show (handover/04, "Work trace").
+chat: {max_steps: 4}
+# After an answer: offer practice on a cited topic the learner answered wrongly in the last window_days,
+# with at most max_items questions.
+suggestions: {window_days: 14, max_items: 3}
+# assembled_enabled: off unless set; automatic assembly ("Đề tự ráp") is R1.1 in the handover plan.
+exam: {warning_seconds: 300, assembled_enabled: true}
+# Tiến độ · Nhịp học (05-algorithms §12): recall rate over window_days; a card is "mastered" when its
+# interval reaches mature_days; recall is projected projection_days ahead.
+memory: {window_days: 30, mature_days: 21, projection_days: 7}
+# The daily session (05-algorithms §11). unit_item_seconds is an average until real timings exist.
+session: {practice_items: 6, wrong_window_days: 7, seen_window_days: 14, card_seconds: 30, item_seconds: 80,
+          unit_item_seconds: 90}
+# Assembled exam ("Đề tự ráp"), backend/app/engine/assembly.py. Defaults to tune with experts.
+assembly:
+  mix: {new: 0.5, wrong: 0.3, review: 0.2}   # share of new / previously wrong / previously correct questions
+  target_p: 0.7            # new questions: preferred chance of a correct answer (Elo); 05-algorithms §4 uses 0.6–0.8
+  unstudied_factor: 0.5    # weight of a topic whose Luyện tập content the learner has not completed
+# Quản lý cấp Bộ · Tổng quan toàn quốc (docs/ministry-dashboard.md). A figure resting on fewer learners than
+# suppression_min is withheld; low_share marks accuracy and activation rates as low.
+dashboard:
+  suppression_min: 10
+  min_approved_per_issue: 10      # TODO open issue 3: the minimum is not decided
+  low_share: 0.6
+  cited_claims_target: 0.95       # NFR-07
+  chat_latency_target_s: 15
+  alerts:
+    activation_rate_min: 0.6
+    review_r2_target_days: 7
+    report_open_days: 14

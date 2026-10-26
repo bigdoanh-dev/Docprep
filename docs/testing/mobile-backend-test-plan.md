@@ -1,5 +1,7 @@
 # Kế hoạch kiểm thử Mobile–Backend DocPrep
 
+> **Alpha V1 local — 26/10/2026:** kết quả thực thi và phạm vi được nghiệm thu nằm ở [báo cáo Alpha](../alpha-v1/verification.md). CSV, bàn duyệt, AI thật và triển khai online không thuộc đợt này. Các ca đề xuất dưới đây không tự động được coi là đã PASS.
+
 **Phiên bản:** 1.0  
 **Ngày lập:** 25/10/2026  
 **Đối tượng sử dụng:** Backend, frontend, QA, product  

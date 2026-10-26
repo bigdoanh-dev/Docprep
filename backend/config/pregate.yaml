@@ -1,0 +1,24 @@
+# Patient-specific clinical advice patterns (FR-LRN-05). Expert-maintained, versioned.
+# A query is declined when one `subject` AND one `request` pattern both match.
+# Matching ignores case and repeated spaces, and every pattern is also tried without diacritics.
+# Every change needs matching cases in backend/tests/test_pregate.py (DECLINE and ALLOW).
+version: pregate-v2
+subject:
+  # the asker as the patient
+  - '\btôi (bị|đang|có)\b'
+  - '\b(em|mình|tớ) (bị|đang bị)\b'
+  # a relative of the asker: "con tôi", "con gái tôi", "bé nhà mình", "bà tôi"
+  - '\b(con|bé|cháu|bố|ba|mẹ|má|vợ|chồng|ông|bà)( gái| trai)? (nhà )?(tôi|em|mình|tớ)\b'
+  - '\bem bé nhà\b'
+  # a clinician's own patient
+  - '\bbệnh nhân (của )?(tôi|em|mình)\b'
+request:
+  - '\b(uống|dùng) (thuốc|gì)\b'
+  - '\bthuốc gì\b'
+  - '\bliều\b'
+  - '\bcó (cần|nên|được) (tiêm|uống|dùng|kiêng|đi viện|đi khám|nhập viện)\b'
+  - '\b(chữa|điều trị|chẩn đoán|xử trí)\b'
+  - '\bbị (gì|làm sao)\b'
+  - '\bphải làm (sao|gì)\b'
+  - '\b(nên|cần) làm gì\b'
+  - '\bcó sao không\b'

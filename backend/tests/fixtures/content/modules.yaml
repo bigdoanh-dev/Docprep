@@ -1,0 +1,12 @@
+# Stopgap content: blueprint tags are provisional and not expert-reviewed.
+- module: g1
+  extra_competency_codes: [FND]
+  units:
+    - id: fx-u1
+      topic: Chủ đề thử
+      competency_code: FND
+      items:
+        - {id: fx-c1, kind: content, content: {id: fx-ci1, title: "Nội dung", body: "Nội dung thử", sources: [fx-p01]}}
+        - {id: fx-q1, kind: quiz, question: fx-q-01}
+        - {id: fx-r1, kind: remediation, after: fx-q1, note: "hãy xem lại mẫu số",
+           content: {id: fx-ci2, title: "Ví dụ", body: "Ví dụ thử", sources: [fx-p01]}}

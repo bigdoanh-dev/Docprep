@@ -1,0 +1,461 @@
+# Demo fixture: status 'approved' set by seed, not by expert review.
+# Stopgap content: blueprint tags are provisional and not expert-reviewed.
+# Content written for the kickoff demo from standard textbook knowledge and public
+# Bộ Y tế sources. NOT taken from the licensed textbooks and NOT expert-reviewed.
+# Page numbers are pages of these demo documents.
+
+- id: DT-DEMO
+  title: Dịch tễ học cơ bản
+  edition: demo
+  demo_label: Tài liệu demo – chưa thẩm định
+  excerpt_limit: null
+  passages:
+    - id: dt-p01
+      chapter: "Chương 2. Đo lường bệnh trạng"
+      section: "2.1 Tỷ lệ hiện mắc"
+      page: 58
+      competency_code: FND
+      text: >-
+        Tỷ lệ hiện mắc (prevalence) cho biết có bao nhiêu người đang mắc bệnh trong quần thể tại một
+        thời điểm, bao gồm cả ca cũ lẫn ca mới. Công thức: tỷ lệ hiện mắc bằng số người đang mắc bệnh
+        tại thời điểm đó chia cho tổng số người trong quần thể tại thời điểm đó. Tử số gồm mọi người
+        đang mắc bệnh, không phân biệt họ mắc từ khi nào. Mẫu số là toàn bộ quần thể được khảo sát,
+        gồm cả người mắc và người không mắc. Ví dụ với số liệu giả định: một xã có 2.000 dân; ngày 1/1 có 50 người đang mắc
+        lao. Tỷ lệ hiện mắc lao của xã tại ngày 1/1 là 50 ÷ 2.000 = 0,025 = 2,5%. Tỷ lệ hiện mắc đo
+        tại một thời điểm gọi là hiện mắc điểm; đo trong một khoảng thời gian gọi là hiện mắc kỳ. Tỷ lệ
+        hiện mắc phản ánh gánh nặng bệnh tật trong cộng đồng và được dùng để lập kế hoạch nguồn lực y
+        tế, nhưng không cho biết nguy cơ xuất hiện bệnh mới.
+    - id: dt-p02
+      chapter: "Chương 2. Đo lường bệnh trạng"
+      section: "2.2 Tỷ lệ mới mắc"
+      page: 59
+      competency_code: FND
+      text: >-
+        Tỷ lệ mới mắc (incidence) chỉ đếm các ca bệnh mới xuất hiện trong một khoảng thời gian, trên
+        quần thể có nguy cơ. Có hai cách đo. Tỷ lệ mới mắc tích lũy (nguy cơ) bằng số ca mới trong
+        khoảng thời gian chia cho số người có nguy cơ vào đầu khoảng thời gian đó. Tỷ suất mới mắc (mật
+        độ mới mắc) bằng số ca mới chia cho tổng thời gian theo dõi của những người có nguy cơ, tính
+        bằng người-thời gian, ví dụ người-năm. Mẫu số chỉ gồm những người có nguy cơ mắc bệnh: người đã
+        mắc bệnh hoặc đã có miễn dịch không thuộc quần thể có nguy cơ. Ví dụ với số liệu giả định: theo dõi 1.000 người chưa
+        mắc bệnh trong 1 năm, có 20 người mắc mới; tỷ lệ mới mắc tích lũy là 20 ÷ 1.000 = 2% trong 1
+        năm. Tỷ lệ mới mắc phản ánh nguy cơ phát triển bệnh, được dùng để nghiên cứu nguyên nhân và
+        đánh giá hiệu quả của các biện pháp dự phòng.
+    - id: dt-p03
+      chapter: "Chương 2. Đo lường bệnh trạng"
+      section: "2.3 Liên quan giữa hiện mắc và mới mắc"
+      page: 60
+      competency_code: FND
+      text: >-
+        Khi tỷ suất mới mắc và thời gian mắc bệnh trung bình tương đối ổn định và bệnh không quá phổ
+        biến, tỷ lệ hiện mắc xấp xỉ bằng tỷ suất mới mắc nhân với thời gian mắc bệnh trung bình:
+        P ≈ I × D. Tỷ lệ hiện mắc tăng khi số ca mới tăng, khi thời gian mắc bệnh kéo dài (ví dụ điều
+        trị giúp người bệnh sống lâu hơn nhưng không khỏi bệnh), hoặc khi người bệnh từ nơi khác chuyển
+        đến. Tỷ lệ hiện mắc giảm khi tỷ lệ mới mắc giảm, khi thời gian mắc bệnh ngắn lại do khỏi nhanh
+        hoặc tử vong nhanh, hoặc khi người bệnh rời khỏi quần thể. Vì vậy bệnh mạn tính có thể có tỷ lệ
+        hiện mắc cao dù tỷ lệ mới mắc thấp, còn bệnh cấp tính ngắn ngày có tỷ lệ hiện mắc thấp dù tỷ lệ
+        mới mắc cao. Ví dụ với số liệu giả định: bệnh có tỷ suất mới mắc 2 trên 1.000 người-năm và thời gian mắc trung bình
+        5 năm thì tỷ lệ hiện mắc xấp xỉ 10 trên 1.000 người.
+    - id: dt-p04
+      chapter: "Chương 2. Đo lường bệnh trạng"
+      section: "2.4 Tỷ lệ tấn công"
+      page: 61
+      competency_code: FND
+      text: >-
+        Tỷ lệ tấn công là một dạng tỷ lệ mới mắc tích lũy dùng trong vụ dịch, khi quần thể phơi nhiễm
+        được theo dõi trong một thời gian ngắn. Tỷ lệ tấn công bằng số ca mắc mới trong vụ dịch chia
+        cho số người có nguy cơ (số người phơi nhiễm), thường tính theo phần trăm. Ví dụ với số liệu giả định: 200 người dự
+        một bữa tiệc, 60 người bị ngộ độc thực phẩm; tỷ lệ tấn công là 60 ÷ 200 = 30%. Trong điều tra
+        ngộ độc thực phẩm, người ta tính tỷ lệ tấn công riêng cho từng món ăn và so sánh giữa nhóm ăn
+        và nhóm không ăn để tìm món nghi ngờ. Tỷ lệ tấn công thứ phát bằng số ca mới xuất hiện trong
+        những người tiếp xúc với ca bệnh đầu tiên chia cho số người tiếp xúc còn cảm nhiễm; chỉ số này
+        phản ánh khả năng lây truyền của bệnh trong hộ gia đình hoặc tập thể.
+    - id: dt-p05
+      chapter: "Chương 2. Đo lường bệnh trạng"
+      section: "2.5 Các chỉ số tử vong"
+      page: 62
+      competency_code: FND
+      text: >-
+        Tỷ suất tử vong thô bằng tổng số người tử vong do mọi nguyên nhân trong một năm chia cho dân số
+        trung bình của năm đó, thường tính trên 1.000 dân. Tỷ suất tử vong đặc hiệu theo nguyên nhân
+        bằng số tử vong do một nguyên nhân chia cho dân số trung bình, thường tính trên 100.000 dân.
+        Tỷ lệ tử vong trên số mắc (còn gọi là tỷ lệ chết/mắc) bằng số người tử vong do một bệnh chia
+        cho số người mắc bệnh đó, tính theo phần trăm. Chỉ số này phản ánh mức độ nặng của bệnh, không
+        phải nguy cơ tử vong của cả quần thể. Ví dụ với số liệu giả định: một vụ dịch có 80 ca mắc và 4 ca tử vong; tỷ lệ tử
+        vong trên số mắc là 4 ÷ 80 = 5%. Tỷ suất tử vong trẻ em dưới 1 tuổi bằng số trẻ chết dưới 1
+        tuổi trong năm chia cho số trẻ đẻ sống trong năm đó, tính trên 1.000 trẻ đẻ sống.
+    - id: dt-p17
+      chapter: "Chương 2. Đo lường bệnh trạng"
+      section: "2.6 Các bước điều tra một vụ dịch"
+      page: 63
+      competency_code: FND
+      text: >-
+        Điều tra một vụ dịch thường gồm các bước sau. Một, chuẩn bị nhân lực, vật tư và phối hợp với
+        các đơn vị liên quan. Hai, xác định có vụ dịch hay không bằng cách so sánh số ca hiện tại với
+        số ca thường gặp ở cùng địa điểm, cùng thời kỳ. Ba, xác minh chẩn đoán bằng lâm sàng và xét
+        nghiệm. Bốn, xây dựng định nghĩa ca bệnh và tìm kiếm ca bệnh một cách hệ thống. Năm, mô tả vụ
+        dịch theo thời gian, địa điểm và con người; đường cong dịch giúp nhận định kiểu lây truyền và
+        thời kỳ phơi nhiễm. Sáu, hình thành giả thuyết về nguồn lây và đường lây. Bảy, kiểm định giả
+        thuyết bằng nghiên cứu phân tích như bệnh–chứng hoặc thuần tập. Tám, triển khai các biện pháp
+        kiểm soát và phòng ngừa; các biện pháp này có thể bắt đầu sớm, không cần chờ kết thúc điều tra.
+        Chín, thông báo kết quả. Mười, duy trì giám sát để đánh giá hiệu quả.
+    - id: dt-p06
+      chapter: "Chương 3. Đo lường sự kết hợp"
+      section: "3.1 Nguy cơ tương đối"
+      page: 70
+      competency_code: FND
+      text: >-
+        Nguy cơ tương đối (RR) bằng tỷ lệ mới mắc ở nhóm phơi nhiễm chia cho tỷ lệ mới mắc ở nhóm không
+        phơi nhiễm. RR bằng 1 nghĩa là không có sự kết hợp giữa phơi nhiễm và bệnh. RR lớn hơn 1 nghĩa
+        là phơi nhiễm làm tăng nguy cơ mắc bệnh (yếu tố nguy cơ). RR nhỏ hơn 1 nghĩa là phơi nhiễm làm
+        giảm nguy cơ mắc bệnh (yếu tố bảo vệ), ví dụ RR bằng 0,5 nghĩa là nhóm phơi nhiễm có nguy cơ
+        mắc bệnh bằng một nửa nhóm không phơi nhiễm. RR đo độ mạnh của sự kết hợp và được tính trực
+        tiếp trong nghiên cứu thuần tập và thử nghiệm can thiệp, vì các thiết kế này đo được tỷ lệ mới
+        mắc. Ví dụ với số liệu giả định: tỷ lệ mới mắc bệnh mạch vành ở người hút thuốc là 20 trên
+        10.000 người-năm, ở người không hút thuốc là 10 trên 10.000 người-năm; RR = 20 ÷ 10 = 2, nghĩa
+        là người hút thuốc có nguy cơ mắc bệnh cao gấp 2 lần.
+    - id: dt-p07
+      chapter: "Chương 3. Đo lường sự kết hợp"
+      section: "3.2 Tỷ suất chênh"
+      page: 71
+      competency_code: FND
+      text: >-
+        Trong nghiên cứu bệnh–chứng, nhà nghiên cứu chọn sẵn người bệnh và người không bệnh nên không
+        tính được tỷ lệ mới mắc và không tính trực tiếp được nguy cơ tương đối. Thay vào đó, người ta
+        dùng tỷ suất chênh (OR) để so sánh chênh phơi nhiễm ở nhóm bệnh với chênh phơi nhiễm ở nhóm
+        chứng. Với bảng 2×2, gọi a là số người bệnh có phơi nhiễm, b là số người chứng có phơi nhiễm,
+        c là số người bệnh không phơi nhiễm, d là số người chứng không phơi nhiễm, thì OR = (a × d) ÷
+        (b × c). OR bằng 1 nghĩa là không có sự kết hợp; OR lớn hơn 1 gợi ý phơi nhiễm là yếu tố nguy
+        cơ. Khi bệnh hiếm, OR xấp xỉ bằng RR. Ví dụ với số liệu giả định: trong 100 người bệnh có 60
+        người phơi nhiễm, trong 100 người chứng có 30 người phơi nhiễm; OR = (60 × 70) ÷ (30 × 40) =
+        3,5.
+    - id: dt-p08
+      chapter: "Chương 3. Đo lường sự kết hợp"
+      section: "3.3 Nguy cơ quy thuộc"
+      page: 72
+      competency_code: FND
+      text: >-
+        Nguy cơ quy thuộc (AR) bằng tỷ lệ mới mắc ở nhóm phơi nhiễm trừ đi tỷ lệ mới mắc ở nhóm không
+        phơi nhiễm. AR cho biết phần nguy cơ tuyệt đối do phơi nhiễm gây ra, tức là số ca bệnh có thể
+        phòng được trong nhóm phơi nhiễm nếu loại bỏ phơi nhiễm. Phần trăm nguy cơ quy thuộc bằng AR
+        chia cho tỷ lệ mới mắc ở nhóm phơi nhiễm, nhân với 100; cũng có thể tính bằng (RR − 1) ÷ RR ×
+        100. Nguy cơ tương đối đo độ mạnh của sự kết hợp và có ý nghĩa về căn nguyên, còn nguy cơ quy
+        thuộc đo tác động về y tế công cộng. Ví dụ với số liệu giả định: tỷ lệ mới mắc ở nhóm phơi
+        nhiễm là 30 trên 1.000, ở nhóm không phơi nhiễm là 10 trên 1.000; AR = 30 − 10 = 20 trên 1.000
+        và phần trăm nguy cơ quy thuộc là 20 ÷ 30 ≈ 67%.
+    - id: dt-p09
+      chapter: "Chương 4. Thiết kế nghiên cứu dịch tễ học"
+      section: "4.1 Nghiên cứu cắt ngang"
+      page: 78
+      competency_code: FND
+      text: >-
+        Nghiên cứu cắt ngang đo tình trạng phơi nhiễm và tình trạng bệnh của từng người tại cùng một
+        thời điểm, trên một mẫu đại diện cho quần thể. Thiết kế này cho biết tỷ lệ hiện mắc nên còn gọi
+        là nghiên cứu tỷ lệ hiện mắc. Ưu điểm: thực hiện nhanh, chi phí thấp, mô tả được gánh nặng bệnh
+        tật và nhu cầu chăm sóc sức khỏe, có thể khảo sát nhiều phơi nhiễm và nhiều bệnh cùng lúc. Hạn
+        chế: không xác định được trình tự thời gian giữa phơi nhiễm và bệnh nên khó kết luận quan hệ
+        nhân quả; không phù hợp với bệnh hiếm hoặc bệnh diễn biến ngắn; dễ bỏ sót những ca tử vong
+        nhanh hoặc khỏi nhanh. Nghiên cứu cắt ngang thường dùng để hình thành giả thuyết cho các nghiên
+        cứu phân tích tiếp theo.
+    - id: dt-p10
+      chapter: "Chương 4. Thiết kế nghiên cứu dịch tễ học"
+      section: "4.2 Nghiên cứu bệnh–chứng"
+      page: 79
+      competency_code: FND
+      text: >-
+        Nghiên cứu bệnh–chứng bắt đầu từ tình trạng bệnh: chọn một nhóm người mắc bệnh (nhóm bệnh) và
+        một nhóm người không mắc bệnh (nhóm chứng), rồi hỏi hoặc tra cứu ngược về phơi nhiễm trong quá
+        khứ để so sánh giữa hai nhóm. Số đo kết hợp là tỷ suất chênh (OR). Ưu điểm: phù hợp nhất với
+        bệnh hiếm và bệnh có thời kỳ tiềm tàng dài; thực hiện nhanh, ít tốn kém, cần cỡ mẫu nhỏ; có thể
+        khảo sát nhiều yếu tố phơi nhiễm cho một bệnh. Hạn chế: dễ gặp sai số nhớ lại vì thông tin phơi
+        nhiễm được thu thập hồi cứu; khó chọn nhóm chứng phù hợp nên dễ gặp sai số chọn; không tính
+        được tỷ lệ mới mắc; không phù hợp với phơi nhiễm hiếm.
+    - id: dt-p11
+      chapter: "Chương 4. Thiết kế nghiên cứu dịch tễ học"
+      section: "4.3 Nghiên cứu thuần tập"
+      page: 80
+      competency_code: FND
+      text: >-
+        Nghiên cứu thuần tập bắt đầu từ tình trạng phơi nhiễm: chọn những người chưa mắc bệnh, phân
+        thành nhóm có phơi nhiễm và nhóm không phơi nhiễm, rồi theo dõi theo thời gian để ghi nhận sự
+        xuất hiện bệnh ở mỗi nhóm. Thiết kế này tính được tỷ lệ mới mắc, nguy cơ tương đối và nguy cơ
+        quy thuộc. Ưu điểm: xác định rõ phơi nhiễm có trước bệnh; phù hợp với phơi nhiễm hiếm; có thể
+        nghiên cứu nhiều bệnh do cùng một phơi nhiễm. Hạn chế: tốn thời gian và chi phí, cần cỡ mẫu
+        lớn; không phù hợp với bệnh hiếm; dễ mất đối tượng trong quá trình theo dõi. Nghiên cứu thuần
+        tập có thể là tương lai (theo dõi từ hiện tại) hoặc hồi cứu (dùng hồ sơ phơi nhiễm đã ghi nhận
+        trong quá khứ).
+    - id: dt-p12
+      chapter: "Chương 4. Thiết kế nghiên cứu dịch tễ học"
+      section: "4.4 Thử nghiệm ngẫu nhiên có đối chứng"
+      page: 81
+      competency_code: FND
+      text: >-
+        Thử nghiệm ngẫu nhiên có đối chứng là nghiên cứu can thiệp trong đó nhà nghiên cứu phân bổ ngẫu
+        nhiên đối tượng vào nhóm can thiệp hoặc nhóm chứng, rồi theo dõi và so sánh kết quả giữa hai
+        nhóm. Phân bổ ngẫu nhiên làm cho các yếu tố nhiễu, kể cả những yếu tố chưa biết, phân bố tương
+        đương giữa hai nhóm; vì vậy đây là thiết kế cho bằng chứng mạnh nhất về quan hệ nhân quả. Làm
+        mù (đối tượng, người đánh giá hoặc cả hai không biết ai thuộc nhóm nào) giúp giảm sai số đo
+        lường. Phân tích theo phân bổ ban đầu giữ được lợi ích của việc ngẫu nhiên hóa. Hạn chế: chi
+        phí cao, có ràng buộc về đạo đức (không thể chủ động cho đối tượng phơi nhiễm với yếu tố có
+        hại), và kết quả có thể khó khái quát cho quần thể rộng hơn.
+    - id: dt-p13
+      chapter: "Chương 5. Sàng lọc"
+      section: "5.1 Độ nhạy và độ đặc hiệu"
+      page: 88
+      competency_code: FND
+      text: >-
+        Giá trị của một test sàng lọc được đánh giá bằng cách so sánh với chuẩn vàng trong bảng 2×2: a
+        là dương tính thật, b là dương tính giả, c là âm tính giả, d là âm tính thật. Độ nhạy là khả
+        năng của test phát hiện đúng người có bệnh, bằng số dương tính thật chia cho tổng số người có
+        bệnh: a ÷ (a + c). Độ đặc hiệu là khả năng của test xác định đúng người không có bệnh, bằng số
+        âm tính thật chia cho tổng số người không có bệnh: d ÷ (b + d). Test có độ nhạy cao ít bỏ sót
+        người bệnh nên phù hợp cho sàng lọc ban đầu; test có độ đặc hiệu cao ít gây dương tính giả nên
+        phù hợp để khẳng định chẩn đoán. Ví dụ với số liệu giả định: trong 200 người có bệnh, test
+        dương tính ở 180 người, độ nhạy là 180 ÷ 200 = 90%.
+    - id: dt-p14
+      chapter: "Chương 5. Sàng lọc"
+      section: "5.2 Giá trị dự đoán"
+      page: 89
+      competency_code: FND
+      text: >-
+        Giá trị dự đoán dương là xác suất một người thực sự có bệnh khi kết quả test dương tính, bằng
+        số dương tính thật chia cho tổng số người có kết quả dương tính: a ÷ (a + b). Giá trị dự đoán
+        âm là xác suất một người thực sự không có bệnh khi kết quả test âm tính, bằng số âm tính thật
+        chia cho tổng số người có kết quả âm tính: d ÷ (c + d). Hai chỉ số này trả lời câu hỏi của
+        người làm lâm sàng và của người được xét nghiệm: kết quả này đáng tin đến mức nào. Ví dụ với số
+        liệu giả định: sàng lọc 1.000 người, trong đó 100 người có bệnh; test có độ nhạy 90% và độ đặc
+        hiệu 90% cho 90 dương tính thật và 90 dương tính giả, nên giá trị dự đoán dương là 90 ÷ 180 =
+        50%.
+    - id: dt-p15
+      chapter: "Chương 5. Sàng lọc"
+      section: "5.3 Ảnh hưởng của tỷ lệ hiện mắc"
+      page: 90
+      competency_code: FND
+      text: >-
+        Độ nhạy và độ đặc hiệu là đặc tính của test, ít phụ thuộc vào tỷ lệ hiện mắc của bệnh trong
+        quần thể. Ngược lại, giá trị dự đoán phụ thuộc mạnh vào tỷ lệ hiện mắc. Khi tỷ lệ hiện mắc
+        giảm, giá trị dự đoán dương giảm và giá trị dự đoán âm tăng; khi tỷ lệ hiện mắc tăng, giá trị
+        dự đoán dương tăng. Ví dụ với số liệu giả định, cùng một test có độ nhạy 90% và độ đặc hiệu
+        90%: ở quần thể có tỷ lệ hiện mắc 10%, giá trị dự đoán dương là 50%; ở quần thể có tỷ lệ hiện
+        mắc 1%, giá trị dự đoán dương chỉ còn khoảng 8,3%, tức là phần lớn kết quả dương tính là dương
+        tính giả. Vì vậy sàng lọc nên tập trung vào nhóm có nguy cơ cao, nơi tỷ lệ hiện mắc cao hơn, để
+        tăng giá trị dự đoán dương và giảm số người phải làm xét nghiệm khẳng định không cần thiết.
+    - id: dt-p16
+      chapter: "Chương 5. Sàng lọc"
+      section: "5.4 Tiêu chuẩn của một chương trình sàng lọc"
+      page: 91
+      competency_code: FND
+      text: >-
+        Một chương trình sàng lọc chỉ nên triển khai khi đáp ứng các tiêu chuẩn kinh điển do Wilson và
+        Jungner đề xuất. Về bệnh: bệnh là vấn đề sức khỏe quan trọng; diễn biến tự nhiên của bệnh được
+        hiểu rõ; có giai đoạn tiềm tàng hoặc giai đoạn sớm có thể phát hiện được. Về test: có test
+        sàng lọc phù hợp, đơn giản, an toàn, có giá trị và được cộng đồng chấp nhận. Về điều trị: có
+        biện pháp điều trị hiệu quả và được chấp nhận; điều trị ở giai đoạn sớm cho kết quả tốt hơn
+        điều trị muộn; có sẵn cơ sở chẩn đoán và điều trị. Về chương trình: có chính sách thống nhất về
+        đối tượng cần điều trị; chi phí phát hiện ca bệnh cân đối với tổng chi phí y tế; việc tìm ca
+        bệnh là một quá trình liên tục chứ không phải làm một lần.
+
+- id: TC-DEMO
+  title: Lịch tiêm chủng mở rộng
+  edition: demo
+  demo_label: Tài liệu demo – chưa thẩm định
+  excerpt_limit: null
+  passages:
+    # VERIFY before kickoff
+    - id: tc-p01
+      chapter: "Phần 1. Chương trình Tiêm chủng mở rộng"
+      section: "1.1 Giới thiệu chương trình"
+      page: 5
+      competency_code: CI-04
+      text: >-
+        Chương trình Tiêm chủng mở rộng (TCMR) ở Việt Nam bắt đầu triển khai từ năm 1981 với sự hỗ trợ
+        của Tổ chức Y tế Thế giới và UNICEF, và được mở rộng ra cả nước từ năm 1985. Ban đầu chương
+        trình cung cấp vắc xin phòng sáu bệnh: lao, bạch hầu, ho gà, uốn ván, bại liệt và sởi. Về sau
+        chương trình bổ sung thêm các vắc xin khác như viêm gan B, viêm não Nhật Bản, Hib và rubella;
+        gần đây vắc xin Rota uống cũng được đưa vào chương trình và triển khai theo lộ trình ở từng địa
+        phương.
+        Vắc xin trong chương trình được tiêm miễn phí cho trẻ em và phụ nữ có thai tại trạm y tế xã,
+        phường. Mục tiêu của chương trình là giảm tỷ lệ mắc và tử vong do các bệnh truyền nhiễm có vắc
+        xin phòng bệnh. Việt Nam đã thanh toán bệnh bại liệt vào năm 2000 và loại trừ uốn ván sơ sinh
+        vào năm 2005.
+    # VERIFY before kickoff
+    - id: tc-p02
+      chapter: "Phần 2. Lịch tiêm chủng cho trẻ em"
+      section: "2.1 Vắc xin tiêm cho trẻ sơ sinh"
+      page: 8
+      competency_code: CI-04
+      text: >-
+        Trẻ sơ sinh được tiêm hai loại vắc xin. Vắc xin viêm gan B mũi sơ sinh được tiêm trong vòng 24
+        giờ đầu sau sinh. Tiêm mũi sơ sinh sớm giúp phòng lây truyền vi rút viêm gan B từ mẹ sang con;
+        hiệu quả phòng bệnh giảm dần nếu tiêm muộn, vì vậy cần tiêm càng sớm càng tốt sau khi trẻ ra
+        đời. Vắc xin BCG phòng bệnh lao được tiêm một mũi duy nhất, càng sớm càng tốt và trong vòng 1
+        tháng sau sinh. Các mũi vắc xin viêm gan B tiếp theo được tiêm trong vắc xin phối hợp
+        DPT-VGB-Hib theo lịch Tiêm chủng mở rộng.
+    # VERIFY before kickoff
+    - id: tc-p03
+      chapter: "Phần 2. Lịch tiêm chủng cho trẻ em"
+      section: "2.2 Trẻ 2, 3 và 4 tháng tuổi"
+      page: 9
+      competency_code: CI-04
+      text: >-
+        Khi trẻ đủ 2 tháng tuổi, trẻ được tiêm vắc xin phối hợp DPT-VGB-Hib mũi 1 và uống vắc xin bại
+        liệt (OPV) lần 1. Khi trẻ đủ 3 tháng tuổi, trẻ được tiêm DPT-VGB-Hib mũi 2 và uống OPV lần 2.
+        Khi trẻ đủ 4 tháng tuổi, trẻ được tiêm DPT-VGB-Hib mũi 3 và uống OPV lần 3. Vắc xin DPT-VGB-Hib
+        là vắc xin phối hợp 5 trong 1, phòng năm bệnh: bạch hầu, ho gà, uốn ván, viêm gan B và viêm
+        phổi, viêm màng não mủ do vi khuẩn Hib. Các mũi tiêm của cùng một loại vắc xin cách nhau tối
+        thiểu 1 tháng. Nếu trẻ bị lỡ lịch, cần tiêm bù sớm nhất có thể và không phải tiêm lại từ đầu.
+    # VERIFY before kickoff
+    - id: tc-p04
+      chapter: "Phần 2. Lịch tiêm chủng cho trẻ em"
+      section: "2.3 Trẻ 5 tháng và 9 tháng tuổi"
+      page: 10
+      competency_code: CI-04
+      text: >-
+        Khi trẻ đủ 5 tháng tuổi, trẻ được tiêm vắc xin bại liệt tiêm (IPV) mũi 1. Khi trẻ đủ 9 tháng
+        tuổi, trẻ được tiêm vắc xin sởi mũi 1 và vắc xin bại liệt tiêm (IPV) mũi 2. Vắc xin sởi là vắc
+        xin sống giảm độc lực; mũi tiêm lúc 9 tháng tuổi bảo vệ trẻ trong giai đoạn kháng thể từ mẹ
+        truyền sang đã giảm. Vắc xin bại liệt tiêm là vắc xin bất hoạt, được dùng phối hợp với vắc xin
+        bại liệt uống để tăng cường miễn dịch phòng bệnh bại liệt.
+    # VERIFY before kickoff
+    - id: tc-p05
+      chapter: "Phần 2. Lịch tiêm chủng cho trẻ em"
+      section: "2.4 Vắc xin viêm não Nhật Bản"
+      page: 11
+      competency_code: CI-04
+      text: >-
+        Vắc xin viêm não Nhật Bản trong chương trình Tiêm chủng mở rộng được tiêm cho trẻ từ 1 tuổi.
+        Lịch tiêm gồm ba mũi: mũi 1 khi trẻ đủ 1 tuổi; mũi 2 sau mũi 1 từ 1 đến 2 tuần; mũi 3 sau mũi 2
+        một năm. Bệnh viêm não Nhật Bản do vi rút gây ra và lây truyền qua muỗi Culex; bệnh thường gặp
+        ở trẻ em, có thể gây tử vong hoặc để lại di chứng thần kinh nặng. Tiêm đủ ba mũi cơ bản giúp
+        tạo miễn dịch bảo vệ cho trẻ.
+    # VERIFY before kickoff
+    - id: tc-p06
+      chapter: "Phần 2. Lịch tiêm chủng cho trẻ em"
+      section: "2.5 Trẻ 18 tháng tuổi"
+      page: 12
+      competency_code: CI-04
+      text: >-
+        Khi trẻ đủ 18 tháng tuổi, trẻ được tiêm vắc xin sởi–rubella (MR) và vắc xin DPT mũi 4. Mũi sởi–
+        rubella lúc 18 tháng là mũi sởi thứ hai, giúp bảo vệ những trẻ chưa có đáp ứng miễn dịch sau
+        mũi sởi lúc 9 tháng tuổi và phòng thêm bệnh rubella. Mũi DPT thứ tư là mũi nhắc lại phòng bạch
+        hầu, ho gà và uốn ván sau ba mũi cơ bản lúc 2, 3 và 4 tháng tuổi.
+    # VERIFY before kickoff
+    - id: tc-p07
+      chapter: "Phần 3. Tiêm chủng cho phụ nữ"
+      section: "3.1 Vắc xin uốn ván cho phụ nữ có thai"
+      page: 13
+      competency_code: CI-04
+      text: >-
+        Tiêm vắc xin uốn ván cho phụ nữ có thai nhằm phòng uốn ván cho mẹ và uốn ván sơ sinh cho con.
+        Với phụ nữ chưa tiêm hoặc không rõ tiền sử tiêm vắc xin có thành phần uốn ván, lịch tiêm gồm
+        năm mũi. Mũi 1 tiêm sớm khi có thai lần đầu. Mũi 2 tiêm ít nhất 1 tháng sau mũi 1 và trước khi
+        sinh ít nhất 1 tháng. Mũi 3 tiêm ít nhất 6 tháng sau mũi 2 hoặc trong lần có thai sau. Mũi 4
+        tiêm ít nhất 1 năm sau mũi 3 hoặc trong lần có thai sau. Mũi 5 tiêm ít nhất 1 năm sau mũi 4
+        hoặc trong lần có thai sau. Tiêm đủ năm mũi giúp bảo vệ trong suốt thời kỳ sinh đẻ.
+    # VERIFY before kickoff
+    - id: tc-p08
+      chapter: "Phần 4. Bảo quản vắc xin và an toàn tiêm chủng"
+      section: "4.1 Dây chuyền lạnh"
+      page: 20
+      competency_code: CI-04
+      text: >-
+        Dây chuyền lạnh là hệ thống thiết bị và quy trình giữ vắc xin ở nhiệt độ quy định từ nơi sản
+        xuất đến khi tiêm cho người được tiêm chủng. Phần lớn vắc xin của chương trình Tiêm chủng mở
+        rộng được bảo quản ở nhiệt độ từ +2 °C đến +8 °C. Một số vắc xin dễ hỏng do đông băng, như
+        DPT-VGB-Hib, viêm gan B và uốn ván; tuyệt đối không để các vắc xin này bị đông băng. Một số vắc
+        xin dễ hỏng do nhiệt độ cao và ánh sáng, như vắc xin bại liệt uống, sởi và BCG. Nhiệt độ bảo
+        quản phải được theo dõi và ghi lại hằng ngày. Chỉ thị nhiệt độ lọ vắc xin cho biết lọ vắc xin
+        đã tiếp xúc với nhiệt độ cao quá mức hay chưa.
+    # VERIFY before kickoff
+    - id: tc-p10
+      chapter: "Phần 4. Bảo quản vắc xin và an toàn tiêm chủng"
+      section: "4.2 Chống chỉ định và tạm hoãn tiêm chủng"
+      page: 22
+      competency_code: CI-04
+      text: >-
+        Trước mỗi buổi tiêm chủng, cán bộ y tế phải khám sàng lọc để phát hiện các trường hợp chống chỉ
+        định hoặc cần tạm hoãn. Chống chỉ định khi trẻ có tiền sử sốc hoặc phản ứng nặng sau lần tiêm
+        trước của cùng loại vắc xin hoặc với thành phần của vắc xin. Vắc xin sống giảm độc lực không
+        dùng cho người suy giảm miễn dịch nặng. Tạm hoãn tiêm khi trẻ đang mắc bệnh cấp tính, đặc biệt
+        là bệnh nhiễm trùng, hoặc khi trẻ đang sốt hoặc hạ thân nhiệt. Trẻ được tiêm bù sau khi sức
+        khỏe ổn định. Bệnh nhẹ thông thường không kèm sốt không phải là lý do để hoãn tiêm kéo dài, vì
+        hoãn tiêm không cần thiết làm trẻ chậm được bảo vệ.
+    # VERIFY before kickoff
+    - id: tc-p09
+      chapter: "Phần 4. Bảo quản vắc xin và an toàn tiêm chủng"
+      section: "4.3 Phản ứng sau tiêm chủng"
+      page: 24
+      competency_code: CI-04
+      text: >-
+        Phản ứng sau tiêm chủng được chia thành phản ứng thông thường và tai biến nặng. Phản ứng thông
+        thường gồm sốt nhẹ, đau, sưng hoặc đỏ tại chỗ tiêm, quấy khóc; các phản ứng này thường nhẹ và
+        tự hết sau một vài ngày. Tai biến nặng sau tiêm chủng rất hiếm gặp, ví dụ sốc phản vệ, và có
+        thể đe dọa tính mạng nếu không được xử trí kịp thời. Sau khi tiêm, người được tiêm chủng cần
+        được theo dõi ít nhất 30 phút tại điểm tiêm chủng và tiếp tục được theo dõi tại nhà ít nhất 24
+        giờ. Cán bộ y tế hướng dẫn gia đình các dấu hiệu cần đưa trẻ đến ngay cơ sở y tế, như sốt cao,
+        co giật, khó thở, tím tái, quấy khóc kéo dài hoặc bú kém.
+
+- id: LUAT-PCBTN-2007
+  title: Luật Phòng, chống bệnh truyền nhiễm 2007
+  edition: "Luật số 03/2007/QH12"
+  demo_label: Tài liệu demo – chưa thẩm định
+  excerpt_limit: null
+  # Checked 09/10/2026 by web search (luatvietnam.vn, chinhphu.vn): superseded. VERIFY before kickoff,
+  # and decide whether to keep this document as a historical source or re-source from the 2025 law.
+  validity_note: >-
+    Luật này đã được thay thế bởi Luật Phòng bệnh 2025 (số 114/2025/QH15) từ ngày 01/07/2026, và
+    danh mục bệnh theo nhóm đã được Bộ Y tế điều chỉnh, bổ sung. Trích đoạn dưới đây là quy định
+    của Luật năm 2007, chỉ để tham khảo.
+  passages:
+    # VERIFY before kickoff against the official text (vbpl.vn)
+    - id: lt-p01
+      chapter: "Chương I. Những quy định chung"
+      section: "Điều 3. Phân loại bệnh truyền nhiễm"
+      article: "Điều 3, khoản 1, điểm a"
+      competency_code: CI-01
+      text: >-
+        Nhóm A gồm các bệnh truyền nhiễm đặc biệt nguy hiểm có khả năng lây truyền rất nhanh, phát tán
+        rộng và tỷ lệ tử vong cao hoặc chưa rõ tác nhân gây bệnh. Các bệnh truyền nhiễm thuộc nhóm A
+        bao gồm bệnh bại liệt; bệnh cúm A-H5N1; bệnh dịch hạch; bệnh đậu mùa; bệnh sốt xuất huyết do vi
+        rút Ê-bô-la (Ebola), Lát-sa (Lassa) hoặc Mác-bớc (Marburg); bệnh sốt Tây sông Nin (Nile); bệnh
+        sốt vàng; bệnh tả; bệnh viêm đường hô hấp cấp nặng do vi rút và các bệnh truyền nhiễm nguy hiểm
+        mới phát sinh chưa rõ tác nhân gây bệnh.
+    # VERIFY before kickoff against the official text (vbpl.vn)
+    - id: lt-p02
+      chapter: "Chương I. Những quy định chung"
+      section: "Điều 3. Phân loại bệnh truyền nhiễm"
+      article: "Điều 3, khoản 1, điểm b"
+      competency_code: CI-01
+      text: >-
+        Nhóm B gồm các bệnh truyền nhiễm nguy hiểm có khả năng lây truyền nhanh và có thể gây tử vong.
+        Các bệnh truyền nhiễm thuộc nhóm B bao gồm bệnh do vi rút A-đê-nô (Adeno); bệnh do vi rút gây
+        ra hội chứng suy giảm miễn dịch mắc phải ở người (HIV/AIDS); bệnh bạch hầu; bệnh cúm; bệnh dại;
+        bệnh ho gà; bệnh lao phổi; bệnh do liên cầu lợn ở người; bệnh lỵ A-míp (Amibe); bệnh lỵ trực
+        trùng; bệnh quai bị; bệnh sốt Đăng gơ (Dengue), sốt xuất huyết Đăng gơ (Dengue); bệnh sốt rét;
+        bệnh sốt phát ban; bệnh sởi; bệnh tay-chân-miệng; bệnh than; bệnh thủy đậu; bệnh thương hàn;
+        bệnh uốn ván; bệnh Ru-bê-ôn (Rubeon); bệnh viêm gan vi rút; bệnh viêm màng não do não mô cầu;
+        bệnh viêm não vi rút; bệnh xoắn khuẩn vàng da; bệnh tiêu chảy do vi rút Rô-ta (Rota).
+    # VERIFY before kickoff against the official text (vbpl.vn)
+    - id: lt-p03
+      chapter: "Chương I. Những quy định chung"
+      section: "Điều 3. Phân loại bệnh truyền nhiễm"
+      article: "Điều 3, khoản 1, điểm c"
+      competency_code: CI-01
+      text: >-
+        Nhóm C gồm các bệnh truyền nhiễm ít nguy hiểm, khả năng lây truyền không nhanh. Các bệnh truyền
+        nhiễm thuộc nhóm C bao gồm bệnh do Cờ-la-my-đi-a (Chlamydia); bệnh giang mai; các bệnh do giun;
+        bệnh lậu; bệnh mắt hột; bệnh do nấm Can-đi-đa-an-bi-căng (Candida albicans); bệnh Nô-ca-đi-a
+        (Nocardia); bệnh phong; bệnh do vi rút Xi-tô-mê-ga-lô (Cytomegalo); bệnh do vi rút Héc-péc
+        (Herpes); bệnh sán dây; bệnh sán lá gan; bệnh sán lá phổi; bệnh sán lá ruột; bệnh sốt mò; bệnh
+        sốt do Rích-két-si-a (Rickettsia); bệnh sốt xuất huyết do vi rút Han-ta (Hanta); bệnh do
+        Tờ-ri-cô-mô-nát (Trichomonas); bệnh viêm da mụn mủ truyền nhiễm; bệnh viêm họng, viêm miệng,
+        viêm tim do vi rút Cốc-xác-ki (Coxsakie); bệnh viêm ruột do Giác-đi-a (Giardia); bệnh viêm ruột
+        do Vi-bờ-ri-ô Pa-ra-hê-mô-ly-ti-cút (Vibrio Parahaemolyticus) và các bệnh truyền nhiễm khác.
+    # VERIFY before kickoff against the official text (vbpl.vn)
+    - id: lt-p04
+      chapter: "Chương I. Những quy định chung"
+      section: "Điều 3. Phân loại bệnh truyền nhiễm"
+      article: "Điều 3, khoản 2"
+      competency_code: CI-01
+      text: >-
+        Bộ trưởng Bộ Y tế quyết định điều chỉnh, bổ sung danh mục bệnh truyền nhiễm thuộc các nhóm quy
+        định tại khoản 1 Điều này.
