@@ -1,10 +1,11 @@
-import type { SpecialtyIssues } from "./learningAnalytics";
 import { localDay, recordActivity } from "./learnerWorkspace";
 // Thin JSON client for the backend's /v1 API (proxied under /api by Vite). Every request goes through
 // the session, which adds the access token and refreshes it when it has expired.
 import { getActor, setActor } from "../app/identity";
 import { notifyConsentRequired, session, staffSession } from "./client";
 import { demoCall, DemoError, demoStream } from "./demo/store";
+import { liveCall } from "./live/adapter";
+import { LiveError } from "./live/backend";
 import type { Session, Tokens } from "./session";
 
 const BASE = "/api/v1";
@@ -94,6 +95,24 @@ async function request<T>(
         if (e.code === "consent_required") notifyConsentRequired();
         throw new ApiError(e.status, e.code, e.message);
       }
+      throw e;
+    }
+  }
+  if (actor?.mode === "live" && actor.role === "learner") {
+    // This repo's backend: the /v1 contract is served by the adapter over /api (lib/live).
+    try {
+      const result = (await liveCall(
+        method,
+        path,
+        body,
+        options?.idempotencyKey,
+      )) as T;
+      if (actor.id === getActor()?.id)
+        trackLearning(method, path, body, result, options?.idempotencyKey);
+      return result;
+    } catch (e) {
+      if (e instanceof LiveError)
+        throw new ApiError(e.status, e.code, e.message);
       throw e;
     }
   }
@@ -224,8 +243,28 @@ export type {
 // Chat payloads live with the rules that read them (chatTurn.ts).
 import type { Citation, StoredMessage } from "./chatTurn";
 
+// Live mode: what the tutor suggests asking about, and why (lib/live/adapter.ts).
+export type TutorTopic = {
+  reason_vi: string;
+  label_vi: string;
+  prompt: string;
+};
+// The one thing to pick up again; `path` is null for a conversation, opened in the tutor popup.
+export type ResumeItem = {
+  kind: "exam" | "unit" | "practice_set" | "chat";
+  id: number | string;
+  title: string;
+  subtitle_vi: string;
+  progress: number | null;
+  path: string | null;
+};
+
 export type Home = {
   name: string;
+  // Live mode only; the demo's payload has none of the three.
+  days_to_exam?: number | null;
+  resume?: ResumeItem | null;
+  tutor_topics?: TutorTopic[];
   quick_review_count: number;
   quick_review_note_vi: string | null;
   due_cards: number;
@@ -334,8 +373,6 @@ export type UnitView = {
 
 export type ExamForm = {
   id: string;
-  module_id?: string | null;
-  module_name?: string;
   title: string;
   kind: "diagnostic" | "mock" | "demo_short" | "assembled";
   n_questions: number;
@@ -377,7 +414,6 @@ export type ItemStatus = "ok" | "wrong" | "blank";
 
 export type Results = {
   attempt_id: number;
-  issues_by_specialty?: SpecialtyIssues[];
   specialties?: { name: string; correct: number; total: number }[];
   bloom_by_specialty?: {
     module_id: string;
@@ -414,17 +450,7 @@ export type Results = {
   }[];
 };
 
-// Optional until the live API supplies question classification metadata.
-export type QuestionClassification = {
-  module_id?: string | null;
-  module_name?: string | null;
-  core_issue_id?: number | null;
-  difficulty_label?: string | null;
-  bloom_level?: number | null;
-  core_issue_name?: string | null;
-};
-
-export type ReviewItem = QuestionClassification & {
+export type ReviewItem = {
   n: number;
   total: number;
   question_id: string;
@@ -438,6 +464,8 @@ export type ReviewItem = QuestionClassification & {
 
 export type DueCard = {
   id: number;
+  // Live mode: a concept card asks a fresh question on its passage, run as this one-item set.
+  practice_set_id?: number | null;
   front: string;
   back: string;
   citation: string;
@@ -487,7 +515,7 @@ export type PracticeFeedback = {
   card_created: boolean;
   remediation: Remediation | null;
 };
-export type PracticeItem = QuestionClassification & {
+export type PracticeItem = {
   question_id: string;
   n: number;
   stem: string;
@@ -521,7 +549,6 @@ export type Deck = {
 // ---- Tiến độ ----
 
 export type ProgressSkills = {
-  issues_by_specialty?: SpecialtyIssues[];
   days_to_exam: number;
   scope: "latest3" | "all";
   coverage: {

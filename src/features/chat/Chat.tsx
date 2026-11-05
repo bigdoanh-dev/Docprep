@@ -13,28 +13,51 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Conversation } from "../../components/Conversation";
 import { LoadError } from "../../components/Status";
-import { api, type ChatSessionSummary, type Listed } from "../../lib/api";
+import {
+  api,
+  type ChatSessionSummary,
+  type Listed,
+  type TutorTopic,
+} from "../../lib/api";
+import type { TutorRequest } from "../../lib/tutorLink";
 import { formatDate } from "../../lib/format";
 import { useLoad } from "../../lib/hooks";
 import { useActor } from "../../app/identity";
 import { updateWorkspace, useWorkspace } from "../../lib/learnerWorkspace";
+// The demo's sample documents are on epidemiology; live mode's are the repo's guidelines. One
+// starter per tutor move, labelled as such.
 const STARTERS = [
   "Phân biệt tỷ lệ hiện mắc và tỷ lệ mới mắc",
   "Nghiên cứu cắt ngang đo chỉ số nào?",
   "Nguy cơ tương đối được hiểu như thế nào?",
+];
+const LIVE_STARTERS = [
+  "Vì sao sốt xuất huyết Dengue nguy hiểm nhất vào ngày 3–7?",
+  "Phân biệt viêm màng não nhiễm khuẩn và viêm màng não tăng bạch cầu ái toan",
+  "Cho mình một ca lâm sàng về tăng huyết áp tại trạm y tế xã",
+  "Kiểm tra mình về hen phế quản",
+];
+const LIVE_STARTER_LABELS = [
+  "Giải thích",
+  "So sánh – phân biệt",
+  "Ca lâm sàng",
+  "Kiểm tra mình",
 ];
 export function Chat({
   embedded = false,
   onClose,
   expanded = false,
   onToggleSize,
+  request,
 }: {
   embedded?: boolean;
   onClose?: () => void;
   expanded?: boolean;
   onToggleSize?: () => void;
+  request?: TutorRequest; // from another screen: open this conversation, or start one with a question
 }) {
   const actor = useActor();
+  const live = actor?.mode === "live";
   const [query, setQuery] = useState("");
   const [newChatVersion, setNewChatVersion] = useState(0);
   const [params] = useSearchParams(),
@@ -106,6 +129,37 @@ export function Chat({
   const sessions = [...(data?.items ?? []), ...older].filter(
     (s, i, a) => a.findIndex((x) => x.id === s.id) === i,
   );
+  // A question the new conversation starts with, from a recommendation on Home.
+  const [ask, setAsk] = useState<string>();
+  useEffect(() => {
+    if (!request) return;
+    if (request.session) {
+      setAsk(undefined);
+      selectSession(request.session);
+    } else if (request.ask) {
+      selectSession(null);
+      setAsk(request.ask);
+      setNewChatVersion((v) => v + 1);
+    }
+  }, [request?.key]);
+  // Live mode: the starters are what the learner's own record suggests, then the fixed ones.
+  const { data: topics } = useLoad(
+    () =>
+      live
+        ? api.get<Listed<TutorTopic>>("/chat/recommendations")
+        : Promise.resolve({ items: [] as TutorTopic[] }),
+    [live, tick],
+  );
+  const recommended = topics?.items ?? [];
+  const starters = live
+    ? [...recommended.map((t) => t.prompt), ...LIVE_STARTERS].slice(0, 4)
+    : STARTERS;
+  const starterLabels = live
+    ? [...recommended.map((t) => t.label_vi), ...LIVE_STARTER_LABELS].slice(
+        0,
+        4,
+      )
+    : undefined;
   const matches = sessions.filter((s) =>
     s.title.toLocaleLowerCase("vi").includes(query.toLocaleLowerCase("vi")),
   );
@@ -146,6 +200,7 @@ export function Chat({
             title="Cuộc trò chuyện mới"
             onClick={() => {
               selectSession(null);
+              setAsk(undefined);
               setNewChatVersion((v) => v + 1);
             }}
           >
@@ -242,7 +297,11 @@ export function Chat({
           <Conversation
             key={newChatVersion}
             sessionId={id}
-            starters={STARTERS}
+            starters={starters}
+            starterLabels={starterLabels}
+            autoSend={id === null ? ask : undefined}
+            resume={id === null && !ask ? sessions[0] : undefined}
+            onResume={(sid) => selectSession(sid)}
             onSession={(sid) => {
               selectSession(sid, true);
               setTick((v) => v + 1);

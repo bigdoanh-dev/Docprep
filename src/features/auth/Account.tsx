@@ -101,7 +101,12 @@ export function Account() {
         )}
         <div>
           <h2>{data?.display_name ?? actor.name}</h2>
-          <p>{roleNames[actor.role]}</p>
+          <p>
+            {roleNames[actor.role]} ·{" "}
+            {actor.mode === "demo"
+              ? "Trải nghiệm minh họa"
+              : "Phiên kết nối máy chủ"}
+          </p>
         </div>
       </div>
       {actor.role === "learner" && (

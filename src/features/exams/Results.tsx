@@ -1,14 +1,8 @@
-import { QuestionClassification } from "../../components/QuestionClassification";
 import { SaveQuestion } from "../../components/SaveQuestion";
 import { SpecialtyAnalysis } from "../progress/SpecialtyAnalysis";
-import { useRef, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import { QuestionSources, useSourceSheet } from "../../components/Answer";
+import { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { CitationChip, useSourceSheet } from "../../components/Answer";
 import { Icon } from "../../components/Icon";
 import { LoadError, Loading } from "../../components/Status";
 import { TabBar } from "../../components/TabBar";
@@ -21,8 +15,6 @@ import {
 } from "../../lib/api";
 import { formatDate, formatDuration, formatTime } from "../../lib/format";
 import { useLoad } from "../../lib/hooks";
-
-const QUESTIONS_PER_PAGE = 10;
 
 type Filter = "all" | ItemStatus;
 const FILTERS: { id: Filter; label: string }[] = [
@@ -62,31 +54,9 @@ export function Results() {
     () => api.get<ResultsData>(`/attempts/${attemptId}/results`),
     [attemptId],
   );
-  const [params, setParams] = useSearchParams();
-  const questionHeading = useRef<HTMLHeadingElement>(null);
-  const filter =
-    FILTERS.find((f) => f.id === params.get("filter"))?.id ?? "all";
+  const [filter, setFilter] = useState<Filter>("all");
   const rows =
     data?.items.filter((i) => filter === "all" || i.status === filter) ?? [];
-  const pageCount = Math.max(1, Math.ceil(rows.length / QUESTIONS_PER_PAGE));
-  const requestedPage = Number(params.get("page") ?? 1);
-  const page = Number.isSafeInteger(requestedPage)
-    ? Math.min(pageCount, Math.max(1, requestedPage))
-    : 1;
-  const offset = (page - 1) * QUESTIONS_PER_PAGE;
-  const visibleRows = rows.slice(offset, offset + QUESTIONS_PER_PAGE);
-  const reviewQuery = new URLSearchParams({
-    filter,
-    page: String(page),
-  }).toString();
-
-  function changePage(next: number) {
-    const updated = new URLSearchParams(params);
-    updated.set("page", String(next));
-    setParams(updated, { replace: true });
-    questionHeading.current?.focus({ preventScroll: true });
-    questionHeading.current?.scrollIntoView({ block: "start" });
-  }
 
   return (
     <div className="screen">
@@ -154,7 +124,6 @@ export function Results() {
                 specialties={data.specialties}
                 levels={data.levels}
                 bySpecialty={data.bloom_by_specialty}
-                byIssue={data.issues_by_specialty}
               />
             )}
             <div className="card tint" style={{ padding: 0 }}>
@@ -201,14 +170,6 @@ export function Results() {
               </Link>
             </div>
 
-            <h2
-              ref={questionHeading}
-              tabIndex={-1}
-              className="h2"
-              style={{ scrollMarginTop: 24 }}
-            >
-              Câu hỏi đã làm
-            </h2>
             <div
               className="row"
               style={{ gap: 8, overflowX: "auto" }}
@@ -220,12 +181,7 @@ export function Results() {
                   key={f.id}
                   className="pill"
                   aria-pressed={filter === f.id}
-                  onClick={() => {
-                    const updated = new URLSearchParams(params);
-                    updated.set("filter", f.id);
-                    updated.set("page", "1");
-                    setParams(updated, { replace: true });
-                  }}
+                  onClick={() => setFilter(f.id)}
                 >
                   {f.label}
                 </button>
@@ -234,98 +190,47 @@ export function Results() {
             {rows.length === 0 ? (
               <p className="empty">Không có câu nào trong nhóm này.</p>
             ) : (
-              <>
-                <p className="muted small" role="status">
-                  Hiển thị {offset + 1}–
-                  {Math.min(offset + QUESTIONS_PER_PAGE, rows.length)} /{" "}
-                  {rows.length} câu
-                </p>
-                <div className="list" aria-label="Danh sách câu hỏi đã làm">
-                  {visibleRows.map((item) => (
-                    <Link
-                      key={item.question_id}
-                      to={`/thi-thu/ket-qua/${attemptId}/${item.question_id}?${reviewQuery}`}
-                      className="list-row"
-                    >
-                      <span
-                        style={{
-                          width: 28,
-                          height: 28,
-                          flexShrink: 0,
-                          borderRadius: 14,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 13,
-                          fontWeight: 700,
-                          background: MARK[item.status].bg,
-                          color: MARK[item.status].fg,
-                        }}
-                      >
-                        <span aria-hidden="true">
-                          <Icon name={MARK[item.status].sign} size={16} />
-                        </span>
-                        <span className="sr">{MARK[item.status].label}</span>
-                      </span>
-                      <span className="grow">
-                        <span style={{ display: "block", fontWeight: 500 }}>
-                          Câu {item.n}
-                        </span>
-                        <span className="muted small">{item.topic}</span>
-                      </span>
-                      <span
-                        style={{
-                          color: "var(--primary-dark)",
-                          fontWeight: 500,
-                        }}
-                      >
-                        Xem lại
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-                {pageCount > 1 && (
-                  <nav
-                    className="exam-results-pagination"
-                    aria-label="Phân trang câu hỏi đã làm"
+              <div className="list">
+                {rows.map((item) => (
+                  <Link
+                    key={item.question_id}
+                    to={`/thi-thu/ket-qua/${attemptId}/${item.question_id}`}
+                    className="list-row"
                   >
-                    <button
-                      type="button"
-                      className="btn"
-                      disabled={page === 1}
-                      onClick={() => changePage(page - 1)}
-                      aria-label="Trang trước"
+                    <span
+                      style={{
+                        width: 28,
+                        height: 28,
+                        flexShrink: 0,
+                        borderRadius: 14,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        background: MARK[item.status].bg,
+                        color: MARK[item.status].fg,
+                      }}
                     >
-                      Trước
-                    </button>
-                    <label>
-                      Trang
-                      <select
-                        value={page}
-                        onChange={(event) =>
-                          changePage(Number(event.target.value))
-                        }
-                        aria-label="Chọn trang câu hỏi"
-                      >
-                        {Array.from({ length: pageCount }, (_, index) => (
-                          <option key={index + 1} value={index + 1}>
-                            {index + 1} / {pageCount}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <button
-                      type="button"
-                      className="btn"
-                      disabled={page === pageCount}
-                      onClick={() => changePage(page + 1)}
-                      aria-label="Trang sau"
+                      <span aria-hidden="true">
+                        <Icon name={MARK[item.status].sign} size={16} />
+                      </span>
+                      <span className="sr">{MARK[item.status].label}</span>
+                    </span>
+                    <span className="grow">
+                      <span style={{ display: "block", fontWeight: 500 }}>
+                        Câu {item.n}
+                      </span>
+                      <span className="muted small">{item.topic}</span>
+                    </span>
+                    <span
+                      style={{ color: "var(--primary-dark)", fontWeight: 500 }}
                     >
-                      Sau
-                    </button>
-                  </nav>
-                )}
-              </>
+                      Xem lại
+                    </span>
+                  </Link>
+                ))}
+              </div>
             )}
           </>
         )}
@@ -339,8 +244,6 @@ export function AnswerReview() {
   const { attemptId, questionId } = useParams();
   const navigate = useNavigate();
   const base = `/thi-thu/ket-qua/${attemptId}`;
-  const [params] = useSearchParams();
-  const query = params.size ? `?${params.toString()}` : "";
   const { data, error, reload } = useLoad(
     () =>
       Promise.all([
@@ -357,17 +260,13 @@ export function AnswerReview() {
   const topic = results?.items[at]?.topic ?? "";
   const go = (delta: number) => {
     setTutorOpen(false);
-    navigate(`${base}/${order[at + delta]}${query}`);
+    navigate(`${base}/${order[at + delta]}`);
   };
 
   return (
     <div className="screen">
       <header className="topbar">
-        <Link
-          to={`${base}${query}`}
-          className="icon-btn"
-          aria-label="Quay lại kết quả"
-        >
+        <Link to={base} className="icon-btn" aria-label="Quay lại kết quả">
           <Icon name="left" />
         </Link>
         <h1>Xem lại đáp án</h1>
@@ -466,7 +365,6 @@ export function AnswerReview() {
             </div>
             <div className="card stack">
               <p className="label">Giải thích của chuyên gia</p>
-              <QuestionClassification metadata={item} />
               <p style={{ fontSize: 16, color: "var(--text-2)" }}>
                 {item.explanation}
               </p>
@@ -484,10 +382,14 @@ export function AnswerReview() {
                     Giải thích thêm
                   </button>
                 )}
-                <QuestionSources
-                  citations={item.citations}
-                  onOpen={source.show}
-                />
+                {item.citations.map((c) => (
+                  <CitationChip
+                    key={c.passage_id}
+                    citation={c}
+                    onOpen={source.show}
+                    label={c.page ? `tr. ${c.page}` : (c.article ?? "Nguồn")}
+                  />
+                ))}
               </div>
             </div>
           </>

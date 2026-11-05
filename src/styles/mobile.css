@@ -3741,23 +3741,29 @@ textarea {
 .adapting-result {
   min-height: 48px !important;
   gap: 11px;
-  border-bottom: 1px solid #ffffff18;
-  color: #fff;
+  border-bottom: 1px solid var(--border);
 }
 .adapting-result:last-child {
   border-bottom: 0;
-}
-.adapting-result-check {
-  color: #a9d2ff !important;
 }
 .adapting-result-label {
   font-size: 12px;
 }
 .adapting-result-value {
   max-width: 47%;
-  color: #e0eaff;
   font-size: 11px;
   line-height: 1.45;
+}
+/* On the dark adapting screen only; the same lines also sit on a white card. */
+.adapting-results .adapting-result {
+  border-bottom-color: #ffffff18;
+  color: #fff;
+}
+.adapting-results .adapting-result-check {
+  color: #a9d2ff !important;
+}
+.adapting-results .adapting-result-value {
+  color: #e0eaff;
 }
 .adapting-actions {
   width: 100%;

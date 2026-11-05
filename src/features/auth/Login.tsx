@@ -8,9 +8,9 @@ import {
 } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { roleHome, setActor, useActor, type Role } from "../../app/identity";
-import { publicPost, type TokenPair } from "../../lib/api";
-import { session, staffSession } from "../../lib/client";
+import { roleHome, setActor, useActor } from "../../app/identity";
+import { session } from "../../lib/client";
+import { liveLogin } from "../../lib/live/backend";
 import { clearWorkspace } from "../../lib/learnerWorkspace";
 import { resetDemo } from "../../lib/demo/store";
 
@@ -38,8 +38,6 @@ const demoProfiles = [
   },
 ] as const;
 
-const mobileRoles: Role[] = ["learner", "admin", "ministry_viewer"];
-
 function safeNextPath(next: string | null): string | null {
   if (
     !next ||
@@ -58,9 +56,8 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
   const actor = useActor();
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const [mode, setMode] = useState<"learner" | "staff" | "demo">("learner");
-  const [code, setCode] = useState("");
-  const [email, setEmail] = useState("");
+  const [mode, setMode] = useState<"learner" | "demo">("learner");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -69,48 +66,28 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
   if (actor && actor.mode !== "demo")
     return <Navigate to={roleHome(actor.role)} replace />;
 
-  const chooseMode = (nextMode: "learner" | "staff" | "demo") => {
+  const chooseMode = (nextMode: "learner" | "demo") => {
     setMode(nextMode);
     setError("");
   };
 
+  // The backend's own accounts (`yhdp user-add`): any of them studies as a learner. A reviewer also
+  // has the reviewing tools, which are the separate app under /review/.
   const login = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setBusy(true);
     setError("");
 
     try {
-      const isStaff = mode === "staff";
-      const pair = await publicPost<TokenPair>(
-        isStaff ? "/auth/staff/login" : "/auth/activate",
-        isStaff
-          ? { email: email.trim(), password }
-          : { code: code.trim(), device: { platform: "web" } },
-      );
-
-      if (!mobileRoles.includes(pair.role as Role)) {
-        if (pair.role === "reviewer") {
-          throw new Error(
-            "Không gian thẩm định nội dung hiện được mở trên giao diện web.",
-          );
-        }
-        throw new Error("Vai trò này chưa thuộc phạm vi ứng dụng mobile.");
-      }
-
-      (pair.role === "learner" ? session : staffSession).signIn(pair);
+      const signedIn = await liveLogin(username.trim(), password);
+      session.signIn({ access_token: signedIn.token, refresh_token: "" });
       setActor({
-        role: pair.role as Role,
+        role: "learner",
         mode: "live",
-        name: pair.role === "learner" ? "Người học" : "Cán bộ",
-        id: `live-${pair.role}`,
+        name: signedIn.username,
+        id: signedIn.username,
       });
-      const next = safeNextPath(params.get("next"));
-      navigate(
-        pair.consent_required
-          ? `/dong-y${next ? `?next=${encodeURIComponent(next)}` : ""}`
-          : (next ?? roleHome(pair.role as Role)),
-        { replace: true },
-      );
+      navigate(safeNextPath(params.get("next")) ?? "/", { replace: true });
     } catch (cause) {
       setError((cause as Error).message);
       setBusy(false);
@@ -130,108 +107,51 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
           <h1 id="login-title">
             {mode === "demo" ? "Trải nghiệm DocPrep" : "Đăng nhập"}
           </h1>
-          {mode === "demo" && (
-            <p className="muted">
-              Dữ liệu mẫu để xem trước các màn hình chính.
-            </p>
-          )}
+          <p className="muted">
+            {mode === "demo"
+              ? "Dữ liệu mẫu để xem trước các màn hình chính."
+              : "Dùng tài khoản do quản trị viên cấp."}
+          </p>
         </div>
 
         {mode !== "demo" ? (
           <>
-            <div
-              className="login-type-switch"
-              role="group"
-              aria-label="Loại tài khoản"
-            >
-              <button
-                type="button"
-                aria-pressed={mode === "learner"}
-                onClick={() => chooseMode("learner")}
-              >
-                Người học
-              </button>
-              <button
-                type="button"
-                aria-pressed={mode === "staff"}
-                onClick={() => chooseMode("staff")}
-              >
-                Cán bộ
-              </button>
-            </div>
-
             <form className="stack login-form" onSubmit={login}>
-              {mode === "learner" ? (
-                <>
-                  <label className="field" htmlFor="activation-code">
-                    Mã kích hoạt
-                    <input
-                      id="activation-code"
-                      name="code"
-                      autoComplete="one-time-code"
-                      autoCapitalize="characters"
-                      placeholder="Nhập mã do cơ sở đào tạo cấp"
-                      required
-                      minLength={6}
-                      value={code}
-                      onChange={(event) => setCode(event.target.value)}
-                    />
-                  </label>
-                  <p className="login-hint">
-                    Mã kích hoạt dùng để tạo hoặc mở tài khoản học tập của bạn.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <label className="field" htmlFor="staff-email">
-                    Email công vụ
-                    <input
-                      id="staff-email"
-                      name="email"
-                      type="email"
-                      autoComplete="username"
-                      inputMode="email"
-                      placeholder="ten@donvi.gov.vn"
-                      required
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
-                    />
-                  </label>
-                  <div className="field">
-                    <label htmlFor="staff-password">Mật khẩu</label>
-                    <span className="login-password-field">
-                      <input
-                        id="staff-password"
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        autoComplete="current-password"
-                        required
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                      />
-                      <button
-                        type="button"
-                        className="login-password-toggle"
-                        aria-label={
-                          showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
-                        }
-                        aria-pressed={showPassword}
-                        onClick={() => setShowPassword((visible) => !visible)}
-                      >
-                        {showPassword ? (
-                          <EyeOff size={19} />
-                        ) : (
-                          <Eye size={19} />
-                        )}
-                      </button>
-                    </span>
-                  </div>
-                  <p className="login-hint">
-                    Dành cho cán bộ xem báo cáo và quản trị viên. Tài khoản
-                    chuyên gia thẩm định dùng giao diện web.
-                  </p>
-                </>
-              )}
+              <label className="field" htmlFor="login-username">
+                Tên đăng nhập
+                <input
+                  id="login-username"
+                  name="username"
+                  autoComplete="username"
+                  autoCapitalize="none"
+                  required
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
+                />
+              </label>
+              <div className="field">
+                <label htmlFor="login-password">Mật khẩu</label>
+                <span className="login-password-field">
+                  <input
+                    id="login-password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="login-password-toggle"
+                    aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                    aria-pressed={showPassword}
+                    onClick={() => setShowPassword((visible) => !visible)}
+                  >
+                    {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                  </button>
+                </span>
+              </div>
 
               {error && (
                 <p className="warn" role="alert">
@@ -240,14 +160,15 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
               )}
 
               <button className="btn primary login-submit" disabled={busy}>
-                {busy
-                  ? "Đang xác thực…"
-                  : mode === "learner"
-                    ? "Kích hoạt và đăng nhập"
-                    : "Đăng nhập"}
+                {busy ? "Đang xác thực…" : "Đăng nhập"}
                 {!busy && <ArrowRight size={18} aria-hidden="true" />}
               </button>
             </form>
+
+            <p className="login-hint">
+              Chuyên gia thẩm định nội dung:{" "}
+              <a href="/review/">mở giao diện thẩm định</a>.
+            </p>
 
             <button
               type="button"

@@ -52,7 +52,9 @@ export function ProfilePhoto() {
         <Camera size={18} />
         Chỉnh sửa ảnh
       </button>
-
+      <p className="muted small">
+        Ảnh lưu trên thiết bị này theo tài khoản của bạn.
+      </p>
       <input
         ref={upload}
         type="file"
@@ -74,9 +76,6 @@ export function ProfilePhoto() {
         title="Ảnh đại diện"
       >
         <div className="stack">
-          <p className="muted small">
-            Ảnh chỉ lưu trên thiết bị này theo tài khoản của bạn.
-          </p>
           <button
             className="btn"
             disabled={busy}

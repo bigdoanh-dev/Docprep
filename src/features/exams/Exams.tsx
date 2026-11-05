@@ -1,13 +1,5 @@
 import { useState } from "react";
-import { useActor } from "../../app/identity";
-import { PROGRESS_EXAM_ID } from "../../lib/demo/progressExam";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import { BookOpen, Layers, Timer } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "../../components/Icon";
 import { Sheet } from "../../components/Sheet";
 import { LoadError, Loading } from "../../components/Status";
@@ -42,194 +34,40 @@ function meta(form: ExamForm): string {
 }
 
 export function Exams() {
-  const [params, setParams] = useSearchParams();
-  const mode =
-    params.get("mode") === "specialty"
-      ? "specialty"
-      : params.get("mode") === "combined"
-        ? "combined"
-        : null;
   const { data, error, reload } = useLoad(
     () => api.get<Listed<ExamForm>>("/exams"),
     [],
   );
-  const forms = data?.items ?? [];
-  const specialties = [
-    ...new Map(
-      forms
-        .filter((form) => form.module_id)
-        .map((form) => [form.module_id!, form.module_name ?? form.title]),
-    ).entries(),
-  ];
-  const moduleId = specialties.some(([id]) => id === params.get("module"))
-    ? params.get("module")!
-    : "";
-  const availableForms = forms.filter((form) =>
-    mode === "specialty" ? form.module_id === moduleId : !form.module_id,
-  );
-  const selectionQuery = new URLSearchParams({
-    mode: mode ?? "combined",
-    ...(mode === "specialty" && moduleId ? { module: moduleId } : {}),
-  }).toString();
-  const runningForms = forms.filter((form) => form.open_attempt_id !== null);
-
-  function selectMode(next: "specialty" | "combined") {
-    const updated = new URLSearchParams(params);
-    updated.set("mode", next);
-    updated.delete("form");
-    updated.delete("module");
-    setParams(updated, { replace: true });
-  }
-
   return (
-    <div className="screen exam-hub">
-      <div className="body stack" style={{ padding: 20, gap: 20 }}>
-        <header className="exam-hub-heading">
-          <h1 className="title">Thi thử</h1>
-          <p className="muted small">
-            Chọn hình thức thi để kiểm tra kiến thức của bạn.
-          </p>
-        </header>
+    <div className="screen">
+      <div className="body stack" style={{ padding: 20 }}>
+        <h1 className="title" style={{ fontSize: 26, marginTop: 12 }}>
+          Thi thử
+        </h1>
         {error && <LoadError message={error} onRetry={reload} />}
         {!data && !error && <Loading />}
-        {runningForms.length > 0 && (
-          <section className="exam-running stack" aria-label="Bài thi đang làm">
-            <h2 className="h2">Bài thi đang làm</h2>
-            {runningForms.map((form) => (
-              <Link
-                key={form.id}
-                to={`/thi-thu/lam-bai/${form.open_attempt_id}`}
-                className="exam-resume-link"
-              >
-                <Timer size={18} aria-hidden="true" />
-                <span>
-                  <strong>{form.title}</strong>
-                  <small>
-                    Còn {mmss(form.open_remaining_s ?? 0)} · Tiếp tục thi
-                  </small>
-                </span>
-                <Icon name="right" size={18} />
-              </Link>
-            ))}
-          </section>
+        {data?.items.length === 0 && (
+          <p className="empty">Chưa có đề thi thử.</p>
         )}
-        <section
-          className="panel stack exam-setup"
-          aria-labelledby="exam-mode-heading"
-        >
-          <h2 id="exam-mode-heading" className="h2">
-            Bạn muốn thi theo hình thức nào?
-          </h2>
-          <div
-            className="practice-modes exam-modes"
-            role="group"
-            aria-label="Hình thức thi thử"
-          >
-            <button
-              type="button"
-              className={`choice-panel${mode === "specialty" ? " selected" : ""}`}
-              aria-pressed={mode === "specialty"}
-              onClick={() => selectMode("specialty")}
-            >
-              <span className="choice-panel-icon">
-                <BookOpen size={20} aria-hidden="true" />
-              </span>
-              <strong>Thi thử theo chuyên khoa</strong>
-              <span>Kiểm tra kiến thức trong một chuyên khoa bạn chọn.</span>
-            </button>
-            <button
-              type="button"
-              className={`choice-panel${mode === "combined" ? " selected" : ""}`}
-              aria-pressed={mode === "combined"}
-              onClick={() => selectMode("combined")}
-            >
-              <span className="choice-panel-icon">
-                <Layers size={20} aria-hidden="true" />
-              </span>
-              <strong>Thi thử tổng hợp</strong>
-              <span>
-                Đánh giá kiến thức qua nhiều chuyên khoa trong cùng một đề.
-              </span>
-            </button>
-          </div>
-          {mode && data && (
-            <div
-              className="stack exam-configuration"
-              role="group"
-              aria-label={
-                mode === "specialty"
-                  ? "Danh sách bài thi theo chuyên khoa"
-                  : "Danh sách bài thi tổng hợp"
-              }
-            >
-              {mode === "specialty" && specialties.length > 0 && (
-                <div className="field">
-                  <label htmlFor="exam-specialty">
-                    Chuyên khoa / Nhóm năng lực
-                  </label>
-                  <select
-                    id="exam-specialty"
-                    className="practice-custom-select"
-                    value={moduleId}
-                    onChange={(event) => {
-                      const updated = new URLSearchParams(params);
-                      updated.set("module", event.target.value);
-                      setParams(updated, { replace: true });
-                    }}
-                  >
-                    <option value="" disabled>
-                      Chọn chuyên khoa muốn thi
-                    </option>
-                    {specialties.map(([id, name]) => (
-                      <option key={id} value={id}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              {availableForms.length > 0 ? (
-                availableForms.map((form) => (
-                  <FormCard
-                    key={form.id}
-                    form={form}
-                    selectionQuery={selectionQuery}
-                  />
-                ))
-              ) : (
-                <p className="empty">
-                  {mode === "specialty"
-                    ? specialties.length > 0 && !moduleId
-                      ? "Chọn một chuyên khoa để xem các bài thi liên quan."
-                      : "Chưa có bài thi theo chuyên khoa."
-                    : "Chưa có bài thi tổng hợp."}
-                </p>
-              )}
-            </div>
-          )}
-          <p className="exam-timing-note">
-            <Timer size={17} aria-hidden="true" />
-            <span>
-              Có tính giờ · Tự lưu câu trả lời · Xem đáp án sau khi nộp bài
-            </span>
-          </p>
-        </section>
+        {data?.items
+          .toSorted(
+            (a, b) =>
+              Number(b.open_attempt_id !== null) -
+                Number(a.open_attempt_id !== null) ||
+              Number(a.kind === "diagnostic" && a.history.length > 0) -
+                Number(b.kind === "diagnostic" && b.history.length > 0),
+          )
+          .map((form) => (
+            <FormCard key={form.id} form={form} />
+          ))}
       </div>
       <TabBar />
     </div>
   );
 }
 
-function FormCard({
-  form,
-  selectionQuery,
-}: {
-  form: ExamForm;
-  selectionQuery: string;
-}) {
+function FormCard({ form }: { form: ExamForm }) {
   const navigate = useNavigate();
-  const actor = useActor();
-  const isProgressDemo = actor?.mode === "demo" && form.id === PROGRESS_EXAM_ID;
   const running = form.open_attempt_id !== null;
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [starting, setStarting] = useState(false);
@@ -252,7 +90,7 @@ function FormCard({
   };
 
   return (
-    <section className="exam-selected-form stack" aria-label={form.title}>
+    <section className="card stack" aria-label={form.title}>
       <div>
         <h2 className="h2" style={{ fontSize: 17 }}>
           {form.title}
@@ -260,6 +98,11 @@ function FormCard({
         {form.kind === "diagnostic" && (
           <span className="tag" style={{ margin: "4px 0" }}>
             Đánh giá năng lực
+          </span>
+        )}
+        {form.kind === "mock" && form.history.length === 0 && !running && (
+          <span className="tag" style={{ margin: "4px 0" }}>
+            Mới
           </span>
         )}
         <p className="tag exam-state">
@@ -270,12 +113,6 @@ function FormCard({
               : "Chưa làm"}
         </p>
         <p className="muted">{meta(form)}</p>
-        {isProgressDemo && (
-          <p className="muted small">
-            Đề minh họa gồm đủ 8 chuyên khoa và 6 mức Bloom, chưa dùng để đánh
-            giá chính thức.
-          </p>
-        )}
         {form.kind === "diagnostic" && (
           <p className="muted small">
             Kết quả sẽ cập nhật bộ thẻ và chủ đề cần ôn.
@@ -313,14 +150,14 @@ function FormCard({
         </>
       ) : (
         <Link
-          to={`/thi-thu/${form.id}/quy-dinh?${selectionQuery}`}
+          to={`/thi-thu/${form.id}/quy-dinh`}
           className={`btn block ${form.history.length ? "" : "primary"}`}
         >
           {form.history.length
             ? "Làm bài mới"
             : form.kind === "diagnostic"
               ? "Làm bài đánh giá"
-              : "Bắt đầu thi"}
+              : "Bắt đầu làm bài"}
         </Link>
       )}
 
@@ -401,8 +238,6 @@ const RULES = [
 
 export function ExamRules() {
   const { formId } = useParams();
-  const [selectionParams] = useSearchParams();
-  const backToExams = `/thi-thu${selectionParams.size ? `?${selectionParams.toString()}` : ""}`;
   const navigate = useNavigate();
   const { data, error, reload } = useLoad(
     () => api.get<Listed<ExamForm>>("/exams"),
@@ -429,7 +264,7 @@ export function ExamRules() {
   return (
     <div className="screen">
       <header className="topbar">
-        <Link to={backToExams} className="icon-btn" aria-label="Quay lại">
+        <Link to="/thi-thu" className="icon-btn" aria-label="Quay lại">
           <Icon name="left" />
         </Link>
         <h1>Quy định đề thi thử</h1>

@@ -8,14 +8,12 @@ import {
   SlidersHorizontal,
   Stethoscope,
 } from "lucide-react";
-import { useActor } from "../../app/identity";
 import { api, type Listed, type Module, type Me } from "../../lib/api";
 import { useLoad } from "../../lib/hooks";
 import { LoadError } from "../../components/Status";
 import { learnerAudienceNames } from "../../lib/learnerProfile";
 export function PracticeHub() {
-  const actor = useActor()!,
-    navigate = useNavigate();
+  const navigate = useNavigate();
   const { data, error, reload } = useLoad(async () => {
     const [modules, me] = await Promise.all([
       api.get<Listed<Module>>("/modules"),
@@ -70,7 +68,7 @@ export function PracticeHub() {
         <h2>Thiết lập lượt ôn</h2>
         <button
           className="btn primary practice-start"
-          disabled={busy || actor.mode !== "demo" || !data}
+          disabled={busy || !data}
           onClick={start}
         >
           {busy ? "Đang chuẩn bị…" : "Bắt đầu ôn tập"}
@@ -214,12 +212,6 @@ export function PracticeHub() {
           minh họa có thể có ít câu hơn lựa chọn; phiên chỉ dùng các câu sẵn có,
           không lặp câu.
         </p>
-        {actor.mode === "live" && (
-          <p className="notice">
-            Tạo bộ ôn tùy chọn đang chờ tích hợp máy chủ. Bạn có thể tiếp tục
-            học phần hoặc phiên học hôm nay.
-          </p>
-        )}
         {actionError && (
           <p className="warn" role="alert">
             {actionError}

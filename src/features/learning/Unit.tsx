@@ -1,13 +1,14 @@
 import { SaveQuestion } from "../../components/SaveQuestion";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
 import {
-  CitationChip,
-  ExplanationDetails,
-  QuestionSources,
-  useSourceSheet,
-} from "../../components/Answer";
+  Link,
+  Navigate,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import { CitationChip, useSourceSheet } from "../../components/Answer";
 import { Icon } from "../../components/Icon";
 import { QuizOptions } from "../../components/QuizOptions";
 import { SessionHeader } from "../../components/SessionHeader";
@@ -28,6 +29,7 @@ import { newKey } from "../../lib/keys";
 export function Unit() {
   const { unitId } = useParams();
   const [params] = useSearchParams();
+  const navigate = useNavigate();
   const asStep = params.get("phien") === "1";
   const {
     data: view,
@@ -234,6 +236,28 @@ export function Unit() {
 
       {item && (
         <footer className="footer">
+          {answered && (
+            <button
+              className="icon-btn boxed"
+              aria-label="Hỏi gia sư"
+              onClick={() =>
+                item.question &&
+                navigate(`/hoi-dap/tu-cau-hoi/${item.question.id}`, {
+                  state: {
+                    label: `Kiểm tra nhanh · ${view.topic}`,
+                    stem: item.question.stem,
+                    chosen:
+                      item.question.options.find((o) => o.key === picked)
+                        ?.text ?? null,
+                    correct: feedback?.correct ?? false,
+                    back: `/luyen-tap/${unitId}${asStep ? "?phien=1" : ""}`,
+                  },
+                })
+              }
+            >
+              <Icon name="chat" />
+            </button>
+          )}
           {isQuiz && !answered && (
             <>
               <button
@@ -345,16 +369,14 @@ function QuizItem({
   onExplain: () => void;
 }) {
   const question = item.question!;
-  const correctLetter = feedback
-    ? String.fromCharCode(
-        65 + question.options.findIndex((o) => o.key === feedback.correct_key),
-      )
-    : "";
+  const correctText =
+    feedback &&
+    question.options.find((o) => o.key === feedback.correct_key)?.text;
 
   return (
     <>
       <p className="label learning">Kiểm tra nhanh</p>
-      <h2 className="title quiz-stem-title" style={{ fontSize: 20 }}>
+      <h2 className="title" style={{ fontSize: 20 }}>
         {question.stem}
       </h2>
       <SaveQuestion
@@ -387,30 +409,30 @@ function QuizItem({
               </>
             ) : (
               <>
-                <Icon name="close" size={18} /> Chưa chính xác — Đáp án đúng:{" "}
-                {correctLetter}
+                <Icon name="close" size={18} /> Chưa đúng — đáp án là{" "}
+                {correctText}
               </>
             )}
           </p>
           <p style={{ fontSize: 16, color: "var(--text-2)" }}>
             {feedback.explanation}
           </p>
-          <ExplanationDetails>
-            {feedback.remediation_note &&
-              feedback.remediation_note.trim() !==
-                feedback.explanation.trim() && (
-                <p className="note">{feedback.remediation_note}</p>
-              )}
-            <QuestionSources citations={feedback.citations} onOpen={onCite} />
-          </ExplanationDetails>
-          <button className="btn" onClick={onExplain}>
-            Hỏi gia sư về câu này
-          </button>
-          {feedback.card_created && (
-            <p className="small muted">
-              Đã thêm thẻ ôn · <Link to="/luyen-tap/bo-the">Xem bộ thẻ</Link>
-            </p>
+          {feedback.remediation_note && (
+            <p className="note">{feedback.remediation_note}</p>
           )}
+          <div className="row" style={{ flexWrap: "wrap", gap: 8 }}>
+            <button className="btn" onClick={onExplain}>
+              Giải thích thêm
+            </button>
+            {feedback.citations.map((c) => (
+              <CitationChip
+                key={c.passage_id}
+                citation={c}
+                onOpen={onCite}
+                label={c.page ? `tr. ${c.page}` : (c.article ?? "Nguồn")}
+              />
+            ))}
+          </div>
         </div>
       )}
     </>

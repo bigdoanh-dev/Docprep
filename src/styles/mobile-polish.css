@@ -575,50 +575,49 @@
   background: #edf3fb;
   font-weight: 500;
 }
-.assessment-legend {
+.assessment-bars {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.assessment-legend li + li {
-  border-top: 1px solid #edf1f6;
+.assessment-bars li {
+  padding: 8px 0;
+  border-bottom: 1px solid #edf1f6;
+  animation: analysis-row-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.assessment-legend button {
-  display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
-  align-items: center;
-  column-gap: 8px;
-  width: 100%;
-  min-height: 44px;
-  padding: 9px 8px;
-  border: 0;
+.assessment-bars li:last-child {
+  border-bottom: 0;
+}
+.assessment-bars li.is-selected {
+  padding-inline: 8px;
   border-radius: 8px;
-  background: transparent;
-  text-align: left;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-.assessment-legend button[aria-pressed="true"] {
   background: #f4f8fd;
   box-shadow: inset 3px 0 #315ba8;
 }
-.assessment-legend button:focus-visible {
-  outline: 2px solid #315ba8;
-  outline-offset: 2px;
-}
-.assessment-legend-name {
+.assessment-bar-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
   font-size: 12px;
   line-height: 1.6;
 }
-.assessment-legend-result {
-  grid-column: 2;
-  font-size: 10px;
-  color: #667a94;
+.assessment-bar-heading strong {
+  font-size: 13px;
+  color: #2858a5;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.assessment-axis-name {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .assessment-axis-number {
   width: 22px;
   height: 22px;
+  flex: 0 0 22px;
   display: grid;
   place-items: center;
   border-radius: 7px;
@@ -627,10 +626,31 @@
   font-size: 11px;
   font-weight: 600;
 }
+.assessment-bars .progress {
+  height: 5px;
+  margin-top: 7px;
+  border-radius: 4px;
+}
+.assessment-bars .progress > span {
+  display: block;
+  height: 100%;
+  transform-origin: left center;
+  animation: analysis-progress-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.assessment-bars small {
+  color: #667a94;
+  font-size: 10px;
+}
 .analysis-note {
   margin: 6px 0 0;
   color: #718096;
   font-size: 11px;
+}
+.assessment-bars .not-assessed {
+  padding: 9px 0;
+}
+.assessment-bars .not-assessed .assessment-bar-heading strong {
+  color: #718096;
 }
 .mobile-analysis .assessment-radar {
   margin: 0;
@@ -805,42 +825,20 @@
   animation: analysis-detail-in 220ms ease-out both;
 }
 @keyframes analysis-radar-in {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
 }
 @keyframes analysis-row-in {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @keyframes analysis-progress-in {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 @keyframes analysis-detail-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .compact-results .field {
   font-size: 11px;
@@ -1418,27 +1416,13 @@
   transform-origin: center;
   animation: rhythm-check-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.mobile-progress .week-days > span:nth-child(1).learned svg {
-  animation-delay: 0ms;
-}
-.mobile-progress .week-days > span:nth-child(2).learned svg {
-  animation-delay: 35ms;
-}
-.mobile-progress .week-days > span:nth-child(3).learned svg {
-  animation-delay: 70ms;
-}
-.mobile-progress .week-days > span:nth-child(4).learned svg {
-  animation-delay: 105ms;
-}
-.mobile-progress .week-days > span:nth-child(5).learned svg {
-  animation-delay: 140ms;
-}
-.mobile-progress .week-days > span:nth-child(6).learned svg {
-  animation-delay: 175ms;
-}
-.mobile-progress .week-days > span:nth-child(7).learned svg {
-  animation-delay: 210ms;
-}
+.mobile-progress .week-days > span:nth-child(1).learned svg { animation-delay: 0ms; }
+.mobile-progress .week-days > span:nth-child(2).learned svg { animation-delay: 35ms; }
+.mobile-progress .week-days > span:nth-child(3).learned svg { animation-delay: 70ms; }
+.mobile-progress .week-days > span:nth-child(4).learned svg { animation-delay: 105ms; }
+.mobile-progress .week-days > span:nth-child(5).learned svg { animation-delay: 140ms; }
+.mobile-progress .week-days > span:nth-child(6).learned svg { animation-delay: 175ms; }
+.mobile-progress .week-days > span:nth-child(7).learned svg { animation-delay: 210ms; }
 
 .mobile-progress .rhythm-heatmap td > button {
   transition:
@@ -1455,27 +1439,13 @@
   animation: rhythm-cell-in 220ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
   transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.mobile-progress .rhythm-heatmap td:nth-child(2) > button > span {
-  animation-delay: 0ms;
-}
-.mobile-progress .rhythm-heatmap td:nth-child(3) > button > span {
-  animation-delay: 20ms;
-}
-.mobile-progress .rhythm-heatmap td:nth-child(4) > button > span {
-  animation-delay: 40ms;
-}
-.mobile-progress .rhythm-heatmap td:nth-child(5) > button > span {
-  animation-delay: 60ms;
-}
-.mobile-progress .rhythm-heatmap td:nth-child(6) > button > span {
-  animation-delay: 80ms;
-}
-.mobile-progress .rhythm-heatmap td:nth-child(7) > button > span {
-  animation-delay: 100ms;
-}
-.mobile-progress .rhythm-heatmap td:nth-child(8) > button > span {
-  animation-delay: 120ms;
-}
+.mobile-progress .rhythm-heatmap td:nth-child(2) > button > span { animation-delay: 0ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(3) > button > span { animation-delay: 20ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(4) > button > span { animation-delay: 40ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(5) > button > span { animation-delay: 60ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(6) > button > span { animation-delay: 80ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(7) > button > span { animation-delay: 100ms; }
+.mobile-progress .rhythm-heatmap td:nth-child(8) > button > span { animation-delay: 120ms; }
 .mobile-progress .rhythm-heatmap td > button.is-selected {
   box-shadow: 0 0 0 1px #315ba3;
 }
@@ -1489,73 +1459,33 @@
   transform-origin: center bottom;
   animation: rhythm-bar-in 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.mobile-progress .due-forecast-chart .bars > li:nth-child(1) .track > span {
-  animation-delay: 0ms;
-}
-.mobile-progress .due-forecast-chart .bars > li:nth-child(2) .track > span {
-  animation-delay: 45ms;
-}
-.mobile-progress .due-forecast-chart .bars > li:nth-child(3) .track > span {
-  animation-delay: 90ms;
-}
-.mobile-progress .due-forecast-chart .bars > li:nth-child(4) .track > span {
-  animation-delay: 135ms;
-}
-.mobile-progress .due-forecast-chart .bars > li:nth-child(5) .track > span {
-  animation-delay: 180ms;
-}
-.mobile-progress .due-forecast-chart .bars > li:nth-child(6) .track > span {
-  animation-delay: 225ms;
-}
-.mobile-progress .due-forecast-chart .bars > li:nth-child(7) .track > span {
-  animation-delay: 270ms;
-}
+.mobile-progress .due-forecast-chart .bars > li:nth-child(1) .track > span { animation-delay: 0ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(2) .track > span { animation-delay: 45ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(3) .track > span { animation-delay: 90ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(4) .track > span { animation-delay: 135ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(5) .track > span { animation-delay: 180ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(6) .track > span { animation-delay: 225ms; }
+.mobile-progress .due-forecast-chart .bars > li:nth-child(7) .track > span { animation-delay: 270ms; }
 
 @keyframes rhythm-summary-fill {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 @keyframes rhythm-check-in {
-  from {
-    opacity: 0;
-    transform: scale(0.72);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.72); }
+  to { opacity: 1; transform: scale(1); }
 }
 @keyframes rhythm-cell-in {
-  from {
-    opacity: 0.35;
-    transform: scale(0.78);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0.35; transform: scale(0.78); }
+  to { opacity: 1; transform: scale(1); }
 }
 @keyframes rhythm-detail-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @keyframes rhythm-bar-in {
-  from {
-    transform: scaleY(0);
-  }
-  to {
-    transform: scaleY(1);
-  }
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
 }
 
 .mobile-progress .memory-curve-card {
@@ -1827,354 +1757,67 @@
   margin-top: 5px;
 }
 
-.exam-results-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Trang chủ: the main button of today's session, the resume row, and the tutor's suggestions. */
+.mobile-home .home-today-cta {
+  margin-top: 12px;
   gap: 8px;
 }
-.exam-results-pagination label {
+.mobile-home .home-today-done {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--muted);
-  font-size: 12px;
-}
-.exam-results-pagination select {
-  min-height: 44px;
-  padding: 6px 8px;
-  border: 1px solid var(--border-input);
-  border-radius: 8px;
-  background: var(--surface, white);
-  color: var(--ink);
-  font: inherit;
-}
-
-.exam-hub-heading .title {
-  margin: 8px 0;
-  font-size: 26px;
-}
-.exam-hub-heading p {
-  margin: 0;
-  line-height: 1.7;
-}
-.exam-setup {
-  gap: 16px;
-}
-.exam-setup > .h2 {
-  font-size: 16px;
-  line-height: 1.5;
-}
-.exam-configuration > .h2 {
-  font-size: 15px;
-  line-height: 1.5;
-}
-.exam-hub .exam-modes {
-  margin-bottom: 0;
-}
-.exam-hub .choice-panel:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 3px;
-}
-.exam-configuration {
-  gap: 16px;
-  border-top: 1px solid var(--border);
-  padding-top: 18px;
-}
-.exam-configuration .field {
-  gap: 8px;
-  font-size: 12px;
-}
-.exam-selected-form {
-  gap: 14px;
-}
-.exam-selected-form .h2 {
-  font-size: 15px !important;
-  line-height: 1.6;
-}
-.exam-timing-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin: 0;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.7;
-}
-.exam-timing-note svg {
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.exam-running {
-  gap: 10px;
-}
-.exam-resume-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--border-input);
-  border-radius: 10px;
-  background: var(--primary-tint);
+  margin-top: 10px;
   color: var(--primary-dark);
-}
-.exam-resume-link > span {
-  flex: 1;
-  min-width: 0;
-}
-.exam-resume-link strong {
-  display: block;
-  font-size: 12px;
-  line-height: 1.6;
-}
-.exam-resume-link small {
-  display: block;
-  margin-top: 3px;
-  font-size: 11px;
-}
-
-/* Classification stays readable inside the answer explanation on narrow screens. */
-.question-classification {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 24px;
-  margin: 0;
-  padding: 12px 14px;
-  background: var(--soft);
-  border-radius: 10px;
-}
-.question-classification > div {
-  min-width: 0;
-}
-.question-classification dt {
-  font-size: 12px;
-  color: var(--text-2);
-}
-.question-classification dd {
-  margin: 4px 0 0;
-  font-size: 14px;
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-
-.exam-configuration .exam-selected-form + .exam-selected-form {
-  padding-top: 18px;
-  border-top: 1px solid var(--border);
-}
-
-/* Fixes verified against the mobile UX review. */
-.setup-progress {
-  display: flex;
-  gap: 12px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: 11px;
-  color: var(--muted);
-}
-.setup-progress li {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: 1;
-  padding-bottom: 10px;
-  border-bottom: 3px solid var(--border);
-}
-.setup-progress li.active {
-  color: var(--primary);
-  border-color: var(--primary);
-}
-.setup-progress li span {
-  width: 22px;
-  height: 22px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--soft);
-}
-.profile-compact {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 16px;
-  padding: 10px 12px;
-  margin: 0;
-  border-radius: 8px;
-  background: var(--soft);
-  color: var(--text-2);
-  font-size: 12px;
-}
-.mobile-content.onboarding-content {
-  padding-bottom: 20px;
-}
-.mobile-content .focus-page {
-  min-height: 0 !important;
-}
-.focus-page > .body {
-  flex: 0 0 auto;
-}
-.focus-page > .footer {
-  padding: 0 20px 16px;
-}
-.focus-page .check:has(input:disabled) {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background: var(--soft);
-}
-.mobile-content .quiz-stem-title {
-  font-weight: 500 !important;
-}
-.compact-question-progress {
-  height: 5px;
-  margin-bottom: 4px;
-}
-.explanation-details {
-  border-top: 1px solid var(--border);
-  padding-top: 10px;
   font-size: 13px;
 }
-.explanation-details > summary,
-.source-group > summary {
-  cursor: pointer;
-  min-height: 44px;
-  color: var(--primary-dark);
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-}
-.explanation-details > summary::before,
-.source-group > summary::before {
-  content: "＋";
-  margin-right: 8px;
-}
-.explanation-details[open] > summary::before,
-.source-group[open] > summary::before {
-  content: "−";
-}
-.source-group {
+.mobile-home button.continue-row {
   width: 100%;
-}
-.source-group .chip {
-  white-space: normal;
-  text-align: left;
-  line-height: 1.6;
-}
-.helpful-feedback {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px;
-  color: var(--primary-dark);
-}
-.helpful-feedback .is-selected {
-  background: var(--primary-tint);
-  color: var(--primary-dark);
-  opacity: 1;
-}
-.helpful-feedback [role="alert"] {
-  color: var(--learning-dark);
-}
-.learning-secondary a {
-  min-height: 44px;
-  gap: 6px;
-  border: 1px solid var(--border);
-  padding: 8px;
-  border-radius: 8px;
-  justify-content: center;
-  flex: 1;
-  white-space: nowrap;
-}
-.learning-secondary {
-  gap: 6px;
-}
-.practice-page .count-card-header {
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.practice-page .count-card-number {
-  white-space: nowrap;
-  flex: 0 0 auto;
-  font-size: 14px;
-}
-.practice-page .count-card-badge {
-  white-space: normal;
-  line-height: 1.4;
-  margin-left: 0;
-}
-.practice-page .practice-count-card {
-  min-width: 0;
-}
-.calendar-grid button.is-today {
-  box-shadow: inset 0 0 0 2px var(--primary);
-}
-.calendar-grid button.has-due > span::after {
-  content: "";
-  display: block;
-  margin: 3px auto 0;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--primary);
-}
-.calendar-grid button.selected {
-  background: var(--primary);
-  color: white;
-}
-.calendar-grid button.selected > span::after {
-  background: white;
-}
-.calendar-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 14px;
-  font-size: 10px;
-  color: var(--muted);
-}
-.calendar-legend span {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.calendar-legend i {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-}
-.calendar-legend .today-key {
-  border: 2px solid var(--primary);
-}
-.calendar-legend .selected-key {
-  background: var(--primary);
-}
-.calendar-legend .due-key {
-  background: var(--primary);
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-}
-.calendar-forecast-day {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  min-height: 44px;
-  padding: 10px 0;
-  border: 0;
-  border-bottom: 1px solid var(--border);
   background: none;
-  color: inherit;
+  border: 0;
   font: inherit;
+  color: inherit;
   text-align: left;
   cursor: pointer;
 }
-.learning-secondary a {
-  min-width: 0;
-  white-space: normal;
-  line-height: 1.5;
+.mobile-home .continue-row .feature-icon {
+  flex: none;
+}
+.mobile-home .resume-exam .feature-icon {
+  background: #fdf0dc;
+  color: #a35a00;
+}
+.mobile-home .home-suggestions button {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  margin-top: 5px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: #2858a5;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.focus-page .check .h2 {
-  font-size: 14px;
-  line-height: 1.6;
+/* Tiến độ: the schedule and study plan, moved from Trang chủ. */
+.progress-utilities {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
-
-.calendar-grid button.selected small { color: inherit; }
+.progress-utilities a {
+  min-height: 44px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+}

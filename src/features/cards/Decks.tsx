@@ -51,7 +51,7 @@ export function Decks() {
               <div className="row" style={{ alignItems: "flex-start" }}>
                 <Stat
                   value={sum((d) => d.new)}
-                  label="Thẻ chưa học"
+                  label="Mới"
                   color="var(--new)"
                 />
                 <Stat
@@ -63,27 +63,17 @@ export function Decks() {
               </div>
               {due > 0 && (
                 <Link to="/luyen-tap/on-the" className="btn primary lg block">
-                  Bắt đầu học thẻ · {due} thẻ
+                  Ôn {due} thẻ
                 </Link>
-              )}
-              <p className="muted small">
-                Thẻ đến hạn là số thẻ có thể ôn hôm nay, theo giới hạn trong cài
-                đặt.
-              </p>
-              {due === 0 && (
-                <p className="muted small">
-                  Hôm nay chưa có thẻ khả dụng. Bạn có thể xem thư viện hoặc
-                  điều chỉnh giới hạn trong cài đặt ôn.
-                </p>
               )}
             </section>
             <table className="list counts" aria-label="Bộ thẻ theo học phần">
               <thead>
                 <tr>
                   <th scope="col">Bộ thẻ</th>
-                  <th scope="col">Chưa học</th>
-                  <th scope="col">Đang học</th>
-                  <th scope="col">Đến hạn</th>
+                  <th scope="col">Mới</th>
+                  <th scope="col">Học</th>
+                  <th scope="col">Ôn</th>
                 </tr>
               </thead>
               <tbody>

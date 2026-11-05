@@ -2,6 +2,7 @@ import { useWorkspace } from "../../lib/learnerWorkspace";
 import { SpecialtyAnalysis } from "./SpecialtyAnalysis";
 import { useState, type ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { CalendarDays, Route } from "lucide-react";
 import { ShareBar } from "../../components/Charts";
 import { LoadError, Loading } from "../../components/Status";
 import { TabBar } from "../../components/TabBar";
@@ -52,6 +53,17 @@ export function ProgressShell({
           </NavLink>
         </nav>
         {children}
+        {/* Moved here from Trang chủ: planning views of the learner's own schedule. */}
+        <nav className="progress-utilities" aria-label="Lịch và lộ trình">
+          <Link to="/lich-on">
+            <CalendarDays size={16} strokeWidth={1.8} aria-hidden="true" />
+            <span>Xem lịch ôn</span>
+          </Link>
+          <Link to="/lo-trinh">
+            <Route size={16} strokeWidth={1.8} aria-hidden="true" />
+            <span>Lộ trình học</span>
+          </Link>
+        </nav>
       </div>
       <TabBar />
     </div>
@@ -206,7 +218,6 @@ export function Progress() {
               specialties={data.specialties}
               levels={data.levels}
               bySpecialty={data.bloom_by_specialty}
-              byIssue={data.issues_by_specialty}
             />
           </details>
           <Block

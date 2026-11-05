@@ -1,3 +1,4 @@
+import { onOpenTutor, type TutorRequest } from "../lib/tutorLink";
 import {
   Bell,
   BookOpen,
@@ -51,7 +52,20 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
     loc = useLocation(),
     [chatOpen, setChatOpen] = useState(false),
     [chatExpanded, setChatExpanded] = useState(false),
-    [chatMounted, setChatMounted] = useState(false);
+    [chatMounted, setChatMounted] = useState(false),
+    [tutorRequest, setTutorRequest] = useState<TutorRequest>();
+
+  // Another screen asks for the tutor: a past conversation, or a new one with a question.
+  useEffect(
+    () =>
+      onOpenTutor((request) => {
+        setChatMounted(true);
+        setChatExpanded(false);
+        setChatOpen(true);
+        setTutorRequest(request);
+      }),
+    [],
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -62,14 +76,6 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
   const exam = loc.pathname.startsWith("/thi-thu/lam-bai/");
   const cards = /bo-the|on-the|duyet-the|phien\/the/.test(loc.pathname);
   const immersive = loc.pathname === "/phien/dieu-chinh";
-  const onboarding =
-    loc.pathname === "/dong-y" ||
-    (loc.pathname === "/chon-hoc-phan" &&
-      new URLSearchParams(loc.search).get("doi") !== "1");
-  const contextualStudy =
-    loc.pathname.startsWith("/phien") ||
-    (loc.pathname.startsWith("/luyen-tap/") && !cards) ||
-    loc.pathname.startsWith("/thi-thu/ket-qua/");
 
   // Active tab determination for learner
   const learnerActive =
@@ -128,25 +134,23 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
           </Link>
           <div className="header-actions">
             {actor.role === "learner" ? (
-              !onboarding && (
-                <>
-                  <Link
-                    to="/tien-do/nhip-hoc"
-                    className="streak-badge"
-                    aria-label={`Chuỗi ôn tập ${streak(w.activity.map((a) => a.date))} ngày`}
-                  >
-                    <Flame size={18} fill="currentColor" />
-                    {streak(w.activity.map((a) => a.date))}
-                  </Link>
-                  <Link
-                    className="header-bell"
-                    to="/thong-bao"
-                    aria-label="Thông báo"
-                  >
-                    <Bell size={23} />
-                  </Link>
-                </>
-              )
+              <>
+                <Link
+                  to="/tien-do/nhip-hoc"
+                  className="streak-badge"
+                  aria-label={`Chuỗi ôn tập ${streak(w.activity.map((a) => a.date))} ngày`}
+                >
+                  <Flame size={18} fill="currentColor" />
+                  {streak(w.activity.map((a) => a.date))}
+                </Link>
+                <Link
+                  className="header-bell"
+                  to="/thong-bao"
+                  aria-label="Thông báo"
+                >
+                  <Bell size={23} />
+                </Link>
+              </>
             ) : (
               <div className="staff-header-controls">
                 <span
@@ -169,13 +173,13 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
       )}
       <main
         id="main-content"
-        className={`${onboarding ? "onboarding-content " : ""}mobile-content route-${loc.pathname.split("/")[1] || "home"} ${actor.role !== "learner" ? "staff-content" : ""} ${immersive ? "immersive-content" : ""}`}
+        className={`mobile-content route-${loc.pathname.split("/")[1] || "home"} ${actor.role !== "learner" ? "staff-content" : ""} ${immersive ? "immersive-content" : ""}`}
       >
         {children ?? <Outlet context={context} />}
       </main>
-      {!immersive && !onboarding && actor.role === "learner" ? (
+      {!immersive && actor.role === "learner" ? (
         <>
-          {loc.pathname !== "/hoi-dap" && !contextualStudy && (
+          {loc.pathname !== "/hoi-dap" && (
             <AssistantLauncher
               mascot={w.mascot}
               onOpenChat={() => {
@@ -199,6 +203,7 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
                 expanded={chatExpanded}
                 onToggleSize={() => setChatExpanded((value) => !value)}
                 onClose={() => setChatOpen(false)}
+                request={tutorRequest}
               />
             </Sheet>
           )}
@@ -218,7 +223,7 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
             ))}
           </nav>
         </>
-      ) : !immersive && !onboarding ? (
+      ) : !immersive ? (
         <nav
           className="mobile-footer staff-footer"
           aria-label="Điều hướng cán bộ"

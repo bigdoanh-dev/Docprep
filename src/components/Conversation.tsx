@@ -21,11 +21,8 @@ import {
 import { postSSE } from "../lib/sse";
 import { useSourceSheet } from "./Answer";
 import { AssistantTurn, type QuizContext } from "./ChatTurn";
-import {
-  ArrowUp,
-  ArrowUpRight,
-  BookOpenText,
-} from "lucide-react";
+import { ArrowUp, ArrowUpRight, BookOpenText, History } from "lucide-react";
+import { formatDate } from "../lib/format";
 
 type Turn =
   { role: "user"; text: string } | { role: "assistant"; view: TurnView };
@@ -41,6 +38,10 @@ export function Conversation({
   onSession,
   questionId,
   starters,
+  starterLabels,
+  autoSend,
+  resume,
+  onResume,
   intro,
   quiz,
 }: {
@@ -48,6 +49,10 @@ export function Conversation({
   onSession?: (id: number) => void;
   questionId?: string;
   starters: string[];
+  starterLabels?: string[]; // the kind of question each starter is, shown above it
+  autoSend?: string; // a new conversation that starts with this question at once
+  resume?: { id: number; title: string; updated_at: string }; // offered on the welcome screen
+  onResume?: (id: number) => void;
   intro?: ReactNode;
   quiz?: QuizContext;
 }) {
@@ -135,6 +140,12 @@ export function Conversation({
     input.style.height = `${Math.min(Math.max(24, input.scrollHeight), 120)}px`;
   }, [draft]);
 
+  // The last answer is a quiz question: what is typed next is the learner's answer to it.
+  const lastTurn = turns[turns.length - 1];
+  const awaitingAnswer =
+    lastTurn?.role === "assistant" &&
+    lastTurn.view.phase === "done" &&
+    lastTurn.view.mode === "kiem_tra";
   const lastQuestion = [...turns]
     .reverse()
     .find((t) => t.role === "user" && t.text !== FOLLOW_UP) as
@@ -153,7 +164,13 @@ export function Conversation({
     };
 
   // `clarifies`: the id of the answer that asked back, when this message is the learner's choice of a sense.
-  const send = async (text: string, detail = false, clarifies?: number) => {
+  // `mode`: a tutor move chosen with a chip (lib/live/chat.ts); otherwise read from the wording.
+  const send = async (
+    text: string,
+    detail = false,
+    clarifies?: number,
+    mode?: string,
+  ) => {
     if (busy || historyLoading || historyCursor || historyError || !text.trim())
       return;
     const generationAtSend = generationRef.current;
@@ -191,10 +208,12 @@ export function Conversation({
         }
       }
       let ended = false;
-      const body =
-        clarifies === undefined
-          ? { text: text.trim(), detail }
-          : { text: text.trim(), detail, clarifies_message_id: clarifies };
+      const body = {
+        text: text.trim(),
+        detail,
+        ...(clarifies === undefined ? {} : { clarifies_message_id: clarifies }),
+        ...(mode ? { mode } : {}),
+      };
       await postSSE(`/chat/sessions/${id}/messages`, body, (event, data) => {
         update((view) => applyEvent(view, event, data));
         if (event === "final") ended = true;
@@ -232,6 +251,14 @@ export function Conversation({
       if (gen === generationRef.current) setHistoryBusy(false);
     }
   };
+  // Asked once, when a new conversation is opened with a question from another screen.
+  const autoSent = useRef(false);
+  useEffect(() => {
+    if (!autoSend || autoSent.current || sessionId !== null) return;
+    autoSent.current = true;
+    send(autoSend);
+  }, [autoSend, sessionId]);
+
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     send(draft);
@@ -262,11 +289,25 @@ export function Conversation({
                 <div className="tutor-welcome-mark">
                   <BookOpenText size={28} strokeWidth={1.5} />
                 </div>
-                <h2>
-                  Bạn muốn hiểu rõ điều gì hôm nay?
-                </h2>
+                <h2>Bạn muốn hiểu rõ điều gì hôm nay?</h2>
                 <p>Cùng làm rõ kiến thức, từng câu hỏi một.</p>
               </div>
+            )}
+            {resume && !quiz && (
+              <button
+                className="tutor-resume"
+                onClick={() => onResume?.(resume.id)}
+                disabled={busy}
+              >
+                <History size={18} aria-hidden="true" />
+                <span>
+                  <small>
+                    Tiếp tục cuộc trò chuyện · {formatDate(resume.updated_at)}
+                  </small>
+                  <strong>{resume.title}</strong>
+                </span>
+                <ArrowUpRight size={16} />
+              </button>
             )}
             <div className="tutor-starters">
               {starters.map((q, i) => (
@@ -275,11 +316,11 @@ export function Conversation({
                     <small>
                       {quiz
                         ? "Tìm hiểu thêm"
-                        : [
+                        : (starterLabels ?? [
                             "So sánh khái niệm",
                             "Làm rõ kiến thức",
                             "Giải thích ý nghĩa",
-                          ][i % 3]}
+                          ])[i % (starterLabels?.length ?? 3)]}
                     </small>
                     <strong>{q}</strong>
                   </span>
@@ -308,6 +349,7 @@ export function Conversation({
                 }
                 onAskAnother={() => inputRef.current?.focus()}
                 onClarify={(query, messageId) => send(query, false, messageId)}
+                onMove={(text, mode) => send(text, false, undefined, mode)}
                 onRetry={() => lastQuestion && send(lastQuestion.text)}
               />
             ),
@@ -367,7 +409,11 @@ export function Conversation({
             disabled={
               busy || historyLoading || !!historyCursor || !!historyError
             }
-            placeholder="Hỏi gia sư về bài học…"
+            placeholder={
+              awaitingAnswer
+                ? "Nhập câu trả lời của bạn…"
+                : "Hỏi gia sư về bài học…"
+            }
             aria-label="Câu hỏi của bạn"
           />
           <div className="tutor-composer-bottom">

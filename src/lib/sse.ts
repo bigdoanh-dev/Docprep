@@ -2,6 +2,8 @@ import { getActor } from "../app/identity";
 import { ApiError, toApiError } from "./api";
 import { session } from "./client";
 import { demoStream } from "./demo/store";
+import { LiveError } from "./live/backend";
+import { liveStream } from "./live/chat";
 import { readEvents } from "./sseRead";
 
 // EventSource only does GET, so the POST streams (chat, tutor) are read from the fetch body.
@@ -12,6 +14,16 @@ export async function postSSE(
 ): Promise<void> {
   if (getActor()?.mode === "demo") {
     await demoStream(path, body, onEvent);
+    return;
+  }
+  if (getActor()?.mode === "live") {
+    try {
+      await liveStream(path, body, onEvent);
+    } catch (e) {
+      throw e instanceof LiveError
+        ? new ApiError(e.status, e.code, e.message)
+        : e;
+    }
     return;
   }
   let res: Response;

@@ -1,4 +1,3 @@
-import { useFeedback } from "./ui/Feedback";
 import { Flag } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { useActor } from "../app/identity";
@@ -22,7 +21,6 @@ export function ReportIssue({
   target?: "question" | "answer" | "card" | "content";
 }) {
   const actor = useActor()!;
-  const notify = useFeedback();
   const [open, setOpen] = useState(false),
     [reason, setReason] = useState("wrong_content"),
     [note, setNote] = useState(""),
@@ -53,11 +51,9 @@ export function ReportIssue({
         setStatus(
           "Đã lưu phản ánh mẫu trên trình duyệt. Chưa gửi đến bộ phận xử lý.",
         );
-        notify("Đã lưu phản ánh mẫu.");
       } else {
         const result = await api.post<{ id: number }>("/reports", body);
         setStatus(`Đã tiếp nhận phản ánh số ${result.id}.`);
-        notify(`Đã tiếp nhận phản ánh số ${result.id}.`);
       }
     } catch (e) {
       setError(
@@ -123,19 +119,9 @@ export function ReportIssue({
             </p>
           )}
           {status ? (
-            <div role="status" className="notice stack">
-              <strong>
-                {actor.mode === "demo" ? "Đã lưu phản ánh" : "Đã gửi phản ánh"}
-              </strong>
-              <p>{status}</p>
-              <button
-                type="button"
-                className="btn"
-                onClick={() => setOpen(false)}
-              >
-                Hoàn tất
-              </button>
-            </div>
+            <p role="status" className="notice">
+              {status}
+            </p>
           ) : (
             <button className="btn primary" disabled={busy}>
               {busy

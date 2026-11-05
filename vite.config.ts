@@ -2,18 +2,15 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "BACKEND_");
+  // `uv run yhdp serve`: its routes are /api/*, and the reviewer app (web-review) is at /review/.
+  const target =
+    process.env.BACKEND_URL || env.BACKEND_URL || "http://127.0.0.1:8000";
   return {
     plugins: [react()],
     server: {
       proxy: {
-        "/api": {
-          target:
-            process.env.BACKEND_URL ||
-            env.BACKEND_URL ||
-            "http://127.0.0.1:8000",
-          changeOrigin: true,
-          rewrite: (p) => p.replace(/^\/api/, ""),
-        },
+        "/api": { target, changeOrigin: true },
+        "/review": { target, changeOrigin: true },
       },
     },
     build: {

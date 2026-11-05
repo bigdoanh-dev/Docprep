@@ -5,6 +5,7 @@ import type { Citation, DueCard } from "../lib/api";
 import { SourceSheet } from "./Answer";
 import { Icon } from "./Icon";
 import { Sheet } from "./Sheet";
+import { useActor } from "../app/identity";
 
 export type Rating = "1" | "2" | "3" | "4";
 // The one place the rating labels are written (open issue 33: the mocks disagree on them).
@@ -71,6 +72,7 @@ export function ReviewCard({
   const [sourceOpen, setSourceOpen] = useState(false);
   const [whyOpen, setWhyOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const live = useActor()?.mode === "live";
   const [passage, setPassage] = useState<Citation | null>(null);
 
   const citation: Citation = {
@@ -166,7 +168,9 @@ export function ReviewCard({
       >
         <div className="stack">
           <p className="muted small">
-            Thẻ tạm ẩn không xuất hiện trong các lượt ôn cho đến khi bạn mở lại.
+            {live
+              ? "Máy chủ ôn tập không có trạng thái tạm ẩn: thẻ sẽ bị xóa khỏi bộ thẻ."
+              : "Thẻ tạm ẩn không xuất hiện trong các lượt ôn cho đến khi bạn mở lại."}
           </p>
           <button
             className="btn block"
@@ -175,7 +179,7 @@ export function ReviewCard({
               onSuspend();
             }}
           >
-            Tạm ẩn thẻ này
+            {live ? "Xóa thẻ này" : "Tạm ẩn thẻ này"}
           </button>
         </div>
       </Sheet>

@@ -777,3 +777,146 @@
     margin-inline: auto;
   }
 }
+
+/* A tutor answer rendered from Markdown: compact headings, lists, and tables that scroll
+   sideways on a phone instead of widening the page. */
+.answer-md {
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.answer-md > :first-child {
+  margin-top: 0;
+}
+.answer-md > :last-child {
+  margin-bottom: 0;
+}
+.answer-md p,
+.answer-md ul,
+.answer-md ol {
+  margin: 0 0 10px;
+}
+.answer-md ul,
+.answer-md ol {
+  padding-left: 22px;
+}
+.answer-md h1,
+.answer-md h2,
+.answer-md h3,
+.answer-md h4 {
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 14px 0 6px;
+}
+.answer-table {
+  overflow-x: auto;
+  margin: 8px 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.answer-table table {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.answer-table th,
+.answer-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+  min-width: 96px;
+  overflow-wrap: normal;
+}
+.answer-table td:nth-child(2) {
+  min-width: 220px;
+}
+.answer-table th {
+  background: var(--soft);
+  font-weight: 600;
+}
+.answer-table tr:last-child td {
+  border-bottom: 0;
+}
+
+/* The next-round choices after a practice set: a title with a line of detail under it. */
+.next-round {
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  height: auto;
+  min-height: 56px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.next-round > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.next-round small {
+  font-size: 13px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+/* "Học sâu hơn": the tutor moves under the latest answer, and the questions to ask next. */
+.tutor-moves {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+.tutor-moves .label {
+  margin: 0;
+}
+.tutor-move-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tutor-follow-ups {
+  gap: 6px;
+}
+.tutor-follow-ups .btn {
+  justify-content: flex-start;
+  text-align: left;
+  height: auto;
+  min-height: 41px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* The welcome screen's offer to pick the last conversation up again. */
+.tutor-resume {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  background: var(--soft);
+  border: 1px solid var(--tutor-line, var(--border));
+  border-radius: 12px;
+  color: var(--tutor-ink, var(--ink));
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.tutor-resume > span {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tutor-resume small {
+  font-size: 12px;
+  color: var(--text-2);
+}
+.tutor-resume strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
