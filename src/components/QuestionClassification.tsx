@@ -29,7 +29,6 @@ export function QuestionClassification({
       i.id === metadata.core_issue_id ||
       i.name === metadata.core_issue_name?.trim(),
   );
-  const issueNumber = group && issue ? group.issues.indexOf(issue) + 1 : null;
   const specialty = metadata.module_name?.trim() || group?.short_name;
   const issueName = issue?.name || metadata.core_issue_name?.trim();
   const difficulty = metadata.difficulty_label?.trim();
@@ -54,19 +53,11 @@ export function QuestionClassification({
       )}
       <div>
         <dt>Đề mục</dt>
-        <dd>
-          {specialty
-            ? `${group ? `${group.id}. ` : ""}${specialty}`
-            : "Chưa phân loại"}
-        </dd>
+        <dd>{specialty || "Chưa phân loại"}</dd>
       </div>
       <div>
         <dt>Vấn đề</dt>
-        <dd>
-          {issueName
-            ? `${issueNumber ? `${issueNumber}. ` : ""}${issueName}`
-            : "Chưa phân loại"}
-        </dd>
+        <dd>{issueName || "Chưa phân loại"}</dd>
       </div>
     </dl>
   );

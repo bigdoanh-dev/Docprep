@@ -20,7 +20,7 @@ import {
 } from "../lib/api";
 import { useLoad } from "../lib/hooks";
 import { newKey } from "../lib/keys";
-import { CitationChip, useSourceSheet } from "./Answer";
+import { CitationChip, QuestionSources, useSourceSheet } from "./Answer";
 import { QuizOptions } from "./QuizOptions";
 import { LoadError, Loading } from "./Status";
 
@@ -291,14 +291,10 @@ export function PracticeRunner({
               >
                 Hỏi gia sư về câu này
               </button>
-              {feedback.citations.map((c) => (
-                <CitationChip
-                  key={c.passage_id}
-                  citation={c}
-                  onOpen={source.show}
-                  label={c.page ? `tr. ${c.page}` : (c.article ?? "Nguồn")}
-                />
-              ))}
+              <QuestionSources
+                citations={feedback.citations}
+                onOpen={source.show}
+              />
             </div>
           </div>
         )}

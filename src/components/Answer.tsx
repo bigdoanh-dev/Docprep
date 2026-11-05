@@ -58,6 +58,44 @@ export function CitationChip({
 }
 
 // Source view: the passage behind a citation, opened over the current screen.
+export function QuestionSources({
+  citations,
+  onOpen,
+}: {
+  citations: Citation[];
+  onOpen: (citation: Citation) => void;
+}) {
+  return (
+    <section
+      className="stack"
+      style={{ width: "100%", gap: 8 }}
+      aria-label="Trích dẫn tài liệu"
+    >
+      <p className="label">Trích dẫn tài liệu</p>
+      {citations.length > 0 ? (
+        <div className="row" style={{ flexWrap: "wrap", gap: 8 }}>
+          {citations.map((citation) => (
+            <CitationChip
+              key={citation.passage_id}
+              citation={citation}
+              onOpen={onOpen}
+              label={
+                citation.page
+                  ? `tr. ${citation.page}`
+                  : (citation.article ?? "Nguồn")
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="muted small">
+          Câu hỏi này chưa được gắn tài liệu tham chiếu.
+        </p>
+      )}
+    </section>
+  );
+}
+
 export function SourceSheet({
   citation,
   onClose,
