@@ -308,13 +308,30 @@ test("custom practice validates count and group, keeps unique questions and conc
     code: "invalid_count",
   });
   await assert.rejects(
-    demoCall("POST", "/practice-sets", { count: 5, module_id: "g2" }),
+    demoCall("POST", "/practice-sets", { count: 5, module_id: "g999" }),
     { code: "no_questions" },
   );
 });
 
 test("mock specialties and Bloom respect selected scope and submitted results only", async () => {
   await ready();
+  const seeded = await demoRequest("GET", "/progress/skills?scope=all");
+  assert.equal(seeded.mock_scores.length, 3);
+  assert.equal(seeded.coverage.assessed_topics, 54);
+  assert.ok(
+    seeded.issues_by_specialty.every((g: any) =>
+      g.issues.every((i: any) => i.total === 3),
+    ),
+  );
+  assert.ok(
+    seeded.bloom_by_specialty.every((g: any) =>
+      g.levels.every((l: any) => l.total > 0),
+    ),
+  );
+  // Isolate newly submitted attempts to verify all/latest3 and the empty state.
+  const state = readStore();
+  state.attempts = [];
+  writeStore(state);
   assert.equal(
     (await demoRequest("GET", "/progress/skills?scope=all")).levels.every(
       (l: any) => l.total === 0,

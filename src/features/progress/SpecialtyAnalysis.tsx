@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { AssessmentRadar } from "../../components/Charts";
+import blueprint from "../../lib/blueprint.json";
 import {
   BLOOM,
   assessmentPercent,
@@ -9,15 +10,22 @@ import {
   type AnalysisPerspective,
   type AssessmentCount,
   type BloomSpecialty,
+  type SpecialtyIssues,
 } from "../../lib/learningAnalytics";
 
 type Props = {
-  specialties?: (AssessmentCount & { name: string })[];
+  specialties?: (AssessmentCount & { name: string; module_id?: string })[];
   levels: (AssessmentCount & { level: number; label_vi: string })[];
   bySpecialty?: BloomSpecialty[];
+  byIssue?: SpecialtyIssues[];
 };
 
-export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
+export function SpecialtyAnalysis({
+  specialties,
+  levels,
+  bySpecialty,
+  byIssue,
+}: Props) {
   const headingId = useId();
   const [perspective, setPerspective] =
     useState<AnalysisPerspective>("specialty");
@@ -28,42 +36,66 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
   const [selectedAxisId, setSelectedAxisId] = useState<string | null>(null);
   const groups = bySpecialty ?? [];
   // A scope change can remove a group; fall back to all instead of showing stale data.
+  const activeSpecialty = blueprint.groups.find((g) => `g${g.id}` === selected);
   const activeGroup = groups.find((g) => g.module_id === selected);
   const shownGroups = activeGroup ? [activeGroup] : groups;
   const shownLevels = activeGroup?.levels ?? levels;
   const specialtyCounts =
     specialties ??
     groups.map((g) => ({
+      module_id: g.module_id,
       name: g.name,
       correct: g.levels.reduce((sum, l) => sum + l.correct, 0),
       total: g.levels.reduce((sum, l) => sum + l.total, 0),
     }));
+  const issueCounts =
+    byIssue?.find((g) => g.module_id === selected)?.issues ?? [];
   const axes =
-    perspective === "specialty"
-      ? specialtyCounts.map((s, i) => ({
-          ...s,
-          id: String(i),
-          name: s.name,
-          label: `Nhóm ${i + 1}`,
-        }))
-      : BLOOM.map((label, i) => ({
-          id: String(i + 1),
-          name: label,
-          label,
-          correct: shownLevels.find((l) => l.level === i + 1)?.correct ?? 0,
-          total: shownLevels.find((l) => l.level === i + 1)?.total ?? 0,
-        }));
+    perspective === "specialty" && activeSpecialty
+      ? activeSpecialty.issues.map((issue, index) => {
+          const count = issueCounts.find((i) => i.issue_id === issue.id);
+          return {
+            id: `CI-${issue.id}`,
+            number: index + 1,
+            name: issue.name,
+            label: String(index + 1),
+            correct: count?.correct ?? 0,
+            total: count?.total ?? 0,
+          };
+        })
+      : perspective === "specialty"
+        ? blueprint.groups.map((group) => {
+            const count = specialtyCounts.find(
+              (s) =>
+                s.module_id === `g${group.id}` ||
+                s.name === group.short_name ||
+                s.name === group.name,
+            );
+            return {
+              id: String(group.id),
+              number: group.id,
+              name: group.short_name,
+              label: String(group.id),
+              correct: count?.correct ?? 0,
+              total: count?.total ?? 0,
+            };
+          })
+        : BLOOM.map((label, i) => ({
+            id: String(i + 1),
+            number: i + 1,
+            name: label,
+            label,
+            correct: shownLevels.find((l) => l.level === i + 1)?.correct ?? 0,
+            total: shownLevels.find((l) => l.level === i + 1)?.total ?? 0,
+          }));
   const chartKey = [
     perspective,
-    activeGroup?.module_id ?? "all",
+    activeSpecialty ? selected : "all",
     axes
       .map((axis) => `${axis.id}:${axis.name}:${axis.correct}/${axis.total}`)
       .join("|"),
   ].join(":");
-  const matrix = learningMatrix(
-    perspective === "bloom" ? shownGroups : groups,
-    perspective,
-  );
+  const matrix = learningMatrix(shownGroups, perspective);
   const activeRow =
     matrix.rows.find((r) => r.id === selectedRow) ??
     matrix.rows.find((r) => r.cells.some((c) => c.total > 0)) ??
@@ -74,7 +106,11 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
   const hasAssessment = axes.some((a) => a.total > 0);
   const unassessedCount = axes.filter((a) => a.total === 0).length;
   const perspectiveLabel =
-    perspective === "specialty" ? "chuyên khoa" : "mức độ vận dụng";
+    perspective === "specialty"
+      ? activeSpecialty
+        ? `vấn đề · ${activeSpecialty.short_name}`
+        : "chuyên khoa"
+      : "mức độ vận dụng";
 
   function changePerspective(next: AnalysisPerspective) {
     setPerspective(next);
@@ -115,96 +151,90 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
           </button>
         </div>
       </div>
-      {perspective === "bloom" && groups.length > 0 && (
-        <label className="field matrix-filter">
-          Xem mức độ vận dụng theo chuyên khoa
-          <select
-            value={activeGroup?.module_id ?? "all"}
-            onChange={(e) => {
-              setSelected(e.target.value);
-              setSelectedCell(null);
-              setSelectedAxisId(null);
-            }}
-          >
-            <option value="all">Tất cả chuyên khoa</option>
-            {groups.map((g) => (
-              <option key={g.module_id} value={g.module_id}>
-                {g.name}
-              </option>
-            ))}
-          </select>
+      <div className="field matrix-filter">
+        <label htmlFor={`${headingId}-specialty`}>
+          {perspective === "specialty"
+            ? "Đề mục chuyên khoa"
+            : "Xem mức độ vận dụng theo chuyên khoa"}
         </label>
-      )}
+        <select
+          id={`${headingId}-specialty`}
+          value={activeSpecialty ? selected : "all"}
+          onChange={(event) => {
+            setSelected(event.target.value);
+            setSelectedCell(null);
+            setSelectedRow("");
+            setSelectedAxisId(null);
+          }}
+        >
+          <option value="all">Tất cả</option>
+          {blueprint.groups.map((group) => (
+            <option key={group.id} value={`g${group.id}`}>
+              {group.id}. {group.short_name}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="analysis-section">
-        {hasAssessment ? (
-          <>
-            <div className="analysis-view-heading">
-              <h3>Tỷ lệ đúng theo {perspectiveLabel}</h3>
-            </div>
-            <div className="assessment-combined">
-              {axes.length >= 3 ? (
-                <AssessmentRadar
-                  key={chartKey}
-                  axes={axes}
-                  label={`Biểu đồ tỷ lệ đúng theo ${perspectiveLabel}; danh sách bên dưới ghi tên, tỷ lệ và số câu đã có kết quả.`}
-                  selectedAxisId={selectedAxisId}
-                  onSelectAxis={(axisId) =>
-                    setSelectedAxisId((current) =>
-                      current === axisId ? null : axisId,
-                    )
-                  }
-                />
-              ) : (
-                <p className="muted small">Cần ít nhất 3 mục để vẽ radar.</p>
-              )}
-              <ol
-                key={chartKey}
-                className="assessment-bars"
-                aria-label={`Các mục có kết quả theo ${perspectiveLabel}`}
-              >
-                {axes.map((a, index) => {
-                  const pct = assessmentPercent(a);
-                  if (pct === null) return null;
-                  return (
-                    <li
-                      key={a.id}
-                      className={selectedAxisId === a.id ? "is-selected" : ""}
-                      style={{ animationDelay: `${index * 45}ms` }}
-                    >
-                      <div className="assessment-bar-heading">
-                        <span className="assessment-axis-name">
-                          <span className="assessment-axis-number">
-                            {index + 1}
-                          </span>
-                          {a.name}
-                        </span>
-                        <strong>{pct}%</strong>
-                      </div>
-                      <div className="progress" aria-hidden="true">
-                        <span style={{ width: `${pct}%` }} />
-                      </div>
-                      <small>
-                        {a.correct}/{a.total} câu đúng
-                      </small>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-            {unassessedCount > 0 && (
-              <p className="analysis-note">
-                {unassessedCount} mục chưa có dữ liệu.
-              </p>
-            )}
-          </>
-        ) : (
-          <div className="analysis-empty">
-            <strong>Chưa có dữ liệu phân tích</strong>
-            <p>Nộp đề thi thử để xem kết quả theo {perspectiveLabel}.</p>
-            <Link to="/thi-thu" className="btn">
+        <div className="analysis-view-heading">
+          <h3>Tỷ lệ đúng theo {perspectiveLabel}</h3>
+        </div>
+        <div className="assessment-combined">
+          <AssessmentRadar
+            key={chartKey}
+            axes={axes}
+            label={`Biểu đồ tỷ lệ đúng theo ${perspectiveLabel}; các số trên trục tương ứng với chú giải bên dưới.`}
+            selectedAxisId={selectedAxisId}
+            onSelectAxis={(axisId) =>
+              setSelectedAxisId((current) =>
+                current === axisId ? null : axisId,
+              )
+            }
+          />
+          <ol
+            className="assessment-legend"
+            aria-label={`Chú giải theo ${perspectiveLabel}`}
+          >
+            {axes.map((axis) => {
+              const pct = assessmentPercent(axis);
+              return (
+                <li key={axis.id}>
+                  <button
+                    type="button"
+                    aria-pressed={selectedAxisId === axis.id}
+                    onClick={() =>
+                      setSelectedAxisId((current) =>
+                        current === axis.id ? null : axis.id,
+                      )
+                    }
+                  >
+                    <span className="assessment-axis-number">
+                      {axis.number}
+                    </span>
+                    <span className="assessment-legend-name">{axis.name}</span>
+                    <span className="assessment-legend-result">
+                      {pct === null
+                        ? "Chưa có dữ liệu"
+                        : `${pct}% · ${axis.correct}/${axis.total} câu đúng`}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+        {unassessedCount > 0 && (
+          <p className="analysis-note">
+            {unassessedCount} mục chưa có dữ liệu, chưa được tính là 0%.
+          </p>
+        )}
+        {!hasAssessment && (
+          <p className="muted small">
+            Nộp đề thi thử để xem kết quả theo {perspectiveLabel}.{" "}
+            <Link to="/thi-thu" className="link-btn">
               Làm đề thi thử
             </Link>
-          </div>
+          </p>
         )}
       </div>
       {hasAssessment && (
@@ -212,7 +242,9 @@ export function SpecialtyAnalysis({ specialties, levels, bySpecialty }: Props) {
           <summary>
             <span className="analysis-table-summary-copy">
               <strong>Chi tiết theo chuyên khoa và mức độ</strong>
-              <small>Mở bảng kết quả, số câu đúng và phần chưa có dữ liệu</small>
+              <small>
+                Mở bảng kết quả, số câu đúng và phần chưa có dữ liệu
+              </small>
             </span>
             <ChevronDown size={19} aria-hidden="true" />
           </summary>

@@ -15,7 +15,7 @@ export type QuestionMetadata = {
 export type GroupMetadata = {
   id: number;
   short_name: string;
-  issues: { id: number }[];
+  issues: { id: number; name?: string }[];
 };
 export function groupForQuestion(q: QuestionMetadata, groups: GroupMetadata[]) {
   const issue = /^CI-(\d+)$/.exec(q.competency_code);
@@ -47,6 +47,16 @@ export function summarizeAnswers(
     name: g.short_name,
     levels: levels.map((l) => ({ ...l })),
   }));
+  const issues_by_specialty: SpecialtyIssues[] = groups.map((group) => ({
+    module_id: `g${group.id}`,
+    name: group.short_name,
+    issues: group.issues.map((issue) => ({
+      issue_id: issue.id,
+      name: issue.name ?? `Vấn đề ${issue.id}`,
+      correct: 0,
+      total: 0,
+    })),
+  }));
   const lookup = new Map(questions.map((q) => [q.id, q]));
   answers.forEach((a) => {
     const q = lookup.get(a.question_id);
@@ -61,6 +71,14 @@ export function summarizeAnswers(
     if (stat) {
       stat.total++;
       stat.correct += Number(a.correct);
+      const issueId = /^CI-(\d+)$/.exec(q.competency_code);
+      const issue = issues_by_specialty
+        .find((g) => g.module_id === stat.module_id)
+        ?.issues.find((i) => i.issue_id === Number(issueId?.[1]));
+      if (issue) {
+        issue.total++;
+        issue.correct += Number(a.correct);
+      }
       const groupLevel = bloom_by_specialty.find(
         (s) => s.module_id === stat.module_id,
       )?.levels[q.bloom_level - 1];
@@ -70,10 +88,15 @@ export function summarizeAnswers(
       }
     }
   });
-  return { levels, specialties, bloom_by_specialty };
+  return { levels, specialties, bloom_by_specialty, issues_by_specialty };
 }
 
 export type AssessmentCount = { correct: number; total: number };
+export type SpecialtyIssues = {
+  module_id: string;
+  name: string;
+  issues: (AssessmentCount & { issue_id: number; name: string })[];
+};
 export type BloomSpecialty = {
   module_id: string;
   name: string;

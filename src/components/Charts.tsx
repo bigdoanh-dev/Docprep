@@ -73,7 +73,10 @@ export function Bars({
               }}
             />
           </span>
-          <span className="muted" style={{ fontSize: 11, whiteSpace: "pre-line" }}>
+          <span
+            className="muted"
+            style={{ fontSize: 11, whiteSpace: "pre-line" }}
+          >
             {item.label}
           </span>
         </li>
@@ -82,13 +85,7 @@ export function Bars({
   );
 }
 
-const HEAT = [
-  "#f5f7fa",
-  "#dce8f6",
-  "#a9c5e7",
-  "#6f99cb",
-  "#315ba3",
-];
+const HEAT = ["#f5f7fa", "#dce8f6", "#a9c5e7", "#6f99cb", "#315ba3"];
 const WEEKDAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 const WEEKDAY_NAMES = [
   "Chủ nhật",
@@ -336,6 +333,7 @@ export function AssessmentRadar({
     id: string;
     label: string;
     name?: string;
+    number?: number;
     correct: number;
     total: number;
   }[];
@@ -344,7 +342,7 @@ export function AssessmentRadar({
   onSelectAxis: (axisId: string) => void;
 }) {
   const handleAxisKeyDown = (
-    event: KeyboardEvent<SVGCircleElement>,
+    event: KeyboardEvent<SVGElement>,
     axisId: string,
   ) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -352,6 +350,85 @@ export function AssessmentRadar({
       onSelectAxis(axisId);
     }
   };
+  // Two issues cannot form a radar polygon; keep them in one comparison chart.
+  if (axes.length === 2) {
+    return (
+      <figure className="assessment-radar assessment-issue-bars">
+        <svg viewBox="0 0 420 200" role="group" aria-label={label}>
+          {[0, 0.5, 1].map((scale) => (
+            <g key={scale}>
+              <line
+                x1={60 + scale * 280}
+                x2={60 + scale * 280}
+                y1="40"
+                y2="165"
+                stroke="var(--border-input)"
+              />
+              <text
+                x={60 + scale * 280}
+                y="25"
+                textAnchor="middle"
+                className="radar-scale"
+              >
+                {scale * 100}%
+              </text>
+            </g>
+          ))}
+          {axes.map((axis, index) => {
+            const y = 65 + index * 70;
+            const percentage = Math.round(
+              share(axis.correct, axis.total) * 100,
+            );
+            return (
+              <g key={axis.id}>
+                <text
+                  x="28"
+                  y={y + 5}
+                  textAnchor="middle"
+                  className="radar-axis-value"
+                >
+                  {axis.number ?? index + 1}
+                </text>
+                <circle
+                  cx="28"
+                  cy={y}
+                  r="21"
+                  className="radar-axis-hit"
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={selectedAxisId === axis.id}
+                  aria-label={`${axis.name ?? axis.label}: ${axis.total ? `${percentage}% đúng, ${axis.correct}/${axis.total} câu` : "chưa có dữ liệu"}`}
+                  onClick={() => onSelectAxis(axis.id)}
+                  onKeyDown={(event) => handleAxisKeyDown(event, axis.id)}
+                />
+                <rect
+                  x="60"
+                  y={y - 9}
+                  width="280"
+                  height="18"
+                  rx="4"
+                  fill="var(--primary-tint)"
+                />
+                {axis.total > 0 && (
+                  <rect
+                    x="60"
+                    y={y - 9}
+                    width={280 * share(axis.correct, axis.total)}
+                    height="18"
+                    rx="4"
+                    fill="var(--primary)"
+                  />
+                )}
+                <text x="355" y={y + 5} className="radar-scale">
+                  {axis.total ? `${percentage}%` : "—"}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      </figure>
+    );
+  }
   const center = { x: 210, y: 178 };
   const radius = 108;
   const point = (i: number, distance: number) => {
@@ -417,7 +494,7 @@ export function AssessmentRadar({
                   className="radar-axis-value"
                   aria-hidden="true"
                 >
-                  {i + 1}
+                  {axis.number ?? i + 1}
                 </text>
               </g>
             );
@@ -458,7 +535,9 @@ export function AssessmentRadar({
             if (!axis.total) return null;
             const p = assessedPoint(i);
             const name = axis.name ?? axis.label;
-            const percentage = Math.round(share(axis.correct, axis.total) * 100);
+            const percentage = Math.round(
+              share(axis.correct, axis.total) * 100,
+            );
             const isSelected = selectedAxisId === axis.id;
             return (
               <g key={axis.id}>

@@ -1,9 +1,30 @@
+import {
+  ISSUE_DEMO_EXAM_ID,
+  ISSUE_DEMO_EXAM_TITLE,
+  issueDemoQuestions,
+  issueExamQuestions,
+  createIssueDemoAttempts,
+} from "./issueExam";
+import blueprint from "../blueprint.json";
 import { groupForQuestion, summarizeAnswers } from "../learningAnalytics";
 import { getActor } from "../../app/identity";
 import rawExamples from "./examples.json";
 import rawSeed from "./seed.json";
+import {
+  PROGRESS_EXAM_ID,
+  PROGRESS_EXAM_TITLE,
+  progressQuestions,
+} from "./progressExam";
 // Isolated browser demonstration. This module never calls a model or writes to the backend.
-export const seed = rawSeed as any;
+export const seed = {
+  ...rawSeed,
+  blueprint,
+  questions: [
+    ...rawSeed.questions,
+    ...progressQuestions,
+    ...issueDemoQuestions,
+  ],
+} as any;
 export const examples = rawExamples as Record<string, any>;
 const KEY = "yhdp.demo.v2";
 const clone = <T>(v: T): T => structuredClone(v);
@@ -105,14 +126,27 @@ function initial() {
     })),
   };
 }
+function seedIssueDemoResults(s: any): boolean {
+  if (s.issue_demo_seed_version === 1) return false;
+  const attempts = createIssueDemoAttempts(s.nextId, now());
+  s.nextId += attempts.length;
+  s.attempts.unshift(...attempts.toReversed());
+  s.issue_demo_seed_version = 1;
+  return true;
+}
+
 export function readStore(): any {
   try {
     const value = JSON.parse(localStorage.getItem(KEY) ?? "null");
-    if (value?.version === 2) return value;
+    if (value?.version === 2) {
+      if (seedIssueDemoResults(value)) writeStore(value);
+      return value;
+    }
   } catch {
     /* invalid local fixture is reset */
   }
   const s = initial();
+  seedIssueDemoResults(s);
   writeStore(s);
   return s;
 }
@@ -132,14 +166,19 @@ export function demoTransaction<T>(run: (s: any) => T): T {
 }
 function cardFromQuestion(id: string, cardId: number) {
   const q = question(id);
+  const source = citations(q.sources)[0];
   return {
     id: cardId,
     front: q.stem,
     back: q.explanation,
-    citation: `${citations(q.sources)[0].document}, trang ${citations(q.sources)[0].page}`,
-    source_passage_id: q.sources[0],
+    citation: source
+      ? `${source.document}, trang ${source.page}`
+      : "Câu hỏi minh họa kiểm tra tiến độ",
+    source_passage_id: q.sources[0] ?? null,
     origin: "Từ kết quả minh họa",
-    module: "Sức khỏe quần thể và dự phòng",
+    module:
+      groupForQuestion(q, seed.blueprint.groups)?.short_name ??
+      "Sức khỏe quần thể và dự phòng",
     preview: { 1: 60, 2: 600, 3: 86400, 4: 345600 },
     due_at: now(),
     suspended: false,
@@ -272,6 +311,28 @@ function unitView(s: any, id: string) {
       : null,
   };
 }
+function questionClassification(q: any) {
+  const issueId = /^CI-(\d+)$/.exec(q?.competency_code ?? "");
+  const issue = issueId
+    ? seed.blueprint.groups
+        .flatMap((g: any) => g.issues)
+        .find((i: any) => i.id === Number(issueId[1]))
+    : undefined;
+  const group = q ? groupForQuestion(q, seed.blueprint.groups) : undefined;
+  return {
+    module_id: group ? `g${group.id}` : null,
+    module_name: group?.short_name ?? null,
+    core_issue_id: issue?.id ?? null,
+    difficulty_label: q?.difficulty ?? null,
+    bloom_level: q?.bloom_level ?? null,
+    core_issue_name:
+      issue?.name ??
+      (q?.competency_code === "FND"
+        ? "Kiến thức nền tảng y học dự phòng"
+        : null),
+  };
+}
+
 function practice(s: any, id: number) {
   s.practice[id] ??= {
     id,
@@ -292,6 +353,10 @@ function practice(s: any, id: number) {
   const p = s.practice[id];
   return {
     ...p,
+    items: p.items.map((item: any) => ({
+      ...item,
+      ...questionClassification(question(item.question_id)),
+    })),
     total: p.items.length,
     answered: p.items.filter((i: any) => i.chosen !== null).length,
   };
@@ -342,20 +407,44 @@ function sessionToday(s: any) {
 function forms(s: any) {
   return [
     {
+      id: ISSUE_DEMO_EXAM_ID,
+      title: ISSUE_DEMO_EXAM_TITLE,
+      kind: "mock",
+      n_questions: 54,
+    },
+    {
+      id: PROGRESS_EXAM_ID,
+      title: PROGRESS_EXAM_TITLE,
+      kind: "mock",
+      n_questions: progressQuestions.length,
+    },
+    ...seed.blueprint.groups.map((group: any) => ({
+      id: `specialty-demo-g${group.id}`,
+      title: `Thi thử · ${group.short_name}`,
+      kind: "mock",
+      module_id: `g${group.id}`,
+      module_name: group.short_name,
+      n_questions: progressQuestions.filter(
+        (q) => groupForQuestion(q, seed.blueprint.groups)?.id === group.id,
+      ).length,
+    })),
+    {
       id: "diagnostic-demo",
+      module_id: "g1",
+      module_name: seed.blueprint.groups[0].short_name,
       title: "Bài đánh giá đầu vào minh họa",
       kind: "diagnostic",
       n_questions: 5,
     },
     {
       id: "mock-demo",
-      title: "Đề thi thử minh họa",
+      title: "Đề thi thử tổng hợp ngắn",
       kind: "demo_short",
       n_questions: 10,
     },
     {
       id: "assembled-demo",
-      title: "Đề ôn tự ráp minh họa",
+      title: "Đề thi tổng hợp tự ráp minh họa",
       kind: "assembled",
       n_questions: 8,
     },
@@ -405,7 +494,9 @@ function closeAttempt(s: any, a: any, auto = false) {
       return {
         n: n + 1,
         question_id: q.id,
-        topic: "Đo lường tần suất bệnh",
+        topic:
+          groupForQuestion(question(q.id), seed.blueprint.groups)?.short_name ??
+          "Đo lường tần suất bệnh",
         status: "blank",
       };
     const f = grade(s, question(q.id), chosen, `attempt:${a.attempt_id}`);
@@ -414,7 +505,9 @@ function closeAttempt(s: any, a: any, auto = false) {
     return {
       n: n + 1,
       question_id: q.id,
-      topic: "Đo lường tần suất bệnh",
+      topic:
+        groupForQuestion(question(q.id), seed.blueprint.groups)?.short_name ??
+        "Đo lường tần suất bệnh",
       status: f.correct ? "ok" : "wrong",
     };
   });
@@ -441,7 +534,11 @@ function closeAttempt(s: any, a: any, auto = false) {
     ),
     auto_submitted: auto,
     new_cards: newCards,
-    priority_top: ["Đo lường tần suất bệnh"],
+    priority_top: [
+      ...new Set(
+        items.filter((i: any) => i.status !== "ok").map((i: any) => i.topic),
+      ),
+    ].slice(0, 3),
     priority_moved_up: [],
     items,
   };
@@ -789,6 +886,48 @@ export async function demoRequest(
         .forEach((a: any) => closeAttempt(s, a, true));
       return { items: forms(s) };
     }
+    if (
+      p === `/exams/${PROGRESS_EXAM_ID}/sample-results` &&
+      method === "POST"
+    ) {
+      // Explicit, repeatable action: reuse samples and preserve existing learner attempts.
+      const existing = s.attempts.filter((a: any) => a.progress_sample);
+      if (existing.length)
+        return { attempt_ids: existing.map((a: any) => a.attempt_id) };
+      const attemptIds: number[] = [];
+      for (let run = 0; run < 3; run++) {
+        const a = {
+          attempt_id: ++s.nextId,
+          form_id: PROGRESS_EXAM_ID,
+          title: `${PROGRESS_EXAM_TITLE} · Kết quả mẫu ${run + 1}`,
+          progress_sample: true,
+          questions: progressQuestions.map((q, index) => ({
+            id: q.id,
+            n: index + 1,
+            stem: q.stem,
+            options: q.options.map(({ key, text }) => ({ key, text })),
+          })),
+          answers: Object.fromEntries(
+            progressQuestions.flatMap((q, index) => {
+              const outcome = (Math.floor(index / 6) + q.bloom_level + run) % 5;
+              if (outcome === 0) return []; // Include unanswered, wrong and correct cases.
+              const option = q.options.find((o) => o.correct === outcome > 1)!;
+              return [[q.id, { chosen: option.key, flagged: false }]];
+            }),
+          ),
+          started_at: new Date(
+            Date.now() - (30 + run * 5) * 60000,
+          ).toISOString(),
+          deadline_at: new Date(Date.now() + 3600000).toISOString(),
+          submitted_at: null,
+          warning_s: 300,
+        };
+        closeAttempt(s, a);
+        s.attempts.unshift(a);
+        attemptIds.push(a.attempt_id);
+      }
+      return { attempt_ids: attemptIds };
+    }
     const start = p.match(/^\/exams\/([^/]+)\/attempts$/);
     if (start) {
       const f = forms(s).find((f: any) => f.id === start[1])!;
@@ -805,7 +944,36 @@ export async function demoRequest(
           submitted: false,
         };
       if (running) closeAttempt(s, running);
-      const questions = seed.questions
+      const pool =
+        f.id === ISSUE_DEMO_EXAM_ID
+          ? issueExamQuestions()
+          : f.id.startsWith("specialty-demo-")
+            ? progressQuestions.filter(
+                (q) =>
+                  `g${groupForQuestion(q, seed.blueprint.groups)?.id}` ===
+                  f.module_id,
+              )
+            : f.id === PROGRESS_EXAM_ID
+              ? progressQuestions
+              : f.kind === "diagnostic"
+                ? rawSeed.questions
+                : Array.from({ length: f.n_questions }, (_, index) => {
+                    const group =
+                      seed.blueprint.groups[
+                        index % seed.blueprint.groups.length
+                      ];
+                    const level =
+                      ((index +
+                        Math.floor(index / seed.blueprint.groups.length)) %
+                        6) +
+                      1;
+                    return progressQuestions.find(
+                      (q) =>
+                        groupForQuestion(q, seed.blueprint.groups)?.id ===
+                          group.id && q.bloom_level === level,
+                    )!;
+                  });
+      const questions = pool
         .slice(0, f.n_questions)
         .map((q: any, n: number) => ({
           id: q.id,
@@ -865,6 +1033,7 @@ export async function demoRequest(
           fail(409, "attempt_open", "Không được xem đáp án khi đang thi.");
         const q = question(ar[3]!);
         return {
+          ...questionClassification(q),
           n: a.questions.findIndex((x: any) => x.id === q.id) + 1,
           total: a.questions.length,
           question_id: q.id,
@@ -920,6 +1089,24 @@ export async function demoRequest(
       Object.assign(
         v,
         summarizeAnswers(assessed, seed.questions, seed.blueprint.groups),
+      );
+      const assessedIssues = new Set(
+        assessed.map(
+          (answer: any) => question(answer.question_id)?.competency_code,
+        ),
+      );
+      v.coverage.modules.forEach((module: any) => {
+        const group = seed.blueprint.groups.find(
+          (g: any) => `g${g.id}` === module.module_id,
+        );
+        module.topics_assessed =
+          group?.issues.filter((issue: any) =>
+            assessedIssues.has(`CI-${issue.id}`),
+          ).length ?? 0;
+      });
+      v.coverage.assessed_topics = v.coverage.modules.reduce(
+        (sum: number, module: any) => sum + module.topics_assessed,
+        0,
       );
       v.priorities = v.specialties
         .filter((m: any) => m.total > m.correct)

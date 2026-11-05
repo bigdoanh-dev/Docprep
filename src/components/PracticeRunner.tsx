@@ -1,3 +1,4 @@
+import { QuestionClassification } from "./QuestionClassification";
 import { Icon } from "./Icon";
 import { SaveQuestion } from "./SaveQuestion";
 import { CircleHelp } from "lucide-react";
@@ -266,6 +267,7 @@ export function PracticeRunner({
               )}
             </p>
             <p className="label">Giải thích của chuyên gia</p>
+            <QuestionClassification metadata={item} />
             <p style={{ fontSize: 16, color: "var(--text-2)" }}>
               {feedback.explanation}
             </p>
