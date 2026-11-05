@@ -72,8 +72,13 @@ export function Home() {
       <section className="today-section">
         <div className="section-head">
           <h2>Phiên học hôm nay</h2>
-          <span>{today.total_minutes} phút</span>
+          <span>Dự kiến {today.total_minutes} phút</span>
         </div>
+        {today.steps.some((step) => !step.done) && (
+          <Link to="/phien" className="btn primary block">
+            Bắt đầu phiên học <ArrowRight size={17} />
+          </Link>
+        )}
         <div className="today-list">
           {today.steps.map((s) => {
             const Icon =

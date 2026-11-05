@@ -3,6 +3,9 @@ import {
   BookOpen,
   CheckCircle2,
   ChevronRight,
+  CalendarDays,
+  Route,
+  Target,
   Search,
   SlidersHorizontal,
 } from "lucide-react";
@@ -65,9 +68,18 @@ export function Modules() {
       </div>
       <LearningActions />
       <nav className="learning-secondary" aria-label="Kế hoạch học">
-        <Link to="/lich-on">Lịch ôn</Link>
-        <Link to="/lo-trinh">Lộ trình</Link>
-        <Link to="/chon-hoc-phan?doi=1">Đổi trọng tâm</Link>
+        <Link to="/lich-on">
+          <CalendarDays size={17} />
+          Lịch ôn
+        </Link>
+        <Link to="/lo-trinh">
+          <Route size={17} />
+          Lộ trình
+        </Link>
+        <Link to="/chon-hoc-phan?doi=1">
+          <Target size={17} />
+          Đổi trọng tâm
+        </Link>
       </nav>
       <div className="module-toolbar">
         <div className="module-search-row">
@@ -319,9 +331,7 @@ function ModuleContent({ id, close }: { id: string; close: () => void }) {
                 <span className="module-unit-copy">
                   <strong>{u.topic}</strong>
                   <small className={u.done ? "is-complete" : ""}>
-                    {u.done
-                      ? "Đã hoàn thành"
-                      : "Nội dung và câu hỏi tương tác"}
+                    {u.done ? "Đã hoàn thành" : "Nội dung và câu hỏi tương tác"}
                   </small>
                 </span>
                 <span className="module-unit-indicator" aria-hidden="true">

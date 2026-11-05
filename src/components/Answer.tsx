@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { groupCitations } from "../lib/citations";
+import { useState, type ReactNode } from "react";
 import {
   api,
   type ChatState,
@@ -65,6 +66,7 @@ export function QuestionSources({
   citations: Citation[];
   onOpen: (citation: Citation) => void;
 }) {
+  const groups = groupCitations(citations);
   return (
     <section
       className="stack"
@@ -74,18 +76,35 @@ export function QuestionSources({
       <p className="label">Trích dẫn tài liệu</p>
       {citations.length > 0 ? (
         <div className="row" style={{ flexWrap: "wrap", gap: 8 }}>
-          {citations.map((citation) => (
-            <CitationChip
-              key={citation.passage_id}
-              citation={citation}
-              onOpen={onOpen}
-              label={
-                citation.page
-                  ? `tr. ${citation.page}`
-                  : (citation.article ?? "Nguồn")
-              }
-            />
-          ))}
+          {groups.map(([document, entries]) =>
+            entries.length === 1 ? (
+              <CitationChip
+                key={document}
+                citation={entries[0]}
+                onOpen={onOpen}
+                label="Nguồn"
+              />
+            ) : (
+              <details key={document} className="source-group">
+                <summary>
+                  {document} · {entries.length} đoạn trích
+                </summary>
+                <div className="stack">
+                  {entries.map((citation, index) => (
+                    <button
+                      type="button"
+                      key={citation.passage_id}
+                      className="chip"
+                      onClick={() => onOpen(citation)}
+                    >
+                      Đoạn {index + 1}
+                      {sourceLine(citation) ? ` · ${sourceLine(citation)}` : ""}
+                    </button>
+                  ))}
+                </div>
+              </details>
+            ),
+          )}
         </div>
       ) : (
         <p className="muted small">
@@ -93,6 +112,15 @@ export function QuestionSources({
         </p>
       )}
     </section>
+  );
+}
+
+export function ExplanationDetails({ children }: { children: ReactNode }) {
+  return (
+    <details className="explanation-details">
+      <summary>Xem giải thích chi tiết</summary>
+      <div className="stack">{children}</div>
+    </details>
   );
 }
 

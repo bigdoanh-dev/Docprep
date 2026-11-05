@@ -1961,3 +1961,220 @@
   padding-top: 18px;
   border-top: 1px solid var(--border);
 }
+
+/* Fixes verified against the mobile UX review. */
+.setup-progress {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.setup-progress li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--border);
+}
+.setup-progress li.active {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.setup-progress li span {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--soft);
+}
+.profile-compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 10px 12px;
+  margin: 0;
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--text-2);
+  font-size: 12px;
+}
+.mobile-content.onboarding-content {
+  padding-bottom: 20px;
+}
+.mobile-content .focus-page {
+  min-height: 0 !important;
+}
+.focus-page > .body {
+  flex: 0 0 auto;
+}
+.focus-page > .footer {
+  padding: 0 20px 16px;
+}
+.focus-page .check:has(input:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--soft);
+}
+.mobile-content .quiz-stem-title {
+  font-weight: 500 !important;
+}
+.compact-question-progress {
+  height: 5px;
+  margin-bottom: 4px;
+}
+.explanation-details {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  font-size: 13px;
+}
+.explanation-details > summary,
+.source-group > summary {
+  cursor: pointer;
+  min-height: 44px;
+  color: var(--primary-dark);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+.explanation-details > summary::before,
+.source-group > summary::before {
+  content: "＋";
+  margin-right: 8px;
+}
+.explanation-details[open] > summary::before,
+.source-group[open] > summary::before {
+  content: "−";
+}
+.source-group {
+  width: 100%;
+}
+.source-group .chip {
+  white-space: normal;
+  text-align: left;
+  line-height: 1.6;
+}
+.helpful-feedback {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  color: var(--primary-dark);
+}
+.helpful-feedback .is-selected {
+  background: var(--primary-tint);
+  color: var(--primary-dark);
+  opacity: 1;
+}
+.helpful-feedback [role="alert"] {
+  color: var(--learning-dark);
+}
+.learning-secondary a {
+  min-height: 44px;
+  gap: 6px;
+  border: 1px solid var(--border);
+  padding: 8px;
+  border-radius: 8px;
+  justify-content: center;
+  flex: 1;
+  white-space: nowrap;
+}
+.learning-secondary {
+  gap: 6px;
+}
+.practice-page .count-card-header {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.practice-page .count-card-number {
+  white-space: nowrap;
+  flex: 0 0 auto;
+  font-size: 14px;
+}
+.practice-page .count-card-badge {
+  white-space: normal;
+  line-height: 1.4;
+  margin-left: 0;
+}
+.practice-page .practice-count-card {
+  min-width: 0;
+}
+.calendar-grid button.is-today {
+  box-shadow: inset 0 0 0 2px var(--primary);
+}
+.calendar-grid button.has-due > span::after {
+  content: "";
+  display: block;
+  margin: 3px auto 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+.calendar-grid button.selected {
+  background: var(--primary);
+  color: white;
+}
+.calendar-grid button.selected > span::after {
+  background: white;
+}
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.calendar-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.calendar-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.calendar-legend .today-key {
+  border: 2px solid var(--primary);
+}
+.calendar-legend .selected-key {
+  background: var(--primary);
+}
+.calendar-legend .due-key {
+  background: var(--primary);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.calendar-forecast-day {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.learning-secondary a {
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.5;
+}
+
+.focus-page .check .h2 {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.calendar-grid button.selected small { color: inherit; }

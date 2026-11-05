@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   Navigate,
+  Link,
   useLocation,
   useNavigate,
   useSearchParams,
@@ -20,7 +21,12 @@ import {
 } from "../lib/api";
 import { useLoad } from "../lib/hooks";
 import { newKey } from "../lib/keys";
-import { CitationChip, QuestionSources, useSourceSheet } from "./Answer";
+import {
+  CitationChip,
+  ExplanationDetails,
+  QuestionSources,
+  useSourceSheet,
+} from "./Answer";
 import { QuizOptions } from "./QuizOptions";
 import { LoadError, Loading } from "./Status";
 
@@ -174,8 +180,11 @@ export function PracticeRunner({
     );
 
   const panel = feedback && nextPanel(feedback);
-  const correctText =
-    feedback && item.options.find((o) => o.key === feedback.correct_key)?.text;
+  const correctLetter = feedback
+    ? String.fromCharCode(
+        65 + item.options.findIndex((o) => o.key === feedback.correct_key),
+      )
+    : "";
   const rationale =
     feedback && !feedback.correct && item.chosen
       ? feedback.rationales[item.chosen]
@@ -185,29 +194,16 @@ export function PracticeRunner({
     <div className="screen">
       {header(`Câu ${at + 1}/${set.items.length}`)}
       <div className="body stack">
-        <ol role="list" aria-label="Kết quả từng câu" className="dots">
-          {set.items.map((i, n) => {
-            const state = i.feedback
-              ? i.feedback.correct
-                ? "right"
-                : "wrong"
-              : n === at
-                ? "current"
-                : "todo";
-            const text = {
-              right: "đúng",
-              wrong: "sai",
-              current: "đang làm",
-              todo: "chưa làm",
-            }[state];
-            return (
-              <li key={i.question_id} className={state}>
-                <span>{n + 1}</span>
-                <span className="sr">: {text}</span>
-              </li>
-            );
-          })}
-        </ol>
+        <div
+          className="progress compact-question-progress"
+          role="progressbar"
+          aria-label="Tiến độ câu hỏi"
+          aria-valuemin={0}
+          aria-valuemax={set.items.length}
+          aria-valuenow={at + 1}
+        >
+          <span style={{ width: `${((at + 1) / set.items.length) * 100}%` }} />
+        </div>
         <div className="quiz-question-meta">
           <div className="quiz-meta-left">
             <span className="quiz-type-badge">Trắc nghiệm kiến thức</span>
@@ -261,8 +257,8 @@ export function PracticeRunner({
                 </>
               ) : (
                 <>
-                  <Icon name="close" size={18} /> Chưa đúng — đáp án là{" "}
-                  {correctText}
+                  <Icon name="close" size={18} /> Chưa chính xác — Đáp án đúng:{" "}
+                  {correctLetter}
                 </>
               )}
             </p>
@@ -271,7 +267,16 @@ export function PracticeRunner({
             <p style={{ fontSize: 16, color: "var(--text-2)" }}>
               {feedback.explanation}
             </p>
-            {rationale && <p className="note">{rationale}</p>}
+            <ExplanationDetails>
+              {rationale &&
+                rationale.trim() !== feedback.explanation.trim() && (
+                  <p className="note">{rationale}</p>
+                )}
+              <QuestionSources
+                citations={feedback.citations}
+                onOpen={source.show}
+              />
+            </ExplanationDetails>
             <div className="row" style={{ flexWrap: "wrap", gap: 8 }}>
               <button
                 className="btn"
@@ -291,22 +296,12 @@ export function PracticeRunner({
               >
                 Hỏi gia sư về câu này
               </button>
-              <QuestionSources
-                citations={feedback.citations}
-                onOpen={source.show}
-              />
             </div>
           </div>
         )}
-        {feedback && (
-          <p className="learning-encouragement" role="status">
-            {feedback.correct
-              ? "Bạn đã trả lời đúng! Đọc lời giải để củng cố cách hiểu của mình."
-              : "Câu này là cơ hội để hiểu rõ hơn. Hãy đọc lời giải và mở nguồn trước khi tiếp tục."}
-          </p>
-        )}
         {feedback?.remediation && (
-          <div className="card stack">
+          <details className="explanation-details">
+            <summary>Ví dụ bổ sung</summary>
             <p className="note">{feedback.remediation.reason}</p>
             <p className="label learning">Ví dụ</p>
             <h3 className="h2">{feedback.remediation.title}</h3>
@@ -323,9 +318,14 @@ export function PracticeRunner({
                 />
               ))}
             </div>
-          </div>
+          </details>
         )}
-        {panel && (
+        {feedback?.card_created && (
+          <p className="small muted">
+            Đã thêm thẻ ôn · <Link to="/luyen-tap/bo-the">Xem bộ thẻ</Link>
+          </p>
+        )}
+        {panel && !feedback?.card_created && (
           <div className="dark-panel">
             <p className="h2">{panel.title}</p>
             {panel.note && <p className="muted small">{panel.note}</p>}

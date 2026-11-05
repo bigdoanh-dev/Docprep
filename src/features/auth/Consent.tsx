@@ -1,3 +1,4 @@
+import { SetupProgress } from "../../components/SetupProgress";
 import { useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoadError, Loading } from "../../components/Status";
@@ -57,6 +58,7 @@ export function Consent() {
   return (
     <form className="screen" onSubmit={submit}>
       <div className="body stack" style={{ padding: 20, gap: 16 }}>
+        <SetupProgress step={1} />
         <h1 className="title" style={{ marginTop: 12 }}>
           Trước khi bắt đầu
         </h1>

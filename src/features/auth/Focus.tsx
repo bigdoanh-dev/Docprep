@@ -1,3 +1,4 @@
+import { SetupProgress } from "../../components/SetupProgress";
 import { LearnerProfilePanel } from "../workspace/LearnerProfilePanel";
 import { useState } from "react";
 import {
@@ -56,7 +57,11 @@ export function Focus() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string>();
 
-  const selected = picked ?? data?.focus ?? [];
+  const selected = (picked ?? data?.focus ?? []).filter((id) =>
+    data?.modules.some(
+      (m) => m.id === id && !m.coming_soon && m.units_total > 0,
+    ),
+  );
   const toggle = (id: string) =>
     setPicked(
       selected.includes(id)
@@ -69,7 +74,9 @@ export function Focus() {
     setBusy(true);
     setNotice(undefined);
     try {
-      const chosen = data.modules.filter((m) => selected.includes(m.id));
+      const chosen = data.modules.filter(
+        (m) => selected.includes(m.id) && !m.coming_soon && m.units_total > 0,
+      );
       await api.patch<Me>("/me", {
         focus_module_ids: chosen.map((m) => m.id),
         diagnostic_prompt_dismissed: true,
@@ -85,20 +92,17 @@ export function Focus() {
 
   const none = selected.length === 0;
   return (
-    <div className="screen">
-      {data && <LearnerProfilePanel me={data.me} />}
+    <div className="screen focus-page">
       <div className="body stack" style={{ padding: 20, gap: 14 }}>
+        {!changing && <SetupProgress step={2} />}
+        {data && <LearnerProfilePanel me={data.me} compact />}
         {changing ? (
           <div>
             <Link to="/" className="icon-btn" aria-label="Về trang chủ">
               <Icon name="close" />
             </Link>
           </div>
-        ) : (
-          <p className="label primary" style={{ marginTop: 12 }}>
-            Bước cuối
-          </p>
-        )}
+        ) : null}
         <h1 className="title">Bạn muốn tập trung ôn chủ đề nào?</h1>
         <p className="muted">Chủ đề có thể được cập nhật bất cứ lúc nào</p>
         {error && <LoadError message={error} onRetry={reload} />}
@@ -123,7 +127,7 @@ export function Focus() {
                 type="checkbox"
                 checked={on}
                 onChange={() => toggle(m.id)}
-                disabled={busy}
+                disabled={busy || m.coming_soon || m.units_total === 0}
               />
               <span className="grow">
                 <span className="h2" style={{ display: "block" }}>
@@ -131,7 +135,7 @@ export function Focus() {
                 </span>
                 <span className="muted small">
                   {m.coming_soon || m.units_total === 0
-                    ? "Sắp có"
+                    ? "Sắp ra mắt"
                     : `${m.units_total} chủ đề`}
                 </span>
               </span>

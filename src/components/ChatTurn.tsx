@@ -323,28 +323,42 @@ function Helpful({
 }) {
   const [helpful, setHelpful] = useState(initial === true);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   const rate = async () => {
     if (helpful || busy) return;
     setBusy(true);
+    setError("");
     try {
       await api.post(`/messages/${messageId}/rating`, { helpful: true });
       setHelpful(true);
     } catch {
-      // nothing changed: the button stays as it was and can be tapped again
+      setError("Chưa lưu được đánh giá. Vui lòng thử lại.");
     } finally {
       setBusy(false);
     }
   };
   return (
-    <button
-      className="icon-btn"
-      aria-label="Hữu ích"
-      aria-pressed={helpful}
-      onClick={rate}
-      style={{ color: helpful ? "var(--primary-dark)" : "var(--text-2)" }}
-    >
-      <Icon name="thumb" />
-    </button>
+    <span className="helpful-feedback">
+      <button
+        className={`icon-btn${helpful ? " is-selected" : ""}`}
+        aria-label={helpful ? "Đã đánh giá hữu ích" : "Hữu ích"}
+        aria-pressed={helpful}
+        disabled={busy || helpful}
+        onClick={rate}
+      >
+        <Icon name="thumb" />
+      </button>
+      {helpful && (
+        <span className="small" role="status">
+          Đã ghi nhận
+        </span>
+      )}
+      {error && (
+        <span className="small" role="alert">
+          {error}
+        </span>
+      )}
+    </span>
   );
 }
 
