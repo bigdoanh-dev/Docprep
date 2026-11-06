@@ -27,7 +27,9 @@ test("learner: activate, consent, learn, cards, exam, progress and cited scripte
     if (message.type() === "error") errors.push(message.text());
   });
   const health = await request.get("/api/health");
-  expect(await health.json()).toMatchObject({
+  const runtime = await health.json();
+  test.skip(runtime.model_provider !== "scripted", "Cited scripted acceptance requires explicit dev/test scripted provider");
+  expect(runtime).toMatchObject({
     ok: true,
     mode: "real",
     model_provider: "scripted",

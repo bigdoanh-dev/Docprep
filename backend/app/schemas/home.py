@@ -36,8 +36,26 @@ class RecentItem(Schema):
     progress: float | None = Field(default=None, ge=0, le=1)
 
 
+class TutorTopic(Schema):
+    reason_vi: str
+    label_vi: str
+    prompt: str
+
+
+class ResumeItem(Schema):
+    kind: Literal['exam','unit','practice_set','chat']
+    id: int | str
+    title: str
+    subtitle_vi: str
+    progress: float | None = None
+    path: str | None = None
+
+
 class HomeView(Schema):
     name: str
+    days_to_exam: int | None = None
+    resume: ResumeItem | None = None
+    tutor_topics: list[TutorTopic] = []
     quick_review_count: int = Field(description='"Ôn nhanh N câu": due cards plus today\'s practice items.')
     quick_review_note_vi: str | None = None
     due_cards: int

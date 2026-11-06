@@ -29,18 +29,18 @@ class PhaseConfig:
     @classmethod
     def load(cls):
         provider = os.environ.get("PHASE_MODEL_PROVIDER", "disabled")
-        if provider not in ("disabled", "scripted"):
-            raise RuntimeError("Phase 1 model protocol is unapproved; use disabled or scripted in dev/test")
-        if provider == "scripted":
-            require_dev_env("PHASE_MODEL_PROVIDER=scripted")
+        if provider not in ("disabled", "scripted", "ollama"):
+            raise RuntimeError("Phase 1 model protocol is unapproved; use disabled, scripted or dev/test ollama")
+        if provider in ("scripted", "ollama"):
+            require_dev_env("PHASE_MODEL_PROVIDER=" + provider)
         namespace = os.environ.get("PHASE_REDIS_NAMESPACE", "docprep:phase1")
         if not re.fullmatch(r"[a-zA-Z0-9:_-]{1,80}", namespace):
             raise RuntimeError("Invalid PHASE_REDIS_NAMESPACE")
         cfg = cls(os.environ.get("REDIS_URL", "redis://127.0.0.1:16379/0"), namespace, provider,
-                  integer("PHASE_POOL_MAX", 5), integer("PHASE_ACTIVE_TURNS", 4),
+                  integer("PHASE_POOL_MAX", 5), integer("PHASE_ACTIVE_TURNS", 1),
                   integer("PHASE_MAX_WAITING", 20), integer("PHASE_QUEUE_SECONDS", 60),
-                  integer("PHASE_TURN_SECONDS", 120), integer("PHASE_LEASE_SECONDS", 15, 3),
-                  integer("PHASE_EVENT_TTL_SECONDS", 3600), integer("PHASE_MODEL_SLOTS", 4))
+                  integer("PHASE_TURN_SECONDS", 360), integer("PHASE_LEASE_SECONDS", 15, 3),
+                  integer("PHASE_EVENT_TTL_SECONDS", 3600), integer("PHASE_MODEL_SLOTS", 1))
         if cfg.turn_s <= cfg.queue_s:
             raise RuntimeError("PHASE_TURN_SECONDS must exceed PHASE_QUEUE_SECONDS")
         return cfg

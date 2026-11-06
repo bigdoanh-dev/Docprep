@@ -30,6 +30,7 @@ export function AssistantTurn({
   onAskAnother,
   onClarify,
   onRetry,
+  onMove,
 }: {
   view: TurnView;
   latest: boolean;
@@ -40,6 +41,7 @@ export function AssistantTurn({
   onAskAnother: () => void;
   onClarify: (query: string, messageId: number) => void;
   onRetry: () => void;
+  onMove: (text: string, mode: string) => void;
 }) {
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState("");
@@ -56,7 +58,7 @@ export function AssistantTurn({
       </div>
     );
   }
-  if (view.phase === "working") return <WorkBox view={view} />;
+  if (view.phase === "working") return <WorkBox view={view} onCite={onCite} />;
   if (view.phase === "failed") {
     return (
       <div className="card stack" role="alert">
@@ -247,15 +249,133 @@ export function AssistantTurn({
       {view.suggestions.length > 0 && !quiz && (
         <SuggestionBox suggestions={view.suggestions} />
       )}
+      {latest && view.state === "answered" && view.messageId !== null && (
+        <TutorMoves view={view} busy={busy} onMove={onMove} />
+      )}
     </>
   );
 }
 
+// What the learner can do next with the tutor, beyond asking another question: the moves that turn
+// a looked-up answer into practice. After a quiz question, the one move is to answer it.
+const MOVES: { mode: string; label: string; text: string }[] = [
+  {
+    mode: "kiem_tra",
+    label: "Kiểm tra mình",
+    text: "Kiểm tra mình về nội dung trên",
+  },
+  {
+    mode: "vi_du",
+    label: "Cho ca lâm sàng",
+    text: "Cho mình một ca lâm sàng minh họa nội dung trên",
+  },
+  {
+    mode: "so_sanh",
+    label: "So sánh, phân biệt",
+    text: "So sánh, phân biệt nội dung trên với điều dễ nhầm",
+  },
+  {
+    mode: "tom_tat",
+    label: "Tóm tắt để nhớ",
+    text: "Tóm tắt nội dung trên để ôn",
+  },
+];
+
+function TutorMoves({
+  view,
+  busy,
+  onMove,
+}: {
+  view: TurnView;
+  busy: boolean;
+  onMove: (text: string, mode: string) => void;
+}) {
+  if (view.mode === "kiem_tra")
+    return (
+      <div
+        className="tutor-moves"
+        role="group"
+        aria-label="Trả lời câu hỏi kiểm tra"
+      >
+        <p className="muted small">
+          Trả lời bằng lời của bạn ở ô bên dưới, gia sư sẽ đối chiếu với tài
+          liệu.
+        </p>
+        <div className="tutor-move-row">
+          <button
+            className="chip"
+            disabled={busy}
+            onClick={() =>
+              onMove("Mình chưa chắc, cho mình xem đáp án", "cham")
+            }
+          >
+            Xem đáp án
+          </button>
+        </div>
+      </div>
+    );
+  // After a graded answer, another question comes first.
+  const moves =
+    view.mode === "cham"
+      ? [
+          {
+            ...MOVES[0],
+            label: "Hỏi mình câu khác",
+            text: "Hỏi mình một câu khác về nội dung này",
+          },
+          ...MOVES.slice(1),
+        ]
+      : MOVES;
+  return (
+    <div className="tutor-moves" role="group" aria-label="Học sâu hơn">
+      <p className="label">Học sâu hơn</p>
+      <div className="tutor-move-row">
+        {moves.map((m) => (
+          <button
+            key={m.mode}
+            className="chip"
+            disabled={busy || m.mode === "kiem_tra"}
+            title={m.mode === "kiem_tra" ? "Tạo và chấm câu hỏi gia sư mới chưa được mở" : undefined}
+            onClick={() => onMove(m.text, m.mode)}
+          >
+            {m.label}{m.mode === "kiem_tra" ? " (chưa hỗ trợ)" : ""}
+          </button>
+        ))}
+      </div>
+      {view.followUps.length > 0 && (
+        <>
+          <p className="label">Hỏi tiếp</p>
+          <div className="stack tutor-follow-ups">
+            {view.followUps.map((q) => (
+              <button
+                key={q}
+                className="btn block"
+                disabled={busy}
+                onClick={() => onMove(q, "auto")}
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // "Đang tìm câu trả lời": the stages of this answer as they run, with the server's own labels.
-function WorkBox({ view }: { view: TurnView }) {
+function WorkBox({
+  view,
+  onCite,
+}: {
+  view: TurnView;
+  onCite: (c: Citation) => void;
+}) {
   return (
     <div className="card stack" style={{ gap: 8 }} aria-live="polite">
-      <p className="h2">Đang tìm câu trả lời</p>
+      <p className="h2">
+        {view.text ? "Gia sư đang trả lời" : "Đang tìm câu trả lời"}
+      </p>
       {view.steps.length === 0 && (
         <span className="spinner" role="status" aria-label="Đang bắt đầu" />
       )}
@@ -275,6 +395,18 @@ function WorkBox({ view }: { view: TurnView }) {
           </li>
         ))}
       </ul>
+      {/* The answer as it is being written, so the learner can start reading. */}
+      {view.text && (
+        <AnswerText
+          result={{
+            state: "answered",
+            text: view.text,
+            citations: view.citations,
+            notice: null,
+          }}
+          onCite={onCite}
+        />
+      )}
     </div>
   );
 }

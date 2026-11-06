@@ -19,3 +19,7 @@ revoke all on learner_identity from phase_chat;
 -- Prevent runtime schema rewrites and table ownership escalation.
 revoke all on alembic_version from phase_business;
 grant select on alembic_version to phase_business;
+
+-- Derived indexes belong to Chat; approved passage/document content stays read-only.
+revoke all on embedding_index,passage_embedding from phase_business;
+grant select,insert,update,delete on embedding_index,passage_embedding to phase_chat;

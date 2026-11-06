@@ -15,6 +15,7 @@ from app.chat import pipeline, trace
 from app.config import settings
 from app.errors import ApiError
 from app.gateway import GatewayError
+from app.ollama_gateway import ModelCallUncertain, OllamaGateway
 from app.privacy import clean_tree, validate_prompt
 from app.repo import turns, chat, content, responses, units, practice
 from app.services import suggestions, hints
@@ -39,18 +40,26 @@ class TurnGateway:
         self.worker, self.turn = worker, turn
 
     def complete(self, task, system, messages, prompt_version):
-        w, turn = self.worker, self.turn
         try:
             validate_prompt(system, messages)
         except GatewayError as exc:
             raise TurnStopped("prompt_identifiers_blocked") from exc
-        call_id, resource = uuid.uuid4(), "scripted"  # no GPU resource is inferred
+        return self._invoke('complete', task, system, messages, prompt_version)
+
+    def embed(self, texts):
+        return self._invoke('embed', texts)
+
+    def _invoke(self, method, *args):
+        w, turn = self.worker, self.turn
+        gateway = w.gateway_factory()
+        call_id, resource = uuid.uuid4(), getattr(gateway, 'resource', 'scripted')
         while True:
             w.check(turn)
             # The recovery mutex prevents a Redis rebuild between slot reservation and DB commit.
             with w.pool.connection() as conn:
                 conn.execute("select pg_advisory_xact_lock(%s)", (turns.RECOVERY_LOCK,))
-                turns.guard(conn, turn["learner_id"], utcnow())
+                if turn['learner_id'] is not None:
+                    turns.guard(conn, turn["learner_id"], utcnow())
                 current = turns.get(conn, turn["id"])
                 if not current or current["status"] != "running" or current["fence"] != turn["fence"]:
                     raise TurnStopped("ai_cancelled")
@@ -68,21 +77,37 @@ class TurnGateway:
             if acquired:
                 break
             time.sleep(0.1)
+        known_finished = True  # cancellation before dispatch cannot leave a remote invocation
         try:
             w.check(turn)
             try:
-                return w.gateway_factory().complete(task, system, messages, prompt_version)
-            except Exception as exc:
+                known_finished = False
+                kwargs = {'deadline': turn['deadline_at']} if isinstance(gateway, OllamaGateway) else {}
+                result = getattr(gateway, method)(*args, **kwargs)
+                known_finished = True
+                return result
+            except ModelCallUncertain as exc:
+                raise TurnStopped('ai_interrupted') from exc
+            except GatewayError as exc:
+                known_finished = True  # explicit validation/acknowledged provider rejection
                 # Bypass pipeline's content-level GatewayError fallback: infrastructure has its own terminal state.
                 raise TurnStopped("model_unavailable") from exc
+            except Exception as exc:
+                # An unexpected real-adapter failure cannot prove a remote call ended.
+                known_finished = not isinstance(gateway, OllamaGateway)
+                raise TurnStopped('model_unavailable' if known_finished else 'ai_interrupted') from exc
         finally:
-            # A call is free only when it actually returned, never merely when its worker lease expires.
+            # A local timeout/disconnect is NOT acknowledgement that remote generation stopped.
             with w.pool.connection() as conn:
-                conn.execute("update ai_model_call set ended_at=now(),quarantined=false where id=%s", (call_id,))
-            try:
-                w.coord.release_slot(resource, call_id)
-            except redis.RedisError:
-                pass  # the next reconciliation removes this released reservation
+                if known_finished:
+                    conn.execute("update ai_model_call set ended_at=now(),quarantined=false where id=%s", (call_id,))
+                else:
+                    conn.execute("update ai_model_call set quarantined=true where id=%s", (call_id,))
+            if known_finished:
+                try:
+                    w.coord.release_slot(resource, call_id)
+                except redis.RedisError:
+                    pass  # reconciliation removes confirmed released reservations
 
 
 class ChatWorker:
@@ -171,7 +196,7 @@ class ChatWorker:
                 elif turn["status"] == "running":
                     c.r.zrem(c.key("queue"), str(turn["id"]))
                     c.r.zadd(c.key("processing"), {str(turn["id"]): turn["heartbeat_at"].timestamp()})
-                    c.r.set(c.key(f"learner:{turn['learner_id']}"), str(turn["id"]))
+                    c.r.set(c.learner_key(turn), str(turn["id"]))
             # Reconstruct GPU reservations even for deleted accounts; never infer a call stopped from a TTL.
             calls = conn.execute("select * from ai_model_call where ended_at is null").fetchall()
             reserved = {str(row["id"]) for row in calls}
@@ -223,7 +248,8 @@ class ChatWorker:
 
     def check(self, turn):
         with self.pool.connection() as conn:
-            turns.guard(conn, turn["learner_id"], utcnow())
+            if turn['learner_id'] is not None:
+                turns.guard(conn, turn["learner_id"], utcnow())
             current = turns.get(conn, turn["id"])
             if not current or current["status"] != "running" or current["owner"] != self.owner or current["fence"] != turn["fence"]:
                 raise TurnStopped("ai_cancelled")
@@ -236,6 +262,8 @@ class ChatWorker:
             session = chat.own_session(conn, learner["pseudonym_id"], turn["session_id"])
             if not session:
                 raise TurnStopped("ai_cancelled")
+            if p.get('mode','auto') != 'auto':
+                return pipeline.prepare_followup(conn,p['text'],p['mode'],session['id'])
             qid = session.get("question_id")
             if qid and not chat.has_answer(conn, session["id"]):
                 question = content.approved_question(conn, qid)
@@ -272,9 +300,59 @@ class ChatWorker:
         return pipeline.ChatOutcome("answered" if generated else "insufficient_evidence", text, citations,
                                     [p.id for p in passages], model), [], generated
 
+    def index_corpus(self, turn):
+        from app.repo import embeddings
+        gateway = self.gateway_factory()
+        if not isinstance(gateway, OllamaGateway) or turn['payload']['model'] != gateway.cfg.embedding:
+            raise TurnStopped('index_model_not_configured')
+        version = turn['payload']['corpus_version']
+        if version != settings()['corpus_version']:
+            raise TurnStopped('corpus_version_changed')
+        revision = gateway.revisions()[gateway.cfg.embedding]
+        with self.pool.connection() as conn:
+            snapshot = embeddings.corpus(conn)
+            previous = {r['passage_id']:r['content_hash'] for r in conn.execute(
+                'select passage_id,content_hash from passage_embedding where model=%s and revision=%s and corpus_version=%s',
+                (gateway.cfg.embedding,revision,version))}
+        if not snapshot:
+            raise TurnStopped('corpus_empty')
+        pending = [r for r in snapshot if previous.get(r['id']) != r['content_hash']]
+        for start in range(0,len(pending),32):
+            self.check(turn)
+            batch = pending[start:start+32]
+            vectors = TurnGateway(self,turn).embed([clean_tree(r['context']+'\n'+r['text']) for r in batch])
+            if vectors.revision != revision:
+                raise TurnStopped('embedding_model_changed')
+            self.check(turn)
+            with self.pool.connection() as conn:
+                # Fence before writing derived vectors as well as before terminal commit.
+                current = conn.execute('select status,fence from ai_turn where id=%s for update',(turn['id'],)).fetchone()
+                if not current or current['status']!='running' or current['fence']!=turn['fence']:
+                    raise TurnStopped('ai_cancelled')
+                embeddings.begin(conn,vectors.model,revision,version,len(vectors.vectors[0]))
+                embeddings.store(conn,batch,vectors,version)
+        self.check(turn)
+        with self.pool.connection() as conn:
+            current = conn.execute('select status,fence from ai_turn where id=%s for update',(turn['id'],)).fetchone()
+            if not current or current['status']!='running' or current['fence']!=turn['fence']:
+                raise TurnStopped('ai_cancelled')
+            actual = embeddings.corpus(conn)
+            if [(r['id'],r['content_hash']) for r in snapshot] != [(r['id'],r['content_hash']) for r in actual]:
+                raise TurnStopped('corpus_changed_during_index')
+            conn.execute('update embedding_index set completed_at=now() where model=%s and revision=%s and corpus_version=%s',
+                         (gateway.cfg.embedding,revision,version))
+            if not embeddings.ready(conn,gateway.cfg.embedding,revision,version):
+                raise TurnStopped('retrieval_index_not_ready')
+            result = {'passages':len(snapshot),'embedded':len(pending),'model':gateway.cfg.embedding,
+                      'revision':revision,'corpus_version':version}
+            conn.execute("update ai_turn set status='completed',finished_at=now(),result=%s where id=%s",(Jsonb(result),turn['id']))
+
     def run(self, turn):
         try:
             self.check(turn)
+            if turn['kind'] == 'index':
+                self.index_corpus(turn)
+                return
             generated = False
             if turn["kind"] == "hint":
                 outcome, steps, generated = self.make_hint(turn)
@@ -288,6 +366,25 @@ class ChatWorker:
                             pending.append(("step", data))
                         else:
                             prepared = data
+                if self.cfg.provider == 'ollama' and turn['kind'] == 'chat' and turn['payload'].get('mode','auto') == 'auto' and (
+                        prepared.task == 'answer' or prepared.outcome and prepared.outcome.state == 'insufficient_evidence'):
+                    from app.chat.normalise import normalise
+                    from app.repo import embeddings
+                    with self.pool.connection() as conn:
+                        normalised = normalise(turn['payload']['text'], content.glossary(conn))
+                    self.coord.emit(turn['id'], 'status', {'status': 'retrieving'})
+                    # Query embedding is model I/O, outside every database context.
+                    vector = TurnGateway(self, turn).embed([turn['payload']['text']])
+                    self.check(turn)
+                    with self.pool.connection() as conn:
+                        session = chat.own_session(conn, learner['pseudonym_id'], turn['session_id'])
+                        found = embeddings.search(conn, normalised, vector, settings()['corpus_version'], session['module_id'])
+                        pending = []
+                        for kind, data in pipeline.prepare_answer(conn, turn['payload']['text'], session['module_id'],
+                                turn['payload'].get('detail', False), turn['payload'].get('clarifies_message_id') is not None,
+                                found=found):
+                            if kind == 'step': pending.append(('step', data))
+                            else: prepared = data
                 for event, data in pending:
                     self.coord.emit(turn["id"], event, data)
                 outcome, steps = prepared.outcome, prepared.steps
@@ -324,6 +421,7 @@ class ChatWorker:
                         log.warning("suggestions_failed", extra={"turn_id": str(turn["id"])})
                 answer = {"text": outcome.text, "citations": outcome.citations, "notice": outcome.notice, "format": "text"}
                 final = {"turn_id": str(turn["id"]), "turn_status": "completed", "state": outcome.state,
+                         'mode': turn['payload'].get('mode','auto'),
                          "message_id": mid, "format": "text", "trace_summary": _summary(outcome.citations,
                          outcome.claims_checked, outcome.claims_removed), "suggestions": offers,
                          "clarify_options": outcome.clarify_options, "searched": outcome.searched,
@@ -339,7 +437,7 @@ class ChatWorker:
         except Exception as exc:
             code = exc.code if isinstance(exc, ApiError) else str(exc) if isinstance(exc, TurnStopped) else "ai_failed"
             with self.pool.connection() as conn:
-                turns.failure(conn, turn["id"], "failed", code, "Không thể hoàn thành lượt AI. Vui lòng thử lại.", turn["fence"])
+                turns.failure(conn, turn["id"], 'interrupted' if code == 'ai_interrupted' else "failed", code, "Không thể hoàn thành lượt AI. Vui lòng thử lại.", turn["fence"])
             log.warning("turn_failed", extra={"turn_id": str(turn["id"]), "error_type": type(exc).__name__})
         finally:
             try:

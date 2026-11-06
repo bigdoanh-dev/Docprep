@@ -223,8 +223,17 @@ export type {
 // Chat payloads live with the rules that read them (chatTurn.ts).
 import type { Citation, StoredMessage } from "./chatTurn";
 
+export type TutorTopic = { reason_vi: string; label_vi: string; prompt: string };
+export type ResumeItem = {
+  kind: "exam" | "unit" | "practice_set" | "chat";
+  id: number | string; title: string; subtitle_vi: string;
+  progress: number | null; path: string | null;
+};
 export type Home = {
   name: string;
+  days_to_exam?: number | null;
+  resume?: ResumeItem | null;
+  tutor_topics?: TutorTopic[];
   quick_review_count: number;
   quick_review_note_vi: string | null;
   due_cards: number;
@@ -424,6 +433,7 @@ export type ReviewItem = {
 
 export type DueCard = {
   id: number;
+  practice_set_id?: number | null;
   front: string;
   back: string;
   citation: string;

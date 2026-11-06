@@ -54,6 +54,10 @@ export type StoredMessage = {
   suggestions: ChatSuggestion[];
   helpful: boolean | null;
   trace: StepEvent[];
+  // The server-owned tutor mode that produced the answer and optional questions the
+  // tutor suggests asking next.
+  mode?: string | null;
+  follow_ups?: string[];
 };
 
 export type TurnView = {
@@ -72,6 +76,8 @@ export type TurnView = {
   suggestions: ChatSuggestion[];
   helpful: boolean | null;
   error: string | null;
+  mode: string | null;
+  followUps: string[];
 };
 
 export function startTurn(): TurnView {
@@ -91,6 +97,8 @@ export function startTurn(): TurnView {
     suggestions: [],
     helpful: null,
     error: null,
+    mode: null,
+    followUps: [],
   };
 }
 
@@ -142,6 +150,8 @@ export function applyEvent(view: TurnView, event: string, data: any): TurnView {
       searched: data.searched ?? [],
       nearestChapter: data.nearest_chapter ?? null,
       suggestions: data.suggestions ?? [],
+      mode: data.mode ?? null,
+      followUps: data.follow_ups ?? [],
     };
   }
   return view;
@@ -175,6 +185,8 @@ export function fromStored(message: StoredMessage): TurnView {
     nearestChapter: message.nearest_chapter,
     suggestions: message.suggestions,
     helpful: message.helpful,
+    mode: message.mode ?? null,
+    followUps: message.follow_ups ?? [],
   };
 }
 

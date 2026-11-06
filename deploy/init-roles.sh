@@ -1,5 +1,6 @@
 #!/bin/sh
 set -eu
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c 'CREATE EXTENSION IF NOT EXISTS vector'
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" \
   -v bp="$BUSINESS_DB_PASSWORD" -v cp="$CHAT_DB_PASSWORD" -v mp="$MIGRATOR_DB_PASSWORD" <<'SQL'
 SELECT format('CREATE ROLE phase_business LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD %L', :'bp')

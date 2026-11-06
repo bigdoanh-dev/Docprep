@@ -261,7 +261,7 @@ def generate(gw: Gateway, prepared: Prepared) -> Iterator[Event]:
 
 
 def prepare_answer(conn, query: str, module_id: str | None = None, detail: bool = False,
-                   clarifying: bool = False) -> Iterator[Event]:
+                   clarifying: bool = False, *, found=None) -> Iterator[Event]:
     """A chat question: pre-gate, normalise, retrieve. Yields the steps as they run, then
     ("prepared", Prepared)."""
     if is_patient_specific(query, _pregate_rules()):
@@ -289,7 +289,7 @@ def prepare_answer(conn, query: str, module_id: str | None = None, detail: bool 
     scope = content.documents_in_scope(conn, module_id)
     yield from _begin(steps, trace.search_step(len(scope), module["short_name"] if module else None))
     cfg = settings()["retrieval"]
-    found = find(conn, normalised, cfg["top_k"], cfg["min_score"], module_id)
+    found = found if found is not None else find(conn, normalised, cfg["top_k"], cfg["min_score"], module_id)
     yield from _end(steps, "search")
     if not found.passages:
         yield ("prepared", Prepared(_insufficient([], searched=_scope_searched(scope), nearest_chapter=_nearest(found.nearest)),
@@ -304,6 +304,27 @@ def prepare_answer(conn, query: str, module_id: str | None = None, detail: bool 
     yield from _end(steps, "read")
     yield ("prepared", Prepared(None, steps, "answer", _prompt("answer_v1"), user, found.passages,
                                 {p.id: p.text for p in found.passages}))
+
+
+def prepare_followup(conn, query, mode, session_id):
+    """Tutor moves reuse only the owned conversation's last cited evidence."""
+    if is_patient_specific(query, _pregate_rules()):
+        yield ('prepared', Prepared(ChatOutcome('declined', DECLINED_COPY, [], []), []))
+        return
+    last = conn.execute("select text,citations from chat_message where session_id=%s and role='assistant' and state='answered' order by id desc limit 1", (session_id,)).fetchone()
+    ids = [c['passage_id'] for c in last['citations']] if last and last['citations'] else []
+    passages = list(get_passages(conn, ids).values()) if ids else []
+    if not passages:
+        yield ('prepared', Prepared(_insufficient([]), []))
+        return
+    instructions = {'giai_thich':'Giải thích rõ hơn.', 'so_sanh':'So sánh các khái niệm trong nguồn.',
+                    'vi_du':'Minh họa cách áp dụng nguồn; không tư vấn ca bệnh thật hoặc tự đặt ngưỡng y khoa.',
+                    'tom_tat':'Tóm tắt các ý chính để ôn tập.'}
+    steps=[]
+    yield from _begin(steps,trace.read_step(passages))
+    yield from _end(steps,'read')
+    user = f"{instructions.get(mode,'')}\nYêu cầu: {query}\nTrả lời trước: {last['text']}\nPassages:\n{_passages_block(passages)}"
+    yield ('prepared', Prepared(None,steps,'answer',_prompt('answer_v1'),user,passages,{p.id:p.text for p in passages}))
 
 
 def _item_block(question: dict, chosen: str | None) -> str:

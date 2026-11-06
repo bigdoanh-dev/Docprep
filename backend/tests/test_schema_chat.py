@@ -13,6 +13,7 @@ EXPECTED_TABLES = {
     "chat_session", "chat_message", "suggestion", "idempotency_key", "audit_log",
     "auth_failure",
     "ai_turn", "ai_outbox", "ai_model_call", "ai_purge",
+    "embedding_index", "passage_embedding",
 }
 
 

@@ -10,6 +10,7 @@ from app.schemas.base import RequestSchema, Schema, with_example
 
 class DueCard(Schema):
     id: int
+    practice_set_id: int | None = None
     front: str
     back: str
     citation: str

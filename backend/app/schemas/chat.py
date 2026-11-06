@@ -8,6 +8,7 @@ from app.schemas.base import RequestSchema, Schema, with_example
 from app.schemas.common import Citation
 
 ChatState = Literal["answered", "insufficient_evidence", "declined", "needs_clarification"]
+TutorMode = Literal['auto','giai_thich','so_sanh','vi_du','tom_tat','kiem_tra','cham']
 # "table" and "calc" are reserved: R1.0 only ever sends "text".
 AnswerFormat = Literal["text", "table", "calc"]
 
@@ -59,6 +60,7 @@ class ChatSessionList(Schema):
 
 class NewChatMessage(RequestSchema):
     text: str
+    mode: TutorMode = 'auto'
     detail: bool = Field(default=False, description='"Giải thích thêm": the same question, asked for more detail.')
     clarifies_message_id: int | None = Field(
         default=None, description="Set when this message answers a needs_clarification message.")
@@ -106,7 +108,7 @@ class ChatSuggestion(Schema):
 
 class StatusEvent(Schema):
     """SSE event `status`."""
-    status: Literal["queued", "answering", "checking_sources"]
+    status: Literal["queued", "answering", "checking_sources", "retrieving"]
     turn_id: str | None = None
     position: int | None = Field(default=None, description="Place in the queue; only with status queued.")
 
@@ -137,6 +139,7 @@ class AnswerEvent(Schema):
 class FinalEvent(Schema):
     """SSE event `final`: always the last event of the stream."""
     state: ChatState | None
+    mode: TutorMode | None = None
     message_id: int | None
     turn_id: str | None = None
     turn_status: Literal['completed', 'failed', 'cancelled', 'interrupted'] | None = None
@@ -156,6 +159,7 @@ class FinalEvent(Schema):
 
 class ChatMessage(Schema):
     id: int
+    mode: TutorMode | None = None
     role: Literal["user", "assistant"]
     text: str
     created_at: datetime

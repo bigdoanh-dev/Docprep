@@ -327,12 +327,8 @@ export function PracticeRunner({
             </div>
           </div>
         )}
-        {panel && (
-          <div className="dark-panel">
-            <p className="h2">{panel.title}</p>
-            {panel.note && <p className="muted small">{panel.note}</p>}
-          </div>
-        )}
+        {/* Its title ("Câu tiếp theo", "Đã xong bộ câu") would repeat the button below. */}
+        {panel?.note && <p className="note">{panel.note}</p>}
         {actionError && (
           <p className="warn" role="alert">
             {actionError}

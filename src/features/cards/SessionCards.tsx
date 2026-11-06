@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { PracticeRunner } from "../../components/PracticeRunner";
 import { Link, Navigate } from "react-router-dom";
 import {
   ReviewActions,
@@ -39,6 +40,28 @@ export function SessionCards() {
   const [actionError, setActionError] = useState<string>();
   const revealedAt = useRef(0); // when the answer was shown: the review time sent with the rating
   const ratingKey = useRef(""); // one key per card shown: a rating sent again is still one rating
+  // The server may hand out the due queue a few cards at a time: at the end of what was loaded, ask
+  // once more for cards not in this pass yet.
+  const toppedUpAt = useRef(-1);
+  const cards = queue ?? data?.queue ?? [];
+  const card = cards[ratings.length];
+  useEffect(() => {
+    if (!data || card || toppedUpAt.current === ratings.length) return;
+    toppedUpAt.current = ratings.length;
+    let alive = true;
+    api.get<DueCardList>("/cards/due").then(
+      (due) => {
+        const fresh = due.items.filter(
+          (c) => !cards.some((x) => x.id === c.id),
+        );
+        if (alive && fresh.length) setQueue([...cards, ...fresh]);
+      },
+      () => undefined, // the pass ends here; the cards stay due for the next one
+    );
+    return () => {
+      alive = false;
+    };
+  }, [data, card, ratings.length, cards]);
 
   if (error)
     return (
@@ -58,8 +81,27 @@ export function SessionCards() {
     );
   if (!data.hasStep) return <Navigate to="/phien" replace />;
 
-  const cards = queue ?? data.queue;
-  const card = cards[ratings.length];
+  // A concept card is answered as a fresh question, which reviews it on the server.
+  if (card?.practice_set_id)
+    return (
+      <PracticeRunner
+        key={card.practice_set_id}
+        base={`/practice-sets/${card.practice_set_id}`}
+        header={(countLabel) => (
+          <SessionHeader
+            session={data.session}
+            current="cards"
+            countLabel={
+              countLabel && `Thẻ ${ratings.length + 1}/${cards.length}`
+            }
+          />
+        )}
+        contextLabel="Ôn thẻ"
+        onDone={(summary) =>
+          setRatings([...ratings, summary.graded.correct ? 3 : 1])
+        }
+      />
+    );
 
   const reveal = () => {
     revealedAt.current = Date.now();

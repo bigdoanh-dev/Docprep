@@ -13,7 +13,14 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Conversation } from "../../components/Conversation";
 import { LoadError } from "../../components/Status";
-import { api, type ChatSessionSummary, type Listed } from "../../lib/api";
+import {
+  api,
+  type ChatSessionSummary,
+  type Listed,
+  type TutorTopic,
+  type Home,
+} from "../../lib/api";
+import type { TutorRequest } from "../../lib/tutorLink";
 import { formatDate } from "../../lib/format";
 import { useLoad } from "../../lib/hooks";
 import { useActor } from "../../app/identity";
@@ -28,13 +35,16 @@ export function Chat({
   onClose,
   expanded = false,
   onToggleSize,
+  request,
 }: {
   embedded?: boolean;
   onClose?: () => void;
   expanded?: boolean;
   onToggleSize?: () => void;
+  request?: TutorRequest; // from another screen: open this conversation, or start one with a question
 }) {
   const actor = useActor();
+  const live = actor?.mode === "live";
   const [query, setQuery] = useState("");
   const [newChatVersion, setNewChatVersion] = useState(0);
   const [params] = useSearchParams(),
@@ -106,6 +116,37 @@ export function Chat({
   const sessions = [...(data?.items ?? []), ...older].filter(
     (s, i, a) => a.findIndex((x) => x.id === s.id) === i,
   );
+  // A question the new conversation starts with, from a recommendation on Home.
+  const [ask, setAsk] = useState<string>();
+  useEffect(() => {
+    if (!request) return;
+    if (request.session) {
+      setAsk(undefined);
+      selectSession(request.session);
+    } else if (request.ask) {
+      selectSession(null);
+      setAsk(request.ask);
+      setNewChatVersion((v) => v + 1);
+    }
+  }, [request?.key]);
+  // Source-backed topics from Business; no separate unimplemented recommendations API.
+  const { data: topics } = useLoad(
+    () =>
+      live
+        ? api.get<Home>("/home").then(home => ({ items: home.tutor_topics ?? [] }))
+        : Promise.resolve({ items: [] as TutorTopic[] }),
+    [live, tick],
+  );
+  const recommended = topics?.items ?? [];
+  const starters = live
+    ? [...recommended.map((t) => t.prompt), ...STARTERS].slice(0, 4)
+    : STARTERS;
+  const starterLabels = live
+    ? [...recommended.map((t) => t.label_vi), "So sánh khái niệm", "Làm rõ kiến thức", "Giải thích ý nghĩa"].slice(
+        0,
+        4,
+      )
+    : undefined;
   const matches = sessions.filter((s) =>
     s.title.toLocaleLowerCase("vi").includes(query.toLocaleLowerCase("vi")),
   );
@@ -146,6 +187,7 @@ export function Chat({
             title="Cuộc trò chuyện mới"
             onClick={() => {
               selectSession(null);
+              setAsk(undefined);
               setNewChatVersion((v) => v + 1);
             }}
           >
@@ -242,7 +284,11 @@ export function Chat({
           <Conversation
             key={newChatVersion}
             sessionId={id}
-            starters={STARTERS}
+            starters={starters}
+            starterLabels={starterLabels}
+            autoSend={id === null ? ask : undefined}
+            resume={id === null && !ask ? sessions[0] : undefined}
+            onResume={(sid) => selectSession(sid)}
             onSession={(sid) => {
               selectSession(sid, true);
               setTick((v) => v + 1);

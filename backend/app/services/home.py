@@ -5,6 +5,8 @@ Everything under "Đề xuất từ gia sư" is a rule event from the activity l
 around its count; no model writes any of it in R1.0.
 """
 from datetime import datetime
+from zoneinfo import ZoneInfo
+from app.config import settings
 
 from app import events
 from app.repo import activity as activity_repo
@@ -79,12 +81,29 @@ def home(conn, learner: dict, now: datetime) -> dict:
                      "minutes": form["n"] * form["spq"] // 60, "open_attempt_id": running["id"] if running else None}
     events.record_visit(conn, learner["pseudonym_id"], now)
     suggestions, note = _since_previous_visit(conn, learner, todays_set)
+    profile = learners_repo.profile(conn,learner['id'])
+    recent = _recent(conn,learner)
+    resume = None
+    if next_mock and next_mock['open_attempt_id']:
+        resume = {'kind':'exam','id':next_mock['open_attempt_id'],'title':next_mock['title'],
+                  'subtitle_vi':'Bài thi đang làm','progress':None,'path':f"/thi-thu/lam-bai/{next_mock['open_attempt_id']}"}
+    elif recent:
+        item = recent[0]
+        resume = {**item,'subtitle_vi':item['subtitle_vi'] or '',
+                  'path':f"/luyen-tap/{item['id']}" if item['kind']=='unit' else None}
+    topics = conn.execute("""select distinct n.code,n.name from competency_node n
+        join passage p on p.competency_code=n.code join document d on d.id=p.document_id
+        where not d.is_synthetic order by n.code limit 3""").fetchall()
     return {
-        "name": learners_repo.profile(conn, learner["id"])["display_name"],
+        'days_to_exam': (profile['exam_date']-now.astimezone(ZoneInfo(settings()['local_timezone'])).date()).days if profile.get('exam_date') else None,
+        'resume': resume,
+        'tutor_topics': [{'label_vi':t['name'],'reason_vi':'Chủ đề có nguồn trong thư viện',
+                          'prompt':f"Giải thích {t['name']} dựa trên nguồn trong thư viện."} for t in topics],
+        "name": profile["display_name"],
         "quick_review_count": due + practice_left,
         "quick_review_note_vi": note,
         "due_cards": due,
         "next_mock": next_mock,
         "tutor_suggestions": suggestions,
-        "recent": _recent(conn, learner),
+        "recent": recent,
     }

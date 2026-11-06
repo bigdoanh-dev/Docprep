@@ -10,7 +10,7 @@ x-runtime: &runtime
   cap_drop: [ALL]
   security_opt: [no-new-privileges:true]
   networks: [private]
-  stop_grace_period: 150s
+  stop_grace_period: 390s
   healthcheck:
     test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/readyz', timeout=3)"]
     interval: 5s
@@ -30,11 +30,11 @@ x-chat-env: &chat-env
   REDIS_URL: redis://:${REDIS_PASSWORD:?required}@redis:6379/0
   PHASE_REDIS_NAMESPACE: docprep:phase1
   PHASE_POOL_MAX: ${PHASE_POOL_MAX:-5}
-  PHASE_ACTIVE_TURNS: ${PHASE_ACTIVE_TURNS:-4}
+  PHASE_ACTIVE_TURNS: ${PHASE_ACTIVE_TURNS:-1}
   PHASE_MAX_WAITING: ${PHASE_MAX_WAITING:-20}
   PHASE_QUEUE_SECONDS: ${PHASE_QUEUE_SECONDS:-60}
-  PHASE_TURN_SECONDS: ${PHASE_TURN_SECONDS:-120}
-  PHASE_MODEL_SLOTS: ${PHASE_MODEL_SLOTS:-4}
+  PHASE_TURN_SECONDS: ${PHASE_TURN_SECONDS:-360}
+  PHASE_MODEL_SLOTS: ${PHASE_MODEL_SLOTS:-1}
 services:
   db:
     image: pgvector/pgvector:pg16
@@ -94,26 +94,28 @@ services:
   api-1:
     <<: *runtime
     environment: *business-env
-    command: [uvicorn, app.main_business:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --forwarded-allow-ips, "172.30.41.254"]
+    command: [uvicorn, app.main_business:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --timeout-graceful-shutdown, "390", --forwarded-allow-ips, "172.30.41.254"]
     depends_on:
       migrate: {condition: service_completed_successfully}
   api-2:
     <<: *runtime
     environment: *business-env
-    command: [uvicorn, app.main_business:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --forwarded-allow-ips, "172.30.41.254"]
+    command: [uvicorn, app.main_business:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --timeout-graceful-shutdown, "390", --forwarded-allow-ips, "172.30.41.254"]
     depends_on:
       migrate: {condition: service_completed_successfully}
   chat-1:
     <<: *runtime
+    env_file: [../backend/.env]
     environment: *chat-env
-    command: [uvicorn, app.main_chat:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --forwarded-allow-ips, "172.30.41.254"]
+    command: [uvicorn, app.main_chat:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --timeout-graceful-shutdown, "390", --forwarded-allow-ips, "172.30.41.254"]
     depends_on:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_healthy}
   chat-2:
     <<: *runtime
+    env_file: [../backend/.env]
     environment: *chat-env
-    command: [uvicorn, app.main_chat:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --forwarded-allow-ips, "172.30.41.254"]
+    command: [uvicorn, app.main_chat:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --timeout-graceful-shutdown, "390", --forwarded-allow-ips, "172.30.41.254"]
     depends_on:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_healthy}

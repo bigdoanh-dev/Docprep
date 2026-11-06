@@ -22,6 +22,10 @@ def main():
     release.add_argument("call_id", type=UUID)
     release.add_argument("--confirm-stopped", action="store_true", required=True)
     commands.add_parser("drain")
+    commands.add_parser('index')
+    state = commands.add_parser('job')
+    state.add_argument('turn_id',type=UUID)
+    commands.add_parser('check-models')
     load = commands.add_parser("seed-load")
     load.add_argument("--learners", type=int, choices=(30,40,50), default=50)
     load.add_argument("--output", required=True)
@@ -43,6 +47,33 @@ def main():
                 raise SystemExit("Phase 1 OpenAPI drift")
         else:
             target.write_text(dump_openapi(spec), encoding="utf-8", newline="\n")
+    elif args.command in ('index','check-models'):
+        from app.phase_config import PhaseConfig
+        from app.ollama_gateway import OllamaConfig, OllamaGateway
+        from app.config import settings
+        from app.chat.worker import utcnow
+        cfg = PhaseConfig.load()
+        if cfg.provider != 'ollama':
+            raise SystemExit('Enable dev/test ollama explicitly before using model operations')
+        model = OllamaConfig.load()
+        if args.command == 'check-models':
+            try: print(json.dumps(OllamaGateway(model).revisions()))
+            except Exception: raise SystemExit('Ollama unavailable or configured models absent') from None
+        else:
+            from app.repo import embeddings
+            from app.chat.admission import Admission
+            admission = Admission(cfg)
+            try: admission.require_ready()
+            finally: admission.close()
+            with connect() as conn:
+                job = embeddings.enqueue(conn,cfg,model.embedding,settings()['corpus_version'],utcnow())
+            print(json.dumps({'turn_id':str(job['id']),'status':job['status']}))
+    elif args.command == 'job':
+        from app.repo import turns
+        with connect() as conn:
+            job = turns.get(conn,args.turn_id)
+            if not job or job['kind']!='index': raise SystemExit('Index job not found')
+            print(json.dumps({'turn_id':str(job['id']),'status':job['status'],'result':job['result'],'error':job['error']}))
     elif args.command == "seed-load":
         from app.config import require_dev_env, settings
         from app.repo.learners import create

@@ -47,6 +47,10 @@ class Admission:
     def key(self, name):
         return self.p + name
 
+    def learner_key(self, turn):
+        owner = turn['learner_id'] if turn['learner_id'] is not None else 'system:' + str(turn['id'])
+        return self.key(f'learner:{owner}')
+
     def epoch(self):
         return self.r.get(self.key("epoch"))
 
@@ -64,7 +68,7 @@ class Admission:
 
     def enqueue(self, turn):
         self.enqueue_script(keys=[self.key("queue"), self.key("processing"),
-                                  self.key(f"learner:{turn['learner_id']}")],
+                                  self.learner_key(turn)],
                             args=[str(turn["id"]), turn["seq"]])
 
     def claim(self, epoch, now):
@@ -73,7 +77,7 @@ class Admission:
 
     def release(self, turn):
         self.release_script(keys=[self.key("queue"), self.key("processing"),
-                                  self.key(f"learner:{turn['learner_id']}")], args=[str(turn["id"])])
+                                  self.learner_key(turn)], args=[str(turn["id"])])
 
     def slot(self, resource, call_id, owner):
         return bool(self.slot_script(keys=[self.key("ready"), self.key("slots:" + resource)],

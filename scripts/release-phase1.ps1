@@ -4,7 +4,7 @@ Push-Location (Split-Path -Parent $PSScriptRoot)
 try {
     & docker compose --env-file .env.phase1 -f deploy/compose.phase1.yml exec -T $Service python -m app.phase_cli drain
     if ($LASTEXITCODE) { throw 'Drain failed' }
-    $deadline = [DateTime]::UtcNow.AddSeconds(150)
+    $deadline = [DateTime]::UtcNow.AddSeconds(390)
     do {
         # Conservative: wait for all running turns, not just the target. Calls in quarantine need operator review.
         $count = & docker compose --env-file .env.phase1 -f deploy/compose.phase1.yml exec -T db psql -U phase_owner -d phase1 -Atc "select count(*) from ai_turn where status='running'"

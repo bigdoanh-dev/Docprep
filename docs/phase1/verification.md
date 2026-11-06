@@ -1,5 +1,7 @@
 # Kiểm chứng Phase 1 local
 
+**Baseline lịch sử 03/11/2026.** Kết quả dưới đây thuộc code/quota trước tích hợp YHDP. Xem [báo cáo tích hợp 06/11](yhdp-verification.md) để biết trạng thái mới; không coi số tải scripted hoặc số test cũ là kết quả model thật/phiên bản mới.
+
 Ngày thực hiện: 03/11/2026. Phạm vi là hạ tầng và điều phối bằng scripted/fake, không phải nghiệm thu GPU, nội dung chuyên môn hoặc production. Chỉ ghi PASS cho những kiểm tra đã chạy; báo cáo Alpha ngày 26/10 là bằng chứng lịch sử riêng.
 
 ## Môi trường và phiên bản

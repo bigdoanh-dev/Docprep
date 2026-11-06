@@ -2788,6 +2788,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
           description: Unprocessable Content
+        '501':
+          description: tutor_mode_not_supported; use Business practice/exam workflows.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: Active turn, changed payload or AI blocked by an exam.
           content:
@@ -2978,6 +2984,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
           description: Unprocessable Content
+        '501':
+          description: tutor_mode_not_supported; use Business practice/exam workflows.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: Active turn, changed payload or AI blocked by an exam.
           content:
@@ -3060,6 +3072,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
           description: Unprocessable Content
+        '501':
+          description: tutor_mode_not_supported; use Business practice/exam workflows.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: Active turn, changed payload or AI blocked by an exam.
           content:
@@ -3121,6 +3139,12 @@ paths:
                 $ref: '#/components/schemas/ErrorBody'
         '422':
           description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '501':
+          description: tutor_mode_not_supported; use Business practice/exam workflows.
           content:
             application/json:
               schema:
@@ -3198,6 +3222,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
           description: Unprocessable Content
+        '501':
+          description: tutor_mode_not_supported; use Business practice/exam workflows.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: Active turn, changed payload or AI blocked by an exam.
           content:
@@ -3270,6 +3300,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
           description: Unprocessable Content
+        '501':
+          description: tutor_mode_not_supported; use Business practice/exam workflows.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: Active turn, changed payload or AI blocked by an exam.
           content:
@@ -3357,6 +3393,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
           description: Unprocessable Content
+        '501':
+          description: tutor_mode_not_supported; use Business practice/exam workflows.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: Active turn, changed payload or AI blocked by an exam.
           content:
@@ -4582,6 +4624,11 @@ components:
         id:
           type: integer
           title: Id
+        practice_set_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Practice Set Id
         front:
           type: string
           title: Front
@@ -4616,6 +4663,7 @@ components:
       type: object
       required:
       - id
+      - practice_set_id
       - front
       - back
       - citation
@@ -5074,6 +5122,21 @@ components:
         name:
           type: string
           title: Name
+        days_to_exam:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Days To Exam
+        resume:
+          anyOf:
+          - $ref: '#/components/schemas/ResumeItem'
+          - type: 'null'
+        tutor_topics:
+          items:
+            $ref: '#/components/schemas/TutorTopic'
+          type: array
+          title: Tutor Topics
+          default: []
         quick_review_count:
           type: integer
           title: Quick Review Count
@@ -5104,6 +5167,9 @@ components:
       type: object
       required:
       - name
+      - days_to_exam
+      - resume
+      - tutor_topics
       - quick_review_count
       - quick_review_note_vi
       - due_cards
@@ -7172,6 +7238,46 @@ components:
         title: Bài đánh giá năng lực
         total: 6
         wrong: 1
+    ResumeItem:
+      properties:
+        kind:
+          type: string
+          enum:
+          - exam
+          - unit
+          - practice_set
+          - chat
+          title: Kind
+        id:
+          anyOf:
+          - type: integer
+          - type: string
+          title: Id
+        title:
+          type: string
+          title: Title
+        subtitle_vi:
+          type: string
+          title: Subtitle Vi
+        progress:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Progress
+        path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Path
+      type: object
+      required:
+      - kind
+      - id
+      - title
+      - subtitle_vi
+      - progress
+      - path
+      title: ResumeItem
     Retention:
       properties:
         weeks:
@@ -8047,6 +8153,23 @@ components:
       - action
       title: TutorSuggestion
       description: Something the rules did since the learner's last visit. Rule events only in R1.0, no model text.
+    TutorTopic:
+      properties:
+        reason_vi:
+          type: string
+          title: Reason Vi
+        label_vi:
+          type: string
+          title: Label Vi
+        prompt:
+          type: string
+          title: Prompt
+      type: object
+      required:
+      - reason_vi
+      - label_vi
+      - prompt
+      title: TutorTopic
     UnitAdvance:
       properties:
         unit_item_id:
@@ -8426,6 +8549,20 @@ components:
             type: string
           - type: 'null'
           title: State
+        mode:
+          anyOf:
+          - enum:
+            - auto
+            - giai_thich
+            - so_sanh
+            - vi_du
+            - tom_tat
+            - kiem_tra
+            - cham
+            type: string
+          - type: 'null'
+          default: null
+          title: Mode
         message_id:
           anyOf:
           - type: integer
@@ -8493,6 +8630,7 @@ components:
           type: array
       required:
       - state
+      - mode
       - message_id
       - turn_id
       - turn_status
@@ -8542,6 +8680,7 @@ components:
           - queued
           - answering
           - checking_sources
+          - retrieving
           title: Status
           type: string
         turn_id:
@@ -8632,6 +8771,19 @@ components:
         id:
           type: integer
           title: Id
+        mode:
+          anyOf:
+          - type: string
+            enum:
+            - auto
+            - giai_thich
+            - so_sanh
+            - vi_du
+            - tom_tat
+            - kiem_tra
+            - cham
+          - type: 'null'
+          title: Mode
         role:
           type: string
           enum:
@@ -8716,6 +8868,7 @@ components:
       type: object
       required:
       - id
+      - mode
       - role
       - text
       - created_at
@@ -8890,6 +9043,18 @@ components:
         text:
           type: string
           title: Text
+        mode:
+          type: string
+          enum:
+          - auto
+          - giai_thich
+          - so_sanh
+          - vi_du
+          - tom_tat
+          - kiem_tra
+          - cham
+          title: Mode
+          default: auto
         detail:
           type: boolean
           title: Detail

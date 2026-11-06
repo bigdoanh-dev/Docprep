@@ -1,6 +1,6 @@
 # Bàn giao Phase 1 local
 
-Đợt này tách Business/Chat và bổ sung điều phối, phục hồi, bảo mật, quan sát. Provider thật vẫn khóa vì chưa có protocol/GPU được duyệt. Xem [kiến trúc](architecture.md) và [bằng chứng kiểm thử](verification.md).
+Business/Chat giữ kiến trúc 2+2 và điều phối/khôi phục Phase 1. Tích hợp YHDP ngày 06/11 đã bổ sung UI, Ollama generator/embedding và pgvector; AI server chưa bật nên provider hiện **disabled**. Xem [runbook Ollama](ollama-local.md), [nguồn và hợp đồng](yhdp-source-map.md), [bằng chứng tích hợp mới](yhdp-verification.md). [Báo cáo 03/11](verification.md) được giữ làm baseline lịch sử.
 
 ## Chạy trên Windows
 
@@ -29,7 +29,7 @@ Nếu cần Vite hot reload: cấu hình `BACKEND_URL=http://127.0.0.1:18880`, k
 
 ## Kiểm thử tái lập
 
-Có thể chạy tuần tự toàn bộ nhóm kiểm tra bằng `powershell -ExecutionPolicy Bypass -File scripts/test-phase1.ps1`; thêm `-IncludeAlphaRegression` hoặc `-IncludeLoad` khi cần. Script chủ động kiểm tra phục hồi nên chỉ chạy lúc không có người đang demo. Full regression Alpha cần database `DATABASE_URL_TEST` riêng theo cấu hình Alpha.
+Có thể chạy các kiểm tra bằng `powershell -ExecutionPolicy Bypass -File scripts/test-phase1.ps1`. Thêm `-ScriptedAcceptance` để tạm bật scripted và chạy chat/fault/backup/TLS, khôi phục provider trong finally; `-IncludeLoad` chỉ đo scripted và cần profile này. Thêm `-IncludeAlphaRegression` khi cần. Script chủ động kiểm tra phục hồi nên chỉ chạy lúc không có người đang demo. Full regression Alpha cần database `DATABASE_URL_TEST` riêng theo cấu hình Alpha và Docker database Alpha đang chạy. Không dùng các số đo scripted để nghiệm thu model/GPU.
 
 Tạo database kiểm thử riêng một lần; lệnh này báo lỗi nếu đã tồn tại, không xóa/ghi đè:
 

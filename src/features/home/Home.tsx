@@ -1,21 +1,33 @@
 import {
   ArrowRight,
   BookOpen,
-  CalendarDays,
   CheckCircle2,
   ChevronRight,
+  ClipboardList,
   Layers,
-  Route,
+  MessageSquareText,
   Target,
+  Timer,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { LearningActions } from "../../components/LearningActions";
 import { DoctorAvatar } from "../../components/DoctorAvatar";
 import { Loading, LoadError } from "../../components/Status";
-import { api, type Home as HomeData, type SessionToday } from "../../lib/api";
+import {
+  api,
+  type Home as HomeData,
+  type ResumeItem,
+  type SessionStep,
+  type SessionToday,
+} from "../../lib/api";
 import { useLoad } from "../../lib/hooks";
 import { useWorkspace } from "../../lib/learnerWorkspace";
-import { stepPath, suggestionPath } from "../../lib/flow";
+import { nextStep, stepPath, suggestionPath, STEP_LABEL } from "../../lib/flow";
+import { openTutor } from "../../lib/tutorLink";
+
+// Trang chủ answers one question: what to do now. Top to bottom: today's session (its next step is
+// the one main button, and due cards live there only), the one thing to pick up again, the tutor's
+// suggestions with their reasons, then the shortcuts. The schedule and study plan are under Tiến độ.
 export function Home() {
   const w = useWorkspace();
   const { data, error, reload } = useLoad(async () => {
@@ -35,6 +47,24 @@ export function Home() {
       : hour < 18
         ? "Chào buổi chiều"
         : "Chào buổi tối";
+  // The demo's payload has no resume item: its most recent unit stands in.
+  const recent = home.recent.find((r) => r.kind === "unit");
+  const resume: ResumeItem | null =
+    home.resume !== undefined
+      ? home.resume
+      : recent
+        ? {
+            kind: "unit",
+            id: recent.id,
+            title: recent.title,
+            subtitle_vi: recent.subtitle_vi ?? "",
+            progress: recent.progress,
+            path: `/luyen-tap/${recent.id}`,
+          }
+        : null;
+  // Due cards are step 1 of today's session; the same advice again would only repeat it.
+  const suggestions = home.tutor_suggestions.filter((s) => s.kind !== "cards");
+  const topics = home.tutor_topics ?? [];
   return (
     <div className="mobile-home">
       <section
@@ -43,137 +73,36 @@ export function Home() {
         <div>
           <p>{greeting},</p>
           <h1>{home.name}</h1>
-          <span>Học từng chút, vững kiến thức hơn.</span>
+          <span>
+            {typeof home.days_to_exam === "number"
+              ? `Còn ${home.days_to_exam} ngày đến kỳ thi`
+              : "Học từng chút, vững kiến thức hơn."}
+          </span>
         </div>
         <DoctorAvatar gender={w.gender} />
       </section>
-      <section className="due-summary">
-        <div className="due-heading">
-          <span className="feature-icon blue">
-            <Layers size={26} />
-          </span>
-          <div>
-            <h2>Thẻ ôn tập</h2>
-            <p>
-              <strong>{home.due_cards}</strong> thẻ đến hạn
-            </p>
-            <span>Ôn lại để nhớ lâu hơn.</span>
-          </div>
-        </div>
-        <Link
-          className="btn home-cta"
-          to={home.due_cards ? "/luyen-tap/on-the" : "/luyen-tap/bo-the"}
-        >
-          {home.due_cards ? "Ôn thẻ ngay" : "Xem bộ thẻ"}
-          <ArrowRight size={17} />
-        </Link>
-      </section>
-      <LearningActions />
-      <section className="today-section">
-        <div className="section-head">
-          <h2>Phiên học hôm nay</h2>
-          <span>{today.total_minutes} phút</span>
-        </div>
-        <div className="today-list">
-          {today.steps.map((s) => {
-            const Icon =
-              s.kind === "cards"
-                ? Layers
-                : s.kind === "practice"
-                  ? Target
-                  : BookOpen;
-            return (
-              <Link className="today-row" key={s.kind} to={stepPath(s)}>
-                <span
-                  className={`feature-icon ${s.kind === "cards" ? "blue" : s.kind === "practice" ? "amber" : "teal"}`}
-                >
-                  <Icon size={20} />
-                </span>
-                <div>
-                  <strong>
-                    {s.kind === "cards"
-                      ? "Ôn thẻ đến hạn"
-                      : s.kind === "practice"
-                        ? "Luyện điểm yếu"
-                        : "Học tiếp"}
-                  </strong>
-                  <span>
-                    {s.done
-                      ? "Đã hoàn thành"
-                      : `${s.count} ${s.kind === "cards" ? "thẻ" : "câu"} · ${s.minutes} phút`}
-                  </span>
-                </div>
-                {s.done ? (
-                  <CheckCircle2 size={18} />
-                ) : (
-                  <ChevronRight size={18} />
-                )}
-              </Link>
-            );
-          })}
-          {!today.steps.length && (
-            <p className="muted">Bạn đã hoàn thành phiên hôm nay.</p>
-          )}
-        </div>
-      </section>
-      <section className="continue-section">
-        <div className="section-head">
-          <h2>Tiếp tục học</h2>
-          <Link to="/luyen-tap">
-            Tất cả <ChevronRight size={14} />
-          </Link>
-        </div>
-        {home.recent
-          .filter((r) => r.kind === "unit")
-          .slice(0, 2)
-          .map((r) => (
-            <Link key={r.id} to={`/luyen-tap/${r.id}`} className="continue-row">
-              <div>
-                <h3>{r.title}</h3>
-                <p>{r.subtitle_vi}</p>
-                {r.progress !== null && (
-                  <>
-                    <div
-                      className="progress"
-                      role="progressbar"
-                      aria-label={`Tiến độ ${r.title}`}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-valuenow={Math.round(r.progress * 100)}
-                    >
-                      <span
-                        style={{
-                          width: `${Math.max(0, Math.min(1, r.progress)) * 100}%`,
-                        }}
-                      />
-                    </div>
-                    <small>{Math.round(r.progress * 100)}% hoàn thành</small>
-                  </>
-                )}
-              </div>
-              <ChevronRight size={18} />
-            </Link>
-          ))}
-        {!home.recent.some((r) => r.kind === "unit") && (
-          <Link className="list-row" to="/luyen-tap">
-            Chọn học phần để bắt đầu <ChevronRight size={18} />
-          </Link>
-        )}
-      </section>
-      <div className="home-utilities" aria-label="Lối tắt học tập">
-        <Link to="/lich-on">
-          <CalendarDays size={16} strokeWidth={1.8} aria-hidden="true" />
-          <span>Xem lịch ôn</span>
-        </Link>
-        <Link to="/lo-trinh">
-          <Route size={16} strokeWidth={1.8} aria-hidden="true" />
-          <span>Lộ trình học</span>
-        </Link>
-      </div>
-      {home.tutor_suggestions.length > 0 && (
+
+      <TodayCard today={today} />
+
+      {resume && <ResumeRow item={resume} />}
+
+      {(topics.length > 0 || suggestions.length > 0) && (
         <section className="home-suggestions">
-          <h2>Gợi ý cho bạn</h2>
-          {home.tutor_suggestions.map((s, i) => (
+          <h2>Gia sư gợi ý</h2>
+          {topics.map((t) => (
+            <div key={t.prompt}>
+              <p>{t.reason_vi}</p>
+              <button
+                type="button"
+                onClick={() => openTutor({ ask: t.prompt })}
+              >
+                <MessageSquareText size={14} aria-hidden="true" />
+                Hỏi gia sư: {t.label_vi.toLocaleLowerCase("vi")}
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          ))}
+          {suggestions.map((s, i) => (
             <div key={i}>
               <p>{s.text_vi}</p>
               {s.action && (
@@ -185,6 +114,129 @@ export function Home() {
           ))}
         </section>
       )}
+
+      <LearningActions />
     </div>
+  );
+}
+
+const STEP_ICON = { cards: Layers, practice: Target, continue: BookOpen };
+const STEP_TONE = { cards: "blue", practice: "amber", continue: "teal" };
+
+function stepLine(s: SessionStep) {
+  if (s.done) return "Đã hoàn thành";
+  const unit =
+    s.kind === "cards" ? "thẻ" : s.kind === "continue" ? "mục" : "câu";
+  return `${s.count} ${unit} · ${s.minutes} phút`;
+}
+
+// Hôm nay: the steps, and one button for the next one not done.
+function TodayCard({ today }: { today: SessionToday }) {
+  const next = nextStep(today);
+  const started = today.steps.some((s) => s.done);
+  return (
+    <section className="today-section" aria-labelledby="today-title">
+      <div className="section-head">
+        <h2 id="today-title">Phiên học hôm nay</h2>
+        {next && <span>còn {today.total_minutes} phút</span>}
+      </div>
+      <div className="today-list">
+        {today.steps.map((s) => {
+          const Icon = STEP_ICON[s.kind];
+          return (
+            <Link className="today-row" key={s.kind} to={stepPath(s)}>
+              <span className={`feature-icon ${STEP_TONE[s.kind]}`}>
+                <Icon size={20} />
+              </span>
+              <div>
+                <strong>{STEP_LABEL[s.kind]}</strong>
+                <span>{stepLine(s)}</span>
+              </div>
+              {s.done ? <CheckCircle2 size={18} /> : <ChevronRight size={18} />}
+            </Link>
+          );
+        })}
+        {!today.steps.length && (
+          <p className="muted">Hôm nay chưa có bước nào cần làm.</p>
+        )}
+      </div>
+      {next ? (
+        <Link className="btn primary block home-today-cta" to={stepPath(next)}>
+          {started ? "Tiếp tục" : "Bắt đầu"}: {STEP_LABEL[next.kind]} · khoảng{" "}
+          {next.minutes} phút
+          <ArrowRight size={17} />
+        </Link>
+      ) : (
+        today.steps.length > 0 && (
+          <p className="home-today-done">
+            <CheckCircle2 size={16} aria-hidden="true" /> Bạn đã xong phiên hôm
+            nay.
+          </p>
+        )
+      )}
+    </section>
+  );
+}
+
+const RESUME_ICON = {
+  exam: Timer,
+  unit: BookOpen,
+  practice_set: ClipboardList,
+  chat: MessageSquareText,
+};
+
+// Tiếp tục: the one unfinished thing touched last. A conversation opens in the tutor popup.
+function ResumeRow({ item }: { item: ResumeItem }) {
+  const Icon = RESUME_ICON[item.kind];
+  const body = (
+    <>
+      <span className="feature-icon teal">
+        <Icon size={20} />
+      </span>
+      <div>
+        <h3>{item.title}</h3>
+        <p>{item.subtitle_vi}</p>
+        {item.progress !== null && (
+          <div
+            className="progress"
+            role="progressbar"
+            aria-label={`Tiến độ ${item.title}`}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(item.progress * 100)}
+          >
+            <span
+              style={{
+                width: `${Math.max(0, Math.min(1, item.progress)) * 100}%`,
+              }}
+            />
+          </div>
+        )}
+      </div>
+      <ChevronRight size={18} />
+    </>
+  );
+  return (
+    <section className="continue-section" aria-labelledby="resume-title">
+      <div className="section-head">
+        <h2 id="resume-title">Tiếp tục</h2>
+        <Link to="/luyen-tap">
+          Học phần <ChevronRight size={14} />
+        </Link>
+      </div>
+      {item.path ? (
+        <Link to={item.path} className={`continue-row resume-${item.kind}`}>
+          {body}
+        </Link>
+      ) : (
+        <button
+          type="button"
+          className={`continue-row resume-${item.kind}`}
+          onClick={() => openTutor({ session: Number(item.id) })}
+        >
+          {body}
+        </button>
+      )}
+    </section>
   );
 }

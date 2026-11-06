@@ -1,6 +1,6 @@
 # AI Tutor / DocPrep
 
-**Phase 1 local:** Business API ×2, Chat ×2, Redis, PostgreSQL và Caddy trong môi trường riêng; generation dùng scripted cho dev/test, chưa mở GPU thật. Chạy từ thư mục này:
+**Phase 1 local:** Business API ×2, Chat ×2, Redis, PostgreSQL/pgvector và Caddy; frontend YHDP đã tích hợp với API Phase 1. Generation hiện **disabled** vì AI server chưa bật; adapter Ollama và index qua worker đã có. Chạy từ thư mục này:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/setup-phase1.ps1
@@ -8,7 +8,7 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-phase1.ps1
 
 Mở **http://127.0.0.1:18880**. Xem [hướng dẫn Phase 1](docs/phase1/handover.md), [kiến trúc](docs/phase1/architecture.md) và [báo cáo kiểm thử](docs/phase1/verification.md). Lệnh Alpha dưới đây vẫn dành cho runtime monolith riêng.
 
-[Kế hoạch tích hợp YHDP theo tài liệu kiến trúc của Lead](docs/phase1/integration-plan.md) đối chiếu các yêu cầu và thứ tự triển khai. URL Ollama được lưu riêng trong `backend/.env`; runtime Phase 1 hiện chưa đọc biến này hoặc tự chuyển từ scripted sang model thật.
+[Trạng thái tích hợp theo tài liệu Lead](docs/phase1/integration-plan.md), [nguồn và hợp đồng chuyển đổi](docs/phase1/yhdp-source-map.md), [kiểm chứng mới](docs/phase1/yhdp-verification.md). Model env nằm riêng trong `backend/.env`, chỉ cấp Chat; không tự bật model thật. Khi server hoạt động, làm theo [runbook Ollama local/dev](docs/phase1/ollama-local.md).
 
 Nếu muốn sửa frontend bằng Vite ở cổng **5190**, thêm hoặc sửa dòng sau trong `.env.local` tại thư mục `Docprep_FE`:
 
@@ -31,7 +31,7 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-alpha.ps1
 npm.cmd exec playwright -- install chromium
 ```
 
-Setup tạo `.env` từ `.env.example` nếu chưa có, cài dependency theo lockfile, dựng PostgreSQL, chạy 12 migration rồi nạp tài khoản và cohort minh họa. Lần seed sau giữ nguyên mật khẩu, hồ sơ và lịch sử đã có. Cohort đã tồn tại sẽ không được tạo lại hoặc cập nhật thời gian tự động.
+Setup tạo `.env` từ `.env.example` nếu chưa có, cài dependency theo lockfile, dựng PostgreSQL/pgvector 16, chạy migration đến head hiện tại (0015; giữ 12 migration Alpha gốc) rồi nạp tài khoản và cohort minh họa. Lần seed sau giữ nguyên mật khẩu, hồ sơ và lịch sử đã có. Cohort đã tồn tại sẽ không được tạo lại hoặc cập nhật thời gian tự động.
 
 Nếu chỉ cần người học và chưa cần dashboard: thêm `-SkipCohort` vào lệnh setup. Tạo cohort lần đầu có thể mất vài phút.
 

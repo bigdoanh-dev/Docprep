@@ -22,7 +22,8 @@ from app.sse import EventStreamResponse, format_sse
 from app.chat.worker import utcnow
 
 router = APIRouter(tags=["chat"])
-PHASE_ERRORS = {409: {"model": ErrorBody, "description": "Active turn, changed payload or AI blocked by an exam."},
+PHASE_ERRORS = {501: {"model": ErrorBody, "description": "tutor_mode_not_supported; use Business practice/exam workflows."},
+                409: {"model": ErrorBody, "description": "Active turn, changed payload or AI blocked by an exam."},
                 429: {"model": ErrorBody, "description": "ai_queue_full; retry with the same idempotency key."},
                 503: {"model": ErrorBody, "description": "AI disabled, unavailable or turn failed."},
                 410: {"model": ErrorBody, "description": "event_history_expired; load the durable turn snapshot."}}
@@ -55,6 +56,8 @@ def _submit(request, conn, learner, now, kind, route, key, raw):
     if key is not None and (not key.strip() or len(key) > 128):
         raise ApiError(422, "invalid_request", "Idempotency-Key phải có từ 1 đến 128 ký tự.")
     payload = clean_tree(raw)
+    if raw.get('mode') in ('kiem_tra','cham'):
+        raise ApiError(501,'tutor_mode_not_supported','Tạo và chấm câu hỏi gia sư mới chưa được mở trong Phase 1.')
 
     def begin():
         if kind == "chat":
@@ -76,7 +79,8 @@ def _submit(request, conn, learner, now, kind, route, key, raw):
         events.record(conn, learner["pseudonym_id"], "chat_turn", now, ref_type="tutor_session", ref_id=sid)
         return sid
 
-    return turns.submit(conn, cfg, learner["id"], kind, route, key or str(uuid4()), raw, payload, now, begin)
+    fingerprint_raw = {k:v for k,v in raw.items() if not (k == 'mode' and v == 'auto')}
+    return turns.submit(conn, cfg, learner["id"], kind, route, key or str(uuid4()), fingerprint_raw, payload, now, begin)
 
 
 def _read(request, learner_id, turn_id):

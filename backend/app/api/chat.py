@@ -48,7 +48,7 @@ def list_chat_sessions(request: Request, cursor: str | None = None, limit: int =
 def list_chat_messages(request: Request, session_id: int, cursor: str | None = None,
                        limit: int = Query(20, ge=1, le=100), conn=Conn, learner=Learner):
     return mock_example(request, ChatMessageList) or chat_service.list_messages(
-        conn, learner, session_id, cursor, limit)
+        conn, learner, session_id, cursor, limit, with_modes=request.app.state.service == 'chat')
 
 
 @router.post("/chat/sessions/{session_id}/messages", summary="Ask a question; the answer is streamed",

@@ -25,8 +25,8 @@ class ModelResult:
     text: str
     model: str
     prompt_version: str
-    tokens_in: int
-    tokens_out: int
+    tokens_in: int | None
+    tokens_out: int | None
     latency_ms: int
     cost: float | None
     from_cache: bool

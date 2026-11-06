@@ -2,6 +2,8 @@
 
 Tài liệu này mô tả đợt nâng cấp hạ tầng từ Alpha, theo các lựa chọn đã thống nhất với người phụ trách dự án ngày 03/11/2026. Căn cứ định hướng là `AIRC_Kien_truc_backend_Alpha_V1_den_Phase_1.docx`. PDF gốc được Word dẫn bằng N1 chưa được cung cấp để đối chiếu. Kết quả thực thi nằm trong [verification.md](verification.md); thiết kế trong tài liệu không tự chứng minh đã nghiệm thu.
 
+Cập nhật tích hợp YHDP ngày 06/11: [ma trận nguồn/hợp đồng](yhdp-source-map.md), [báo cáo mới](yhdp-verification.md) và [vận hành Ollama](ollama-local.md). UI dùng nguồn `c661586`, nghiệp vụ vẫn ở Phase 1. Kết quả ngày 03/11 là baseline lịch sử, không chứng minh adapter/model thật.
+
 ## Đơn vị triển khai
 
 Frontend React → Caddy → Business API ×2 hoặc Chat Orchestrator ×2 → PostgreSQL.
@@ -42,7 +44,7 @@ Frontend tiếp tục gọi `/api/v1`; backend nhận `/v1`. Caddy đặt API tr
 7. Trước commit, kiểm tra lại tài khoản, consent, bài thi, deadline và fencing. Message, kết quả turn và trạng thái completed được commit trước event answer/final.
 8. SSE subscriber đọc Redis Streams bằng async I/O; không giữ connection PostgreSQL hoặc thread pool trong lúc chờ event. Kết quả cuối có thể đọc lại từ DB nếu publish event thất bại.
 
-FIFO áp dụng cho cấp lượt, không phải thứ tự xong. Các giới hạn 4 turn/4 scripted calls, 20 queued và 60 giây chờ trong template là cấu hình dev để tái lập; không phải thông số GPU hay năng lực đã đo.
+FIFO áp dụng cho cấp lượt, không phải thứ tự xong. Template local/dev hiện giới hạn toàn cục 1 turn, 1 model call dùng chung generation/embedding, 20 queued, chờ queue 60s, deadline turn 360s, provider tối đa 300s trong deadline còn lại, stop/drain 390s. Đây là chính sách thử nghiệm, không phải thông số GPU hay năng lực đã đo.
 
 ## Hủy và phục hồi
 
@@ -64,7 +66,7 @@ SSE có `id:`, heartbeat, status/step/answer/final. `final` thêm turn_status v�
 
 ## Dữ liệu và bảo mật
 
-Giữ schema public và migrations cũ; thêm 0013/0014. Các role runtime không sở hữu bảng, không có CREATE schema/table. `phase_migrator` chạy DDL một lần theo release; `phase_owner` là tài khoản bootstrap/backup, không nằm trong môi trường API/Chat.
+Giữ schema public và migrations cũ; thêm 0013/0014 cho turn/lifecycle, 0015 cho embedding. Các role runtime không sở hữu bảng, không có CREATE schema/table. `phase_migrator` chạy DDL một lần theo release; `phase_owner` bootstrap extension vector/roles và backup, không nằm trong môi trường API/Chat. Chat được ghi index dẫn xuất, Business không đọc/ghi các bảng embedding.
 
 Chat được đọc các bảng cần cho xác thực, nguồn, kiểm tra trạng thái học/thi và suggestion; staff chỉ đọc id/role/active. Chat không đọc learner_identity, không ghi learning/exam/card. Business có quyền vòng đời nghiệp vụ nhưng không đọc/ghi ai_model_call. Trigger SECURITY DEFINER có search_path cố định và không cấp EXECUTE trực tiếp cho public.
 
@@ -74,9 +76,11 @@ Logs chỉ chứa metadata và mã lỗi, không có body, prompt, token hoặc 
 
 ## Ranh giới model và vận hành
 
-Phase 1 chỉ chấp nhận provider disabled hoặc scripted trong dev/test. Không mặc định Anthropic, không external fallback, không dựng adapter HTTP khi chưa biết protocol. Mở GPU thật cần protocol, endpoint, model ID, chứng thực, timeout/cancel/health semantics, resource mapping và slot budget được Lead duyệt; sau đó phải kiểm thử lại.
+Phase 1 chấp nhận disabled; scripted và ollama chỉ trong dev/test. Không mặc định Anthropic hoặc external fallback. Gateway Ollama dùng giao thức generator/embedding của nhánh YHDP được người dùng chốt, non-streaming bên trong và SSE bên ngoài. Model env chỉ vào Chat; provider vẫn disabled trong lúc server tắt. Examiner/reranker chưa được gán model; Tier 2 phải tắt. Production/GPU capacity cần cấu hình/auth/health/cancel/resource mapping được duyệt và kiểm thử riêng.
 
-Readiness khác liveness. Business kiểm tra DB/schema; Chat thêm Redis/worker. Generation disabled vẫn cho phép đọc lịch sử và trả lỗi rõ khi gọi AI. Metrics gồm HTTP headers latency, queue/deadline/state, pool và model reservations; không coi headers latency là toàn bộ thời gian SSE. Harness tải đo thời gian hoàn tất ở client.
+Migration 0015 lưu embedding theo passage, model name/digest, corpus version, dimension và content SHA-256. Index là operator turn (không có learner/session), qua cùng outbox/FIFO/worker/reservation; learner không đọc được job này. Query embedding cũng qua gateway, không giữ DB connection khi chờ. Retrieval kết hợp PostgreSQL FTS + exact pgvector cosine và RRF; từ chối vector thiếu/lỗi thời. Hash/version không thay chữ ký hoặc quy trình duyệt corpus. Pure dictionary/chunker đã tách khỏi SQLite; importer/corpus ký số/scheduler/content-team vẫn chờ đặc tả và nội dung được duyệt.
+
+Readiness khác liveness. Business kiểm tra DB/schema; Chat thêm Redis/worker, và metadata của cả hai model khi provider ollama. Generation disabled vẫn cho phép đọc lịch sử và trả lỗi rõ khi gọi AI. Metrics gồm HTTP headers latency, queue/deadline/state, pool và model reservations; không coi headers latency là toàn bộ thời gian SSE. Harness tải đo thời gian hoàn tất ở client.
 
 Compose không tự rolling update. Script release drain một instance, chờ turn đang chạy, đợi proxy bỏ upstream rồi tạo lại container. Backup local mặc định mỗi 24 giờ trong profile operations, không tự xóa bản cũ; đây chưa phải RPO/RTO. Rollback chỉ dùng code tương thích schema; quay lại Alpha cũ cần restore DB riêng và kiểm tra trước khi đổi URL.
 

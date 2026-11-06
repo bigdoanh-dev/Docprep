@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../../components/Icon";
+import { PracticeRunner } from "../../components/PracticeRunner";
 import {
   ReviewActions,
   ReviewCard,
@@ -73,23 +74,38 @@ export function CardReview() {
       await api.patch(`/cards/${card!.id}`, { suspended: true });
     });
 
+  const topbar = (
+    <header className="topbar">
+      <Link to="/luyen-tap/bo-the" className="icon-btn" aria-label="Về Bộ thẻ">
+        <Icon name="left" />
+      </Link>
+      <h1>Ôn thẻ</h1>
+      {due && (
+        <span className="tag" style={{ fontSize: 14 }}>
+          {due.total_due} thẻ đến hạn
+        </span>
+      )}
+    </header>
+  );
+
+  // A concept card is answered as a fresh question, which reviews it on the server.
+  if (card?.practice_set_id)
+    return (
+      <PracticeRunner
+        key={card.practice_set_id}
+        base={`/practice-sets/${card.practice_set_id}`}
+        header={() => topbar}
+        contextLabel="Ôn thẻ"
+        onDone={() => {
+          setReviewed((n) => n + 1);
+          reload();
+        }}
+      />
+    );
+
   return (
     <div className="screen">
-      <header className="topbar">
-        <Link
-          to="/luyen-tap/bo-the"
-          className="icon-btn"
-          aria-label="Về Bộ thẻ"
-        >
-          <Icon name="left" />
-        </Link>
-        <h1>Ôn thẻ</h1>
-        {due && (
-          <span className="tag" style={{ fontSize: 14 }}>
-            {due.total_due} thẻ đến hạn
-          </span>
-        )}
-      </header>
+      {topbar}
       <div className="body stack">
         {error && <LoadError message={error} onRetry={reload} />}
         {!queue && !error && <Loading />}

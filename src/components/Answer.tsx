@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   api,
   type ChatState,
@@ -43,12 +45,14 @@ export function CitationChip({
   label?: string;
   onOpen: (c: Citation) => void;
 }) {
-  const where = citation.page ? `trang ${citation.page}` : citation.article;
+  const where = citation.page
+    ? `trang ${citation.page}`
+    : (citation.article ?? citation.chapter);
   return (
     <button
       className={label ? "chip" : "cite"}
       onClick={() => onOpen(citation)}
-      aria-label={`Nguồn ${citation.n}: ${citation.document}, ${where}`}
+      aria-label={`Nguồn ${citation.n}: ${citation.document}${where ? `, ${where}` : ""}`}
     >
       {label
         ? `${citation.document} · ${where ?? "Tài liệu nguồn"}`
@@ -116,7 +120,52 @@ export function StatusLine({
   );
 }
 
-// Answer text with its [n] markers turned into tappable citation chips.
+// The model may break lines inside a table cell with <br>, the only HTML it writes. That tag
+// becomes a line break; any other HTML stays escaped text.
+type HastNode = {
+  type: string;
+  value?: string;
+  children?: HastNode[];
+} & Record<string, unknown>;
+const lineBreaks = () => (tree: HastNode) => {
+  const visit = (node: HastNode) =>
+    node.children?.forEach((child, i) => {
+      if (child.type === "raw" && /^<br\s*\/?>$/i.test(child.value ?? ""))
+        node.children![i] = {
+          type: "element",
+          tagName: "br",
+          properties: {},
+          children: [],
+        };
+      else visit(child);
+    });
+  visit(tree);
+};
+
+const CITE_HREF = "#nguon-";
+
+// The model sometimes writes arrows and signs as LaTeX ("$\rightarrow$"), which is not rendered
+// here: they become the characters they stand for.
+const LATEX: Record<string, string> = {
+  rightarrow: "→",
+  Rightarrow: "⇒",
+  to: "→",
+  leftarrow: "←",
+  leftrightarrow: "↔",
+  geq: "≥",
+  ge: "≥",
+  leq: "≤",
+  le: "≤",
+  times: "×",
+  pm: "±",
+  approx: "≈",
+  uparrow: "↑",
+  downarrow: "↓",
+};
+const symbols = (text: string) =>
+  text.replace(/\$?\\([A-Za-z]+)\$?/g, (all, name) => LATEX[name] ?? all);
+
+// Answer text: Markdown (headings, lists, tables), with its [n] markers as tappable citation chips.
 export function AnswerText({
   result,
   onCite,
@@ -125,19 +174,38 @@ export function AnswerText({
   onCite: (c: Citation) => void;
 }) {
   const byN = new Map(result.citations.map((c) => [c.n, c]));
-  const parts = result.text.split(/(\[\d+\])/g);
+  // [n] becomes a link the renderer hands back below; a number with no source stays as written.
+  const text = symbols(result.text).replace(/\[(\d+)\](?!\()/g, (marker, n) =>
+    byN.has(Number(n)) ? `[${n}](${CITE_HREF}${n})` : marker,
+  );
   return (
-    <p style={{ fontSize: 16, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
-      {parts.map((part, i) => {
-        const m = /^\[(\d+)\]$/.exec(part);
-        const citation = m && byN.get(Number(m[1]));
-        return citation ? (
-          <CitationChip key={i} citation={citation} onOpen={onCite} />
-        ) : (
-          <span key={i}>{part}</span>
-        );
-      })}
-    </p>
+    <div className="answer-md">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[lineBreaks]}
+        components={{
+          a: ({ href, children }) => {
+            const citation =
+              href?.startsWith(CITE_HREF) &&
+              byN.get(Number(href.slice(CITE_HREF.length)));
+            return citation ? (
+              <CitationChip citation={citation} onOpen={onCite} />
+            ) : (
+              <a href={href} target="_blank" rel="noreferrer">
+                {children as ReactNode}
+              </a>
+            );
+          },
+          table: ({ children }) => (
+            <div className="answer-table">
+              <table>{children}</table>
+            </div>
+          ),
+        }}
+      >
+        {text}
+      </ReactMarkdown>
+    </div>
   );
 }
 

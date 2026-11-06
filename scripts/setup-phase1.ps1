@@ -2,6 +2,9 @@ param([switch]$SkipSeed)
 $ErrorActionPreference = 'Stop'
 Push-Location (Split-Path -Parent $PSScriptRoot)
 try {
+    if (-not (Test-Path -LiteralPath 'backend/.env')) {
+        Copy-Item -LiteralPath 'backend/.env.example' -Destination 'backend/.env'
+    }
     & docker version --format '{{.Server.Version}}'
     if ($LASTEXITCODE) { throw 'Start Docker Desktop first' }
     if (-not (Test-Path -LiteralPath '.env.phase1')) {

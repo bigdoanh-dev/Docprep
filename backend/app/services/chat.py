@@ -93,7 +93,7 @@ def _own_session(conn, learner: dict, session_id: int) -> dict:
     return session
 
 
-def list_messages(conn, learner: dict, session_id: int, cursor: str | None, limit: int) -> dict:
+def list_messages(conn, learner: dict, session_id: int, cursor: str | None, limit: int, *, with_modes=False) -> dict:
     _own_session(conn, learner, session_id)
     after_id = 0
     if cursor is not None:
@@ -107,6 +107,10 @@ def list_messages(conn, learner: dict, session_id: int, cursor: str | None, limi
     items = [{**m, "citations": m["citations"] or [], "clarify_options": m["clarify_options"] or [],
               "searched": m["searched"] or [], "suggestions": suggested.get(m["id"], []), "trace": m["trace"] or [],
               "trace_summary": _summary(m["citations"] or [], m["claims_checked"], m["claims_removed"])} for m in page]
+    if with_modes:
+        modes = {r['id']:r['mode'] for r in conn.execute("""select m.id,t.payload->>'mode' as mode
+            from chat_message m join ai_turn t on t.id=m.ai_turn_id where m.id=any(%s)""", ([m['id'] for m in page],))}
+        for item in items: item['mode']=modes.get(item['id'])
     return {"items": items, "next_cursor": _encode(page[-1]["id"]) if len(rows) > limit else None}
 
 

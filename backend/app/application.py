@@ -20,6 +20,12 @@ async def lifespan(app: FastAPI):
     from app.config import settings
     from app.db import check_ready, open_pool
 
+    ollama = None
+    if app.state.service == 'chat' and app.state.phase_config.provider == 'ollama':
+        from app.ollama_gateway import OllamaConfig, OllamaGateway
+        if settings()['postcheck']['tier2_enabled']:
+            raise RuntimeError('Examiner model is unconfirmed; keep tier2 disabled')
+        ollama = OllamaGateway(OllamaConfig.load())
     cfg = settings()["db"] if app.state.service == "alpha" else {"pool_min": 1, "pool_max": app.state.phase_config.pool_max}
     pool = open_pool(app.state.database_url, cfg["pool_min"], cfg["pool_max"])
     try:
@@ -56,10 +62,13 @@ async def lifespan(app: FastAPI):
         app.state.admission = Admission(app.state.phase_config)
         app.state.redis_async = Redis.from_url(app.state.phase_config.redis_url, decode_responses=True,
                                                socket_connect_timeout=2, socket_timeout=3)
+        app.state.model_gateway = ollama
         def gateway_factory():
             override = app.dependency_overrides.get(get_gateway)
             if override:
                 return override()
+            if ollama is not None:
+                return ollama
             from app.scripted_gateway import ScriptedGateway
             if app.state.phase_config.provider != "scripted":
                 raise RuntimeError("AI generation disabled")
@@ -138,5 +147,3 @@ def create_app(mode: str | None = None, database_url: str | None = None, *, serv
 
     app.openapi = openapi
     return app
-
-

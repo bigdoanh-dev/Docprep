@@ -1,3 +1,4 @@
+import { onOpenTutor, type TutorRequest } from "../lib/tutorLink";
 import {
   Bell,
   BookOpen,
@@ -52,7 +53,20 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
     loc = useLocation(),
     [chatOpen, setChatOpen] = useState(false),
     [chatExpanded, setChatExpanded] = useState(false),
-    [chatMounted, setChatMounted] = useState(false);
+    [chatMounted, setChatMounted] = useState(false),
+    [tutorRequest, setTutorRequest] = useState<TutorRequest>();
+
+  // Another screen asks for the tutor: a past conversation, or a new one with a question.
+  useEffect(
+    () =>
+      onOpenTutor((request) => {
+        setChatMounted(true);
+        setChatExpanded(false);
+        setChatOpen(true);
+        setTutorRequest(request);
+      }),
+    [],
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -126,16 +140,10 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
                 <Link
                   to="/tien-do/nhip-hoc"
                   className="streak-badge"
-                  aria-label={
-                    actor.mode === "demo"
-                      ? `Chuỗi ôn tập ${streak(w.activity.map((a) => a.date))} ngày`
-                      : "Xem nhịp học từ máy chủ"
-                  }
+                  aria-label={actor.mode === "demo" ? `Chuỗi ôn tập ${streak(w.activity.map((a) => a.date))} ngày` : "Xem nhịp học từ máy chủ"}
                 >
                   <Flame size={18} fill="currentColor" />
-                  {actor.mode === "demo"
-                    ? streak(w.activity.map((a) => a.date))
-                    : "Nhịp học"}
+                  {actor.mode === "demo" ? streak(w.activity.map((a) => a.date)) : "Nhịp học"}
                 </Link>
                 <Link
                   className="header-bell"
@@ -198,6 +206,7 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
                 expanded={chatExpanded}
                 onToggleSize={() => setChatExpanded((value) => !value)}
                 onClose={() => setChatOpen(false)}
+                request={tutorRequest}
               />
             </Sheet>
           )}

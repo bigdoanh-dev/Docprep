@@ -3,6 +3,8 @@ import { execFileSync } from "node:child_process";
 
 test("Phase 1: lost POST response retries the same turn, citations survive reload", async ({ page, request }) => {
   test.skip(!process.env.PHASE1_URL, "Requires the separate Phase 1 deployment");
+  const health = await (await request.get('/api/health')).json();
+  test.skip(health.model_provider !== 'scripted', 'Fault acceptance requires the explicit scripted test profile');
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   const code = execFileSync("docker", ["compose", "--env-file", ".env.phase1", "-f", "deploy/compose.phase1.yml",

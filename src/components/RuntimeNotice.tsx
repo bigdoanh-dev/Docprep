@@ -27,6 +27,10 @@ export function RuntimeNotice() {
         ? "API mô phỏng — dữ liệu minh họa"
         : info.model_provider === "scripted"
           ? `${version} · AI mô phỏng — dữ liệu minh họa`
+          : info.model_provider === "disabled"
+            ? `${version} · AI đang tắt — dữ liệu minh họa`
+          : info.model_provider === "ollama"
+            ? `${version} · AI thử nghiệm — dữ liệu minh họa, chưa nghiệm thu examiner`
           : `${version} — dữ liệu minh họa`}
     </p>
   );

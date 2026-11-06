@@ -17,7 +17,9 @@ def test_a_database_stamped_0011_without_the_document_flag_gets_it(conn):
     """0011 gained `document.is_synthetic` after its first commit; 0012 adds it where it is missing."""
     # Reconstruct the older schema rather than merely changing its version label while
     # retaining the later Phase 1 tables/triggers. This fixture uses the disposable test DB.
-    conn.execute("""drop function phase1_invalidate_ai() cascade;
+    conn.execute("""drop function invalidate_passage_embedding() cascade;
+                    drop table passage_embedding,embedding_index;
+                    drop function phase1_invalidate_ai() cascade;
                     drop table ai_outbox, ai_model_call, ai_purge;
                     alter table chat_message drop column ai_turn_id;
                     drop table ai_turn;
