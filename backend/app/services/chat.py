@@ -192,7 +192,7 @@ def _turn(connect: Connect, slots, gateway, session_id: int, prepare: Callable[[
             try:
                 cfg = settings()["gateway"]
                 for position in slots.acquire(cfg["queue_timeout_s"], max_waiting=cfg["max_waiting"]):
-                    yield "status", StatusEvent(status="queued", position=position).model_dump(mode="json")
+                    yield "status", StatusEvent(status="queued", position=position).model_dump(mode="json", exclude={"turn_id"})
             except QueueTimeout:        # waited too long, or the line was full
                 outcome = ChatOutcome("insufficient_evidence", UNANSWERED_COPY, [], [p.id for p in prepared.passages],
                                       notice=BUSY_NOTICE)
@@ -200,7 +200,7 @@ def _turn(connect: Connect, slots, gateway, session_id: int, prepare: Callable[[
                 try:
                     for kind, payload in generate(gateway, prepared):
                         if kind == "status":
-                            yield "status", StatusEvent(status=payload).model_dump(mode="json")
+                            yield "status", StatusEvent(status=payload).model_dump(mode="json", exclude={"turn_id"})
                         elif kind == "step":
                             yield "step", StepEvent(**payload).model_dump(mode="json")
                         else:

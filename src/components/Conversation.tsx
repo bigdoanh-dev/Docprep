@@ -18,7 +18,7 @@ import {
   startTurn,
   type TurnView,
 } from "../lib/chatTurn";
-import { postSSE } from "../lib/sse";
+import { postSSE, activeSessionTurn, resumeTurn, cancelTurn } from "../lib/sse";
 import { useSourceSheet } from "./Answer";
 import { AssistantTurn, type QuizContext } from "./ChatTurn";
 import {
@@ -60,6 +60,7 @@ export function Conversation({
   const [current, setCurrent] = useState<number | null>(sessionId);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
+  const [activeTurnId, setActiveTurnId] = useState<string | null>(null);
   // The conversation whose turns are on screen. Each time another one is shown the generation moves
   // on: an answer still arriving for the previous one is dropped from the screen (it is stored all
   // the same), and the turns are new components, so nothing opened or pressed carries over.
@@ -74,6 +75,7 @@ export function Conversation({
 
   useEffect(() => {
     setCurrent(sessionId);
+    setActiveTurnId(null);
     setDraft("");
     if (sessionId !== null && sessionId === shown.current) return; // its turns are already here
     // `shown` is set only once the turns are really here (loaded, or started on this screen): set
@@ -89,10 +91,12 @@ export function Conversation({
     setHistoryLoading(sessionId !== null);
     if (sessionId === null) return;
     let alive = true;
+    let recovering = false;
+    const controller = new AbortController();
     api
       .get<ChatMessageList>(`/chat/sessions/${sessionId}/messages?limit=100`)
       .then(
-        ({ items, next_cursor }) => {
+        async ({ items, next_cursor }) => {
           if (!alive) return;
           setHistoryLoading(false);
           shown.current = sessionId;
@@ -104,6 +108,24 @@ export function Conversation({
                 : { role: "assistant", view: fromStored(m) },
             ),
           );
+          try {
+            const active = await activeSessionTurn(sessionId);
+            if (!alive || !active) return;
+            recovering = true;
+            setBusy(true);
+            setActiveTurnId(active.turn_id);
+            setTurns((all) => [...all, { role: "assistant", view: startTurn() }]);
+            await resumeTurn(active.turn_id, (event, data) => {
+              if (!alive) return;
+              setTurns((all) => all.map((turn, i) => i === all.length - 1 && turn.role === "assistant"
+                ? { ...turn, view: applyEvent(turn.view, event, data) } : turn));
+            }, controller.signal);
+          } catch (error) {
+            if (alive && recovering) setTurns((all) => all.map((turn, i) => i === all.length - 1 && turn.role === "assistant"
+              ? { ...turn, view: failTurn(turn.view, (error as Error).message) } : turn));
+          } finally {
+            if (alive) { setBusy(false); setActiveTurnId(null); }
+          }
         },
         (e: Error) => {
           if (alive) {
@@ -114,6 +136,7 @@ export function Conversation({
       );
     return () => {
       alive = false;
+      controller.abort();
     };
   }, [sessionId, historyReload]);
 
@@ -196,6 +219,7 @@ export function Conversation({
           ? { text: text.trim(), detail }
           : { text: text.trim(), detail, clarifies_message_id: clarifies };
       await postSSE(`/chat/sessions/${id}/messages`, body, (event, data) => {
+        if (data.turn_id && generationRef.current === generationAtSend) setActiveTurnId(data.turn_id);
         update((view) => applyEvent(view, event, data));
         if (event === "final") ended = true;
       });
@@ -203,7 +227,7 @@ export function Conversation({
     } catch (e) {
       update((view) => failTurn(view, (e as Error).message || NO_ANSWER));
     } finally {
-      if (generationRef.current === generationAtSend) setBusy(false);
+      if (generationRef.current === generationAtSend) { setBusy(false); setActiveTurnId(null); }
     }
   };
 
@@ -342,6 +366,9 @@ export function Conversation({
         <div ref={endRef} />
       </div>
 
+      {busy && activeTurnId && <button type="button" onClick={() => {
+        void cancelTurn(activeTurnId).catch((error: Error) => setHistoryError(error.message));
+      }}>Hủy lượt AI</button>}
       <form className="footer tutor-composer" onSubmit={onSubmit}>
         <div className="tutor-composer-box">
           <textarea

@@ -186,6 +186,8 @@ def _view(conn, attempt: dict, now: datetime) -> dict:
 
 
 def start(conn, learner: dict, form_id: str, fresh: bool, now: datetime) -> dict:
+    # Same ordering as AI admission/finalisation; acquire before the learner row lock.
+    conn.execute("select pg_advisory_xact_lock(71103, %s)", (learner["id"],))
     form = _form(conn, learner, form_id)
     # Two taps on "Bắt đầu" must not open two attempts: the second waits here and then resumes the first.
     learners_repo.lock(conn, learner["id"])

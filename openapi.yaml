@@ -1206,381 +1206,6 @@ paths:
       - learner
       security:
       - bearer: []
-  /v1/items/{question_id}/explain:
-    post:
-      tags:
-      - units
-      summary: Tutor "Giải thích thêm", after answering; streamed
-      operationId: explain_item
-      parameters:
-      - name: question_id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Question Id
-      - name: x-mock-state
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: 'Mock server only: which scripted stream to replay.'
-          title: X-Mock-State
-        description: 'Mock server only: which scripted stream to replay.'
-      responses:
-        '200':
-          description: 'Server-sent events, in this order: `status` queued with a position (only if the request waited) →
-            `step` events for search and reading → `status` answering → `status` checking_sources → the check `step` → `answer`
-            → `final`. A step is sent once as running and once as done, with the same id. The answer text is sent only after
-            the post-check. `final` is always the last event.'
-          content:
-            text/event-stream:
-              schema:
-                type: string
-                oneOf:
-                - $ref: '#/components/schemas/StatusEvent'
-                - $ref: '#/components/schemas/StepEvent'
-                - $ref: '#/components/schemas/AnswerEvent'
-                - $ref: '#/components/schemas/FinalEvent'
-        '401':
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unauthorized
-        '403':
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Forbidden
-        '404':
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Not Found
-        '422':
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unprocessable Content
-        '409':
-          description: '`not_answered`: the learner has not answered this question yet.'
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-      x-roles:
-      - learner
-      security:
-      - bearer: []
-  /v1/items/{question_id}/hint:
-    post:
-      tags:
-      - units
-      summary: Tutor "Gợi ý", before answering
-      operationId: get_hint
-      parameters:
-      - name: question_id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Question Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Hint'
-        '401':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unauthorized
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Forbidden
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Not Found
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unprocessable Content
-        '409':
-          description: '`hint_unavailable`: the question is not waiting for the learner''s answer, or is part of a running
-            exam.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-      x-roles:
-      - learner
-      security:
-      - bearer: []
-  /v1/chat/sessions:
-    post:
-      tags:
-      - chat
-      summary: Start a chat session
-      operationId: create_chat_session
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewChatSession'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChatSessionRef'
-        '401':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unauthorized
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Forbidden
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Not Found
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unprocessable Content
-        '409':
-          description: '`not_answered`: `question_id` names a question the learner has not answered yet. `tutor_unavailable`:
-            that question is part of an exam the learner is sitting.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-      x-roles:
-      - learner
-      security:
-      - bearer: []
-    get:
-      tags:
-      - chat
-      summary: List chat sessions, newest first
-      operationId: list_chat_sessions
-      parameters:
-      - name: cursor
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cursor
-      - name: limit
-        in: query
-        required: false
-        schema:
-          type: integer
-          maximum: 100
-          minimum: 1
-          default: 20
-          title: Limit
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChatSessionList'
-        '401':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unauthorized
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Forbidden
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Not Found
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unprocessable Content
-      x-roles:
-      - learner
-      security:
-      - bearer: []
-  /v1/chat/sessions/{session_id}/messages:
-    get:
-      tags:
-      - chat
-      summary: Messages of a session
-      operationId: list_chat_messages
-      parameters:
-      - name: session_id
-        in: path
-        required: true
-        schema:
-          type: integer
-          title: Session Id
-      - name: cursor
-        in: query
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Cursor
-      - name: limit
-        in: query
-        required: false
-        schema:
-          type: integer
-          maximum: 100
-          minimum: 1
-          default: 20
-          title: Limit
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChatMessageList'
-        '401':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unauthorized
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Forbidden
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Not Found
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unprocessable Content
-      x-roles:
-      - learner
-      security:
-      - bearer: []
-    post:
-      tags:
-      - chat
-      summary: Ask a question; the answer is streamed
-      operationId: ask_question
-      parameters:
-      - name: session_id
-        in: path
-        required: true
-        schema:
-          type: integer
-          title: Session Id
-      - name: x-mock-state
-        in: header
-        required: false
-        schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: 'Mock server only: which scripted stream to replay.'
-          title: X-Mock-State
-        description: 'Mock server only: which scripted stream to replay.'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewChatMessage'
-      responses:
-        '200':
-          description: 'Server-sent events, in this order: `status` queued with a position (only if the request waited) →
-            `step` events for search and reading → `status` answering → `status` checking_sources → the check `step` → `answer`
-            → `final`. A step is sent once as running and once as done, with the same id. The answer text is sent only after
-            the post-check. `final` is always the last event.'
-          content:
-            text/event-stream:
-              schema:
-                type: string
-                oneOf:
-                - $ref: '#/components/schemas/StatusEvent'
-                - $ref: '#/components/schemas/StepEvent'
-                - $ref: '#/components/schemas/AnswerEvent'
-                - $ref: '#/components/schemas/FinalEvent'
-        '401':
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unauthorized
-        '403':
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Forbidden
-        '404':
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Not Found
-        '422':
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unprocessable Content
-      x-roles:
-      - learner
-      security:
-      - bearer: []
   /v1/chat/suggestions/{suggestion_id}/accept:
     post:
       tags:
@@ -1632,108 +1257,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorBody'
-      x-roles:
-      - learner
-      security:
-      - bearer: []
-  /v1/passages/{passage_id}:
-    get:
-      tags:
-      - chat
-      summary: Source excerpt behind a citation
-      operationId: get_passage
-      parameters:
-      - name: passage_id
-        in: path
-        required: true
-        schema:
-          type: string
-          title: Passage Id
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PassageView'
-        '401':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unauthorized
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Forbidden
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Not Found
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unprocessable Content
-      x-roles:
-      - learner
-      security:
-      - bearer: []
-  /v1/messages/{message_id}/rating:
-    post:
-      tags:
-      - chat
-      summary: Mark an answer helpful or not
-      operationId: rate_message
-      parameters:
-      - name: message_id
-        in: path
-        required: true
-        schema:
-          type: integer
-          title: Message Id
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RatingRequest'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Ok'
-        '401':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unauthorized
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Forbidden
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Not Found
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBody'
-          description: Unprocessable Content
       x-roles:
       - learner
       security:
@@ -3023,6 +2546,845 @@ paths:
       - admin
       security:
       - bearer: []
+  /v1/chat/sessions:
+    post:
+      tags:
+      - chat
+      summary: Start a chat session
+      operationId: create_chat_session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewChatSession'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSessionRef'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+        '409':
+          description: '`not_answered`: `question_id` names a question the learner has not answered yet. `tutor_unavailable`:
+            that question is part of an exam the learner is sitting.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+    get:
+      tags:
+      - chat
+      summary: List chat sessions, newest first
+      operationId: list_chat_sessions
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSessionList'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+  /v1/chat/sessions/{session_id}/messages:
+    get:
+      tags:
+      - chat
+      summary: Messages of a session
+      operationId: list_chat_messages
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Session Id
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageList'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+    post:
+      tags:
+      - chat
+      summary: Ask Question
+      operationId: ask_question
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Session Id
+      - name: idempotency-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Repeat with the same key to retry safely; the stored response is returned.
+          title: Idempotency-Key
+        description: Repeat with the same key to retry safely; the stored response is returned.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewChatMessage'
+      responses:
+        '200':
+          description: Resumable Phase 1 stream; technical failures end with final, no fabricated answer. X-Turn-ID identifies
+            the turn.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                oneOf:
+                - $ref: '#/components/schemas/StatusEvent'
+                - $ref: '#/components/schemas/StepEvent'
+                - $ref: '#/components/schemas/AnswerEvent'
+                - $ref: '#/components/schemas/FinalEvent'
+        '401':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+        '409':
+          description: Active turn, changed payload or AI blocked by an exam.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '429':
+          description: ai_queue_full; retry with the same idempotency key.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '503':
+          description: AI disabled, unavailable or turn failed.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '410':
+          description: event_history_expired; load the durable turn snapshot.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+  /v1/passages/{passage_id}:
+    get:
+      tags:
+      - chat
+      summary: Source excerpt behind a citation
+      operationId: get_passage
+      parameters:
+      - name: passage_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Passage Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PassageView'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+  /v1/messages/{message_id}/rating:
+    post:
+      tags:
+      - chat
+      summary: Mark an answer helpful or not
+      operationId: rate_message
+      parameters:
+      - name: message_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Message Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ok'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+  /v1/items/{question_id}/explain:
+    post:
+      tags:
+      - chat
+      summary: Explain Item
+      operationId: explain_item
+      parameters:
+      - name: question_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Question Id
+      - name: idempotency-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Repeat with the same key to retry safely; the stored response is returned.
+          title: Idempotency-Key
+        description: Repeat with the same key to retry safely; the stored response is returned.
+      responses:
+        '200':
+          description: Resumable Phase 1 stream; technical failures end with final, no fabricated answer. X-Turn-ID identifies
+            the turn.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                oneOf:
+                - $ref: '#/components/schemas/StatusEvent'
+                - $ref: '#/components/schemas/StepEvent'
+                - $ref: '#/components/schemas/AnswerEvent'
+                - $ref: '#/components/schemas/FinalEvent'
+        '401':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+        '409':
+          description: Active turn, changed payload or AI blocked by an exam.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '429':
+          description: ai_queue_full; retry with the same idempotency key.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '503':
+          description: AI disabled, unavailable or turn failed.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '410':
+          description: event_history_expired; load the durable turn snapshot.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+  /v1/items/{question_id}/hint:
+    post:
+      tags:
+      - chat
+      summary: Get Hint
+      operationId: get_hint
+      parameters:
+      - name: question_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Question Id
+      - name: idempotency-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Repeat with the same key to retry safely; the stored response is returned.
+          title: Idempotency-Key
+        description: Repeat with the same key to retry safely; the stored response is returned.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hint'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+        '409':
+          description: Active turn, changed payload or AI blocked by an exam.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '429':
+          description: ai_queue_full; retry with the same idempotency key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '503':
+          description: AI disabled, unavailable or turn failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '410':
+          description: event_history_expired; load the durable turn snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+  /v1/chat/turns/active:
+    get:
+      tags:
+      - chat
+      summary: Active Turn
+      operationId: active_turn
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActiveTurn'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '409':
+          description: Active turn, changed payload or AI blocked by an exam.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '429':
+          description: ai_queue_full; retry with the same idempotency key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '503':
+          description: AI disabled, unavailable or turn failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '410':
+          description: event_history_expired; load the durable turn snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+      security:
+      - bearer: []
+      x-roles:
+      - learner
+  /v1/chat/turns/{turn_id}:
+    get:
+      tags:
+      - chat
+      summary: Get Turn
+      operationId: get_turn
+      parameters:
+      - name: turn_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Turn Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TurnView'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+        '409':
+          description: Active turn, changed payload or AI blocked by an exam.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '429':
+          description: ai_queue_full; retry with the same idempotency key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '503':
+          description: AI disabled, unavailable or turn failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '410':
+          description: event_history_expired; load the durable turn snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - chat
+      summary: Cancel Turn
+      operationId: cancel_turn
+      parameters:
+      - name: turn_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Turn Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TurnView'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+        '409':
+          description: Active turn, changed payload or AI blocked by an exam.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '429':
+          description: ai_queue_full; retry with the same idempotency key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '503':
+          description: AI disabled, unavailable or turn failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '410':
+          description: event_history_expired; load the durable turn snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+      x-roles:
+      - learner
+      security:
+      - bearer: []
+  /v1/chat/turns/{turn_id}/events:
+    get:
+      tags:
+      - chat
+      summary: Turn Events
+      operationId: turn_events
+      parameters:
+      - name: turn_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Turn Id
+      - name: last-event-id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last-Event-Id
+      responses:
+        '200':
+          description: Resumable Phase 1 stream; technical failures end with final, no fabricated answer. X-Turn-ID identifies
+            the turn.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                oneOf:
+                - $ref: '#/components/schemas/StatusEvent'
+                - $ref: '#/components/schemas/StepEvent'
+                - $ref: '#/components/schemas/AnswerEvent'
+                - $ref: '#/components/schemas/FinalEvent'
+        '401':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unauthorized
+        '403':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Forbidden
+        '404':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Not Found
+        '422':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+          description: Unprocessable Content
+        '409':
+          description: Active turn, changed payload or AI blocked by an exam.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '429':
+          description: ai_queue_full; retry with the same idempotency key.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '503':
+          description: AI disabled, unavailable or turn failed.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '410':
+          description: event_history_expired; load the durable turn snapshot.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+      x-roles:
+      - learner
+      security:
+      - bearer: []
 components:
   schemas:
     AccuracyByModule:
@@ -3881,263 +4243,6 @@ components:
       required:
       - n
       title: CardsCreated
-    ChatMessage:
-      properties:
-        id:
-          type: integer
-          title: Id
-        role:
-          type: string
-          enum:
-          - user
-          - assistant
-          title: Role
-        text:
-          type: string
-          title: Text
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        state:
-          anyOf:
-          - type: string
-            enum:
-            - answered
-            - insufficient_evidence
-            - declined
-            - needs_clarification
-          - type: 'null'
-          title: State
-        format:
-          anyOf:
-          - type: string
-            enum:
-            - text
-            - table
-            - calc
-          - type: 'null'
-          title: Format
-        citations:
-          items:
-            $ref: '#/components/schemas/Citation'
-          type: array
-          title: Citations
-          default: []
-        notice:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Notice
-        trace_summary:
-          anyOf:
-          - $ref: '#/components/schemas/TraceSummary'
-          - type: 'null'
-        clarify_options:
-          items:
-            $ref: '#/components/schemas/ClarifyOption'
-          type: array
-          title: Clarify Options
-          default: []
-        searched:
-          items:
-            $ref: '#/components/schemas/SearchedSource'
-          type: array
-          title: Searched
-          default: []
-        nearest_chapter:
-          anyOf:
-          - $ref: '#/components/schemas/NearestChapter'
-          - type: 'null'
-        suggestions:
-          items:
-            $ref: '#/components/schemas/ChatSuggestion'
-          type: array
-          title: Suggestions
-          default: []
-        helpful:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Helpful
-        trace:
-          items:
-            $ref: '#/components/schemas/StepEvent'
-          type: array
-          title: Trace
-          description: The steps of an answer, as sent when it was made, in their done form.
-          default: []
-      type: object
-      required:
-      - id
-      - role
-      - text
-      - created_at
-      - state
-      - format
-      - citations
-      - notice
-      - trace_summary
-      - clarify_options
-      - searched
-      - nearest_chapter
-      - suggestions
-      - helpful
-      - trace
-      title: ChatMessage
-    ChatMessageList:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/ChatMessage'
-          type: array
-          title: Items
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-      type: object
-      required:
-      - items
-      - next_cursor
-      title: ChatMessageList
-      examples:
-      - items:
-        - citations: []
-          clarify_options: []
-          created_at: '2026-10-09T08:11:40Z'
-          id: 57
-          role: user
-          searched: []
-          suggestions: []
-          text: Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?
-          trace: []
-        - citations:
-          - chapter: Phần 2. Lịch tiêm chủng cho trẻ em
-            document: Lịch tiêm chủng mở rộng
-            n: 1
-            page: 8
-            passage_id: tc-p02
-            section: 2.1 Vắc xin tiêm cho trẻ sơ sinh
-          clarify_options: []
-          created_at: '2026-10-09T08:12:00Z'
-          format: text
-          helpful: true
-          id: 58
-          role: assistant
-          searched: []
-          state: answered
-          suggestions:
-          - id: 7
-            kind: practise
-            label_vi: Luyện 3 câu đã duyệt
-            n_items: 3
-            reason_vi: Bạn từng trả lời sai một câu về lịch tiêm chủng trong Đề thi thử số 1.
-          - id: 8
-            kind: add_to_tomorrow
-            label_vi: Thêm vào phiên ngày mai
-            reason_vi: Bạn từng trả lời sai một câu về lịch tiêm chủng trong Đề thi thử số 1.
-          text: Vắc xin viêm gan B mũi sơ sinh được tiêm trong vòng 24 giờ đầu sau sinh. [1]
-          trace:
-          - id: s1
-            kind: search
-            label_vi: Đã tìm trong 9 tài liệu
-            status: done
-          - id: s2
-            kind: read
-            label_vi: 'Đã đọc: Lịch tiêm chủng mở rộng tr. 8'
-            status: done
-          - id: s3
-            kind: check
-            label_vi: Đã kiểm tra 1 nhận định
-            status: done
-          trace_summary:
-            claims_checked: 1
-            claims_removed: 0
-            sources: 1
-    ChatSessionList:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/ChatSessionSummary'
-          type: array
-          title: Items
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-      type: object
-      required:
-      - items
-      - next_cursor
-      title: ChatSessionList
-      examples:
-      - items:
-        - id: 12
-          title: Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?
-          updated_at: '2026-10-09T08:12:00Z'
-    ChatSessionRef:
-      properties:
-        id:
-          type: integer
-          title: Id
-      type: object
-      required:
-      - id
-      title: ChatSessionRef
-      examples:
-      - id: 12
-    ChatSessionSummary:
-      properties:
-        id:
-          type: integer
-          title: Id
-        title:
-          type: string
-          title: Title
-        updated_at:
-          type: string
-          format: date-time
-          title: Updated At
-      type: object
-      required:
-      - id
-      - title
-      - updated_at
-      title: ChatSessionSummary
-    ChatSuggestion:
-      properties:
-        id:
-          title: Id
-          type: integer
-        kind:
-          enum:
-          - practise
-          - add_to_tomorrow
-          title: Kind
-          type: string
-        label_vi:
-          title: Label Vi
-          type: string
-        reason_vi:
-          title: Reason Vi
-          type: string
-        n_items:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          default: null
-          title: N Items
-      required:
-      - id
-      - kind
-      - label_vi
-      - reason_vi
-      - n_items
-      title: ChatSuggestion
-      type: object
     Citation:
       properties:
         n:
@@ -4182,24 +4287,6 @@ components:
       - page
       - article
       title: Citation
-      type: object
-    ClarifyOption:
-      properties:
-        term:
-          title: Term
-          type: string
-        label_vi:
-          title: Label Vi
-          type: string
-        query:
-          description: The clarified question to send when the learner taps this option.
-          title: Query
-          type: string
-      required:
-      - term
-      - label_vi
-      - query
-      title: ClarifyOption
       type: object
     Compliance:
       properties:
@@ -4982,38 +5069,6 @@ components:
       title: HiddenSchool
       description: 'A school under the suppression minimum: named, counted in the national figures, shown with no figure of
         its own.'
-    Hint:
-      properties:
-        text:
-          type: string
-          title: Text
-          description: Never reveals the correct option.
-        citations:
-          items:
-            $ref: '#/components/schemas/Citation'
-          type: array
-          title: Citations
-        generated:
-          type: boolean
-          title: Generated
-          description: True when a model wrote the text; false when it is the pointer to the source written by code. The screen
-            puts the AI mark on a generated hint only.
-      type: object
-      required:
-      - text
-      - citations
-      - generated
-      title: Hint
-      examples:
-      - citations:
-        - chapter: Chương 2. Đo lường bệnh trạng
-          document: Dịch tễ học cơ bản
-          n: 1
-          page: 58
-          passage_id: dt-p01
-          section: 2.1 Tỷ lệ hiện mắc
-        generated: true
-        text: 'Hãy xác định mẫu số trước: đó là toàn bộ dân số của xã tại thời điểm khảo sát.'
     HomeView:
       properties:
         name:
@@ -5809,67 +5864,6 @@ components:
           correct: false
           created_at: '2026-10-09T13:02:11Z'
           question_id: q-dt-01
-    NearestChapter:
-      properties:
-        passage_id:
-          title: Passage Id
-          type: string
-        label_vi:
-          title: Label Vi
-          type: string
-      required:
-      - passage_id
-      - label_vi
-      title: NearestChapter
-      type: object
-    NewChatMessage:
-      properties:
-        text:
-          type: string
-          title: Text
-        detail:
-          type: boolean
-          title: Detail
-          description: '"Giải thích thêm": the same question, asked for more detail.'
-          default: false
-        clarifies_message_id:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Clarifies Message Id
-          description: Set when this message answers a needs_clarification message.
-      additionalProperties: false
-      type: object
-      required:
-      - text
-      title: NewChatMessage
-      examples:
-      - detail: false
-        text: Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?
-    NewChatSession:
-      properties:
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Title
-        module_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Module Id
-          description: Limit retrieval to one học phần.
-        question_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Question Id
-          description: Open the chat from a quiz item.
-      additionalProperties: false
-      type: object
-      title: NewChatSession
-      examples:
-      - {}
     NextMock:
       properties:
         form_id:
@@ -6828,18 +6822,6 @@ components:
       - stem
       - options
       title: QuestionView
-    RatingRequest:
-      properties:
-        helpful:
-          type: boolean
-          title: Helpful
-      additionalProperties: false
-      type: object
-      required:
-      - helpful
-      title: RatingRequest
-      examples:
-      - helpful: true
     RecentItem:
       properties:
         kind:
@@ -7742,19 +7724,6 @@ components:
       - learners
       title: ScoreMedian
       description: A median mock-exam score over consenting learners, as a share of the questions.
-    SearchedSource:
-      properties:
-        document:
-          title: Document
-          type: string
-        range:
-          title: Range
-          type: string
-      required:
-      - document
-      - range
-      title: SearchedSource
-      type: object
     Selected:
       properties:
         period:
@@ -7902,43 +7871,6 @@ components:
       title: StartAttempt
       examples:
       - fresh: false
-    StepEvent:
-      description: 'SSE event `step`: one real pipeline stage. Sent once as running and once as done, with the same id.'
-      examples:
-      - id: s2
-        kind: read
-        label_vi: 'Đã đọc: Lịch tiêm chủng mở rộng tr. 8'
-        status: done
-      properties:
-        id:
-          title: Id
-          type: string
-        kind:
-          enum:
-          - search
-          - read
-          - lookup_table
-          - lookup_glossary
-          - get_item
-          - check
-          title: Kind
-          type: string
-        label_vi:
-          title: Label Vi
-          type: string
-        status:
-          enum:
-          - running
-          - done
-          title: Status
-          type: string
-      required:
-      - id
-      - kind
-      - label_vi
-      - status
-      title: StepEvent
-      type: object
     SuggestionAccepted:
       properties:
         kind:
@@ -8044,23 +7976,6 @@ components:
       - reordered
       - top_item
       title: Tomorrow
-    TraceSummary:
-      properties:
-        sources:
-          title: Sources
-          type: integer
-        claims_checked:
-          title: Claims Checked
-          type: integer
-        claims_removed:
-          title: Claims Removed
-          type: integer
-      required:
-      - sources
-      - claims_checked
-      - claims_removed
-      title: TraceSummary
-      type: object
     TransitionView:
       properties:
         from_status:
@@ -8427,6 +8342,55 @@ components:
       - notice
       title: AnswerEvent
       type: object
+    ChatSuggestion:
+      properties:
+        id:
+          title: Id
+          type: integer
+        kind:
+          enum:
+          - practise
+          - add_to_tomorrow
+          title: Kind
+          type: string
+        label_vi:
+          title: Label Vi
+          type: string
+        reason_vi:
+          title: Reason Vi
+          type: string
+        n_items:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: null
+          title: N Items
+      required:
+      - id
+      - kind
+      - label_vi
+      - reason_vi
+      - n_items
+      title: ChatSuggestion
+      type: object
+    ClarifyOption:
+      properties:
+        term:
+          title: Term
+          type: string
+        label_vi:
+          title: Label Vi
+          type: string
+        query:
+          description: The clarified question to send when the learner taps this option.
+          title: Query
+          type: string
+      required:
+      - term
+      - label_vi
+      - query
+      title: ClarifyOption
+      type: object
     FinalEvent:
       description: 'SSE event `final`: always the last event of the stream.'
       examples:
@@ -8453,16 +8417,44 @@ components:
           sources: 1
       properties:
         state:
-          enum:
-          - answered
-          - insufficient_evidence
-          - declined
-          - needs_clarification
+          anyOf:
+          - enum:
+            - answered
+            - insufficient_evidence
+            - declined
+            - needs_clarification
+            type: string
+          - type: 'null'
           title: State
-          type: string
         message_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
           title: Message Id
-          type: integer
+        turn_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Turn Id
+        turn_status:
+          anyOf:
+          - enum:
+            - completed
+            - failed
+            - cancelled
+            - interrupted
+            type: string
+          - type: 'null'
+          default: null
+          title: Turn Status
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          default: null
+          title: Error
         format:
           default: text
           enum:
@@ -8502,6 +8494,9 @@ components:
       required:
       - state
       - message_id
+      - turn_id
+      - turn_status
+      - error
       - format
       - trace_summary
       - clarify_options
@@ -8509,6 +8504,32 @@ components:
       - nearest_chapter
       - suggestions
       title: FinalEvent
+      type: object
+    NearestChapter:
+      properties:
+        passage_id:
+          title: Passage Id
+          type: string
+        label_vi:
+          title: Label Vi
+          type: string
+      required:
+      - passage_id
+      - label_vi
+      title: NearestChapter
+      type: object
+    SearchedSource:
+      properties:
+        document:
+          title: Document
+          type: string
+        range:
+          title: Range
+          type: string
+      required:
+      - document
+      - range
+      title: SearchedSource
       type: object
     StatusEvent:
       description: SSE event `status`.
@@ -8523,6 +8544,12 @@ components:
           - checking_sources
           title: Status
           type: string
+        turn_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Turn Id
         position:
           anyOf:
           - type: integer
@@ -8532,9 +8559,436 @@ components:
           title: Position
       required:
       - status
+      - turn_id
       - position
       title: StatusEvent
       type: object
+    StepEvent:
+      description: 'SSE event `step`: one real pipeline stage. Sent once as running and once as done, with the same id.'
+      examples:
+      - id: s2
+        kind: read
+        label_vi: 'Đã đọc: Lịch tiêm chủng mở rộng tr. 8'
+        status: done
+      properties:
+        id:
+          title: Id
+          type: string
+        kind:
+          enum:
+          - search
+          - read
+          - lookup_table
+          - lookup_glossary
+          - get_item
+          - check
+          title: Kind
+          type: string
+        label_vi:
+          title: Label Vi
+          type: string
+        status:
+          enum:
+          - running
+          - done
+          title: Status
+          type: string
+      required:
+      - id
+      - kind
+      - label_vi
+      - status
+      title: StepEvent
+      type: object
+    TraceSummary:
+      properties:
+        sources:
+          title: Sources
+          type: integer
+        claims_checked:
+          title: Claims Checked
+          type: integer
+        claims_removed:
+          title: Claims Removed
+          type: integer
+      required:
+      - sources
+      - claims_checked
+      - claims_removed
+      title: TraceSummary
+      type: object
+    ActiveTurn:
+      properties:
+        item:
+          anyOf:
+          - $ref: '#/components/schemas/TurnView'
+          - type: 'null'
+      type: object
+      required:
+      - item
+      title: ActiveTurn
+    ChatMessage:
+      properties:
+        id:
+          type: integer
+          title: Id
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          title: Role
+        text:
+          type: string
+          title: Text
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        state:
+          anyOf:
+          - type: string
+            enum:
+            - answered
+            - insufficient_evidence
+            - declined
+            - needs_clarification
+          - type: 'null'
+          title: State
+        format:
+          anyOf:
+          - type: string
+            enum:
+            - text
+            - table
+            - calc
+          - type: 'null'
+          title: Format
+        citations:
+          items:
+            $ref: '#/components/schemas/Citation'
+          type: array
+          title: Citations
+          default: []
+        notice:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Notice
+        trace_summary:
+          anyOf:
+          - $ref: '#/components/schemas/TraceSummary'
+          - type: 'null'
+        clarify_options:
+          items:
+            $ref: '#/components/schemas/ClarifyOption'
+          type: array
+          title: Clarify Options
+          default: []
+        searched:
+          items:
+            $ref: '#/components/schemas/SearchedSource'
+          type: array
+          title: Searched
+          default: []
+        nearest_chapter:
+          anyOf:
+          - $ref: '#/components/schemas/NearestChapter'
+          - type: 'null'
+        suggestions:
+          items:
+            $ref: '#/components/schemas/ChatSuggestion'
+          type: array
+          title: Suggestions
+          default: []
+        helpful:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Helpful
+        trace:
+          items:
+            $ref: '#/components/schemas/StepEvent'
+          type: array
+          title: Trace
+          description: The steps of an answer, as sent when it was made, in their done form.
+          default: []
+      type: object
+      required:
+      - id
+      - role
+      - text
+      - created_at
+      - state
+      - format
+      - citations
+      - notice
+      - trace_summary
+      - clarify_options
+      - searched
+      - nearest_chapter
+      - suggestions
+      - helpful
+      - trace
+      title: ChatMessage
+    ChatMessageList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+          type: array
+          title: Items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      type: object
+      required:
+      - items
+      - next_cursor
+      title: ChatMessageList
+      examples:
+      - items:
+        - citations: []
+          clarify_options: []
+          created_at: '2026-10-09T08:11:40Z'
+          id: 57
+          role: user
+          searched: []
+          suggestions: []
+          text: Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?
+          trace: []
+        - citations:
+          - chapter: Phần 2. Lịch tiêm chủng cho trẻ em
+            document: Lịch tiêm chủng mở rộng
+            n: 1
+            page: 8
+            passage_id: tc-p02
+            section: 2.1 Vắc xin tiêm cho trẻ sơ sinh
+          clarify_options: []
+          created_at: '2026-10-09T08:12:00Z'
+          format: text
+          helpful: true
+          id: 58
+          role: assistant
+          searched: []
+          state: answered
+          suggestions:
+          - id: 7
+            kind: practise
+            label_vi: Luyện 3 câu đã duyệt
+            n_items: 3
+            reason_vi: Bạn từng trả lời sai một câu về lịch tiêm chủng trong Đề thi thử số 1.
+          - id: 8
+            kind: add_to_tomorrow
+            label_vi: Thêm vào phiên ngày mai
+            reason_vi: Bạn từng trả lời sai một câu về lịch tiêm chủng trong Đề thi thử số 1.
+          text: Vắc xin viêm gan B mũi sơ sinh được tiêm trong vòng 24 giờ đầu sau sinh. [1]
+          trace:
+          - id: s1
+            kind: search
+            label_vi: Đã tìm trong 9 tài liệu
+            status: done
+          - id: s2
+            kind: read
+            label_vi: 'Đã đọc: Lịch tiêm chủng mở rộng tr. 8'
+            status: done
+          - id: s3
+            kind: check
+            label_vi: Đã kiểm tra 1 nhận định
+            status: done
+          trace_summary:
+            claims_checked: 1
+            claims_removed: 0
+            sources: 1
+    ChatSessionList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ChatSessionSummary'
+          type: array
+          title: Items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      type: object
+      required:
+      - items
+      - next_cursor
+      title: ChatSessionList
+      examples:
+      - items:
+        - id: 12
+          title: Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?
+          updated_at: '2026-10-09T08:12:00Z'
+    ChatSessionRef:
+      properties:
+        id:
+          type: integer
+          title: Id
+      type: object
+      required:
+      - id
+      title: ChatSessionRef
+      examples:
+      - id: 12
+    ChatSessionSummary:
+      properties:
+        id:
+          type: integer
+          title: Id
+        title:
+          type: string
+          title: Title
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - title
+      - updated_at
+      title: ChatSessionSummary
+    Hint:
+      properties:
+        text:
+          type: string
+          title: Text
+          description: Never reveals the correct option.
+        citations:
+          items:
+            $ref: '#/components/schemas/Citation'
+          type: array
+          title: Citations
+        generated:
+          type: boolean
+          title: Generated
+          description: True when a model wrote the text; false when it is the pointer to the source written by code. The screen
+            puts the AI mark on a generated hint only.
+      type: object
+      required:
+      - text
+      - citations
+      - generated
+      title: Hint
+      examples:
+      - citations:
+        - chapter: Chương 2. Đo lường bệnh trạng
+          document: Dịch tễ học cơ bản
+          n: 1
+          page: 58
+          passage_id: dt-p01
+          section: 2.1 Tỷ lệ hiện mắc
+        generated: true
+        text: 'Hãy xác định mẫu số trước: đó là toàn bộ dân số của xã tại thời điểm khảo sát.'
+    NewChatMessage:
+      properties:
+        text:
+          type: string
+          title: Text
+        detail:
+          type: boolean
+          title: Detail
+          description: '"Giải thích thêm": the same question, asked for more detail.'
+          default: false
+        clarifies_message_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Clarifies Message Id
+          description: Set when this message answers a needs_clarification message.
+      additionalProperties: false
+      type: object
+      required:
+      - text
+      title: NewChatMessage
+      examples:
+      - detail: false
+        text: Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?
+    NewChatSession:
+      properties:
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+        module_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Module Id
+          description: Limit retrieval to one học phần.
+        question_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Question Id
+          description: Open the chat from a quiz item.
+      additionalProperties: false
+      type: object
+      title: NewChatSession
+      examples:
+      - {}
+    RatingRequest:
+      properties:
+        helpful:
+          type: boolean
+          title: Helpful
+      additionalProperties: false
+      type: object
+      required:
+      - helpful
+      title: RatingRequest
+      examples:
+      - helpful: true
+    TurnView:
+      properties:
+        turn_id:
+          type: string
+          title: Turn Id
+        kind:
+          type: string
+          title: Kind
+        session_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Session Id
+        turn_status:
+          type: string
+          enum:
+          - queued
+          - running
+          - completed
+          - failed
+          - cancelled
+          - interrupted
+          title: Turn Status
+        result:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Result
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+      type: object
+      required:
+      - turn_id
+      - kind
+      - session_id
+      - turn_status
+      - result
+      - error
+      title: TurnView
   securitySchemes:
     bearer:
       type: http

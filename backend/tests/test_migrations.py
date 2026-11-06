@@ -15,13 +15,20 @@ def test_migrate_is_a_no_op_on_a_migrated_database(conn):
 
 def test_a_database_stamped_0011_without_the_document_flag_gets_it(conn):
     """0011 gained `document.is_synthetic` after its first commit; 0012 adds it where it is missing."""
-    conn.execute("alter table document drop column is_synthetic")
+    # Reconstruct the older schema rather than merely changing its version label while
+    # retaining the later Phase 1 tables/triggers. This fixture uses the disposable test DB.
+    conn.execute("""drop function phase1_invalidate_ai() cascade;
+                    drop table ai_outbox, ai_model_call, ai_purge;
+                    alter table chat_message drop column ai_turn_id;
+                    drop table ai_turn;
+                    alter table document drop column is_synthetic""")
     conn.execute("update alembic_version set version_num = '0011'")
     conn.commit()
     migrate(env("DATABASE_URL_TEST"))
     column = conn.execute("""select count(*) n from information_schema.columns
                              where table_name = 'document' and column_name = 'is_synthetic'""").fetchone()["n"]
-    assert column == 1 and conn.execute("select version_num from alembic_version").fetchone()["version_num"] == "0012"
+    from app.db import head_revision
+    assert column == 1 and conn.execute("select version_num from alembic_version").fetchone()["version_num"] == head_revision()
 
 
 def test_a_migrated_database_is_ready(conn):

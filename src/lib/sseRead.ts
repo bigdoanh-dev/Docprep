@@ -10,18 +10,20 @@ type Reader = { read(): Promise<{ value?: Uint8Array; done: boolean }> };
  *  STREAM_BROKEN, after the events that did arrive; the browser's own (English) message is not shown. */
 export async function readEvents(
   reader: Reader,
-  onEvent: (event: string, data: any) => void,
+  onEvent: (event: string, data: any, id?: string) => void,
 ): Promise<void> {
   const decoder = new TextDecoder();
   let buffer = "";
   const flush = (block: string) => {
     let event = "message";
     let data = "";
+    let id: string | undefined;
     for (const line of block.split("\n")) {
-      if (line.startsWith("event: ")) event = line.slice(7).trim();
-      else if (line.startsWith("data: ")) data += line.slice(6);
+      if (line.startsWith("event:")) event = line.slice(6).trim();
+      else if (line.startsWith("id:")) id = line.slice(3).trim();
+      else if (line.startsWith("data:")) data += (data ? "\n" : "") + line.slice(5).trimStart();
     }
-    if (data) onEvent(event, JSON.parse(data));
+    if (data) onEvent(event, JSON.parse(data), id);
   };
   for (;;) {
     let chunk: { value?: Uint8Array; done: boolean };
@@ -32,6 +34,7 @@ export async function readEvents(
     }
     if (chunk.done) break;
     buffer += decoder.decode(chunk.value, { stream: true });
+    buffer = buffer.replace(/\r\n/g, "\n");
     let cut = buffer.indexOf("\n\n");
     while (cut !== -1) {
       flush(buffer.slice(0, cut));
@@ -39,5 +42,6 @@ export async function readEvents(
       cut = buffer.indexOf("\n\n");
     }
   }
-  if (buffer.trim()) flush(buffer);
+  buffer += decoder.decode();
+  if (buffer.trim()) flush(buffer.replace(/\r\n/g, "\n"));
 }

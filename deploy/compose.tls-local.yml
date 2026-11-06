@@ -1,0 +1,8 @@
+# Local verification only. The generated CA is never installed into system trust.
+services:
+  caddy:
+    environment:
+      SITE_ADDRESS: https://localhost
+      TLS_DIRECTIVE: tls internal
+    ports:
+      - "127.0.0.1:18443:443"

@@ -4,12 +4,13 @@ import sys
 
 import yaml
 
-from app.main import create_app
+from app.application import create_app
 from app.openapi import OPENAPI_PATH, build_openapi, dump_openapi
 
 
 def export_openapi(check: bool) -> int:
-    spec = build_openapi(create_app("mock"))
+    from app.phase_routes import combined_openapi
+    spec = combined_openapi()
     if not check:
         OPENAPI_PATH.write_text(dump_openapi(spec), encoding="utf-8", newline="\n")
         print(f"wrote {OPENAPI_PATH}")

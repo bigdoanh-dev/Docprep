@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ApiError, api, type Citation, type Hint } from "../lib/api";
 import { postSSE } from "../lib/sse";
 import { AiStar } from "./AiStar";
@@ -34,6 +34,7 @@ export function TutorSheet({
   const [hint, setHint] = useState<Hint>();
   const [refused, setRefused] = useState<string>(); // the server will not give a hint here: asking again changes nothing
   const [error, setError] = useState<string>();
+  const hintKey = useRef(crypto.randomUUID());
 
   const explain = async () => {
     setStatus("answering");
@@ -66,7 +67,7 @@ export function TutorSheet({
     setStatus("answering");
     setError(undefined);
     try {
-      setHint(await api.post<Hint>(`/items/${questionId}/hint`));
+      setHint(await api.post<Hint>(`/items/${questionId}/hint`, undefined, { idempotencyKey: hintKey.current }));
     } catch (e) {
       if (e instanceof ApiError && e.code === "hint_unavailable")
         setRefused(e.message);

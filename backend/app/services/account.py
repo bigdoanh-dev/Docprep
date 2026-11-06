@@ -47,6 +47,7 @@ def give_consent(conn, learner_id: int, version: str, service: bool, research: b
 
 
 def withdraw_consent(conn, learner_id: int, kind: str, now: datetime) -> dict:
+    conn.execute("select pg_advisory_xact_lock(71103, %s)", (learner_id,))
     consent_repo.withdraw(conn, learner_id, kind, now)
     return consent_status(conn, learner_id)
 
@@ -108,6 +109,7 @@ def delete_account(conn, principal: Principal, now: datetime) -> dict:
     and all their records; `keep_pseudonymous` removes the identity and keeps the records under the
     pseudonym. The activity log is kept in both, as pseudonymous records.
     """
+    conn.execute("select pg_advisory_xact_lock(71103, %s)", (principal.subject_id,))
     mode = settings()["account_deletion"]["learning_records"]
     if mode not in DELETION_MODES:
         raise RuntimeError(f"account_deletion.learning_records must be one of {', '.join(DELETION_MODES)}; got {mode!r}")

@@ -12,6 +12,7 @@ EXPECTED_TABLES = {
     "card_review", "daily_session", "session_addition", "activity_event",
     "chat_session", "chat_message", "suggestion", "idempotency_key", "audit_log",
     "auth_failure",
+    "ai_turn", "ai_outbox", "ai_model_call", "ai_purge",
 }
 
 

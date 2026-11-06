@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-type Runtime = { mode: string; model_provider: string; demo_content: boolean };
+type Runtime = { mode: string; model_provider: string; demo_content: boolean; service?: string };
 let runtime: Promise<Runtime | null> | undefined;
 
 export function RuntimeNotice() {
@@ -20,13 +20,14 @@ export function RuntimeNotice() {
     };
   }, []);
   if (!info?.demo_content) return null;
+  const version = info.service === "chat" ? "Phase 1" : "Alpha V1";
   return (
     <p className="demo-strip" role="note">
       {info.mode === "mock"
         ? "API mô phỏng — dữ liệu minh họa"
         : info.model_provider === "scripted"
-          ? "Alpha V1 · AI mô phỏng — dữ liệu minh họa"
-          : "Alpha V1 — dữ liệu minh họa"}
+          ? `${version} · AI mô phỏng — dữ liệu minh họa`
+          : `${version} — dữ liệu minh họa`}
     </p>
   );
 }

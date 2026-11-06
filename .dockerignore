@@ -1,0 +1,14 @@
+**/.venv
+**/__pycache__
+**/.pytest_cache
+node_modules
+.git
+.local
+test-results
+backups
+.env
+.env.*
+**/.env
+**/.env.*
+**/.replay
+dist

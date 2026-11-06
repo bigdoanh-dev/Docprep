@@ -17,3 +17,5 @@ fsrs>=5
 openpyxl==3.1.5
 pytest
 httpx
+redis>=5.2,<7
+prometheus-client>=0.21,<1

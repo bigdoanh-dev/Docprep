@@ -1,0 +1,11 @@
+FROM python:3.13-slim
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+WORKDIR /srv/backend
+COPY backend/requirements-lock.txt ./requirements-lock.txt
+RUN pip install --no-cache-dir -r requirements-lock.txt && useradd --uid 10001 --create-home runtime
+COPY backend/ ./
+COPY deploy/grants.sql ./phase-grants.sql
+COPY openapi.yaml /srv/openapi.yaml
+USER runtime
+EXPOSE 8000
+CMD ["uvicorn", "app.main_business:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"]

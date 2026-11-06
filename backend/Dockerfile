@@ -1,4 +1,5 @@
 # Mock server: the API contract's examples, with no database and no model key.
+# Phase 1 uses deploy/Dockerfile.backend via deploy/compose.phase1.yml instead.
 FROM python:3.13-slim
 
 WORKDIR /srv/backend

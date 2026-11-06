@@ -107,6 +107,7 @@ class ChatSuggestion(Schema):
 class StatusEvent(Schema):
     """SSE event `status`."""
     status: Literal["queued", "answering", "checking_sources"]
+    turn_id: str | None = None
     position: int | None = Field(default=None, description="Place in the queue; only with status queued.")
 
     model_config = with_example({"status": "answering", "position": None})
@@ -135,8 +136,11 @@ class AnswerEvent(Schema):
 
 class FinalEvent(Schema):
     """SSE event `final`: always the last event of the stream."""
-    state: ChatState
-    message_id: int
+    state: ChatState | None
+    message_id: int | None
+    turn_id: str | None = None
+    turn_status: Literal['completed', 'failed', 'cancelled', 'interrupted'] | None = None
+    error: dict | None = None
     format: AnswerFormat = "text"
     trace_summary: TraceSummary | None = None
     clarify_options: list[ClarifyOption] = []

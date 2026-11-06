@@ -129,6 +129,8 @@ export function applyEvent(view: TurnView, event: string, data: any): TurnView {
     };
   }
   if (event === "final") {
+    if (data.error || (data.turn_status && data.turn_status !== "completed"))
+      return failTurn(view, data.error?.message_vi ?? "Lượt AI đã dừng.");
     return {
       ...view,
       phase: "done",

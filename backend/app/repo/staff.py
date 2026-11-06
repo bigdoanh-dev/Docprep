@@ -2,7 +2,7 @@
 
 
 def get(conn, staff_id: int) -> dict | None:
-    return conn.execute("select * from staff_user where id = %s", (staff_id,)).fetchone()
+    return conn.execute("select id,role,active from staff_user where id = %s", (staff_id,)).fetchone()
 
 
 def find_by_email(conn, email: str) -> dict | None:

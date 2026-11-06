@@ -35,7 +35,8 @@ test("learner: activate, consent, learn, cards, exam, progress and cited scripte
   const unauthorized = await request.get("/api/v1/me");
   expect(unauthorized.status()).toBe(401);
   expect(unauthorized.headers()["content-type"]).toContain("application/json");
-  const code = execFileSync(python, ["-m", "seed.browser"], {
+  const code = process.env.PHASE1_URL ? execFileSync("docker", ["compose", "--env-file", ".env.phase1", "-f", "deploy/compose.phase1.yml",
+    "run", "--rm", "--no-deps", "seed", "python", "-m", "seed.browser"], { cwd: root, encoding: "utf8" }).trim() : execFileSync(python, ["-m", "seed.browser"], {
     cwd: path.join(root, "backend"),
     encoding: "utf8",
   }).trim();

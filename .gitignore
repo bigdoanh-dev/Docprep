@@ -3,6 +3,9 @@ dist/
 .env.local
 *.tsbuildinfo
 .env
+.env.phase1
+.env.phase1.*
+!.env.phase1.example
 .venv/
 __pycache__/
 *.py[cod]

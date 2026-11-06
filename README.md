@@ -1,4 +1,24 @@
-# AI Tutor / DocPrep — Alpha V1 local
+# AI Tutor / DocPrep
+
+**Phase 1 local:** Business API ×2, Chat ×2, Redis, PostgreSQL và Caddy trong môi trường riêng; generation dùng scripted cho dev/test, chưa mở GPU thật. Chạy từ thư mục này:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup-phase1.ps1
+```
+
+Mở **http://127.0.0.1:18880**. Xem [hướng dẫn Phase 1](docs/phase1/handover.md), [kiến trúc](docs/phase1/architecture.md) và [báo cáo kiểm thử](docs/phase1/verification.md). Lệnh Alpha dưới đây vẫn dành cho runtime monolith riêng.
+
+[Kế hoạch tích hợp YHDP theo tài liệu kiến trúc của Lead](docs/phase1/integration-plan.md) đối chiếu các yêu cầu và thứ tự triển khai. URL Ollama được lưu riêng trong `backend/.env`; runtime Phase 1 hiện chưa đọc biến này hoặc tự chuyển từ scripted sang model thật.
+
+Nếu muốn sửa frontend bằng Vite ở cổng **5190**, thêm hoặc sửa dòng sau trong `.env.local` tại thư mục `Docprep_FE`:
+
+```dotenv
+BACKEND_URL=http://127.0.0.1:18880
+```
+
+Sau đó chạy `npm.cmd run dev -- --strictPort` từ thư mục này. Nếu Vite đang chạy, dừng bằng `Ctrl+C` rồi chạy lại để nạp cấu hình. Chỉ chạy một Vite trên cổng 5190. Lệnh npm này chỉ mở frontend; backend Phase 1 phải đang chạy qua Docker như bước trên. Nếu để proxy trỏ tới cổng 8000 khi chỉ chạy Phase 1, giao diện sẽ gặp lỗi API 502.
+
+## Alpha V1 local
 
 Frontend React/Vite kết nối FastAPI và PostgreSQL thật. AI chạy **kịch bản cố định, không gọi API mô hình**. Nội dung và số liệu cohort chỉ dùng minh họa, chưa được thẩm định để mở pilot.
 
@@ -16,6 +36,8 @@ Setup tạo `.env` từ `.env.example` nếu chưa có, cài dependency theo loc
 Nếu chỉ cần người học và chưa cần dashboard: thêm `-SkipCohort` vào lệnh setup. Tạo cohort lần đầu có thể mất vài phút.
 
 ## Chạy dự án
+
+Các lệnh trong phần này chạy **Alpha V1 monolith**. Khi dùng Alpha, đặt `BACKEND_URL=http://127.0.0.1:8000` trong `.env.local` nếu file này đang cấu hình cho Phase 1, rồi khởi động lại Vite.
 
 Terminal 1:
 

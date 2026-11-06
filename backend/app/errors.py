@@ -11,7 +11,8 @@ class ApiError(Exception):
 
 
 def error_response(status: int, code: str, message_vi: str, details: dict | None = None) -> JSONResponse:
-    return JSONResponse({"error": {"code": code, "message_vi": message_vi, "details": details}}, status_code=status)
+    headers = {"Retry-After": "5"} if status == 429 and code == "ai_queue_full" else None
+    return JSONResponse({"error": {"code": code, "message_vi": message_vi, "details": details}}, status_code=status, headers=headers)
 
 
 async def api_error_handler(_: Request, exc: ApiError) -> JSONResponse:

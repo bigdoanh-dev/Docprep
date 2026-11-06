@@ -7,7 +7,8 @@ from app.openapi import OPENAPI_PATH, build_openapi, dump_openapi
 
 def test_committed_file_matches_the_code():
     committed = yaml.safe_load(OPENAPI_PATH.read_text(encoding="utf-8"))
-    assert committed == build_openapi(create_app("mock")), "run: python -m app.cli export-openapi"
+    from app.phase_routes import combined_openapi
+    assert committed == combined_openapi(), "run: python -m app.cli export-openapi"
 
 
 def test_spec_has_bearer_security_and_no_legacy_paths():

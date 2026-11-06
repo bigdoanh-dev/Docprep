@@ -1,0 +1,199 @@
+name: docprep-phase1
+x-runtime: &runtime
+  build:
+    context: ..
+    dockerfile: deploy/Dockerfile.backend
+  image: docprep-phase1-backend:local
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  networks: [private]
+  stop_grace_period: 150s
+  healthcheck:
+    test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/readyz', timeout=3)"]
+    interval: 5s
+    timeout: 4s
+    retries: 20
+x-business-env: &business-env
+  APP_MODE: real
+  APP_ENV: ${APP_ENV:?set APP_ENV}
+  PHASE_MODEL_PROVIDER: disabled
+  DATABASE_URL: postgresql://phase_business:${BUSINESS_DB_PASSWORD:?required}@db:5432/phase1
+  PHASE_POOL_MAX: ${PHASE_POOL_MAX:-5}
+x-chat-env: &chat-env
+  APP_MODE: real
+  APP_ENV: ${APP_ENV:?set APP_ENV}
+  PHASE_MODEL_PROVIDER: ${PHASE_MODEL_PROVIDER:-disabled}
+  DATABASE_URL: postgresql://phase_chat:${CHAT_DB_PASSWORD:?required}@db:5432/phase1
+  REDIS_URL: redis://:${REDIS_PASSWORD:?required}@redis:6379/0
+  PHASE_REDIS_NAMESPACE: docprep:phase1
+  PHASE_POOL_MAX: ${PHASE_POOL_MAX:-5}
+  PHASE_ACTIVE_TURNS: ${PHASE_ACTIVE_TURNS:-4}
+  PHASE_MAX_WAITING: ${PHASE_MAX_WAITING:-20}
+  PHASE_QUEUE_SECONDS: ${PHASE_QUEUE_SECONDS:-60}
+  PHASE_TURN_SECONDS: ${PHASE_TURN_SECONDS:-120}
+  PHASE_MODEL_SLOTS: ${PHASE_MODEL_SLOTS:-4}
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: phase1
+      POSTGRES_USER: phase_owner
+      POSTGRES_PASSWORD: ${OWNER_DB_PASSWORD:?required}
+      BUSINESS_DB_PASSWORD: ${BUSINESS_DB_PASSWORD:?required}
+      CHAT_DB_PASSWORD: ${CHAT_DB_PASSWORD:?required}
+      MIGRATOR_DB_PASSWORD: ${MIGRATOR_DB_PASSWORD:?required}
+    volumes:
+      - phase_pg:/var/lib/postgresql/data
+      - ./init-roles.sh:/docker-entrypoint-initdb.d/10-roles.sh:ro
+      - phase_backups:/backups
+    networks: [private]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U phase_owner -d phase1"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  redis:
+    image: redis:7.4-alpine
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?required}
+    command: [sh, -c, 'exec redis-server --save "" --appendonly no --requirepass "$$REDIS_PASSWORD"']
+    networks: [private]
+    healthcheck:
+      test: [CMD-SHELL, 'REDISCLI_AUTH="$$REDIS_PASSWORD" redis-cli ping | grep -q PONG']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  migrate:
+    <<: *runtime
+    restart: "no"
+    environment:
+      APP_ENV: ${APP_ENV:?required}
+      DATABASE_URL: postgresql://phase_migrator:${MIGRATOR_DB_PASSWORD:?required}@db:5432/phase1
+    command: [python, -m, app.phase_cli, migrate]
+    depends_on:
+      db: {condition: service_healthy}
+    healthcheck: {disable: true}
+  seed:
+    <<: *runtime
+    profiles: [tools]
+    restart: "no"
+    environment:
+      APP_ENV: ${APP_ENV:?required}
+      MODEL_PROVIDER: scripted
+      DATABASE_URL: postgresql://phase_owner:${OWNER_DB_PASSWORD:?required}@db:5432/phase1
+    command: [python, -m, app.cli, seed-alpha]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck: {disable: true}
+    volumes:
+      - ../.local:/artifacts
+      - ../backend:/srv/backend:ro
+  api-1:
+    <<: *runtime
+    environment: *business-env
+    command: [uvicorn, app.main_business:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --forwarded-allow-ips, "172.30.41.254"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  api-2:
+    <<: *runtime
+    environment: *business-env
+    command: [uvicorn, app.main_business:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --forwarded-allow-ips, "172.30.41.254"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  chat-1:
+    <<: *runtime
+    environment: *chat-env
+    command: [uvicorn, app.main_chat:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --forwarded-allow-ips, "172.30.41.254"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+  chat-2:
+    <<: *runtime
+    environment: *chat-env
+    command: [uvicorn, app.main_chat:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --forwarded-allow-ips, "172.30.41.254"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+  caddy:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.web
+    restart: unless-stopped
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-http://:80}
+      TLS_DIRECTIVE: ""
+    ports:
+      - "127.0.0.1:${PHASE_HTTP_PORT:-18880}:80"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      private: {ipv4_address: 172.30.41.254}
+    depends_on: [api-1, api-2, chat-1, chat-2]
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles: [monitoring]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks: [private]
+  backup:
+    image: postgres:16-alpine
+    profiles: [operations]
+    restart: unless-stopped
+    environment:
+      PGHOST: db
+      PGUSER: phase_owner
+      PGDATABASE: phase1
+      PGPASSWORD: ${OWNER_DB_PASSWORD:?required}
+    command: [sh, /backup.sh]
+    volumes:
+      - ./backup.sh:/backup.sh:ro
+      - phase_backups:/backups
+    networks: [private]
+    depends_on:
+      db: {condition: service_healthy}
+  test:
+    <<: *runtime
+    profiles: [tools]
+    restart: "no"
+    read_only: false
+    environment:
+      APP_ENV: test
+      PHASE_MODEL_PROVIDER: scripted
+      MODEL_PROVIDER: scripted
+      DATABASE_URL: postgresql://phase_owner:${OWNER_DB_PASSWORD:?required}@db:5432/phase1
+      PHASE_TEST_DATABASE_URL: postgresql://phase_owner:${OWNER_DB_PASSWORD:?required}@db:5432/phase1_test
+      REDIS_URL: redis://:${REDIS_PASSWORD:?required}@redis:6379/0
+    volumes:
+      - ../backend:/srv/backend:ro
+      - ./:/srv/deploy:ro
+      - ../.local:/artifacts
+    command: [python, -m, pytest, tests_phase1, -q, --tb=short, -p, no:cacheprovider, --junitxml=/artifacts/phase1-tests.xml]
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    healthcheck: {disable: true}
+  grafana:
+    image: grafana/grafana:12.1.0
+    profiles: [monitoring]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?required}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports: ["127.0.0.1:13000:3000"]
+    volumes:
+      - ./grafana:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    networks: [private]
+volumes:
+  phase_pg:
+  phase_backups:
+  caddy_data:
+  caddy_config:
+  grafana_data:
+networks:
+  private:
+    ipam:
+      config: [{subnet: 172.30.41.0/24}]

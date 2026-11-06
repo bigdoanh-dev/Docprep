@@ -54,7 +54,8 @@ def test_every_documented_query_parameter_is_accepted(method, path, route, mock_
 
 # 2. The schema the server serves was not the contract.
 def test_served_openapi_is_the_committed_contract(mock_client):
-    assert mock_client.get("/openapi.json").json() == yaml.safe_load(OPENAPI_PATH.read_text(encoding="utf-8"))
+    # Alpha serves its own 55 operations; the repository artifact combines both Phase 1 apps.
+    assert mock_client.get("/openapi.json").json() == build_openapi(mock_client.app)
 
 
 # 3. Stream operations also advertised a JSON 200.

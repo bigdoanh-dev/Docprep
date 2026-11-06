@@ -1,0 +1,53 @@
+{
+    admin off
+}
+{$SITE_ADDRESS:http://:80} {
+    {$TLS_DIRECTIVE}
+    # No request-body/header logging. Application logs contain only sanitised metadata.
+    encode zstd gzip
+    route {
+        @private path /metrics /readyz /ops/* /docs* /redoc* /openapi.json /api/metrics /api/readyz /api/ops/* /api/docs* /api/openapi.json
+        respond @private 404
+        @api_prefix path /api /api/*
+        vars @api_prefix api_request true
+        uri strip_prefix /api
+        @suggestion path_regexp suggestion ^/v1/chat/suggestions/[^/]+/accept$
+        reverse_proxy @suggestion api-1:8000 api-2:8000 {
+            lb_policy least_conn
+            health_uri /readyz
+            health_interval 5s
+            health_timeout 2s
+        }
+        @chat path_regexp chat ^/v1/(chat(/.*)?|items/[^/]+/(hint|explain)|passages/[^/]+|messages/[^/]+/rating)$
+        reverse_proxy @chat chat-1:8000 chat-2:8000 {
+            lb_policy least_conn
+            health_uri /readyz
+            health_interval 5s
+            health_timeout 2s
+            flush_interval -1
+        }
+        reverse_proxy /health chat-1:8000 chat-2:8000 {
+            lb_policy least_conn
+            health_uri /readyz
+            health_interval 5s
+            health_timeout 2s
+        }
+        @business path /v1 /v1/*
+        reverse_proxy @business api-1:8000 api-2:8000 {
+            lb_policy least_conn
+            health_uri /readyz
+            health_interval 5s
+            health_timeout 2s
+        }
+        @unknown_api vars api_request true
+        header @unknown_api Content-Type application/json
+        respond @unknown_api `{"error":{"code":"not_found","message_vi":"Không tìm thấy API."}}` 404
+        root * /srv/web
+        try_files {path} /index.html
+        file_server
+    }
+    handle_errors {
+        header Content-Type application/json
+        respond `{"error":{"code":"upstream_unavailable","message_vi":"Dịch vụ tạm thời chưa sẵn sàng."}}` {err.status_code}
+    }
+}

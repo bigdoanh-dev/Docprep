@@ -12,7 +12,7 @@ export default defineConfig({
   ],
   use: {
     actionTimeout: 15_000,
-    baseURL: "http://127.0.0.1:5190",
+    baseURL: process.env.PHASE1_URL || "http://127.0.0.1:5190",
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },
@@ -27,7 +27,7 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
+  webServer: process.env.PHASE1_URL ? undefined : {
     command: "npm run dev -- --strictPort",
     url: "http://127.0.0.1:5190",
     reuseExistingServer: !process.env.CI,

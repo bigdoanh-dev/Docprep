@@ -30,6 +30,9 @@ STREAM_DESCRIPTION = (
                  "`not_answered`: `question_id` names a question the learner has not answered yet. "
                  "`tutor_unavailable`: that question is part of an exam the learner is sitting.")))
 def create_chat_session(request: Request, body: NewChatSession, conn=Conn, now=Now, learner=Learner):
+    if getattr(request.app.state, "service", "alpha") == "chat" and body.title:
+        from app.privacy import clean
+        body.title = clean(body.title)
     return mock_example(request, ChatSessionRef) or chat_service.create_session(
         conn, learner, body.title, body.module_id, body.question_id, now)
 
