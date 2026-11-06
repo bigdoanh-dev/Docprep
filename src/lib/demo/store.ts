@@ -1,3 +1,4 @@
+import { availableCards } from "./cardQueue";
 import { groupForQuestion, summarizeAnswers } from "../learningAnalytics";
 import { getActor } from "../../app/identity";
 import rawExamples from "./examples.json";
@@ -296,10 +297,18 @@ function practice(s: any, id: number) {
     answered: p.items.filter((i: any) => i.chosen !== null).length,
   };
 }
+function dueCards(s: any) {
+  return availableCards(
+    s.cards,
+    s.cardReviewEvents ?? [],
+    s.me,
+    day(),
+    Date.now(),
+  );
+}
+
 function sessionToday(s: any) {
-  const due = s.cards.filter(
-    (c: any) => !c.suspended && new Date(c.due_at).getTime() <= Date.now(),
-  ).length;
+  const due = dueCards(s).length;
   const p = practice(s, 31);
   const stepUnit = unitView(s, "u-dt-01");
   const steps = [
@@ -750,29 +759,59 @@ export async function demoRequest(
       return unitView(s, id);
     }
     if (p === "/cards/due") {
-      const all = s.cards.filter(
-        (c: any) => !c.suspended && Date.parse(c.due_at) <= Date.now(),
-      );
-      return { items: all, total_due: all.length };
-    }
-    if (p === "/decks")
+      const all = dueCards(s);
+      const limit = Number(parsed.searchParams.get("limit"));
       return {
-        items: seed.blueprint.groups.slice(0, 1).map((g: any) => ({
-          module_id: "g1",
-          name: g.name,
-          short_name: g.short_name,
-          new: s.cards.filter((c: any) => !c.reviews).length,
-          learning: s.cards.filter((c: any) => c.reviews).length,
-          due: s.cards.filter(
-            (c: any) => !c.suspended && Date.parse(c.due_at) <= Date.now(),
-          ).length,
-        })),
+        items: Number.isInteger(limit) && limit > 0 ? all.slice(0, limit) : all,
+        total_due: all.length,
       };
+    }
+    if (p === "/decks") {
+      const available = new Set(dueCards(s).map((card: any) => card.id));
+      return {
+        items: seed.blueprint.groups.flatMap((group: any) => {
+          const cards = s.cards.filter((card: any) => {
+            const q = question(card.source_question_id);
+            return (
+              !card.suspended &&
+              q &&
+              groupForQuestion(q, seed.blueprint.groups)?.id === group.id
+            );
+          });
+          return cards.length
+            ? [
+                {
+                  module_id: `g${group.id}`,
+                  name: group.name,
+                  short_name: group.short_name,
+                  new: cards.filter((card: any) => !card.reviews).length,
+                  learning: cards.filter((card: any) => card.reviews > 0)
+                    .length,
+                  due: cards.filter((card: any) => available.has(card.id))
+                    .length,
+                },
+              ]
+            : [];
+        }),
+      };
+    }
     const cr = p.match(/^\/cards\/(\d+)(?:\/(reviews))?$/);
     if (cr) {
       const c = s.cards.find((c: any) => c.id === Number(cr[1]));
       if (!c) fail(404, "card_not_found", "Không tìm thấy thẻ.");
       if (cr[2]) {
+        if (!dueCards(s).some((card: any) => card.id === c.id))
+          fail(
+            409,
+            "daily_review_limit",
+            "Thẻ chưa đến hạn hoặc đã đạt giới hạn ôn hôm nay.",
+          );
+        s.cardReviewEvents ??= [];
+        s.cardReviewEvents.push({
+          card_id: c.id,
+          date: day(),
+          first_review: c.reviews === 0,
+        });
         c.reviews++;
         c.due_at = new Date(
           Date.now() + c.preview[body.rating] * 1000,
@@ -780,9 +819,7 @@ export async function demoRequest(
         return {
           card_id: c.id,
           due_at: c.due_at,
-          remaining_due: s.cards.filter(
-            (c: any) => !c.suspended && Date.parse(c.due_at) <= Date.now(),
-          ).length,
+          remaining_due: dueCards(s).length,
         };
       }
       Object.assign(c, body);

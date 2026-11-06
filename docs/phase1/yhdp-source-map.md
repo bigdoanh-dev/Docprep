@@ -2,6 +2,14 @@
 
 Nguồn cố định: `sync/yhdp-frontend-api-v1` → `c6615866028162b21c81ebc0a9939ab71e9ebed0`. Baseline Phase 1: checkpoint `1ee42fe`. Nhánh triển khai `feat/phase1-yhdp-integration`. Không merge nguyên nhánh nguồn vì backend, auth, database và streaming khác contract Phase 1.
 
+## Khôi phục các sửa UI trong lịch sử nhánh nguồn
+
+Đối chiếu lại remote ngày 06/11/2026: đầu nhánh nguồn là `e9e3af7` (chỉ thêm README sau `c661586`). Tuy nhiên **không thể suy ra đã giữ đủ sửa UI chỉ từ khoảng diff này**: snapshot `965d5b3` đã ghi đè một phần các sửa trước đó ở `aeef651` và `18ac4cf`.
+
+Đã ghép lại các sửa trích dẫn/mobile từ hai commit này lên bản tích hợp sau `45b9565`: onboarding có tiến trình, hồ sơ gọn, ẩn navigation/launcher AI và khóa học phần chưa khả dụng; giải thích thu gọn, gom nguồn trùng, thông báo đánh giá/phản ánh; lịch theo ngày chọn, khôi phục kế hoạch và giới hạn thẻ trong demo. Giữ layout Home mới, activation/token/SSE, dữ liệu học/thi server và các thông báo tính năng chưa hỗ trợ của Phase 1. Không đưa workflow/bộ dữ liệu nghiệp vụ 54 vấn đề hoặc SQLite vào backend để phục vụ thay đổi UI.
+
+Các giới hạn thẻ và kế hoạch chỉ lưu local được ghi rõ cho demo; UI live nói đúng lịch ôn do server tính. Backend/API/schema không thay đổi trong bản sửa UI này. Kiểm chứng mới nằm cuối [báo cáo](yhdp-verification.md).
+
 ## Mã tái sử dụng
 
 | Nguồn YHDP | Đích Phase 1 | Thay đổi tại ranh giới |

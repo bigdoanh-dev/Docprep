@@ -2,7 +2,7 @@ import { SaveQuestion } from "../../components/SaveQuestion";
 import { SpecialtyAnalysis } from "../progress/SpecialtyAnalysis";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { CitationChip, useSourceSheet } from "../../components/Answer";
+import { QuestionSources, useSourceSheet } from "../../components/Answer";
 import { Icon } from "../../components/Icon";
 import { LoadError, Loading } from "../../components/Status";
 import { TabBar } from "../../components/TabBar";
@@ -382,14 +382,10 @@ export function AnswerReview() {
                     Giải thích thêm
                   </button>
                 )}
-                {item.citations.map((c) => (
-                  <CitationChip
-                    key={c.passage_id}
-                    citation={c}
-                    onOpen={source.show}
-                    label={c.page ? `tr. ${c.page}` : (c.article ?? "Nguồn")}
-                  />
-                ))}
+                <QuestionSources
+                  citations={item.citations}
+                  onOpen={source.show}
+                />
               </div>
             </div>
           </>

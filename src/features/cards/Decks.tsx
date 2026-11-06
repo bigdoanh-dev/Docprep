@@ -4,10 +4,12 @@ import { LoadError, Loading } from "../../components/Status";
 import { TabBar } from "../../components/TabBar";
 import { api, type Deck, type Listed } from "../../lib/api";
 import { useLoad } from "../../lib/hooks";
+import { useActor } from "../../app/identity";
 
 // Bộ thẻ (FR-LRN-34): one deck per học phần with its new, learning and due cards. R1.0 simple: no
 // leech deck, no deck detail, no browser.
 export function Decks() {
+  const live = useActor()?.mode === "live";
   const { data, error, reload } = useLoad(
     () => api.get<Listed<Deck>>("/decks"),
     [],
@@ -51,7 +53,7 @@ export function Decks() {
               <div className="row" style={{ alignItems: "flex-start" }}>
                 <Stat
                   value={sum((d) => d.new)}
-                  label="Mới"
+                  label="Thẻ chưa học"
                   color="var(--new)"
                 />
                 <Stat
@@ -63,17 +65,29 @@ export function Decks() {
               </div>
               {due > 0 && (
                 <Link to="/luyen-tap/on-the" className="btn primary lg block">
-                  Ôn {due} thẻ
+                  Bắt đầu học thẻ · {due} thẻ
                 </Link>
+              )}
+              <p className="muted small">
+                {live
+                  ? "Thẻ đến hạn và lịch ôn được tính từ dữ liệu đã lưu trên máy chủ."
+                  : "Thẻ đến hạn là số thẻ có thể ôn hôm nay, theo giới hạn trong cài đặt."}
+              </p>
+              {due === 0 && (
+                <p className="muted small">
+                  {live
+                    ? "Hôm nay chưa có thẻ đến hạn. Tiếp tục học và trả lời câu hỏi để tạo thẻ ôn."
+                    : "Hôm nay chưa có thẻ khả dụng. Bạn có thể xem thư viện hoặc điều chỉnh giới hạn trong cài đặt ôn."}
+                </p>
               )}
             </section>
             <table className="list counts" aria-label="Bộ thẻ theo học phần">
               <thead>
                 <tr>
                   <th scope="col">Bộ thẻ</th>
-                  <th scope="col">Mới</th>
-                  <th scope="col">Học</th>
-                  <th scope="col">Ôn</th>
+                  <th scope="col">Chưa học</th>
+                  <th scope="col">Đang học</th>
+                  <th scope="col">Đến hạn</th>
                 </tr>
               </thead>
               <tbody>

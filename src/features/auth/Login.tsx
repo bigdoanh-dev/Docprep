@@ -132,11 +132,11 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
           <h1 id="login-title">
             {mode === "demo" ? "Trải nghiệm DocPrep" : "Đăng nhập"}
           </h1>
-          <p className="muted">
-            {mode === "demo"
-              ? "Dữ liệu mẫu để xem trước các màn hình chính."
-              : "Chọn đúng loại tài khoản để tiếp tục."}
-          </p>
+          {mode === "demo" && (
+            <p className="muted">
+              Dữ liệu mẫu để xem trước các màn hình chính.
+            </p>
+          )}
         </div>
 
         {mode !== "demo" ? (

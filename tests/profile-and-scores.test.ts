@@ -30,10 +30,19 @@ function scoresHtml(scores: ProgressSkills["mock_scores"]) {
 }
 
 test("learner profile follows account audience and organisation without offering unsupported professions", () => {
-  const graduate = renderToStaticMarkup(createElement(LearnerProfilePanel, { me }));
+  const graduate = renderToStaticMarkup(
+    createElement(LearnerProfilePanel, { me }),
+  );
   assert.match(graduate, /Hồ sơ người học/);
-  assert.match(graduate, /hai nhóm người học/);
-  assert.match(graduate, /sinh viên Y học dự phòng năm cuối/);
+  assert.doesNotMatch(
+    graduate,
+    /hai nhóm người học|cơ sở đào tạo cấp tài khoản quản lý/,
+  );
+  const compact = renderToStaticMarkup(
+    createElement(LearnerProfilePanel, { me, compact: true }),
+  );
+  assert.match(compact, /Nhóm người học:.*Đã tốt nghiệp/);
+  assert.doesNotMatch(compact, /<dl|Chương trình ôn tập/);
   assert.match(graduate, /<dd>Đã tốt nghiệp<\/dd>/);
   assert.match(graduate, /Cơ sở đào tạo A/);
   assert.doesNotMatch(

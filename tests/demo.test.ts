@@ -374,3 +374,32 @@ test("module filters combine metadata without inventing core issue mappings for 
     0,
   );
 });
+
+test("daily card limits agree across decks, queue and review responses", async () => {
+  await ready();
+  const state = readStore();
+  state.me.new_cards_per_day = 1;
+  state.me.max_reviews_per_day = 2;
+  writeStore(state);
+  const due = await demoRequest("GET", "/cards/due");
+  assert.equal(due.total_due, 1);
+  assert.equal(
+    (await demoRequest("GET", "/decks")).items.reduce(
+      (sum: number, d: any) => sum + d.due,
+      0,
+    ),
+    1,
+  );
+  const first = await demoRequest("POST", `/cards/${due.items[0].id}/reviews`, {
+    rating: 1,
+  });
+  assert.equal(first.remaining_due, 0);
+  const updated = readStore();
+  updated.cards.find((c: any) => c.id === due.items[0].id).due_at = new Date(
+    Date.now() - 1,
+  ).toISOString();
+  writeStore(updated);
+  assert.equal((await demoRequest("GET", "/cards/due")).total_due, 1);
+  await demoRequest("POST", `/cards/${due.items[0].id}/reviews`, { rating: 3 });
+  assert.equal((await demoRequest("GET", "/cards/due")).total_due, 0);
+});

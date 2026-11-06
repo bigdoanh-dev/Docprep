@@ -2,21 +2,26 @@ import { useState } from "react";
 import { useActor } from "../../app/identity";
 import { FutureNotice } from "../../components/ui/CapabilityNotice";
 import { useFeedback } from "../../components/ui/Feedback";
-import { demoTransaction } from "../../lib/demo/store";
+import { demoTransaction, readStore } from "../../lib/demo/store";
 export function StudyPlan() {
   const actor = useActor()!,
     notify = useFeedback();
-  const [minutes, setMinutes] = useState(30),
-    [time, setTime] = useState("20:00"),
-    [days, setDays] = useState<string[]>(["T2", "T3", "T4", "T5", "T6"]),
-    [proposal, setProposal] = useState<any>(null);
+  const [saved] = useState(() =>
+    actor.mode === "demo" ? readStore().studyPlan : null,
+  );
+  const [minutes, setMinutes] = useState(saved?.minutes ?? 30),
+    [time, setTime] = useState(saved?.time ?? "20:00"),
+    [days, setDays] = useState<string[]>(
+      saved?.days ?? ["T2", "T3", "T4", "T5", "T6"],
+    ),
+    [proposal, setProposal] = useState<any>(saved);
   return (
     <div>
       <header className="page-heading">
         <h1>Đề xuất lịch học</h1>
         <p>Phân bổ thời gian theo quỹ giờ bạn có thể dành cho việc ôn tập.</p>
       </header>
-      <FutureNotice name="Lộ trình dài hạn" />
+      {actor.mode !== "demo" && <FutureNotice name="Lộ trình dài hạn" />}
       <div className="settings-grid">
         <form
           className="panel stack"
@@ -39,6 +44,7 @@ export function StudyPlan() {
             Phút học mỗi buổi
             <input
               type="number"
+              required
               min={15}
               max={180}
               value={minutes}
@@ -49,11 +55,17 @@ export function StudyPlan() {
             Giờ bắt đầu
             <input
               type="time"
+              required
               value={time}
               onChange={(e) => setTime(e.target.value)}
             />
           </label>
-          <div className="day-picker">
+          <p className="label">Ngày học trong tuần</p>
+          <div
+            className="day-picker"
+            role="group"
+            aria-label="Ngày học trong tuần"
+          >
             {["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map((d) => (
               <button
                 type="button"
@@ -74,7 +86,14 @@ export function StudyPlan() {
           </div>
           <button
             className="btn primary"
-            disabled={actor.mode !== "demo" || !days.length}
+            disabled={
+              actor.mode !== "demo" ||
+              !days.length ||
+              !Number.isInteger(minutes) ||
+              minutes < 15 ||
+              minutes > 180 ||
+              !time
+            }
           >
             Xem đề xuất minh họa
           </button>
@@ -92,8 +111,8 @@ export function StudyPlan() {
                 <li>Học tiếp: {proposal.continue} phút</li>
               </ol>
               <p className="notice">
-                Chỉ là phân bổ thời gian minh họa; chưa tính đủ tiên quyết và
-                khoảng cách năng lực như bộ máy R2.
+                Kế hoạch minh họa được lưu trên thiết bị này. Bạn có thể điều
+                chỉnh thời lượng và ngày học.
               </p>
               <button
                 className="btn primary"
@@ -109,10 +128,13 @@ export function StudyPlan() {
               </button>
             </>
           ) : (
-            <p className="empty">
-              Nhập quỹ thời gian để xem đề xuất. Không có thay đổi nào được áp
-              dụng tự động.
-            </p>
+            <div className="empty">
+              <h2>Lịch học của bạn</h2>
+              <p>
+                Chọn thời lượng, giờ bắt đầu và ngày học, sau đó nhấn “Xem đề
+                xuất minh họa”.
+              </p>
+            </div>
           )}
         </section>
       </div>

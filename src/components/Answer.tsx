@@ -1,3 +1,4 @@
+import { groupCitations } from "../lib/citations";
 import { useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -62,6 +63,71 @@ export function CitationChip({
 }
 
 // Source view: the passage behind a citation, opened over the current screen.
+export function QuestionSources({
+  citations,
+  onOpen,
+}: {
+  citations: Citation[];
+  onOpen: (citation: Citation) => void;
+}) {
+  const groups = groupCitations(citations);
+  return (
+    <section
+      className="stack"
+      style={{ width: "100%", gap: 8 }}
+      aria-label="Trích dẫn tài liệu"
+    >
+      <p className="label">Trích dẫn tài liệu</p>
+      {citations.length > 0 ? (
+        <div className="row" style={{ flexWrap: "wrap", gap: 8 }}>
+          {groups.map(([document, entries]) =>
+            entries.length === 1 ? (
+              <CitationChip
+                key={document}
+                citation={entries[0]}
+                onOpen={onOpen}
+                label="Nguồn"
+              />
+            ) : (
+              <details key={document} className="source-group">
+                <summary>
+                  {document} · {entries.length} đoạn trích
+                </summary>
+                <div className="stack">
+                  {entries.map((citation, index) => (
+                    <button
+                      type="button"
+                      key={citation.passage_id}
+                      className="chip"
+                      onClick={() => onOpen(citation)}
+                    >
+                      Đoạn {index + 1}
+                      {sourceLine(citation) ? ` · ${sourceLine(citation)}` : ""}
+                    </button>
+                  ))}
+                </div>
+              </details>
+            ),
+          )}
+        </div>
+      ) : (
+        <p className="muted small">
+          Câu hỏi này chưa được gắn tài liệu tham chiếu.
+        </p>
+      )}
+    </section>
+  );
+}
+
+export function ExplanationDetails({ children }: { children: ReactNode }) {
+  return (
+    <details className="explanation-details">
+      <summary>Xem giải thích chi tiết</summary>
+      <div className="stack">{children}</div>
+    </details>
+  );
+}
+
 export function SourceSheet({
   citation,
   onClose,

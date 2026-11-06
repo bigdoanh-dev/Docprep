@@ -2,7 +2,25 @@ import type { Me } from "../../lib/api";
 
 import { learnerAudienceNames } from "../../lib/learnerProfile";
 
-export function LearnerProfilePanel({ me }: { me: Me }) {
+export function LearnerProfilePanel({
+  me,
+  compact = false,
+}: {
+  me: Me;
+  compact?: boolean;
+}) {
+  if (compact)
+    return (
+      <p className="profile-compact">
+        <span>
+          Nhóm người học:{" "}
+          <strong>
+            {learnerAudienceNames[me.audience] ?? "Chưa xác định"}
+          </strong>
+        </span>
+        <span>{me.organisation || "Chưa có đơn vị"}</span>
+      </p>
+    );
   return (
     <section
       className="panel stack learner-account-profile"
@@ -10,10 +28,6 @@ export function LearnerProfilePanel({ me }: { me: Me }) {
     >
       <div>
         <h2 id="learner-profile-heading">Hồ sơ người học</h2>
-        <p className="muted small">
-          Dành cho hai nhóm người học: sinh viên Y học dự phòng năm cuối và bác sĩ
-          Y học dự phòng mới ra trường.
-        </p>
       </div>
       <dl className="learner-account-facts">
         <div>
@@ -29,9 +43,6 @@ export function LearnerProfilePanel({ me }: { me: Me }) {
           <dd>{me.organisation || "Chưa có thông tin"}</dd>
         </div>
       </dl>
-      <p className="muted small">
-        Nhóm người học và đơn vị được cơ sở đào tạo cấp tài khoản quản lý.
-      </p>
     </section>
   );
 }

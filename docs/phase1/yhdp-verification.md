@@ -43,3 +43,23 @@ Regression Alpha được thực hiện qua **hai lượt**, không phải một
 Các lượt test dừng vì DB Alpha chưa chạy, OpenAPI chưa export hoặc kiểm tra UI trước khi hoàn tất onboarding không được tính PASS. Đã khởi động đúng DB test, export contract và sửa flow kiểm thử; các kết quả cuối ở bảng trên lấy từ lượt hoàn chỉnh tương ứng. Bộ lọc privacy theo mẫu không nhận diện mọi PII. Rollback code chỉ với schema đã xác nhận tương thích; khôi phục bản cũ cần DB riêng và kiểm tra trước chuyển URL.
 
 Tái lập theo [runbook local/Ollama](ollama-local.md) và `scripts/test-phase1.ps1`. `-ScriptedAcceptance` tạm tạo lại Chat, chờ Caddy nhận upstream rồi khôi phục provider trong finally. Không dùng script fault khi có người đang demo.
+
+## Sửa UI theo lịch sử nhánh nguồn sau bản tích hợp
+
+Đợt đối chiếu tiếp theo ngày 06/11/2026 khôi phục các sửa `aeef651`/`18ac4cf` đã bị snapshot `965d5b3` ghi đè. Source-map ghi rõ nguyên nhân; không coi việc HEAD nguồn chỉ thêm README là bằng chứng tất cả sửa UI đã có. Thay đổi chỉ gồm frontend/pure demo helpers/tests và tài liệu; không thay backend, env hoặc migration. Kết quả backend ở phần trước vẫn thuộc bản tích hợp đã ghi, không chạy lại toàn bộ backend cho thay đổi UI.
+
+- Build/lint: PASS, không có cảnh báo ứng dụng. Frontend unit: **109 PASS** (thêm kiểm tra gom citation và hạn mức thẻ demo từ commit nguồn).
+- Browser plugin không có trong phiên; dùng Playwright/Chromium hiện có. Luồng: kích hoạt → consent → chọn học phần → trả lời quiz → mở giải thích → mở nguồn. Dùng auth/API và PostgreSQL Phase 1 thật, generation vẫn disabled.
+- **3/3 ca trên Vite 5190** ở 320/390/1440px; **3/3 ca trên Caddy 18880** với cùng viewport. Có ảnh onboarding, giải thích và citation ở từng kích thước. Không tràn ngang.
+- Regression browser: offline AI và dashboard learner/staff trên desktop/mobile, **6 ca đạt**. Lượt đầu 5 PASS/1 lỗi đăng nhập 502 trong lúc Caddy đang được tạo lại; trace ghi GET health/POST staff login 502. Chạy lại riêng ca admin mobile khi dịch vụ ổn định: PASS. Không sửa nghiệp vụ đăng nhập hoặc nới assertion để che lỗi.
+
+| Kiểm tra render | Kết quả |
+|---|---|
+| Đúng URL/title, có nội dung chính | PASS |
+| Không có Vite overlay hoặc lỗi JavaScript/console trong luồng UI | PASS |
+| Onboarding ẩn navigation/AI launcher, học phần sắp mở disabled | PASS |
+| Giải thích mặc định thu gọn, mở được phần chi tiết | PASS |
+| Citation mở passage thật; có screenshot ở 320/390/1440px | PASS |
+| Giao diện không tràn ngang; thao tác có thay đổi trạng thái thật | PASS |
+
+Artifacts UI mới nằm ngoài repository tại `%TEMP%/docprep-ui-restore-8caigo95` (Playwright config/spec, JSON kết quả, ảnh và log Caddy); log build/lint/unit/Vite ở `%TEMP%/docprep-ui-restore-*.log`. Đây là artifacts local tạm thời, không đưa ảnh/trace/token vào commit. Chưa kiểm thử Safari/Firefox hoặc AI thật trong đợt UI; model server vẫn tắt theo yêu cầu.
