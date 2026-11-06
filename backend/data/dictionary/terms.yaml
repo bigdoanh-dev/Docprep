@@ -1,0 +1,100 @@
+# Medical synonym lite-dictionary (design §5). Source of truth; reviewers edit via the UI (T17).
+# Hand-seeded draft (2026-11-03), not yet reviewed by a doctor. Mined suggestions live in
+# suggestions.jsonl and enter this file only after reviewer approval.
+# Rules: an alias belongs to exactly one canonical term; all-caps abbreviations match
+# case-sensitively in running text.
+
+# --- Bệnh ---------------------------------------------------------------------------------
+- {canonical: sốt xuất huyết Dengue, aliases: [SXHD, SXH Dengue, SXH, dengue hemorrhagic fever, DHF], type: Bệnh, en: dengue}
+- {canonical: tăng huyết áp, aliases: [THA, hypertension], type: Bệnh}
+- {canonical: đái tháo đường, aliases: [ĐTĐ, tiểu đường, diabetes mellitus], type: Bệnh}
+- {canonical: bệnh phổi tắc nghẽn mạn tính, aliases: [BPTNMT, COPD], type: Bệnh}
+- {canonical: hen phế quản, aliases: [HPQ, asthma], type: Bệnh}
+- {canonical: bệnh không lây nhiễm, aliases: [BKLN, NCD], type: Bệnh}
+- {canonical: viêm màng não, aliases: [VMN, meningitis], type: Bệnh}
+- {canonical: viêm màng não mủ, aliases: [VMNM], type: Bệnh}
+- {canonical: viêm màng não nhiễm khuẩn, aliases: [VMNNK, viêm màng não do vi khuẩn, bacterial meningitis], type: Bệnh}
+- {canonical: nhiễm khuẩn huyết, aliases: [NKH, nhiễm trùng huyết, sepsis], type: Bệnh}
+- {canonical: sốc nhiễm khuẩn, aliases: [sốc nhiễm trùng, septic shock], type: Bệnh}
+- {canonical: hội chứng suy hô hấp cấp tiến triển, aliases: [ARDS], type: Bệnh}
+- {canonical: bệnh tay chân miệng, aliases: [tay chân miệng, TCM, HFMD], type: Bệnh}
+- {canonical: bệnh sởi, aliases: [sởi, measles], type: Bệnh}
+- {canonical: cúm mùa, aliases: [seasonal influenza], type: Bệnh}
+- {canonical: bệnh lao, aliases: [lao, tuberculosis], type: Bệnh}
+- {canonical: sốt rét, aliases: [malaria], type: Bệnh}
+- {canonical: hội chứng suy giảm miễn dịch mắc phải, aliases: [AIDS], type: Bệnh}
+- {canonical: nhồi máu cơ tim, aliases: [NMCT, myocardial infarction], type: Bệnh}
+- {canonical: đột quỵ não, aliases: [đột quỵ, tai biến mạch máu não, TBMMN, stroke], type: Bệnh}
+- {canonical: ngộ độc thực phẩm, aliases: [NĐTP, food poisoning], type: Bệnh}
+- {canonical: suy dinh dưỡng, aliases: [SDD, malnutrition], type: Bệnh}
+- {canonical: bệnh nghề nghiệp, aliases: [BNN], type: Bệnh}
+- {canonical: chấn thương sọ não, aliases: [CTSN], type: Bệnh}
+
+# --- Tác nhân -----------------------------------------------------------------------------
+- {canonical: ký sinh trùng sốt rét, aliases: [KSTSR], type: TácNhân}
+- {canonical: virus gây suy giảm miễn dịch ở người, aliases: [HIV], type: TácNhân}
+- {canonical: virus viêm gan B, aliases: [HBV], type: TácNhân}
+- {canonical: virus viêm gan C, aliases: [HCV], type: TácNhân}
+- {canonical: virus Herpes simplex, aliases: [HSV], type: TácNhân}
+- {canonical: Haemophilus influenzae, aliases: [HI, Hemophilus influenzae], type: TácNhân}
+- {canonical: Haemophilus influenzae typ b, aliases: [Hib], type: TácNhân}
+- {canonical: Staphylococcus aureus kháng methicillin, aliases: [MRSA], type: TácNhân}
+
+# --- Xét nghiệm, chỉ số -------------------------------------------------------------------
+- {canonical: hematocrit, aliases: [Hct, dung tích hồng cầu], type: XétNghiệm}
+- {canonical: thời gian đổ đầy mao mạch, aliases: [CRT, capillary refill time], type: XétNghiệm}
+- {canonical: huyết áp, aliases: [HA, blood pressure], type: XétNghiệm}
+- {canonical: huyết áp tâm thu, aliases: [HATT, SBP], type: XétNghiệm}
+- {canonical: huyết áp tâm trương, aliases: [HATTr, DBP], type: XétNghiệm}
+- {canonical: huyết áp trung bình, aliases: [MAP], type: XétNghiệm}
+- {canonical: áp lực tĩnh mạch trung tâm, aliases: [CVP], type: XétNghiệm}
+- {canonical: dịch não tủy, aliases: [DNT, CSF], type: XétNghiệm}
+- {canonical: đường máu mao mạch, aliases: [ĐMMM], type: XétNghiệm}
+- {canonical: nghiệm pháp dung nạp glucose đường uống, aliases: [NPDNG, OGTT], type: XétNghiệm}
+- {canonical: HbA1c, aliases: [hemoglobin A1c], type: XétNghiệm}
+- {canonical: chỉ số khối cơ thể, aliases: [BMI, body mass index], type: XétNghiệm}
+- {canonical: phản ứng chuỗi polymerase, aliases: [PCR], type: XétNghiệm}
+- {canonical: protein phản ứng C, aliases: [CRP, C-reactive protein], type: XétNghiệm}
+- {canonical: aspartate aminotransferase, aliases: [AST, SGOT], type: XétNghiệm}
+- {canonical: alanine aminotransferase, aliases: [ALT, SGPT], type: XétNghiệm}
+- {canonical: chụp cắt lớp vi tính, aliases: [cắt lớp vi tính, CLVT, CT scan], type: XétNghiệm}
+- {canonical: chụp cộng hưởng từ, aliases: [cộng hưởng từ, MRI], type: XétNghiệm}
+
+# --- Thuốc, dịch truyền -------------------------------------------------------------------
+- {canonical: dung dịch cao phân tử, aliases: [CPT, dung dịch keo, colloid], type: Thuốc}
+- {canonical: Ringer lactat, aliases: [RL, Ringer lactate], type: Thuốc}
+- {canonical: dung dịch bù nước bằng đường uống, aliases: [ORS, oresol], type: Thuốc}
+- {canonical: hồng cầu lắng, aliases: [HCL], type: Thuốc}
+- {canonical: thuốc ức chế bơm proton, aliases: [PPI, proton pump inhibitor], type: Thuốc}
+- {canonical: thuốc cường β2 tác dụng ngắn, aliases: [SABA], type: Thuốc}
+- {canonical: kháng sinh, aliases: [KS, antibiotic], type: Thuốc}
+- {canonical: huyết thanh kháng độc tố uốn ván, aliases: [SAT], type: Thuốc}
+- {canonical: globulin miễn dịch uốn ván từ người, aliases: [HTIG], type: Thuốc}
+
+# --- Thủ thuật ----------------------------------------------------------------------------
+- {canonical: tiêm tĩnh mạch, aliases: [TM, tĩnh mạch], type: ThủThuật}
+- {canonical: truyền tĩnh mạch, aliases: [TTM], type: ThủThuật}
+- {canonical: đặt nội khí quản, aliases: [NKQ, nội khí quản], type: ThủThuật}
+- {canonical: thở áp lực dương liên tục, aliases: [CPAP], type: ThủThuật}
+- {canonical: thở áp lực dương liên tục qua mũi, aliases: [NCPAP], type: ThủThuật}
+- {canonical: hồi sinh tim phổi, aliases: [CPR, cấp cứu ngừng tuần hoàn], type: ThủThuật}
+
+# --- Dịch tễ học --------------------------------------------------------------------------
+- {canonical: tỷ suất chênh, aliases: [OR, odds ratio, tỉ suất chênh], type: KháiNiệmDịchTễ}
+- {canonical: nguy cơ tương đối, aliases: [RR, relative risk], type: KháiNiệmDịchTễ}
+- {canonical: tỷ lệ mới mắc, aliases: [tỷ suất mới mắc, incidence], type: KháiNiệmDịchTễ}
+- {canonical: tỷ lệ hiện mắc, aliases: [prevalence], type: KháiNiệmDịchTễ}
+- {canonical: khoảng tin cậy, aliases: [KTC, CI, confidence interval], type: KháiNiệmDịchTễ}
+- {canonical: độ nhạy, aliases: [sensitivity], type: KháiNiệmDịchTễ}
+- {canonical: độ đặc hiệu, aliases: [specificity], type: KháiNiệmDịchTễ}
+- {canonical: giá trị dự báo dương tính, aliases: [PPV, giá trị tiên đoán dương], type: KháiNiệmDịchTễ}
+- {canonical: giá trị dự báo âm tính, aliases: [NPV, giá trị tiên đoán âm], type: KháiNiệmDịchTễ}
+- {canonical: thử nghiệm lâm sàng ngẫu nhiên có đối chứng, aliases: [RCT, randomized controlled trial], type: KháiNiệmDịchTễ}
+- {canonical: tiêm chủng mở rộng, aliases: [TCMR, EPI], type: KháiNiệmDịchTễ}
+
+# --- Đối tượng, tổ chức, khác -------------------------------------------------------------
+- {canonical: phụ nữ có thai, aliases: [PNCT, thai phụ, phụ nữ mang thai], type: ĐốiTượng}
+- {canonical: người bệnh, aliases: [BN, bệnh nhân], type: ĐốiTượng}
+- {canonical: Tổ chức Y tế Thế giới, aliases: [WHO], type: Khác}
+- {canonical: trạm y tế xã, aliases: [TYT, trạm y tế], type: Khác}
+- {canonical: an toàn thực phẩm, aliases: [ATTP, an toàn vệ sinh thực phẩm, ATVSTP], type: Khác}

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.env
+data/derived/
+data/yhdp.db*
+data/.jwt_secret
+/sources/*
+!/sources/README.md

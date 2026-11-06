@@ -1,0 +1,333 @@
+# Cấu trúc đề kiểm tra đánh giá năng lực — Bác sĩ Y học dự phòng
+# Nguồn: Quyết định 51/QĐ-HĐYKQG ngày 26/8/2026 (xem blueprint.md).
+# `description` là phạm vi tóm tắt dùng cho bộ gắn nhãn (tagger); bản nháp,
+# cần bác sĩ duyệt (approved: true) trước khi dùng chính thức.
+
+source: QĐ 51/QĐ-HĐYKQG (26/8/2026)
+exam:
+  questions: 280
+  sessions: 2
+  minutes_per_session: 140
+  options_per_question: 4
+  bloom_levels: [Áp dụng, Phân tích, Đánh giá]
+
+mien:
+  - id: 1
+    name: Áp dụng khái niệm cơ bản của y học và y học dự phòng
+    weight: [18, 22]
+    sub:
+      - {id: "1.1", name: Áp dụng khái niệm cơ bản của y học}
+      - {id: "1.2", name: Áp dụng khái niệm cơ bản của y học dự phòng}
+  - id: 2
+    name: Chẩn đoán cấp ban đầu
+    weight: [37, 43]
+    sub:
+      - {id: "2.1", name: Bệnh sử / tiền sử / thăm khám thực thể}
+      - {id: "2.2", name: Cận lâm sàng / xét nghiệm chẩn đoán}
+      - {id: "2.3", name: Chẩn đoán}
+      - {id: "2.4", name: Tiên lượng / kết cục}
+  - id: 3
+    name: Xử trí cấp ban đầu
+    weight: [32, 38]
+    sub:
+      - {id: "3.1", name: Duy trì sức khỏe / phòng bệnh}
+      - {id: "3.2", name: Điều trị bằng thuốc}
+      - {id: "3.3", name: Can thiệp lâm sàng}
+      - {id: "3.4", name: Quản lý ca bệnh}
+  - id: 4
+    name: Cộng tác và giao tiếp
+    weight: [4, 6]
+    sub:
+      - {id: "4.1", name: Giao tiếp người bệnh và người nhà}
+      - {id: "4.2", name: Giao tiếp đồng nghiệp}
+      - {id: "4.3", name: Cộng tác liên ngành}
+
+de_muc:
+  - {id: 1, name: "Vấn đề sức khỏe quần thể cần can thiệp ở cấp ban đầu để ngăn ngừa tiến triển", n_van_de: 5, weight: [17, 19]}
+  - {id: 2, name: "Vấn đề sức khỏe cần cấp cứu, sơ cấp cứu ở cấp ban đầu", n_van_de: 11, weight: [16, 20]}
+  - {id: 3, name: "Vấn đề dinh dưỡng, an toàn thực phẩm cần can thiệp ở cấp ban đầu", n_van_de: 3, weight: [7, 9]}
+  - {id: 4, name: "Vấn đề bệnh lý truyền nhiễm cần chẩn đoán, xử trí ở cấp ban đầu", n_van_de: 8, weight: [17, 21]}
+  - {id: 5, name: "Vấn đề sức khỏe nghề nghiệp cần phát hiện và xử trí ở cấp ban đầu", n_van_de: 2, weight: [2.5, 3.5]}
+  - {id: 6, name: "Vấn đề sức khỏe cộng đồng cần chẩn đoán và xử trí theo tiếp cận y học gia đình", n_van_de: 19, weight: [23, 27]}
+  - {id: 7, name: "Vấn đề sức khỏe tâm thần và hành vi cần phát hiện và can thiệp ở cấp ban đầu", n_van_de: 3, weight: [5, 7]}
+  - {id: 8, name: "Giao tiếp và Cộng tác", n_van_de: 3, weight: [2.5, 3.5]}
+
+van_de:
+  # Đề mục 1
+  - id: 1
+    de_muc: 1
+    name: Bệnh truyền nhiễm có nguy cơ gây dịch
+    description: Giám sát, phát hiện sớm, khai báo và đáp ứng ổ dịch các bệnh truyền nhiễm có nguy cơ gây dịch (SXHD, tay chân miệng, cúm, sởi, tả, COVID-19…) tại cộng đồng; biện pháp kiểm soát lây truyền và phòng chống dịch.
+    approved: false
+  - id: 2
+    de_muc: 1
+    name: Bệnh không lây nhiễm phổ biến
+    description: Dự phòng các cấp, sàng lọc, kiểm soát yếu tố nguy cơ (thuốc lá, rượu bia, dinh dưỡng, ít vận động) và quản lý dựa vào cộng đồng các bệnh THA, ĐTĐ, BPTNMT, hen, ung thư.
+    approved: false
+  - id: 3
+    de_muc: 1
+    name: Bệnh, tật học đường
+    description: Phát hiện và dự phòng bệnh, tật lứa tuổi học đường (cận thị, cong vẹo cột sống, sâu răng, thừa cân/béo phì, bệnh truyền nhiễm trong trường học); vệ sinh và y tế trường học.
+    approved: false
+  - id: 4
+    de_muc: 1
+    name: Tiêm phòng/Tiêm chủng trẻ em và người lớn
+    description: Lịch tiêm chủng mở rộng và dịch vụ, khám sàng lọc trước tiêm, chỉ định/chống chỉ định, theo dõi và xử trí phản ứng sau tiêm, bảo quản vắc xin (dây chuyền lạnh), tiêm chủng người lớn.
+    approved: false
+  - id: 5
+    de_muc: 1
+    name: Dự phòng HIV
+    description: Tư vấn xét nghiệm HIV, dự phòng trước phơi nhiễm (PrEP), sau phơi nhiễm (PEP), dự phòng lây truyền mẹ con và can thiệp giảm hại cho nhóm nguy cơ cao.
+    approved: false
+  # Đề mục 2
+  - id: 6
+    de_muc: 2
+    name: Ngộ độc cấp thường gặp
+    description: Tiếp cận, chẩn đoán và xử trí ban đầu ngộ độc cấp (thuốc, hóa chất bảo vệ thực vật, khí độc, methanol, nọc độc…) gồm hồi sức, hạn chế hấp thu, thuốc giải độc đặc hiệu và chỉ định chuyển tuyến.
+    approved: false
+  - id: 7
+    de_muc: 2
+    name: Ngừng tuần hoàn
+    description: Nhận biết ngừng tuần hoàn, hồi sinh tim phổi cơ bản và nâng cao, sử dụng máy khử rung tự động (AED), chăm sóc sau hồi sinh tại tuyến ban đầu.
+    approved: false
+  - id: 8
+    de_muc: 2
+    name: Suy hô hấp cấp
+    description: Nhận biết và đánh giá mức độ suy hô hấp cấp, xử trí ban đầu (khai thông đường thở, dị vật đường thở, oxy liệu pháp) và chuyển tuyến an toàn.
+    approved: false
+  - id: 9
+    de_muc: 2
+    name: Đau ngực
+    description: Tiếp cận đau ngực cấp, nhận diện nguyên nhân nguy hiểm (hội chứng vành cấp, bóc tách động mạch chủ, thuyên tắc phổi, tràn khí màng phổi), xử trí ban đầu và chuyển tuyến.
+    approved: false
+  - id: 10
+    de_muc: 2
+    name: Đột quỵ cấp
+    description: Nhận diện sớm đột quỵ (FAST/BE-FAST), đánh giá, xử trí ban đầu, chuyển tuyến kịp thời trong cửa sổ điều trị và dự phòng tái phát.
+    approved: false
+  - id: 11
+    de_muc: 2
+    name: Phản vệ và dị ứng nặng
+    description: Chẩn đoán, phân độ và xử trí phản vệ (adrenalin), dự phòng phản vệ, xử trí dị ứng nặng tại cơ sở y tế và cộng đồng.
+    approved: false
+  - id: 12
+    de_muc: 2
+    name: Sơ cấp cứu chấn thương và tai nạn
+    description: Đánh giá ban đầu người bị chấn thương (ABCDE), cầm máu, băng bó, cố định gãy xương, xử trí vết thương, bỏng, chấn thương đầu và cột sống tại chỗ.
+    approved: false
+  - id: 13
+    de_muc: 2
+    name: Đuối nước
+    description: Sơ cứu đuối nước tại hiện trường, hồi sinh, theo dõi biến chứng sau đuối nước và dự phòng đuối nước ở trẻ em.
+    approved: false
+  - id: 14
+    de_muc: 2
+    name: Say nóng, say nắng
+    description: Nhận biết và xử trí các rối loạn do nhiệt (say nóng, say nắng, kiệt sức do nhiệt), làm mát, theo dõi và dự phòng.
+    approved: false
+  - id: 15
+    de_muc: 2
+    name: Vận chuyển người bệnh an toàn
+    description: Chỉ định, điều kiện, chuẩn bị và theo dõi người bệnh khi vận chuyển/chuyển tuyến; bất động, tư thế và phương tiện vận chuyển.
+    approved: false
+  - id: 16
+    de_muc: 2
+    name: Bong gân, trật khớp
+    description: Chẩn đoán, sơ cứu (bất động, chườm lạnh, nâng cao chi), phân biệt với gãy xương và chỉ định chuyển tuyến.
+    approved: false
+  # Đề mục 3
+  - id: 17
+    de_muc: 3
+    name: Ngộ độc thực phẩm
+    description: Chẩn đoán và xử trí ban đầu ngộ độc thực phẩm, điều tra vụ ngộ độc, lấy mẫu, báo cáo và biện pháp bảo đảm an toàn thực phẩm.
+    approved: false
+  - id: 18
+    de_muc: 3
+    name: Thừa cân/béo phì
+    description: Đánh giá tình trạng dinh dưỡng (BMI, vòng eo, chuẩn tăng trưởng trẻ em), yếu tố nguy cơ, tư vấn dinh dưỡng - vận động và dự phòng béo phì theo lứa tuổi.
+    approved: false
+  - id: 19
+    de_muc: 3
+    name: Thiếu dinh dưỡng
+    description: Đánh giá và phân loại suy dinh dưỡng (nhẹ cân, thấp còi, gầy còm), thiếu vi chất dinh dưỡng, xử trí, theo dõi và can thiệp dinh dưỡng cộng đồng.
+    approved: false
+  # Đề mục 4
+  - id: 20
+    de_muc: 4
+    name: Điều trị duy trì HIV và lao
+    description: Quản lý người bệnh điều trị ARV và người bệnh lao tại tuyến ban đầu - tuân thủ điều trị, theo dõi tác dụng phụ, đồng nhiễm lao/HIV, điều trị dự phòng lao.
+    approved: false
+  - id: 21
+    de_muc: 4
+    name: Sốt
+    description: Tiếp cận người bệnh sốt cấp hoặc kéo dài ở tuyến ban đầu, phân biệt nguyên nhân nhiễm trùng/không nhiễm trùng, dấu hiệu nặng cần chuyển tuyến.
+    approved: false
+  - id: 22
+    de_muc: 4
+    name: Sốt và phát ban
+    description: Chẩn đoán phân biệt các bệnh sốt phát ban (sởi, rubella, SXHD, tay chân miệng, thủy đậu…), xử trí ban đầu, cách ly và báo cáo dịch.
+    approved: false
+  - id: 23
+    de_muc: 4
+    name: Hội chứng màng não
+    description: Nhận diện hội chứng màng não, nguyên nhân (vi khuẩn, vi rút, lao…), xử trí ban đầu, kháng sinh sớm và chuyển tuyến.
+    approved: false
+  - id: 24
+    de_muc: 4
+    name: Hội chứng viêm long đường hô hấp trên
+    description: Chẩn đoán và xử trí nhiễm trùng hô hấp trên (cảm lạnh, viêm họng, viêm mũi xoang, cúm), sử dụng kháng sinh hợp lý và nhận biết dấu hiệu nặng.
+    approved: false
+  - id: 25
+    de_muc: 4
+    name: Vết cắn/đốt do động vật/côn trùng
+    description: Sơ cứu và xử trí vết cắn (chó - dự phòng dại, rắn độc), ong và côn trùng đốt; chỉ định huyết thanh/vắc xin và chuyển tuyến.
+    approved: false
+  - id: 26
+    de_muc: 4
+    name: Tiêu chảy cấp
+    description: Đánh giá mất nước, bù dịch (ORS, đường tĩnh mạch), bổ sung kẽm, kháng sinh khi có chỉ định (lỵ, tả) và giám sát dịch tiêu chảy.
+    approved: false
+  - id: 27
+    de_muc: 4
+    name: Bệnh lây truyền qua đường tình dục
+    description: Tiếp cận theo hội chứng, chẩn đoán và điều trị các bệnh lây truyền qua đường tình dục (lậu, giang mai, Chlamydia…), điều trị bạn tình và tư vấn dự phòng.
+    approved: false
+  # Đề mục 5
+  - id: 28
+    de_muc: 5
+    name: Bệnh nghề nghiệp và bệnh liên quan đến nghề nghiệp
+    description: Nhận diện yếu tố có hại nghề nghiệp, các bệnh nghề nghiệp được bảo hiểm, khám phát hiện, giám sát môi trường lao động và dự phòng.
+    approved: false
+  - id: 29
+    de_muc: 5
+    name: Giảm thính lực/ù tai
+    description: Phát hiện điếc nghề nghiệp do tiếng ồn và các nguyên nhân giảm thính lực khác, đo thính lực sàng lọc, dự phòng và chuyển tuyến.
+    approved: false
+  # Đề mục 6
+  - id: 30
+    de_muc: 6
+    name: Ho
+    description: Tiếp cận ho cấp, bán cấp và mạn tính; nguyên nhân thường gặp và dấu hiệu cảnh báo (lao, ung thư), xử trí ban đầu và chỉ định xét nghiệm.
+    approved: false
+  - id: 31
+    de_muc: 6
+    name: Ho ra máu
+    description: Đánh giá mức độ ho ra máu, nguyên nhân (lao, giãn phế quản, ung thư), xử trí ban đầu và chuyển tuyến.
+    approved: false
+  - id: 32
+    de_muc: 6
+    name: Khó thở mạn
+    description: Tiếp cận khó thở mạn tính; chẩn đoán và quản lý BPTNMT, hen phế quản, suy tim tại tuyến ban đầu.
+    approved: false
+  - id: 33
+    de_muc: 6
+    name: Đau bụng
+    description: Tiếp cận đau bụng cấp và mạn, nhận diện bệnh cảnh ngoại khoa cần chuyển tuyến, xử trí ban đầu.
+    approved: false
+  - id: 34
+    de_muc: 6
+    name: Ợ nóng/khó tiêu
+    description: Chẩn đoán và quản lý trào ngược dạ dày - thực quản, khó tiêu chức năng, loét dạ dày tá tràng, nhiễm H. pylori; dấu hiệu báo động.
+    approved: false
+  - id: 35
+    de_muc: 6
+    name: Xuất huyết tiêu hóa
+    description: Nhận diện, đánh giá mức độ mất máu, hồi sức ban đầu và chuyển tuyến xuất huyết tiêu hóa trên/dưới.
+    approved: false
+  - id: 36
+    de_muc: 6
+    name: Táo bón
+    description: Đánh giá, tìm nguyên nhân, dấu hiệu báo động và xử trí táo bón (chế độ ăn, thuốc nhuận tràng) theo lứa tuổi.
+    approved: false
+  - id: 37
+    de_muc: 6
+    name: Rối loạn Lipid máu
+    description: Sàng lọc, chẩn đoán, phân tầng nguy cơ tim mạch, điều chỉnh lối sống và điều trị statin tại tuyến ban đầu.
+    approved: false
+  - id: 38
+    de_muc: 6
+    name: Đái tháo đường Típ 2 và tiền đái tháo đường
+    description: Sàng lọc, chẩn đoán, điều trị (thay đổi lối sống, metformin…), theo dõi biến chứng và quản lý lâu dài ĐTĐ típ 2 và tiền ĐTĐ tại tuyến ban đầu.
+    approved: false
+  - id: 39
+    de_muc: 6
+    name: Tăng huyết áp
+    description: Đo huyết áp đúng kỹ thuật, chẩn đoán, phân độ, đánh giá nguy cơ tim mạch, điều trị và quản lý THA lâu dài tại tuyến ban đầu.
+    approved: false
+  - id: 40
+    de_muc: 6
+    name: Rối loạn đi tiểu
+    description: Tiếp cận rối loạn đi tiểu (tiểu buốt, tiểu nhiều lần, tiểu không tự chủ, bí tiểu), nhiễm khuẩn tiết niệu, tăng sản lành tính tuyến tiền liệt.
+    approved: false
+  - id: 41
+    de_muc: 6
+    name: Đau đầu
+    description: Phân biệt đau đầu nguyên phát (migraine, căng thẳng) và thứ phát, dấu hiệu báo động (cờ đỏ), xử trí và chuyển tuyến.
+    approved: false
+  - id: 42
+    de_muc: 6
+    name: Chóng mặt
+    description: Phân biệt chóng mặt ngoại biên và trung ương, nguyên nhân thường gặp (chóng mặt tư thế kịch phát lành tính…), xử trí ban đầu và dấu hiệu nguy hiểm.
+    approved: false
+  - id: 43
+    de_muc: 6
+    name: Giảm trí nhớ và suy giảm nhận thức
+    description: Sàng lọc suy giảm nhận thức (MMSE, Mini-Cog), tìm nguyên nhân có thể đảo ngược, chăm sóc và hỗ trợ người bệnh và người chăm sóc.
+    approved: false
+  - id: 44
+    de_muc: 6
+    name: Ngứa
+    description: Tiếp cận ngứa có hoặc không có tổn thương da, nguyên nhân tại da và toàn thân (ghẻ, nấm, viêm da, bệnh gan, thận), xử trí.
+    approved: false
+  - id: 45
+    de_muc: 6
+    name: Mày đay
+    description: Chẩn đoán, phân loại mày đay cấp và mạn, yếu tố khởi phát, điều trị kháng histamin và nhận biết phản vệ đi kèm.
+    approved: false
+  - id: 46
+    de_muc: 6
+    name: Viêm quanh răng
+    description: Phát hiện, dự phòng và hướng dẫn chăm sóc viêm lợi, viêm quanh răng; liên quan với bệnh toàn thân (ĐTĐ).
+    approved: false
+  - id: 47
+    de_muc: 6
+    name: Sâu răng
+    description: Dự phòng sâu răng (fluor, chải răng, chế độ ăn, trám bít hố rãnh), phát hiện sớm và chuyển tuyến.
+    approved: false
+  - id: 48
+    de_muc: 6
+    name: Tránh thai
+    description: Tư vấn và lựa chọn biện pháp tránh thai (bao cao su, thuốc tránh thai, dụng cụ tử cung, tránh thai khẩn cấp), chỉ định, chống chỉ định và tác dụng phụ.
+    approved: false
+  # Đề mục 7
+  - id: 49
+    de_muc: 7
+    name: Tự tử, tự gây thương tích
+    description: Sàng lọc và đánh giá nguy cơ tự tử, can thiệp ban đầu, bảo đảm an toàn cho người bệnh và kết nối dịch vụ chuyên khoa.
+    approved: false
+  - id: 50
+    de_muc: 7
+    name: Rối loạn lo âu/trầm cảm/căng thẳng
+    description: Sàng lọc (PHQ-9, GAD-7), chẩn đoán, tư vấn, xử trí ban đầu và chuyển tuyến rối loạn lo âu, trầm cảm, căng thẳng.
+    approved: false
+  - id: 51
+    de_muc: 7
+    name: Nghiện/rối loạn sử dụng chất (ma túy, thuốc lá, rượu bia)
+    description: Sàng lọc (AUDIT, ASSIST…), can thiệp ngắn, hỗ trợ cai thuốc lá, rượu bia, ma túy; xử trí hội chứng cai và điều trị thay thế (methadone).
+    approved: false
+  # Đề mục 8
+  - id: 52
+    de_muc: 8
+    name: Giao tiếp với người bệnh và người nhà
+    description: Kỹ năng hỏi bệnh, tư vấn, thông báo tin xấu, đồng thuận điều trị và xử lý tình huống khó trong giao tiếp.
+    approved: false
+  - id: 53
+    de_muc: 8
+    name: Giao tiếp với đồng nghiệp
+    description: Bàn giao người bệnh (SBAR), hội chẩn, chuyển tuyến, phản hồi chuyên môn và xử lý xung đột.
+    approved: false
+  - id: 54
+    de_muc: 8
+    name: Cộng tác liên ngành
+    description: Phối hợp với chính quyền, ban ngành, y tế thôn bản, trường học, thú y và môi trường trong phòng chống dịch và chăm sóc sức khỏe cộng đồng.
+    approved: false
