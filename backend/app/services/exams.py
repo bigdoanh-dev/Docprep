@@ -16,6 +16,7 @@ from app.repo import exams as repo
 from app.repo import learners as learners_repo
 from app.repo import responses as responses_repo
 from app.services.responses import ranking, record_response, topic_names, topic_states
+from app.services import assessment
 
 
 def _visible_kinds() -> list[str]:
@@ -113,8 +114,9 @@ def _attempt(conn, learner: dict, attempt_id: int, now: datetime) -> tuple[dict,
     return attempt, False
 
 
-def _results(attempt: dict) -> dict:
-    return {**attempt["summary"], "submitted_at": attempt["submitted_at"]}
+def _results(conn, attempt: dict) -> dict:
+    return {**attempt["summary"], "submitted_at": attempt["submitted_at"],
+            **assessment.summary(conn, attempt["learner_id"], [attempt["id"]])}
 
 
 # ---- assembled forms ----------------------------------------------------------------------------
@@ -156,6 +158,7 @@ def list_forms(conn, learner: dict, now: datetime) -> dict:
                    for a in repo.finished(conn, learner["id"], form["id"])]
         running = repo.running(conn, learner["id"], form["id"])
         out.append({
+            **assessment.form_scope(conn, form),
             "id": form["id"], "title": form["title"], "kind": form["kind"], "n_questions": n,
             "minutes": n * form["seconds_per_question"] // 60,
             "attempts_left": _attempts_left(conn, learner, form),
@@ -253,14 +256,14 @@ def submit(conn, learner: dict, attempt_id: int, now: datetime) -> dict:
     attempt, _ = _attempt(conn, learner, attempt_id, now)
     if attempt["submitted_at"] is None:
         attempt = _hand_in(conn, learner, attempt, auto=False, now=now)
-    return _results(attempt)  # a repeated "Nộp bài" returns the stored results
+    return _results(conn, attempt)  # a repeated "Nộp bài" returns the stored results
 
 
 def results(conn, learner: dict, attempt_id: int, now: datetime) -> dict:
     attempt, _ = _attempt(conn, learner, attempt_id, now)
     if attempt["submitted_at"] is None:
         raise ApiError(409, "attempt_open", "Bài làm chưa được nộp.")
-    return _results(attempt)
+    return _results(conn, attempt)
 
 
 def review_item(conn, learner: dict, attempt_id: int, question_id: str, now: datetime) -> dict:
@@ -273,6 +276,7 @@ def review_item(conn, learner: dict, attempt_id: int, question_id: str, now: dat
     by_key = {o["key"]: o for o in question["options"]}
     saved = repo.answers(conn, attempt_id).get(question_id)
     return {
+        **assessment.classification(conn, question),
         "n": attempt["question_order"].index(question_id) + 1, "total": len(attempt["question_order"]),
         "question_id": question_id, "stem": question["stem"],
         "options": [{"key": k, "text": by_key[k]["text"], "is_correct": by_key[k]["is_correct"]}

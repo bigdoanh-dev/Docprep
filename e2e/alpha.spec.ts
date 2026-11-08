@@ -17,34 +17,66 @@ async function headers(page: Page) {
   return { Authorization: `Bearer ${token}` };
 }
 
-test("learner: activate, consent, learn, cards, exam, progress and cited scripted chat", async ({
+test("learner: activate, consent, learn, cards, exam, progress and chat availability", async ({
   page,
   request,
 }, testInfo) => {
   const errors: string[] = [];
+  let expectsDisabledAI = false;
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
-    if (message.type() === "error") errors.push(message.text());
+    if (
+      message.type() === "error" &&
+      !(
+        expectsDisabledAI &&
+        /Failed to load resource: the server responded with a status of 503/.test(
+          message.text(),
+        )
+      )
+    )
+      errors.push(message.text());
   });
   const health = await request.get("/api/health");
   const runtime = await health.json();
-  test.skip(runtime.model_provider !== "scripted", "Cited scripted acceptance requires explicit dev/test scripted provider");
+  test.skip(
+    !["scripted", "disabled"].includes(runtime.model_provider),
+    "Local acceptance uses scripted or disabled AI",
+  );
   expect(runtime).toMatchObject({
     ok: true,
     mode: "real",
-    model_provider: "scripted",
   });
   const unauthorized = await request.get("/api/v1/me");
   expect(unauthorized.status()).toBe(401);
   expect(unauthorized.headers()["content-type"]).toContain("application/json");
-  const code = process.env.PHASE1_URL ? execFileSync("docker", ["compose", "--env-file", ".env.phase1", "-f", "deploy/compose.phase1.yml",
-    "run", "--rm", "--no-deps", "seed", "python", "-m", "seed.browser"], { cwd: root, encoding: "utf8" }).trim() : execFileSync(python, ["-m", "seed.browser"], {
-    cwd: path.join(root, "backend"),
-    encoding: "utf8",
-  }).trim();
+  const code = process.env.PHASE1_URL
+    ? execFileSync(
+        "docker",
+        [
+          "compose",
+          "--env-file",
+          ".env.phase1",
+          "-f",
+          "deploy/compose.phase1.yml",
+          "run",
+          "--rm",
+          "--no-deps",
+          "seed",
+          "python",
+          "-m",
+          "seed.browser",
+        ],
+        { cwd: root, encoding: "utf8" },
+      ).trim()
+    : execFileSync(python, ["-m", "seed.browser"], {
+        cwd: path.join(root, "backend"),
+        encoding: "utf8",
+      }).trim();
   await page.goto("/dang-nhap");
   await expect(page).toHaveTitle(/DocPrep/i);
-  await expect(page.getByRole("note")).toContainText("AI mô phỏng");
+  await expect(page.getByRole("note")).toContainText(
+    runtime.model_provider === "disabled" ? "AI đang tắt" : "AI mô phỏng",
+  );
   await page.getByLabel("Mã kích hoạt", { exact: true }).fill(code);
   await page.getByRole("button", { name: "Kích hoạt và đăng nhập" }).click();
   await expect(page).toHaveURL(/dong-y/);
@@ -142,13 +174,35 @@ test("learner: activate, consent, learn, cards, exam, progress and cited scripte
   const form =
     forms.items.find((f: { kind: string }) => f.kind === "demo_short") ??
     forms.items[0];
-  const started = await request.post(`/api/v1/exams/${form.id}/attempts`, {
-    headers: auth,
-    data: {},
-  });
-  expect(started.ok()).toBeTruthy();
-  const attempt = await started.json();
-  await page.goto(`/thi-thu/lam-bai/${attempt.attempt_id}`);
+  await page.goto("/thi-thu");
+  await page
+    .getByRole("button", {
+      name: form.module_id ? "Thi thử theo chuyên khoa" : "Thi thử tổng hợp",
+      exact: false,
+    })
+    .click();
+  if (form.module_id) {
+    await page.getByRole("combobox").selectOption(form.module_id);
+  }
+  await page
+    .getByRole("region", { name: form.title, exact: true })
+    .getByRole("link", { name: /^(Bắt đầu thi|Làm bài đánh giá)$/ })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Quy định đề thi thử" }),
+  ).toBeVisible();
+  const started = page.waitForResponse(
+    (r) =>
+      r.url().endsWith(`/exams/${form.id}/attempts`) &&
+      r.request().method() === "POST",
+  );
+  await page.getByRole("button", { name: "Bắt đầu", exact: true }).click();
+  const startedResponse = await started;
+  expect(startedResponse.ok()).toBeTruthy();
+  const attempt = await startedResponse.json();
+  await expect(page).toHaveURL(
+    new RegExp(`/thi-thu/lam-bai/${attempt.attempt_id}$`),
+  );
   const saved = page.waitForResponse(
     (r) =>
       r.url().includes(`/attempts/${attempt.attempt_id}/answers/`) &&
@@ -170,9 +224,57 @@ test("learner: activate, consent, learn, cards, exam, progress and cited scripte
     .getByRole("button", { name: "Nộp bài", exact: true })
     .click();
   await expect(page).toHaveURL(/thi-thu\/ket-qua/);
+  const result = await get(`/attempts/${attempt.attempt_id}/results`);
+  expect(result.submitted_at).toBeTruthy();
+  expect(result.levels).toHaveLength(3);
+  expect(result.specialties).toHaveLength(8);
   expect(
-    (await get(`/attempts/${attempt.attempt_id}/results`)).submitted_at,
-  ).toBeTruthy();
+    result.issues_by_specialty.flatMap((g: { issues: unknown[] }) => g.issues),
+  ).toHaveLength(54);
+  await expect(
+    page.getByRole("heading", { name: "Điểm mạnh & cần ôn", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Mức độ vận dụng", exact: true })
+    .click();
+  const resultLegend = page.getByRole("list", {
+    name: "Chú giải theo mức độ vận dụng",
+  });
+  await expect(resultLegend.getByRole("button")).toHaveCount(3);
+  for (const [index, level] of result.levels.entries()) {
+    await expect(resultLegend.getByRole("button").nth(index)).toContainText(
+      level.label_vi,
+    );
+    if (level.total)
+      await expect(resultLegend.getByRole("button").nth(index)).toContainText(
+        `${level.correct}/${level.total}`,
+      );
+  }
+  const qid = attempt.questions[0].id;
+  const review = await get(`/attempts/${attempt.attempt_id}/items/${qid}`);
+  await page.goto(`/thi-thu/ket-qua/${attempt.attempt_id}/${qid}`);
+  const classification = page.locator(".question-classification");
+  await expect(classification).toContainText(review.bloom_label);
+  await expect(classification).toContainText(review.module_name);
+  if (review.core_issue_name)
+    await expect(classification).toContainText(review.core_issue_name);
+  await page.goto("/tien-do");
+  await page.getByText("Phân tích chi tiết", { exact: true }).click();
+  await page
+    .getByRole("button", { name: "Mức độ vận dụng", exact: true })
+    .click();
+  const progressLegend = page.getByRole("list", {
+    name: "Chú giải theo mức độ vận dụng",
+  });
+  await expect(progressLegend.getByRole("button")).toHaveCount(3);
+  await expect(progressLegend.getByRole("button").nth(1)).toContainText(
+    "Vận dụng",
+  );
+  await page
+    .getByLabel("Xem mức độ vận dụng theo chuyên khoa", { exact: true })
+    .selectOption("g2");
+  await expect(progressLegend).toContainText("Chưa có dữ liệu");
+  await expect(progressLegend).not.toContainText("câu đúng");
   await page.goto("/tien-do/nhip-hoc");
   await expect(
     page.getByRole("heading", { name: "Thống kê học tập" }),
@@ -187,23 +289,39 @@ test("learner: activate, consent, learn, cards, exam, progress and cited scripte
       /\/chat\/sessions\/\d+\/messages$/.test(r.url()) &&
       r.request().method() === "POST",
   );
+  expectsDisabledAI = runtime.model_provider === "disabled";
   await page.getByRole("button", { name: "Gửi câu hỏi" }).click();
-  expect((await stream).headers()["content-type"]).toContain(
-    "text/event-stream",
-  );
-  await expect(
-    page.getByRole("button", { name: /Nguồn 1:/ }).first(),
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: /Nguồn 1:/ })
-    .first()
-    .click();
-  await expect(page.getByRole("dialog")).toContainText("Tài liệu demo");
-  await page.getByRole("dialog").getByRole("button", { name: /Đóng/ }).click();
-  await page.reload();
-  await expect(
-    page.getByRole("button", { name: /Nguồn 1:/ }).first(),
-  ).toBeVisible();
+  const chatResponse = await stream;
+  if (expectsDisabledAI) {
+    expect(chatResponse.status()).toBe(503);
+    expect((await chatResponse.json()).error.code).toBe("ai_disabled");
+    await expect(page.getByRole("alert")).toContainText("chưa được bật");
+    await expect(page.getByRole("button", { name: /Nguồn 1:/ })).toHaveCount(0);
+    await page.reload();
+    await expect(
+      page.getByRole("textbox", { name: "Câu hỏi của bạn" }),
+    ).toBeEnabled();
+  } else {
+    expect(chatResponse.headers()["content-type"]).toContain(
+      "text/event-stream",
+    );
+    await expect(
+      page.getByRole("button", { name: /Nguồn 1:/ }).first(),
+    ).toBeVisible();
+    await page
+      .getByRole("button", { name: /Nguồn 1:/ })
+      .first()
+      .click();
+    await expect(page.getByRole("dialog")).toContainText("Tài liệu demo");
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: /Đóng/ })
+      .click();
+    await page.reload();
+    await expect(
+      page.getByRole("button", { name: /Nguồn 1:/ }).first(),
+    ).toBeVisible();
+  }
   expect(await page.locator("vite-error-overlay").count()).toBe(0);
   expect(
     await page.evaluate(

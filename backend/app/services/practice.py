@@ -20,6 +20,7 @@ from app.repo import sessions as sessions_repo
 from app.services.account import local_date
 from app.services.responses import record_response, topic_names
 from app.services.session_progress import step_completed
+from app.services.assessment import classification
 
 
 @dataclass(frozen=True)
@@ -145,6 +146,7 @@ def view(conn, learner: dict, set_id: int) -> dict:
         response = answered.get(question_id)
         text = {o["key"]: o["text"] for o in question["options"]}
         items.append({
+            **classification(conn, question),
             "question_id": question_id, "n": n, "stem": question["stem"],
             # shown in an order of this set's own, so that the authored first option is not the usual answer
             "options": [{"key": key, "text": text[key]} for key in option_order(list(text), f"{practice_set['id']}:{question_id}")],

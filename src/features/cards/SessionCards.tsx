@@ -16,7 +16,7 @@ import {
   type ProgressRhythm,
   type SessionToday,
 } from "../../lib/api";
-import { passSummary } from "../../lib/cardPass";
+import { loadCardPass, passSummary } from "../../lib/cardPass";
 import { STEP_LABEL, nextStep, stepPath } from "../../lib/flow";
 import { useLoad } from "../../lib/hooks";
 import { newKey } from "../../lib/keys";
@@ -28,9 +28,16 @@ export function SessionCards() {
     const session = await api.get<SessionToday>("/session/today");
     const step = session.steps.find((s) => s.kind === "cards");
     const queue = step
-      ? (await api.get<DueCardList>(`/cards/due?limit=${step.count}`)).items
+      ? await loadCardPass(step.count, (limit, offset) =>
+          api.get<DueCardList>(`/cards/due?limit=${limit}&offset=${offset}`),
+        )
       : [];
-    return { session, hasStep: step !== undefined, queue };
+    return {
+      session,
+      hasStep: step !== undefined,
+      target: step?.count ?? 0,
+      queue,
+    };
   }, []);
   const [queue, setQueue] = useState<DueCard[]>(); // the pass, once a card has been suspended out of it
   const [ratings, setRatings] = useState<number[]>([]);
@@ -46,14 +53,20 @@ export function SessionCards() {
   const cards = queue ?? data?.queue ?? [];
   const card = cards[ratings.length];
   useEffect(() => {
-    if (!data || card || toppedUpAt.current === ratings.length) return;
+    if (
+      !data ||
+      card ||
+      ratings.length >= data.target ||
+      toppedUpAt.current === ratings.length
+    )
+      return;
     toppedUpAt.current = ratings.length;
     let alive = true;
     api.get<DueCardList>("/cards/due").then(
       (due) => {
-        const fresh = due.items.filter(
-          (c) => !cards.some((x) => x.id === c.id),
-        );
+        const fresh = due.items
+          .filter((c) => !cards.some((x) => x.id === c.id))
+          .slice(0, data.target - ratings.length);
         if (alive && fresh.length) setQueue([...cards, ...fresh]);
       },
       () => undefined, // the pass ends here; the cards stay due for the next one

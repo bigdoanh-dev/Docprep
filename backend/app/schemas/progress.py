@@ -9,6 +9,7 @@ from pydantic import Field
 
 from app.schemas import _samples as s
 from app.schemas.base import Schema, with_example
+from app.schemas.assessment import AssessmentSummary, LevelAccuracy
 
 _TODAY = date(2026, 10, 10)
 _PATTERN = [0, 15, 30, 0, 45, 20, 10]
@@ -71,14 +72,7 @@ class GroupGrid(Schema):
     rows: list[GridRow] = Field(description="The eight core-issue groups.")
 
 
-class LevelAccuracy(Schema):
-    level: Literal[1, 2, 3]
-    label_vi: str
-    correct: int
-    total: int
-
-
-class ProgressSkills(Schema):
+class ProgressSkills(AssessmentSummary):
     days_to_exam: int
     scope: Literal["latest3", "all"]
     coverage: Coverage

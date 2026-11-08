@@ -79,7 +79,12 @@ test("old workspace records receive presentation defaults and gender remains iso
 });
 
 test("workspace sanitizes non-finite launcherPosition (NaN, Infinity, null coords) to null", () => {
-  setActor({ id: "mobile-corrupt", role: "learner", mode: "demo", name: "Corrupt" });
+  setActor({
+    id: "mobile-corrupt",
+    role: "learner",
+    mode: "demo",
+    name: "Corrupt",
+  });
   localStorage.setItem(
     "yhdp.workspace.v1:demo:mobile-corrupt",
     JSON.stringify({ version: 1, launcherPosition: { x: "NaN", y: 200 } }),
@@ -102,7 +107,12 @@ test("workspace sanitizes non-finite launcherPosition (NaN, Infinity, null coord
 
 test("lastChatSearch persists across routes for active account, clears on new chat, and is isolated by account/mode", () => {
   // Learner 1 in demo mode opens chat session 101
-  setActor({ id: "learner-alpha", role: "learner", mode: "demo", name: "Alpha" });
+  setActor({
+    id: "learner-alpha",
+    role: "learner",
+    mode: "demo",
+    name: "Alpha",
+  });
   assert.equal(readWorkspace().lastChatSearch, null);
 
   // User opens /hoi-dap?s=101
@@ -121,11 +131,21 @@ test("lastChatSearch persists across routes for active account, clears on new ch
   assert.equal(readWorkspace().lastChatSearch, null);
 
   // Alpha in live mode must also have distinct workspace
-  setActor({ id: "learner-alpha", role: "learner", mode: "live", name: "Alpha Live" });
+  setActor({
+    id: "learner-alpha",
+    role: "learner",
+    mode: "live",
+    name: "Alpha Live",
+  });
   assert.equal(readWorkspace().lastChatSearch, null);
 
   // Return to Learner Alpha demo mode
-  setActor({ id: "learner-alpha", role: "learner", mode: "demo", name: "Alpha" });
+  setActor({
+    id: "learner-alpha",
+    role: "learner",
+    mode: "demo",
+    name: "Alpha",
+  });
   assert.equal(readWorkspace().lastChatSearch, "?s=101");
 
   // User starts a "Cuộc trò chuyện mới" -> clears lastChatSearch

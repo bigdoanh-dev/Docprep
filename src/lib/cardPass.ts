@@ -1,5 +1,28 @@
 // What a pass through the cards of the session did, said from the ratings the learner gave in it.
-// No import here: the module runs as it is under Node for its tests.
+import type { DueCard, DueCardList } from "./api";
+
+/** Load a pass before reviewing it; every request respects the API's 200-card page limit. */
+export async function loadCardPass(
+  count: number,
+  load: (limit: number, offset: number) => Promise<DueCardList>,
+): Promise<DueCard[]> {
+  const cards: DueCard[] = [];
+  while (cards.length < count) {
+    const limit = Math.min(200, count - cards.length);
+    const page = await load(limit, cards.length);
+    const fresh = page.items.filter(
+      (c) => !cards.some((loaded) => loaded.id === c.id),
+    );
+    cards.push(...fresh.slice(0, count - cards.length));
+    if (
+      !fresh.length ||
+      page.items.length < limit ||
+      cards.length >= page.total_due
+    )
+      break;
+  }
+  return cards;
+}
 
 export type PassSummary = {
   title: string;

@@ -1712,6 +1712,15 @@ paths:
           minimum: 1
           default: 50
           title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 0
+          default: 0
+          title: Offset
       responses:
         '200':
           description: Successful Response
@@ -3955,6 +3964,46 @@ components:
         it.
     AttemptItemView:
       properties:
+        module_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Module Id
+        module_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Module Name
+        core_issue_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Core Issue Id
+        core_issue_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Core Issue Name
+        difficulty_label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Difficulty Label
+        bloom_level:
+          anyOf:
+          - type: integer
+            enum:
+            - 1
+            - 2
+            - 3
+          - type: 'null'
+          title: Bloom Level
+        bloom_label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bloom Label
+          description: Label of the bank's grouped Bloom band; not a six-level index.
         n:
           type: integer
           title: N
@@ -3992,6 +4041,13 @@ components:
           title: Citations
       type: object
       required:
+      - module_id
+      - module_name
+      - core_issue_id
+      - core_issue_name
+      - difficulty_label
+      - bloom_level
+      - bloom_label
       - n
       - total
       - question_id
@@ -4193,6 +4249,25 @@ components:
         submitted: false
         title: Bài đánh giá năng lực
         warning_s: 300
+    BloomSpecialty:
+      properties:
+        module_id:
+          type: string
+          title: Module Id
+        name:
+          type: string
+          title: Name
+        levels:
+          items:
+            $ref: '#/components/schemas/LevelAccuracy'
+          type: array
+          title: Levels
+      type: object
+      required:
+      - module_id
+      - name
+      - levels
+      title: BloomSpecialty
     Body_import_users:
       properties:
         file:
@@ -4763,6 +4838,16 @@ components:
         id:
           type: string
           title: Id
+        module_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Module Id
+        module_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Module Name
         title:
           type: string
           title: Title
@@ -4814,6 +4899,8 @@ components:
       type: object
       required:
       - id
+      - module_id
+      - module_name
       - title
       - kind
       - n_questions
@@ -5313,6 +5400,27 @@ components:
       - row
       - message_vi
       title: ImportRowError
+    IssueAccuracy:
+      properties:
+        correct:
+          type: integer
+          title: Correct
+        total:
+          type: integer
+          title: Total
+        issue_id:
+          type: integer
+          title: Issue Id
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - correct
+      - total
+      - issue_id
+      - name
+      title: IssueAccuracy
     IssuedCode:
       properties:
         display_name:
@@ -5396,6 +5504,12 @@ components:
       title: LastAttempt
     LevelAccuracy:
       properties:
+        correct:
+          type: integer
+          title: Correct
+        total:
+          type: integer
+          title: Total
         level:
           type: integer
           enum:
@@ -5406,18 +5520,12 @@ components:
         label_vi:
           type: string
           title: Label Vi
-        correct:
-          type: integer
-          title: Correct
-        total:
-          type: integer
-          title: Total
       type: object
       required:
-      - level
-      - label_vi
       - correct
       - total
+      - level
+      - label_vi
       title: LevelAccuracy
     MasteryUpdated:
       properties:
@@ -6181,6 +6289,46 @@ components:
           title: Ví dụ · Tính từng bước
     PracticeItem:
       properties:
+        module_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Module Id
+        module_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Module Name
+        core_issue_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Core Issue Id
+        core_issue_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Core Issue Name
+        difficulty_label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Difficulty Label
+        bloom_level:
+          anyOf:
+          - type: integer
+            enum:
+            - 1
+            - 2
+            - 3
+          - type: 'null'
+          title: Bloom Level
+        bloom_label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Bloom Label
+          description: Label of the bank's grouped Bloom band; not a six-level index.
         question_id:
           type: string
           title: Question Id
@@ -6210,6 +6358,13 @@ components:
           - type: 'null'
       type: object
       required:
+      - module_id
+      - module_name
+      - core_issue_id
+      - core_issue_name
+      - difficulty_label
+      - bloom_level
+      - bloom_label
       - question_id
       - n
       - stem
@@ -6678,6 +6833,26 @@ components:
           study_days: 5
     ProgressSkills:
       properties:
+        levels:
+          items:
+            $ref: '#/components/schemas/LevelAccuracy'
+          type: array
+          title: Levels
+        specialties:
+          items:
+            $ref: '#/components/schemas/SpecialtyAccuracy'
+          type: array
+          title: Specialties
+        bloom_by_specialty:
+          items:
+            $ref: '#/components/schemas/BloomSpecialty'
+          type: array
+          title: Bloom By Specialty
+        issues_by_specialty:
+          items:
+            $ref: '#/components/schemas/SpecialtyIssues'
+          type: array
+          title: Issues By Specialty
         days_to_exam:
           type: integer
           title: Days To Exam
@@ -6705,20 +6880,18 @@ components:
           - $ref: '#/components/schemas/GroupGrid'
           - type: 'null'
           description: Present only when the grid is switched on.
-        levels:
-          items:
-            $ref: '#/components/schemas/LevelAccuracy'
-          type: array
-          title: Levels
       type: object
       required:
+      - levels
+      - specialties
+      - bloom_by_specialty
+      - issues_by_specialty
       - days_to_exam
       - scope
       - coverage
       - priorities
       - mock_scores
       - group_grid
-      - levels
       title: ProgressSkills
       examples:
       - coverage:
@@ -7131,6 +7304,26 @@ components:
       title: ResultItem
     Results:
       properties:
+        levels:
+          items:
+            $ref: '#/components/schemas/LevelAccuracy'
+          type: array
+          title: Levels
+        specialties:
+          items:
+            $ref: '#/components/schemas/SpecialtyAccuracy'
+          type: array
+          title: Specialties
+        bloom_by_specialty:
+          items:
+            $ref: '#/components/schemas/BloomSpecialty'
+          type: array
+          title: Bloom By Specialty
+        issues_by_specialty:
+          items:
+            $ref: '#/components/schemas/SpecialtyIssues'
+          type: array
+          title: Issues By Specialty
         attempt_id:
           type: integer
           title: Attempt Id
@@ -7182,6 +7375,10 @@ components:
           title: Items
       type: object
       required:
+      - levels
+      - specialties
+      - bloom_by_specialty
+      - issues_by_specialty
       - attempt_id
       - title
       - score
@@ -7948,6 +8145,46 @@ components:
           reason_vi: 'Học tiếp học phần đang ưu tiên: Sức khỏe quần thể và dự phòng.'
           unit_id: u-dt-02
         total_minutes: 18
+    SpecialtyAccuracy:
+      properties:
+        correct:
+          type: integer
+          title: Correct
+        total:
+          type: integer
+          title: Total
+        module_id:
+          type: string
+          title: Module Id
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - correct
+      - total
+      - module_id
+      - name
+      title: SpecialtyAccuracy
+    SpecialtyIssues:
+      properties:
+        module_id:
+          type: string
+          title: Module Id
+        name:
+          type: string
+          title: Name
+        issues:
+          items:
+            $ref: '#/components/schemas/IssueAccuracy'
+          type: array
+          title: Issues
+      type: object
+      required:
+      - module_id
+      - name
+      - issues
+      title: SpecialtyIssues
     StaffLoginRequest:
       properties:
         email:

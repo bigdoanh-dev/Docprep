@@ -18,11 +18,12 @@ def day_start(now: datetime) -> datetime:
     return datetime.combine(local_date(now), time.min, tzinfo=ZoneInfo(settings()["local_timezone"]))
 
 
-def cards_reviewed(conn, session: dict, step: dict) -> bool:
+def cards_reviewed(conn, session: dict, step: dict, now: datetime | None = None) -> bool:
     """Whether the cards step is done: every card it held when the session was built has been
     reviewed since. A card that comes due again minutes later, or a new card from a wrong answer,
     does not undo it."""
-    return cards_repo.all_reviewed_since(conn, step.get("card_ids", []), session["built_at"])
+    return (cards_repo.all_reviewed_since(conn, step.get("card_ids", []), session["built_at"])
+            or (now is not None and cards_repo.count_due(conn, session["learner_id"], now) == 0))
 
 
 def step_completed(conn, learner: dict, kind: str, now: datetime, *, unit_id: str | None = None,
@@ -36,7 +37,7 @@ def step_completed(conn, learner: dict, kind: str, now: datetime, *, unit_id: st
     step = next((s for s in session["steps"] if s["kind"] == kind), None)
     if step is None:
         return
-    if kind == "cards" and not cards_reviewed(conn, session, step):
+    if kind == "cards" and not cards_reviewed(conn, session, step, now):
         return
     if kind == "continue" and step["unit_id"] != unit_id:
         return

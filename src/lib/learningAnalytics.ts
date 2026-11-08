@@ -15,7 +15,7 @@ export type QuestionMetadata = {
 export type GroupMetadata = {
   id: number;
   short_name: string;
-  issues: { id: number }[];
+  issues: { id: number; name?: string }[];
 };
 export function groupForQuestion(q: QuestionMetadata, groups: GroupMetadata[]) {
   const issue = /^CI-(\d+)$/.exec(q.competency_code);
@@ -47,6 +47,16 @@ export function summarizeAnswers(
     name: g.short_name,
     levels: levels.map((l) => ({ ...l })),
   }));
+  const issues_by_specialty: SpecialtyIssues[] = groups.map((group) => ({
+    module_id: `g${group.id}`,
+    name: group.short_name,
+    issues: group.issues.map((issue) => ({
+      issue_id: issue.id,
+      name: issue.name ?? `Vấn đề ${issue.id}`,
+      correct: 0,
+      total: 0,
+    })),
+  }));
   const lookup = new Map(questions.map((q) => [q.id, q]));
   answers.forEach((a) => {
     const q = lookup.get(a.question_id);
@@ -61,6 +71,14 @@ export function summarizeAnswers(
     if (stat) {
       stat.total++;
       stat.correct += Number(a.correct);
+      const issueId = /^CI-(\d+)$/.exec(q.competency_code);
+      const issue = issues_by_specialty
+        .find((g) => g.module_id === stat.module_id)
+        ?.issues.find((i) => i.issue_id === Number(issueId?.[1]));
+      if (issue) {
+        issue.total++;
+        issue.correct += Number(a.correct);
+      }
       const groupLevel = bloom_by_specialty.find(
         (s) => s.module_id === stat.module_id,
       )?.levels[q.bloom_level - 1];
@@ -70,10 +88,15 @@ export function summarizeAnswers(
       }
     }
   });
-  return { levels, specialties, bloom_by_specialty };
+  return { levels, specialties, bloom_by_specialty, issues_by_specialty };
 }
 
 export type AssessmentCount = { correct: number; total: number };
+export type SpecialtyIssues = {
+  module_id: string;
+  name: string;
+  issues: (AssessmentCount & { issue_id: number; name: string })[];
+};
 export type BloomSpecialty = {
   module_id: string;
   name: string;
@@ -94,16 +117,17 @@ export function assessmentPercent(count: AssessmentCount): number | null {
 export function learningMatrix(
   groups: BloomSpecialty[],
   perspective: AnalysisPerspective,
+  definitions = BLOOM.map((label_vi, i) => ({ level: i + 1, label_vi })),
 ) {
   const cells = groups.map((g) =>
-    BLOOM.map((label, index) => {
-      const count = g.levels.find((l) => l.level === index + 1);
+    definitions.map(({ level, label_vi }) => {
+      const count = g.levels.find((l) => l.level === level);
       return {
-        id: `${g.module_id}:${index + 1}`,
+        id: `${g.module_id}:${level}`,
         moduleId: g.module_id,
         specialty: g.name,
-        level: index + 1,
-        bloom: label,
+        level,
+        bloom: label_vi,
         correct: count?.correct ?? 0,
         total: count?.total ?? 0,
       };
@@ -111,7 +135,10 @@ export function learningMatrix(
   );
   return perspective === "specialty"
     ? {
-        columns: BLOOM.map((label, i) => ({ id: String(i + 1), label })),
+        columns: definitions.map((l) => ({
+          id: String(l.level),
+          label: l.label_vi,
+        })),
         rows: groups.map((g, i) => ({
           id: g.module_id,
           label: g.name,
@@ -120,9 +147,9 @@ export function learningMatrix(
       }
     : {
         columns: groups.map((g) => ({ id: g.module_id, label: g.name })),
-        rows: BLOOM.map((label, i) => ({
-          id: String(i + 1),
-          label,
+        rows: definitions.map((l, i) => ({
+          id: String(l.level),
+          label: l.label_vi,
           cells: cells.map((row) => row[i]),
         })),
       };

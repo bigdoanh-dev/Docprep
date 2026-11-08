@@ -7,6 +7,7 @@ from pydantic import Field
 from app.schemas import _samples as s
 from app.schemas.base import RequestSchema, Schema, with_example
 from app.schemas.common import Citation, Option
+from app.schemas.assessment import AssessmentSummary, QuestionClassification
 
 _QUESTIONS = [{"id": qid, "n": n, "stem": stem, "options": s.options(texts)}
               for n, (qid, stem, texts) in enumerate(s.PRACTICE_QUESTIONS, start=1)]
@@ -63,6 +64,8 @@ class LastAttempt(Schema):
 
 class ExamForm(Schema):
     id: str
+    module_id: str | None = None
+    module_name: str | None = None
     title: str
     kind: Literal["diagnostic", "mock", "demo_short", "assembled"]
     n_questions: int
@@ -134,7 +137,7 @@ class ResultItem(Schema):
     status: Literal["ok", "wrong", "blank"]
 
 
-class Results(Schema):
+class Results(AssessmentSummary):
     attempt_id: int
     title: str
     score: int
@@ -158,7 +161,7 @@ class ReviewOption(Schema):
     is_correct: bool
 
 
-class AttemptItemView(Schema):
+class AttemptItemView(QuestionClassification):
     n: int
     total: int
     question_id: str

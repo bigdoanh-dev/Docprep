@@ -31,7 +31,7 @@ def _build(conn, learner: dict, day, now: datetime) -> dict:
     # 1. The cards that are due, the longest overdue first, up to the learner's daily limit. The
     #    step keeps which cards they are: it is done when those have been reviewed.
     counts = cards_repo.due_counts(conn, learner["id"], now, day_start(now))
-    cards = cards_step(counts["due"], counts["overdue"], learner["max_reviews_per_day"], cfg)
+    cards = cards_step(counts["total"], counts["overdue"], counts["due"], cfg) if counts["due"] else None
     if cards:
         steps.append({**asdict(cards), "card_ids": cards_repo.due_ids(conn, learner["id"], now, cards.count)})
 
@@ -68,9 +68,9 @@ def _stored(conn, learner: dict, now: datetime) -> dict:
     return session
 
 
-def _done(conn, learner: dict, session: dict, step: dict) -> bool:
+def _done(conn, learner: dict, session: dict, step: dict, now: datetime) -> bool:
     if step["kind"] == "cards":
-        return cards_reviewed(conn, session, step)
+        return cards_reviewed(conn, session, step, now)
     if step["kind"] == "practice":
         practice_set = practice_repo.own_set(conn, learner["id"], session["practice_set_id"])
         return practice_set is not None and practice_set["completed_at"] is not None
@@ -80,7 +80,7 @@ def _done(conn, learner: dict, session: dict, step: dict) -> bool:
 def today(conn, learner: dict, now: datetime) -> dict:
     session = _stored(conn, learner, now)
     steps = [{"kind": step["kind"], "count": step["count"], "minutes": step["minutes"], "reason_vi": step["reason_vi"],
-              "unit_id": step.get("unit_id"), "done": _done(conn, learner, session, step),
+              "unit_id": step.get("unit_id"), "done": _done(conn, learner, session, step, now),
               "practice_set_id": session["practice_set_id"] if step["kind"] == "practice" else None}
              for step in session["steps"]]
     return {"local_date": session["local_date"], "steps": steps, "total_minutes": sum(s["minutes"] for s in steps)}

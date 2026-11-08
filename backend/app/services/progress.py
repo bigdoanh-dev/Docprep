@@ -12,10 +12,11 @@ from app.engine import memory
 from app.repo import content
 from app.repo import progress as repo
 from app.repo import responses as responses_repo
+from app.repo import cards as cards_repo
 from app.services.account import local_date
 from app.services.responses import ranking
+from app.services import assessment
 
-LEVELS = {1: "Nhớ, Hiểu", 2: "Vận dụng", 3: "Phân tích, Đánh giá"}
 ACTIVITY_LIMIT = 20
 # What makes a day a study day: the learner answered, reviewed, sat an exam or asked. Opening the app,
 # and what the rules build on their own, do not.
@@ -57,17 +58,14 @@ def skills(conn, learner: dict, scope: str, now: datetime) -> dict:
 
     # Real scores of finished mock attempts, oldest first, and the answers given in them by level.
     attempts = list(reversed(repo.mock_attempts(conn, learner["id"], 3 if scope == "latest3" else None)))
-    by_level = repo.level_counts(conn, [a["attempt_id"] for a in attempts])
-    levels = [{"level": level, "label_vi": label, "correct": by_level.get(level, {}).get("correct", 0),
-               "total": by_level.get(level, {}).get("total", 0)} for level, label in LEVELS.items()]
     return {
+        **assessment.summary(conn, learner["id"], [a["attempt_id"] for a in attempts]),
         "days_to_exam": _days_to_exam(learner, now),
         "scope": scope,
         "coverage": {"assessed_topics": len(assessed & set(core)), "total_topics": len(core), "modules": modules},
         "priorities": priorities,
         "mock_scores": attempts,
         "group_grid": None,     # the group × exam grid waits for open issue 20
-        "levels": levels,
     }
 
 
@@ -124,6 +122,7 @@ def rhythm(conn, learner: dict, now: datetime) -> dict:
     # Memory: the learner's cards, read off their FSRS state.
     retention = learner["target_retention"]
     cards = repo.cards(conn, learner["id"])
+    due_today = cards_repo.count_due(conn, learner["id"], now)
     stages = [memory.stage(c["fsrs_card"], c["reps"], mem["mature_days"]) for c in cards]
     window = repo.review_counts(conn, learner["id"], now - timedelta(days=mem["window_days"]))
     reviewed = [c for c in cards if c["reps"] > 0]
@@ -148,7 +147,7 @@ def rhythm(conn, learner: dict, now: datetime) -> dict:
     for i in range(7):
         day = today + timedelta(days=i)
         due = [c for c in cards if (local_date(c["due_at"]) <= day if i == 0 else local_date(c["due_at"]) == day)]
-        forecast.append({"date": day, "count": len(due)})
+        forecast.append({"date": day, "count": due_today if i == 0 else len(due)})
 
     return {
         "days_to_exam": _days_to_exam(learner, now),
@@ -160,7 +159,7 @@ def rhythm(conn, learner: dict, now: datetime) -> dict:
         "memory": {"recall_rate": round(window["recalled"] / window["reviews"], 2) if window["reviews"] else None,
                    "window_days": mem["window_days"], "reviews": window["reviews"],
                    "new": stages.count("new"), "learning": stages.count("learning"), "mastered": stages.count("mature"),
-                   "due_today": sum(1 for c in cards if c["due_at"] <= now)},
+                   "due_today": due_today},
         "curve": curve,
         "recall_by_module": recall_by_module,
         "due_forecast": forecast,

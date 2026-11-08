@@ -9,6 +9,7 @@ from pydantic import Field
 from app.schemas import _samples as s
 from app.schemas.base import RequestSchema, Schema, with_example
 from app.schemas.common import Citation, Option
+from app.schemas.assessment import QuestionClassification
 
 _REASON = "Bạn sai 3 câu về Đo lường tần suất bệnh trong 7 ngày qua · bạn chưa gặp câu này trong 14 ngày."
 _FEEDBACK = {
@@ -47,7 +48,7 @@ class PracticeFeedback(Schema):
     model_config = with_example(_FEEDBACK)
 
 
-class PracticeItem(Schema):
+class PracticeItem(QuestionClassification):
     question_id: str
     n: int
     stem: str

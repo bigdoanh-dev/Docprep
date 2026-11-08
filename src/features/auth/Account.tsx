@@ -210,8 +210,8 @@ export function Account() {
               </label>
             </div>
             <p className="notice small">
-              Giới hạn số lượt đang được hoàn thiện ở dịch vụ hiện tại; danh
-              sách đến hạn có thể chưa được cắt theo cài đặt.
+              Mỗi lần đánh giá thẻ tính một lượt ôn. Lần ôn đầu tiên của một thẻ
+              còn tính vào giới hạn thẻ mới. Giới hạn đặt lại mỗi ngày.
             </p>
             <button
               className="btn primary"

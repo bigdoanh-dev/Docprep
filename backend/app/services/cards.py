@@ -9,14 +9,15 @@ from app.errors import ApiError
 from app.repo import cards as repo
 from app.repo import content
 from app.repo import progress as progress_repo
+from app.repo import learners as learners_repo
 from app.services.session_progress import step_completed
 
 
-def due(conn, learner: dict, limit: int, now: datetime) -> dict:
+def due(conn, learner: dict, limit: int, now: datetime, offset: int = 0) -> dict:
     module_of = {t["code"]: t["module_id"] for t in content.topics(conn)}
     short_names = content.module_short_names(conn)
     items = []
-    for row in repo.due(conn, learner["id"], now, limit):
+    for row in repo.due(conn, learner["id"], now, limit, offset):
         preview = scheduler.preview(row["fsrs_card"], now, learner["exam_date"], learner["target_retention"])
         items.append({"id": row["id"], "front": row["front"], "back": row["back"], "citation": row["citation"],
                       "source_passage_id": row["source_passage_id"], "origin": ORIGIN[row["source_context"]],
@@ -26,9 +27,18 @@ def due(conn, learner: dict, limit: int, now: datetime) -> dict:
 
 
 def review(conn, learner: dict, card_id: int, rating: int, now: datetime, time_ms: int | None = None) -> dict:
+    # Serialize ratings across different cards/devices so neither daily allowance can be overspent.
+    learners_repo.lock(conn, learner["id"])
     card = repo.own_card(conn, learner["id"], card_id)
     if card is None:
         raise ApiError(404, "card_not_found", "Không tìm thấy thẻ ôn.")
+    if card["suspended"]:
+        raise ApiError(409, "card_suspended", "Thẻ này đang tạm dừng ôn.")
+    left = repo.budget(conn, learner["id"], now)
+    if not left["reviews"]:
+        raise ApiError(409, "review_limit_reached", "Bạn đã đạt giới hạn lượt ôn hôm nay.")
+    if card["reps"] == 0 and not left["new"]:
+        raise ApiError(409, "new_card_limit_reached", "Bạn đã đạt giới hạn thẻ mới hôm nay.")
     state, due_at, seconds = scheduler.review(card["fsrs_card"], rating, now, learner["exam_date"],
                                               learner["target_retention"])
     repo.apply_review(conn, card_id, state, due_at, rating, seconds, time_ms, now)
@@ -43,6 +53,7 @@ def decks(conn, learner: dict, now: datetime) -> dict:
     module_of = {t["code"]: t["module_id"] for t in content.topics(conn)}
     mature_days = settings()["memory"]["mature_days"]
     by_module: dict[str, list[dict]] = {}
+    available_ids = set(repo.due_ids(conn, learner["id"], now, 1000))
     for card in progress_repo.cards(conn, learner["id"]):
         by_module.setdefault(module_of[card["competency_code"]], []).append(card)
     items = []
@@ -53,7 +64,7 @@ def decks(conn, learner: dict, now: datetime) -> dict:
         stages = [memory.stage(c["fsrs_card"], c["reps"], mature_days) for c in cards]
         items.append({"module_id": module["id"], "name": module["name"], "short_name": module["short_name"],
                       "new": stages.count("new"), "learning": stages.count("learning"),
-                      "due": sum(1 for c in cards if c["due_at"] <= now)})
+                      "due": sum(c["id"] in available_ids for c in cards)})
     return {"items": items}
 
 

@@ -23,6 +23,7 @@ def test_exam_list(learner_api):
     listed = learner_api.get("/v1/exams").json()["items"]
     assert [f["id"] for f in listed] == ["danh-gia-nang-luc", FORM, "de-tu-rap"]
     assert listed[1] == {"id": FORM, "title": "Đề thi thử số 1", "kind": "demo_short", "n_questions": 10,
+                         "module_id": "g1", "module_name": "Sức khỏe quần thể và dự phòng",
                          "minutes": 10, "attempts_left": None, "last": None, "open_attempt_id": None,
                          "open_remaining_s": None, "history": [], "plan": None}
     assert (listed[0]["kind"], listed[0]["n_questions"], listed[0]["minutes"]) == ("diagnostic", 6, 6)

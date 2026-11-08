@@ -218,6 +218,7 @@ export function Progress() {
               specialties={data.specialties}
               levels={data.levels}
               bySpecialty={data.bloom_by_specialty}
+              byIssue={data.issues_by_specialty}
             />
           </details>
           <Block

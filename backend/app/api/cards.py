@@ -13,8 +13,9 @@ LEARNER = access("learner")
 
 
 @router.get("/cards/due", response_model=DueCardList, summary="Cards due now, overdue first", **LEARNER)
-def list_due_cards(request: Request, limit: int = Query(50, ge=1, le=200), conn=Conn, now=Now, learner=Learner):
-    return mock_example(request, DueCardList) or cards_service.due(conn, learner, limit, now)
+def list_due_cards(request: Request, limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0, le=1000),
+                   conn=Conn, now=Now, learner=Learner):
+    return mock_example(request, DueCardList) or cards_service.due(conn, learner, limit, now, offset)
 
 
 @router.post("/cards/{card_id}/reviews", response_model=CardReviewResult, summary="Rate a card", **LEARNER)

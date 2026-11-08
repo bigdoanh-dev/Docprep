@@ -1,5 +1,9 @@
 # AI Tutor / DocPrep
 
+Frontend tại `src/` đã ghép các cập nhật từ `main` (`18ac4cf`) vào nhánh `feat/alpha-v1-backend-2`, giữ phần tích hợp backend Phase 1. Nhánh `feat/alpha-v1-backend` được giữ nguyên tại `13fb683`. Xem [ghi chú ghép frontend và kết quả kiểm tra](docs/phase1/frontend-merge.md).
+
+Để chạy frontend mới với backend Phase 1 trên Windows, mở Docker Desktop rồi chạy `npm.cmd run dev:full` tại gốc repo. Lệnh chuẩn bị backend và dữ liệu local, kiểm tra API thật rồi mở Vite tại **http://127.0.0.1:5190/dang-nhap**. Khi backend đã chạy, dùng `npm.cmd run dev:full -- -SkipSetup` để chỉ mở frontend. Script tự đặt proxy theo cổng Phase 1 trong `.env.phase1`; mặc định là `18880`. Xem [hướng dẫn kết nối và kiểm tra](docs/phase1/frontend-connection.md).
+
 **Phase 1 local:** Business API ×2, Chat ×2, Redis, PostgreSQL/pgvector và Caddy; frontend YHDP đã tích hợp với API Phase 1. Generation hiện **disabled** vì AI server chưa bật; adapter Ollama và index qua worker đã có. Chạy từ thư mục này:
 
 ```powershell
@@ -120,5 +124,6 @@ Alpha gồm tài khoản/consent, học, phiên ngày, ôn thẻ đến hạn, t
 - [Ma trận 55 API](docs/alpha-v1/api-matrix.md)
 - [Kết quả kiểm thử và giới hạn](docs/alpha-v1/verification.md)
 - [Hợp đồng frontend chi tiết](docs/handoffs/mobile-backend-handoff.md)
+- [Đồng bộ frontend/backend và kiểm chứng live](docs/testing/frontend-backend-contract-fix.md)
 
 Backend, migration, seed và OpenAPI ban đầu được tiếp nhận từ `NLHN-YHDP-main.zip`; frontend cũ trong ZIP không được nhập. Các handler đã có chỉ được coi là hoạt động trong phạm vi đã kiểm thử ghi ở báo cáo.

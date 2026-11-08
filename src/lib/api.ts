@@ -1,3 +1,4 @@
+import type { SpecialtyIssues } from "./learningAnalytics";
 import { localDay, recordActivity } from "./learnerWorkspace";
 // Thin JSON client for the backend's /v1 API (proxied under /api by Vite). Every request goes through
 // the session, which adds the access token and refreshes it when it has expired.
@@ -223,11 +224,18 @@ export type {
 // Chat payloads live with the rules that read them (chatTurn.ts).
 import type { Citation, StoredMessage } from "./chatTurn";
 
-export type TutorTopic = { reason_vi: string; label_vi: string; prompt: string };
+export type TutorTopic = {
+  reason_vi: string;
+  label_vi: string;
+  prompt: string;
+};
 export type ResumeItem = {
   kind: "exam" | "unit" | "practice_set" | "chat";
-  id: number | string; title: string; subtitle_vi: string;
-  progress: number | null; path: string | null;
+  id: number | string;
+  title: string;
+  subtitle_vi: string;
+  progress: number | null;
+  path: string | null;
 };
 export type Home = {
   name: string;
@@ -342,6 +350,8 @@ export type UnitView = {
 
 export type ExamForm = {
   id: string;
+  module_id?: string | null;
+  module_name?: string | null;
   title: string;
   kind: "diagnostic" | "mock" | "demo_short" | "assembled";
   n_questions: number;
@@ -383,6 +393,7 @@ export type ItemStatus = "ok" | "wrong" | "blank";
 
 export type Results = {
   attempt_id: number;
+  issues_by_specialty?: SpecialtyIssues[];
   specialties?: { name: string; correct: number; total: number }[];
   bloom_by_specialty?: {
     module_id: string;
@@ -419,7 +430,18 @@ export type Results = {
   }[];
 };
 
-export type ReviewItem = {
+// Optional until the live API supplies question classification metadata.
+export type QuestionClassification = {
+  module_id?: string | null;
+  module_name?: string | null;
+  core_issue_id?: number | null;
+  difficulty_label?: string | null;
+  bloom_level?: number | null;
+  bloom_label?: string | null;
+  core_issue_name?: string | null;
+};
+
+export type ReviewItem = QuestionClassification & {
   n: number;
   total: number;
   question_id: string;
@@ -483,7 +505,7 @@ export type PracticeFeedback = {
   card_created: boolean;
   remediation: Remediation | null;
 };
-export type PracticeItem = {
+export type PracticeItem = QuestionClassification & {
   question_id: string;
   n: number;
   stem: string;
@@ -517,6 +539,7 @@ export type Deck = {
 // ---- Tiến độ ----
 
 export type ProgressSkills = {
+  issues_by_specialty?: SpecialtyIssues[];
   days_to_exam: number;
   scope: "latest3" | "all";
   coverage: {

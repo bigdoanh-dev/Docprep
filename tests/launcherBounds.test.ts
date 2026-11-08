@@ -87,7 +87,10 @@ test("low screen / virtual keyboard: container 390x180, header bottom=124, foote
 
   // Verify launcher bottom is strictly above footer top
   const launcherBottom = clamped.y + 54;
-  assert.ok(launcherBottom < 130, `Launcher bottom (${launcherBottom}) must be strictly < footer top (130)`);
+  assert.ok(
+    launcherBottom < 130,
+    `Launcher bottom (${launcherBottom}) must be strictly < footer top (130)`,
+  );
   assert.equal(130 - launcherBottom, 8);
 });
 
@@ -150,11 +153,20 @@ test("validates finite coordinates: NaN, Infinity, null, and non-numbers safely 
   assert.equal(isValidPoint({ x: "100", y: 200 }), false);
 
   // Corrupted / legacy inputs should safely resolve to default position
-  assert.deepEqual(clampLauncherPosition({ x: NaN, y: 100 }, options), expectedDefault);
-  assert.deepEqual(clampLauncherPosition({ x: Infinity, y: -Infinity }, options), expectedDefault);
+  assert.deepEqual(
+    clampLauncherPosition({ x: NaN, y: 100 }, options),
+    expectedDefault,
+  );
+  assert.deepEqual(
+    clampLauncherPosition({ x: Infinity, y: -Infinity }, options),
+    expectedDefault,
+  );
   assert.deepEqual(clampLauncherPosition(null, options), expectedDefault);
   assert.deepEqual(clampLauncherPosition(undefined, options), expectedDefault);
-  assert.deepEqual(clampLauncherPosition("corrupted", options), expectedDefault);
+  assert.deepEqual(
+    clampLauncherPosition("corrupted", options),
+    expectedDefault,
+  );
   assert.deepEqual(clampLauncherPosition({ x: 100 }, options), expectedDefault);
 });
 
@@ -246,7 +258,8 @@ test("default launcher position sits at bottom-right above footer", () => {
 test("drag threshold distinguishes tap (< 6px) vs drag (>= 6px)", () => {
   assert.equal(DRAG_THRESHOLD, 6);
 
-  const isDrag = (dx: number, dy: number) => Math.hypot(dx, dy) >= DRAG_THRESHOLD;
+  const isDrag = (dx: number, dy: number) =>
+    Math.hypot(dx, dy) >= DRAG_THRESHOLD;
 
   // Small pointer jitter during tap
   assert.equal(isDrag(1, 2), false);
@@ -299,11 +312,17 @@ test("intersectAppWithVisualViewport correctly bounds visible area under virtual
   assert.equal(bounds.maxY, 480 - 8 - 54); // 418
 
   // Position at y=50 (which would be cut off by the top offset) is clamped into view at 128
-  const clampedCutOff = clampLauncherPosition({ x: 200, y: 50 }, { containerRect });
+  const clampedCutOff = clampLauncherPosition(
+    { x: 200, y: 50 },
+    { containerRect },
+  );
   assert.equal(clampedCutOff.y, 128);
 
   // Position at y=600 (hidden behind keyboard) is clamped into view at 418
-  const clampedKeyboard = clampLauncherPosition({ x: 200, y: 600 }, { containerRect });
+  const clampedKeyboard = clampLauncherPosition(
+    { x: 200, y: 600 },
+    { containerRect },
+  );
   assert.equal(clampedKeyboard.y, 418);
 });
 
@@ -386,7 +405,10 @@ test("desktop 1280px with appRect.top = 20 clamps launcher top to y=28 (never y=
   const clamped = clampLauncherPosition({ x: 400, y: 0 }, { containerRect });
   assert.equal(clamped.y, 28);
   assert.notEqual(clamped.y, 8);
-  assert.ok(clamped.y >= 20, "Launcher must stay inside desktop app frame (y >= 20)");
+  assert.ok(
+    clamped.y >= 20,
+    "Launcher must stay inside desktop app frame (y >= 20)",
+  );
 });
 
 test("snapLauncherToEdge: snaps middle-left to LEFT edge, middle-right to RIGHT edge, and upper-center to TOP edge", () => {
@@ -436,11 +458,18 @@ test("snapLauncherToEdge: NEVER snaps to bottom edge (no bottom edge), snaps to 
   // Nearest edge is RIGHT! It must NOT snap to bottom edge across the center!
   const lowerCenter = snapLauncherToEdge({ x: 195, y: 690 }, options);
   assert.equal(lowerCenter.x, 333, "Must snap to RIGHT edge (x=333)");
-  assert.equal(lowerCenter.y, 690, "Must keep y=690 above footer, never overlap footer");
+  assert.equal(
+    lowerCenter.y,
+    690,
+    "Must keep y=690 above footer, never overlap footer",
+  );
 
   // Bottom clearance verified:
   const bottomEdge = lowerCenter.y + 54;
-  assert.ok(bottomEdge <= 760 - 8, `Launcher bottom (${bottomEdge}) must be <= footerTop - margin (${760 - 8})`);
+  assert.ok(
+    bottomEdge <= 760 - 8,
+    `Launcher bottom (${bottomEdge}) must be <= footerTop - margin (${760 - 8})`,
+  );
 
   // Lower-left position near footer (x: 100, y: 695)
   const lowerLeft = snapLauncherToEdge({ x: 100, y: 695 }, options);
@@ -457,7 +486,11 @@ test("snapLauncherToEdge: migrates saved center position to nearest edge and han
     margin: 8,
   };
   const migratedCenter = snapLauncherToEdge({ x: 170, y: 400 }, options390);
-  assert.equal(migratedCenter.x, 8, "Center-left legacy position snaps to LEFT edge");
+  assert.equal(
+    migratedCenter.x,
+    8,
+    "Center-left legacy position snaps to LEFT edge",
+  );
   assert.equal(migratedCenter.y, 400);
 
   // 320px viewport: container 320x568, footer 500
@@ -481,10 +514,18 @@ test("snapLauncherToEdge: migrates saved center position to nearest edge and han
   };
   // Left side of desktop frame
   const desktopLeft = snapLauncherToEdge({ x: 500, y: 400 }, desktopOptions);
-  assert.equal(desktopLeft.x, 408, "Snaps to LEFT edge of 480px desktop container (408)");
+  assert.equal(
+    desktopLeft.x,
+    408,
+    "Snaps to LEFT edge of 480px desktop container (408)",
+  );
 
   // Upper side of desktop frame
   const desktopUpper = snapLauncherToEdge({ x: 640, y: 40 }, desktopOptions);
-  assert.equal(desktopUpper.y, 28, "Snaps to TOP edge of desktop container with margin (28)");
+  assert.equal(
+    desktopUpper.y,
+    28,
+    "Snaps to TOP edge of desktop container with margin (28)",
+  );
   assert.equal(desktopUpper.x, 640);
 });
