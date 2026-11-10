@@ -465,7 +465,6 @@ export function AnswerReview() {
               })}
             </div>
             <div className="card stack">
-              <p className="label">Giải thích của chuyên gia</p>
               <QuestionClassification metadata={item} />
               <p style={{ fontSize: 16, color: "var(--text-2)" }}>
                 {item.explanation}

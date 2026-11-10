@@ -6,6 +6,15 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       proxy: {
+        // The requested username login uses the reference branch's /api/v1 route.
+        // Other API requests keep the existing proxy contract.
+        "/api/v1/auth/login": {
+          target:
+            process.env.BACKEND_URL ||
+            env.BACKEND_URL ||
+            "http://127.0.0.1:8000",
+          changeOrigin: true,
+        },
         "/api": {
           target:
             process.env.BACKEND_URL ||

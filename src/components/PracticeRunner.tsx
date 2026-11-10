@@ -262,7 +262,6 @@ export function PracticeRunner({
                 </>
               )}
             </p>
-            <p className="label">Giải thích của chuyên gia</p>
             <QuestionClassification metadata={item} />
             <p style={{ fontSize: 16, color: "var(--text-2)" }}>
               {feedback.explanation}
