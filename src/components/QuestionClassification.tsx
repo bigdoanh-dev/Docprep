@@ -30,7 +30,7 @@ export function QuestionClassification({
       i.name === metadata.core_issue_name?.trim(),
   );
   const specialty = metadata.module_name?.trim() || group?.short_name;
-  const issueName = issue?.name || metadata.core_issue_name?.trim();
+  const issueName = metadata.core_issue_name?.trim() || issue?.name;
   const difficulty = metadata.difficulty_label?.trim();
   const bloom =
     metadata.bloom_label ||

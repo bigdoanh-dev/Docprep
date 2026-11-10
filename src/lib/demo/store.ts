@@ -7,7 +7,11 @@ import {
   createIssueDemoAttempts,
 } from "./issueExam";
 import blueprint from "../blueprint.json";
-import { groupForQuestion, summarizeAnswers } from "../learningAnalytics";
+import {
+  assessedExamAnswers,
+  groupForQuestion,
+  summarizeAnswers,
+} from "../learningAnalytics";
 import { getActor } from "../../app/identity";
 import rawExamples from "./examples.json";
 import rawSeed from "./seed.json";
@@ -136,11 +140,30 @@ function seedIssueDemoResults(s: any): boolean {
   return true;
 }
 
+function repairExamAssessments(s: any): boolean {
+  if (s.exam_assessment_version === 1) return false;
+  for (const attempt of s.attempts) {
+    if (attempt.submitted_at && Array.isArray(attempt.results?.items)) {
+      Object.assign(
+        attempt.results,
+        summarizeAnswers(
+          assessedExamAnswers(attempt.results.items),
+          seed.questions,
+          seed.blueprint.groups,
+        ),
+      );
+    }
+  }
+  s.exam_assessment_version = 1;
+  return true;
+}
+
 export function readStore(): any {
   try {
     const value = JSON.parse(localStorage.getItem(KEY) ?? "null");
     if (value?.version === 2) {
-      if (seedIssueDemoResults(value)) writeStore(value);
+      const seeded = seedIssueDemoResults(value);
+      if (repairExamAssessments(value) || seeded) writeStore(value);
       return value;
     }
   } catch {
@@ -148,6 +171,7 @@ export function readStore(): any {
   }
   const s = initial();
   seedIssueDemoResults(s);
+  repairExamAssessments(s);
   writeStore(s);
   return s;
 }
@@ -523,10 +547,7 @@ function closeAttempt(s: any, a: any, auto = false) {
   a.submitted_at = now();
   a.results = {
     ...summarizeAnswers(
-      items.map((i: any) => ({
-        question_id: i.question_id,
-        correct: i.status === "ok",
-      })),
+      assessedExamAnswers(items),
       seed.questions,
       seed.blueprint.groups,
     ),
@@ -1072,10 +1093,7 @@ export async function demoRequest(
         return {
           ...a.results,
           ...summarizeAnswers(
-            a.results.items.map((i: any) => ({
-              question_id: i.question_id,
-              correct: i.status === "ok",
-            })),
+            assessedExamAnswers(a.results.items),
             seed.questions,
             seed.blueprint.groups,
           ),
@@ -1134,10 +1152,7 @@ export async function demoRequest(
         total: a.questions.length,
       }));
       const assessed = scoped.flatMap((a: any) =>
-        a.results.items.map((i: any) => ({
-          question_id: i.question_id,
-          correct: i.status === "ok",
-        })),
+        assessedExamAnswers(a.results.items),
       );
       Object.assign(
         v,

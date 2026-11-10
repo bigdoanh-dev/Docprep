@@ -1,6 +1,7 @@
 import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { setActor, type Role } from "../src/app/identity.ts";
+import { summarizeAnswers } from "../src/lib/learningAnalytics";
 import {
   demoCall,
   demoRequest,
@@ -318,14 +319,11 @@ test("mock specialties and Bloom respect selected scope and submitted results on
   const seeded = await demoRequest("GET", "/progress/skills?scope=all");
   assert.equal(seeded.mock_scores.length, 3);
   assert.equal(seeded.coverage.assessed_topics, 54);
-  assert.ok(
-    seeded.issues_by_specialty.every((g: any) =>
-      g.issues.every((i: any) => i.total === 3),
-    ),
-  );
-  assert.ok(
-    seeded.bloom_by_specialty.every((g: any) =>
-      g.levels.every((l: any) => l.total > 0),
+  assert.equal(
+    seeded.levels.reduce((sum: number, l: any) => sum + l.total, 0),
+    readStore().attempts.reduce(
+      (sum: number, a: any) => sum + Object.keys(a.answers).length,
+      0,
     ),
   );
   // Isolate newly submitted attempts to verify all/latest3 and the empty state.
@@ -351,7 +349,7 @@ test("mock specialties and Bloom respect selected scope and submitted results on
     );
     assert.equal(
       results.specialties.reduce((n: number, s: any) => n + s.total, 0),
-      10,
+      1,
     );
   }
   const all = await demoRequest("GET", "/progress/skills?scope=all"),
@@ -360,12 +358,107 @@ test("mock specialties and Bloom respect selected scope and submitted results on
   assert.equal(latest.mock_scores.length, 3);
   assert.equal(
     all.levels.reduce((n: number, l: any) => n + l.total, 0),
-    40,
+    4,
   );
   assert.equal(
     latest.levels.reduce((n: number, l: any) => n + l.total, 0),
-    30,
+    3,
   );
+});
+
+test("submitting all blanks preserves the exam score but creates no assessments", async () => {
+  await ready();
+  const s = readStore();
+  s.attempts = [];
+  writeStore(s);
+  const attempt = await demoRequest("POST", "/exams/mock-demo/attempts");
+  const results = await demoRequest(
+    "POST",
+    `/attempts/${attempt.attempt_id}/submit`,
+  );
+  assert.equal(results.total, 10);
+  assert.equal(results.score, 0);
+  assert.equal(results.blank, 10);
+  assert.ok(results.levels.every((l: any) => l.total === 0));
+  const progress = await demoRequest("GET", "/progress/skills?scope=all");
+  assert.ok(progress.specialties.every((s: any) => s.total === 0));
+  assert.ok(
+    progress.issues_by_specialty.every((g: any) =>
+      g.issues.every((i: any) => i.total === 0),
+    ),
+  );
+  assert.equal(progress.coverage.assessed_topics, 0);
+});
+
+test("old demo assessments are repaired once without resetting history, profile, answers or scores", async () => {
+  await ready();
+  const s = readStore();
+  s.me.display_name = "Hồ sơ cần giữ";
+  delete s.exam_assessment_version;
+  for (const a of s.attempts) {
+    Object.assign(
+      a.results,
+      summarizeAnswers(
+        a.results.items.map((i: any) => ({
+          question_id: i.question_id,
+          correct: i.status === "ok",
+        })),
+        seed.questions,
+        seed.blueprint.groups,
+      ),
+    );
+  }
+  const before = structuredClone(s);
+  writeStore(s);
+  const repaired = readStore();
+  assert.equal(repaired.me.display_name, before.me.display_name);
+  assert.equal(repaired.nextId, before.nextId);
+  assert.deepEqual(
+    repaired.attempts.map((a: any) => a.attempt_id),
+    before.attempts.map((a: any) => a.attempt_id),
+  );
+  for (let n = 0; n < repaired.attempts.length; n++) {
+    const a = repaired.attempts[n];
+    assert.deepEqual(a.answers, before.attempts[n].answers);
+    for (const field of [
+      "score",
+      "total",
+      "blank",
+      "wrong",
+      "submitted_at",
+      "duration_s",
+      "new_cards",
+    ]) {
+      assert.equal(a.results[field], before.attempts[n].results[field]);
+    }
+    assert.equal(
+      a.results.levels.reduce((sum: number, l: any) => sum + l.total, 0),
+      Object.keys(a.answers).length,
+    );
+    const retried = await demoRequest(
+      "POST",
+      `/attempts/${a.attempt_id}/submit`,
+    );
+    const loaded = await demoRequest(
+      "GET",
+      `/attempts/${a.attempt_id}/results`,
+    );
+    assert.deepEqual(retried.levels, loaded.levels);
+  }
+  const persisted = memory.get("yhdp.demo.v2");
+  let writes = 0;
+  const changed = () => {
+    writes++;
+  };
+  window.addEventListener("yhdp-demo-change", changed);
+  try {
+    readStore();
+    readStore();
+    assert.equal(writes, 0);
+    assert.equal(memory.get("yhdp.demo.v2"), persisted);
+  } finally {
+    window.removeEventListener("yhdp-demo-change", changed);
+  }
 });
 
 test("module filters combine metadata without inventing core issue mappings for foundation questions", async () => {

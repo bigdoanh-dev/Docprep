@@ -1,5 +1,9 @@
 import blueprint from "../blueprint.json";
-import { BLOOM, summarizeAnswers } from "../learningAnalytics";
+import {
+  BLOOM,
+  assessedExamAnswers,
+  summarizeAnswers,
+} from "../learningAnalytics";
 import { progressQuestions } from "./progressExam";
 
 export const ISSUE_DEMO_EXAM_ID = "issues-demo";
@@ -88,10 +92,7 @@ export function createIssueDemoAttempts(startId: number, asOf: string) {
       warning_s: 300,
       results: {
         ...summarizeAnswers(
-          items.map((i) => ({
-            question_id: i.question_id,
-            correct: i.status === "ok",
-          })),
+          assessedExamAnswers(items),
           issueDemoQuestions,
           blueprint.groups,
         ),

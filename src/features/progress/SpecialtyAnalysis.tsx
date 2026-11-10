@@ -35,8 +35,29 @@ export function SpecialtyAnalysis({
   const [selectedCell, setSelectedCell] = useState<string | null>(null);
   const [selectedAxisId, setSelectedAxisId] = useState<string | null>(null);
   const groups = bySpecialty ?? [];
+  // API names and issue membership take precedence; the bundled catalog supports older responses.
+  const catalog = blueprint.groups.map((group) => {
+    const moduleId = `g${group.id}`;
+    const serverGroup = byIssue?.find((g) => g.module_id === moduleId);
+    return {
+      ...group,
+      short_name:
+        serverGroup?.name.trim() ||
+        specialties?.find((s) => s.module_id === moduleId)?.name.trim() ||
+        groups.find((g) => g.module_id === moduleId)?.name.trim() ||
+        group.short_name,
+      issues:
+        serverGroup?.issues.map((issue) => ({
+          id: issue.issue_id,
+          name:
+            issue.name.trim() ||
+            group.issues.find((i) => i.id === issue.issue_id)?.name ||
+            `Vấn đề ${issue.issue_id}`,
+        })) ?? group.issues,
+    };
+  });
   // A scope change can remove a group; fall back to all instead of showing stale data.
-  const activeSpecialty = blueprint.groups.find((g) => `g${g.id}` === selected);
+  const activeSpecialty = catalog.find((g) => `g${g.id}` === selected);
   const activeGroup = groups.find((g) => g.module_id === selected);
   const definitions = levels.length
     ? levels
@@ -74,7 +95,7 @@ export function SpecialtyAnalysis({
           };
         })
       : perspective === "specialty"
-        ? blueprint.groups.map((group) => {
+        ? catalog.map((group) => {
             const count = specialtyCounts.find(
               (s) =>
                 s.module_id === `g${group.id}` ||
@@ -178,7 +199,7 @@ export function SpecialtyAnalysis({
           }}
         >
           <option value="all">Tất cả</option>
-          {blueprint.groups.map((group) => (
+          {catalog.map((group) => (
             <option key={group.id} value={`g${group.id}`}>
               {group.id}. {group.short_name}
             </option>

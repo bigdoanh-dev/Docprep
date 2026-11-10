@@ -1,6 +1,24 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { learningMatrix } from "../src/lib/learningAnalytics";
+import {
+  assessedExamAnswers,
+  learningMatrix,
+} from "../src/lib/learningAnalytics";
+
+test("exam assessments include correct and wrong answers, excluding blanks and unknown states", () => {
+  assert.deepEqual(
+    assessedExamAnswers([
+      { question_id: "correct", status: "ok" },
+      { question_id: "wrong", status: "wrong" },
+      { question_id: "blank", status: "blank" },
+      { question_id: "pending", status: "pending" },
+    ]),
+    [
+      { question_id: "correct", correct: true },
+      { question_id: "wrong", correct: false },
+    ],
+  );
+});
 
 test("live three-band assessments retain server labels in both matrix perspectives", () => {
   const levels = [

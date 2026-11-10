@@ -7,6 +7,17 @@ export const BLOOM = [
   "Sáng tạo",
 ];
 export type AssessedAnswer = { question_id: string; correct: boolean };
+/** Exam blanks affect the score, but provide no evidence for learning assessments. */
+export function assessedExamAnswers(
+  items: readonly { question_id: string; status: string }[],
+): AssessedAnswer[] {
+  return items
+    .filter((item) => item.status === "ok" || item.status === "wrong")
+    .map((item) => ({
+      question_id: item.question_id,
+      correct: item.status === "ok",
+    }));
+}
 export type QuestionMetadata = {
   id: string;
   bloom_level: number;
