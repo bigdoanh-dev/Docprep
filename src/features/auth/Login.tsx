@@ -11,6 +11,7 @@ import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { roleHome, setActor, useActor, type Role } from "../../app/identity";
 import { publicPost, type TokenPair } from "../../lib/api";
 import { session, staffSession } from "../../lib/client";
+import { usernameLogin } from "../../lib/login";
 import { clearWorkspace } from "../../lib/learnerWorkspace";
 import { resetDemo } from "../../lib/demo/store";
 import { RuntimeNotice } from "../../components/RuntimeNotice";
@@ -71,23 +72,25 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
     return <Navigate to={roleHome(actor.role)} replace />;
 
   const chooseMode = (nextMode: "learner" | "staff" | "demo") => {
+    if (busy) return;
     setMode(nextMode);
     setError("");
   };
 
   const login = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (busy) return;
     setBusy(true);
     setError("");
 
     try {
       const isStaff = mode === "staff";
-      const pair = await publicPost<TokenPair>(
-        isStaff ? "/auth/staff/login" : "/auth/activate",
-        isStaff
-          ? { email: email.trim(), password }
-          : { code: code.trim(), device: { platform: "web" } },
-      );
+      const pair = isStaff
+        ? await usernameLogin(email, password)
+        : await publicPost<TokenPair>("/auth/activate", {
+            code: code.trim(),
+            device: { platform: "web" },
+          });
 
       if (!mobileRoles.includes(pair.role as Role)) {
         if (pair.role === "reviewer") {
@@ -149,6 +152,7 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
               <button
                 type="button"
                 aria-pressed={mode === "learner"}
+                disabled={busy}
                 onClick={() => chooseMode("learner")}
               >
                 Người học
@@ -156,6 +160,7 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
               <button
                 type="button"
                 aria-pressed={mode === "staff"}
+                disabled={busy}
                 onClick={() => chooseMode("staff")}
               >
                 Cán bộ
@@ -175,6 +180,7 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
                       placeholder="Nhập mã do cơ sở đào tạo cấp"
                       required
                       minLength={6}
+                      disabled={busy}
                       value={code}
                       onChange={(event) => setCode(event.target.value)}
                     />
@@ -195,6 +201,7 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
                       inputMode="email"
                       placeholder="ten@donvi.gov.vn"
                       required
+                      disabled={busy}
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                     />
@@ -208,6 +215,7 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
                         type={showPassword ? "text" : "password"}
                         autoComplete="current-password"
                         required
+                        disabled={busy}
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                       />
@@ -254,6 +262,7 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
             <button
               type="button"
               className="login-demo-link"
+              disabled={busy}
               onClick={() => chooseMode("demo")}
             >
               Dùng dữ liệu trải nghiệm

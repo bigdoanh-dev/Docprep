@@ -1,4 +1,25 @@
-# Ghép frontend vào nhánh backend — cập nhật 08/11/2026
+# Ghép frontend vào nhánh backend — cập nhật 10/11/2026
+
+## Lần ghép ngày 10/11/2026
+
+Nhánh đích là `feat/alpha-v1-backend-2`. Nguồn giao diện mới là `origin/main` tại `46f6b3e63c336c9c26f9d083b09a1d639e153769`. Trước khi ghép, hai bản sửa tên từ API và thống kê demo bỏ qua câu trống đã được lưu ở `d525c69`; nhánh checkpoint là `checkpoint/alpha-v1-backend-2-before-main-20261110`.
+
+- Nhận phần giải thích gọn hơn trong practice và xem lại bài thi: bỏ tiêu đề lặp, giữ phân loại câu hỏi, nội dung giải thích và trích dẫn.
+- Nhận cách khóa form khi đang đăng nhập, chặn gửi lặp và cải tiến xử lý lỗi từ `main`.
+- Điều chỉnh helper đăng nhập của `main` theo Phase 1: cán bộ gửi email/mật khẩu tới `/api/v1/auth/staff/login`, giữ nguyên access token, refresh token và role do server trả về. Người học tiếp tục dùng `/api/v1/auth/activate`, qua consent và chọn học phần như trước.
+- Không dùng contract YHDP `/api/v1/auth/login` với token đơn hoặc tự gán mọi tài khoản thành learner. Backend Phase 1 hiện chưa hỗ trợ đăng nhập tên/mật khẩu cho người học. Proxy Vite tiếp tục dùng quy tắc chung `/api` → `/v1`, tương thích Caddy.
+- Giữ hai bản sửa dữ liệu, runtime notice, API học/ôn/thi/tiến độ và SSE. Không đổi backend, OpenAPI, migrations hoặc biến môi trường riêng trong lần ghép này.
+
+Kiểm tra mới trên Windows, frontend Vite `http://127.0.0.1:5191` kết nối môi trường PostgreSQL/Redis riêng qua Caddy `18881`, provider `disabled`:
+
+- **124/124** unit tests frontend đạt; build và lint đạt.
+- **18/18** ca trình duyệt được chạy đạt trên Chromium desktop 1440×1000 và mobile 390×844. Gồm 8 ca dùng API/database thật và 10 ca demo/đối chiếu contract. Hai ca phục hồi SSE yêu cầu scripted bị bỏ qua đúng điều kiện; không coi AI disabled là một lượt generation thành công.
+- Các luồng được kiểm tra: learner activation/consent/học/ôn/thi/tiến độ, dashboard viewer/admin, lỗi AI disabled, tên do API cung cấp, fallback response cũ và thống kê demo bỏ trống. Không phát hiện lỗi JavaScript trong các ca này.
+- Browser plugin không có trong phiên kiểm tra nên dùng Playwright. Config, JSON, log và ảnh QA lưu ngoài repository tại `%TEMP%/docprep-main-integration-20261110/`.
+
+Các kết quả và nguồn ngày 07–08/11 dưới đây là lịch sử của lần ghép trước, không phải số liệu chạy lại ngày 10/11.
+
+## Lần ghép trước ngày 08/11/2026
 
 Thay đổi áp dụng tại **gốc repository**, nơi `src/`, `tests/`, `backend/` và `deploy/` nằm cùng cấp. Hai thư mục con `Docprep/` và `Docprep-feat-alpha-v1-backend/` là các bản riêng trong workspace, không thuộc nội dung ghép vào Git.
 

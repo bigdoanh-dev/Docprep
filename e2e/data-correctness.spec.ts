@@ -103,6 +103,9 @@ test("question classification keeps API names and falls back only when absent", 
   );
   await page.goto("/thi-thu/ket-qua/901/q-review");
   await expect(page).toHaveTitle(/DocPrep/);
+  await expect(
+    page.getByText("Giải thích của chuyên gia", { exact: true }),
+  ).toHaveCount(0);
   const classification = page.getByRole("definition");
   await expect(classification.filter({ hasText: issueName })).toHaveCount(1);
   await expect(page.getByText(moduleName, { exact: true })).toBeVisible();
