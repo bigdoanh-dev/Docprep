@@ -10,15 +10,15 @@ const tokenPair = {
   consent_required: false,
 };
 
-test("password sign-in keeps the Phase 1 endpoint, token pair and server role", async () => {
+test("password sign-in keeps the unified Phase 1 endpoint, token pair and server role", async () => {
   const result = await usernameLogin(
     " user ",
     " secret ",
     async (url, init) => {
-      assert.equal(url, "/api/v1/auth/staff/login");
+      assert.equal(url, "/api/v1/auth/login");
       assert.equal(init?.method, "POST");
       assert.deepEqual(JSON.parse(String(init?.body)), {
-        email: "user",
+        username: "user",
         password: " secret ",
       });
       assert.equal(new Headers(init?.headers).has("Authorization"), false);

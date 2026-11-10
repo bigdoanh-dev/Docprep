@@ -1,4 +1,4 @@
-"""Sign-in: learners by activation code, staff by email and password. Tokens are opaque."""
+"""Password sign-in plus legacy activation/staff clients. Tokens are opaque."""
 from typing import Literal
 
 from pydantic import Field
@@ -28,6 +28,13 @@ class StaffLoginRequest(RequestSchema):
     password: str
 
     model_config = with_example({"email": "tham.dinh.1@example.org", "password": "mat-khau-mau"})
+
+
+class PasswordLoginRequest(RequestSchema):
+    username: str = Field(min_length=1, max_length=254)
+    password: str = Field(min_length=1, max_length=1024)
+
+    model_config = with_example({"username": "learner.demo", "password": "AlphaLocal2026!"})
 
 
 class RefreshRequest(RequestSchema):

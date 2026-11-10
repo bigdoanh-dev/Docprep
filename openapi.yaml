@@ -30,6 +30,45 @@ info:
     '
   version: 1.0.0-draft.1
 paths:
+  /v1/auth/login:
+    post:
+      tags:
+      - auth
+      summary: Sign in with a learner username or staff email
+      operationId: password_login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordLoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenPair'
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+      x-roles:
+      - public
   /v1/auth/activate:
     post:
       tags:
@@ -6151,6 +6190,27 @@ components:
         id: tc-p02
         page: 8
         section: 2.1 Vắc xin tiêm cho trẻ sơ sinh
+    PasswordLoginRequest:
+      properties:
+        username:
+          type: string
+          maxLength: 254
+          minLength: 1
+          title: Username
+        password:
+          type: string
+          maxLength: 1024
+          minLength: 1
+          title: Password
+      additionalProperties: false
+      type: object
+      required:
+      - username
+      - password
+      title: PasswordLoginRequest
+      examples:
+      - password: AlphaLocal2026!
+        username: learner.demo
     PlanComposition:
       properties:
         new:

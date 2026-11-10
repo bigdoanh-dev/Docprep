@@ -6,6 +6,7 @@ sign-in share a family, so one device can be cut off without touching the others
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from uuid import uuid4
+import re
 
 from app.auth.passwords import hash_password, verify_password
 from app.auth.principal import Principal
@@ -16,6 +17,7 @@ from app.repo import auth as auth_repo
 from app.repo import consent as consent_repo
 from app.repo import learners as learner_repo
 from app.repo import staff as staff_repo
+from app.repo import credentials
 
 
 @dataclass(frozen=True)
@@ -89,6 +91,9 @@ def _consent_required(conn, learner_id: int) -> bool:
 
 def _check_rate_limit(conn, ip: str, kind: str, now: datetime) -> None:
     """Too many failed sign-ins from this address: refuse every attempt, right ones too, until the window passes."""
+    # PostgreSQL serializes this bucket across Business replicas; parallel guesses
+    # must not all observe the same old failure count.
+    conn.execute("select pg_advisory_xact_lock(hashtextextended(%s, 0))", ("auth:" + kind + ":" + ip,))
     cfg = settings()["auth"]
     since = now - timedelta(minutes=cfg["failure_window_minutes"])
     if auth_repo.count_failures(conn, ip, kind, since) >= cfg["max_failures"]:
@@ -132,7 +137,13 @@ def refresh(conn, refresh_token: str, now: datetime) -> dict:
     """Exchange a refresh token for a new pair in the same family. A refresh token presented a second
     time means it leaked: the whole family is revoked. The token's row is locked first, so two
     requests with the same token cannot both be the first."""
-    token = auth_repo.find_token(conn, hash_token(refresh_token), lock=True)
+    digest = hash_token(refresh_token)
+    token = auth_repo.find_token(conn, digest)
+    if token and token["subject_type"] == "learner":
+        # Same lock as password reset, before the token row: a refresh cannot
+        # publish a new session from an old password after a concurrent reset.
+        conn.execute("select pg_advisory_xact_lock(71103, %s)", (token["subject_id"],))
+    token = auth_repo.find_token(conn, digest, lock=True)
     if token is None or token["kind"] != "refresh":
         raise unauthenticated()
     family = str(token["family_id"])
@@ -163,6 +174,80 @@ MIN_PASSWORD_LENGTH = 12
 WRONG_LOGIN = "Email hoặc mật khẩu không đúng."
 # A real hash of a random value, checked when the e-mail is unknown.
 _NO_ACCOUNT_HASH = hash_password(new_token("at"))
+
+
+def normal_username(username: str) -> str:
+    value = username.strip().lower()
+    if not re.fullmatch(r"[a-z0-9][a-z0-9._-]{2,63}", value):
+        raise ValueError("username must be 3-64 ASCII letters, digits, dot, underscore or hyphen; start with a letter/digit")
+    return value
+
+
+def set_learner_credentials(conn, learner_id: int, username: str, password: str) -> None:
+    """Operator-only binding to an existing learner; never replace another account."""
+    username = normal_username(username)
+    if len(password) < MIN_PASSWORD_LENGTH or len(password) > 1024:
+        raise ValueError("the password needs 12-1024 characters")
+    conn.execute("select pg_advisory_xact_lock(71103, %s)", (learner_id,))
+    learner_repo.lock(conn, learner_id)
+    learner = learner_repo.get(conn, learner_id)
+    if not learner or not learner["active"]:
+        raise ValueError("learner not found or inactive")
+    if credentials.by_learner(conn, learner_id) or credentials.by_username(conn, username):
+        raise ValueError("learner or username already has credentials; use reset-learner-password")
+    credentials.create(conn, learner_id, username, hash_password(password))
+
+
+def create_password_learner(conn, username: str, password: str, display_name: str,
+                            audience: str = "student") -> int:
+    # Validate before creating a learner. CLI wraps creation and credentials in one transaction.
+    username = normal_username(username)
+    if not display_name.strip() or audience not in ("student", "graduate"):
+        raise ValueError("a display name and valid audience are required")
+    if not MIN_PASSWORD_LENGTH <= len(password) <= 1024:
+        raise ValueError("the password needs 12-1024 characters")
+    if credentials.by_username(conn, username):
+        raise ValueError("username already exists")
+    cfg = settings()
+    learner_id = learner_repo.create(conn, learner_repo.next_pseudonym(conn), None, audience, cfg["exam_date"],
+                                     cfg.get("fsrs", {}).get("desired_retention", .9), display_name.strip())
+    set_learner_credentials(conn, learner_id, username, password)
+    return learner_id
+
+
+def reset_learner_password(conn, username: str, password: str, now: datetime) -> None:
+    if not MIN_PASSWORD_LENGTH <= len(password) <= 1024:
+        raise ValueError("the password needs 12-1024 characters")
+    row = credentials.by_username(conn, normal_username(username))
+    if not row:
+        raise ValueError("learner account not found")
+    conn.execute("select pg_advisory_xact_lock(71103, %s)", (row["learner_id"],))
+    learner_repo.lock(conn, row["learner_id"])
+    if not credentials.by_username(conn, row["username"]):
+        raise ValueError("learner account not found")
+    credentials.change_password(conn, row["learner_id"], hash_password(password), now)
+    # Mark every old session revoked so already-issued access and refresh tokens stop working.
+    auth_repo.revoke_subject(conn, "learner", row["learner_id"], now)
+
+
+def password_login(conn, username: str, password: str, ip: str, now: datetime) -> dict:
+    """Unified form: staff email or a private learner username. Role always comes from the DB."""
+    username = username.strip().lower()
+    if "@" in username:
+        return staff_login(conn, username, password, ip, now)
+    _check_rate_limit(conn, ip, "learner_login", now)
+    row = credentials.by_username(conn, username)
+    learner = None
+    if row:
+        conn.execute("select pg_advisory_xact_lock(71103, %s)", (row["learner_id"],))
+        learner_repo.lock(conn, row["learner_id"])
+        learner = learner_repo.get(conn, row["learner_id"])
+        row = credentials.by_username(conn, username)
+    matches = verify_password(password, row["password_hash"] if row else _NO_ACCOUNT_HASH)
+    if not row or not learner or not learner["active"] or not matches:
+        raise _fail(conn, ip, "learner_login", now, "Tên đăng nhập hoặc mật khẩu không đúng.")
+    issued = issue_tokens(conn, "learner", learner["id"], now)
+    return _token_pair(issued, "learner", _consent_required(conn, learner["id"]))
 
 
 def _normal_email(email: str) -> str:

@@ -1,7 +1,8 @@
 """Repeatable local Alpha setup; never changes an existing user's password or history."""
 from app.config import require_dev_env
 from app.repo.staff import find_by_email
-from app.services.auth import create_staff
+from app.services.auth import create_staff, set_learner_credentials
+from app.repo import credentials
 from seed import run_seed
 
 LOCAL_STAFF = (
@@ -19,6 +20,12 @@ def run(conn, with_cohort: bool = True) -> dict:
     for email, name, role in LOCAL_STAFF:
         if not find_by_email(conn, email):
             create_staff(conn, email, LOCAL_PASSWORD, name, role)
+    # Bind once to the existing demo learner; never overwrite a changed password or create new history.
+    demo = conn.execute("select id,active from learner where pseudonym_id='HV-DEMO-001'").fetchone()
+    if demo["active"] and not credentials.by_learner(conn, demo["id"]):
+        if credentials.by_username(conn, "learner.demo"):
+            raise ValueError("learner.demo already belongs to another learner")
+        set_learner_credentials(conn, demo["id"], "learner.demo", LOCAL_PASSWORD)
     conn.commit()
     exists = conn.execute("select 1 from learner where is_synthetic union all "
                           "select 1 from question where is_synthetic limit 1").fetchone()

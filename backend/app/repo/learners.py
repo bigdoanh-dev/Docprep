@@ -102,4 +102,5 @@ def erase(conn, learner_id: int, pseudonym_id: str) -> None:
 def close_keeping_records(conn, learner_id: int) -> None:
     """Remove the identity and close the account; the learning records stay under the pseudonym."""
     conn.execute("delete from learner_identity where learner_id = %s", (learner_id,))
+    conn.execute("delete from learner_credential where learner_id = %s", (learner_id,))
     conn.execute("update learner set active = false where id = %s", (learner_id,))

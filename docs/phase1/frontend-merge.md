@@ -1,5 +1,9 @@
 # Ghép frontend vào nhánh backend — cập nhật 10/11/2026
 
+## Cập nhật theo lựa chọn đăng nhập tên và mật khẩu
+
+Sau lần ghép dưới đây, người phụ trách chọn mở rộng backend để người học cũng dùng username/password. Trạng thái hiện tại: form chung của `main`, API `/v1/auth/login` thuộc Business, migration 0016 và bảng credentials riêng; giữ token pair, role thật, consent và client mã kích hoạt cũ. Nội dung lần ghép bên dưới mô tả bước trung gian trước lựa chọn này. Xem [runbook cấp tài khoản và đặt lại mật khẩu](password-login.md).
+
 ## Lần ghép ngày 10/11/2026
 
 Nhánh đích là `feat/alpha-v1-backend-2`. Nguồn giao diện mới là `origin/main` tại `46f6b3e63c336c9c26f9d083b09a1d639e153769`. Trước khi ghép, hai bản sửa tên từ API và thống kê demo bỏ qua câu trống đã được lưu ở `d525c69`; nhánh checkpoint là `checkpoint/alpha-v1-backend-2-before-main-20261110`.

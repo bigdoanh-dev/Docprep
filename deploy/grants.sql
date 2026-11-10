@@ -16,6 +16,7 @@ grant insert,update,delete on chat_session, chat_message, suggestion, ai_turn, a
 grant insert on activity_event to phase_chat;
 grant usage,select on all sequences in schema public to phase_chat;
 revoke all on learner_identity from phase_chat;
+revoke all on learner_credential from phase_chat;
 -- Prevent runtime schema rewrites and table ownership escalation.
 revoke all on alembic_version from phase_business;
 grant select on alembic_version to phase_business;

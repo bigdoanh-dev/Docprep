@@ -1,4 +1,4 @@
-"""Staff passwords, stored as argon2id hashes."""
+"""Account passwords, stored as argon2id hashes."""
 from argon2 import PasswordHasher
 from argon2.exceptions import InvalidHashError, VerificationError
 

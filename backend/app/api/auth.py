@@ -4,13 +4,20 @@ from fastapi import APIRouter, Request
 from app.api.access import ERROR, Caller, access, public
 from app.api.deps import Conn, Now, client_ip
 from app.api.stub import mock_example
-from app.schemas.auth import ActivateRequest, RefreshRequest, StaffLoginRequest, TokenPair
+from app.schemas.auth import ActivateRequest, PasswordLoginRequest, RefreshRequest, StaffLoginRequest, TokenPair
 from app.schemas.common import Ok
 from app.services import auth as auth_service
 
 router = APIRouter(tags=["auth"])
 # 401 unauthenticated: wrong code or password. 429 rate_limited: too many failed attempts.
 SIGN_IN = public({401: ERROR, 429: ERROR})
+
+
+@router.post("/auth/login", response_model=TokenPair, summary="Sign in with a learner username or staff email",
+             **SIGN_IN)
+def password_login(request: Request, body: PasswordLoginRequest, conn=Conn, now=Now):
+    return mock_example(request, TokenPair) or auth_service.password_login(
+        conn, body.username, body.password, client_ip(request), now)
 
 
 @router.post("/auth/activate", response_model=TokenPair, summary="Sign a learner in with an activation code",

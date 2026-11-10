@@ -1,6 +1,6 @@
 # Ma trận API Phase 1
 
-Nguồn: OpenAPI của hai ứng dụng; 59 operations. Không có operation trùng giữa hai runtime.
+Nguồn: OpenAPI của hai ứng dụng; 60 operations. Không có operation trùng giữa hai runtime.
 
 Có handler không tự chứng minh luồng đã chạy thành công; xem [báo cáo kiểm thử](verification.md). Các endpoint 501 giữ nguyên ngoài phạm vi.
 
@@ -15,6 +15,7 @@ Có handler không tự chứng minh luồng đã chạy thành công; xem [báo
 | GET | `/v1/attempts/{attempt_id}/items/{question_id}` | `get_attempt_item` | business | Có handler; xem báo cáo kiểm thử |
 | GET | `/v1/attempts/{attempt_id}/results` | `get_attempt_results` | business | Có handler; xem báo cáo kiểm thử |
 | POST | `/v1/attempts/{attempt_id}/submit` | `submit_attempt` | business | Có handler; xem báo cáo kiểm thử |
+| POST | `/v1/auth/login` | `password_login` | business | Tên/mật khẩu; access/refresh token và role thật |
 | POST | `/v1/auth/activate` | `activate` | business | Có handler; xem báo cáo kiểm thử |
 | POST | `/v1/auth/logout` | `logout` | business | Có handler; xem báo cáo kiểm thử |
 | POST | `/v1/auth/refresh` | `refresh` | business | Có handler; xem báo cáo kiểm thử |

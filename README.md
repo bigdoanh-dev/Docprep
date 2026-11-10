@@ -1,6 +1,6 @@
 # AI Tutor / DocPrep
 
-Frontend tại `src/` đã ghép các cập nhật từ `main` (`18ac4cf`) vào nhánh `feat/alpha-v1-backend-2`, giữ phần tích hợp backend Phase 1. Nhánh `feat/alpha-v1-backend` được giữ nguyên tại `13fb683`. Xem [ghi chú ghép frontend và kết quả kiểm tra](docs/phase1/frontend-merge.md).
+Frontend tại `src/` đã ghép các cập nhật từ `main` (`46f6b3e`) vào nhánh `feat/alpha-v1-backend-2`, giữ phần tích hợp backend Phase 1. Nhánh `feat/alpha-v1-backend` được giữ nguyên tại `13fb683`. Xem [ghi chú ghép frontend và kết quả kiểm tra](docs/phase1/frontend-merge.md).
 
 Để chạy frontend mới với backend Phase 1 trên Windows, mở Docker Desktop rồi chạy `npm.cmd run dev:full` tại gốc repo. Lệnh chuẩn bị backend và dữ liệu local, kiểm tra API thật rồi mở Vite tại **http://127.0.0.1:5190/dang-nhap**. Khi backend đã chạy, dùng `npm.cmd run dev:full -- -SkipSetup` để chỉ mở frontend. Script tự đặt proxy theo cổng Phase 1 trong `.env.phase1`; mặc định là `18880`. Xem [hướng dẫn kết nối và kiểm tra](docs/phase1/frontend-connection.md).
 
@@ -35,7 +35,7 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-alpha.ps1
 npm.cmd exec playwright -- install chromium
 ```
 
-Setup tạo `.env` từ `.env.example` nếu chưa có, cài dependency theo lockfile, dựng PostgreSQL/pgvector 16, chạy migration đến head hiện tại (0015; giữ 12 migration Alpha gốc) rồi nạp tài khoản và cohort minh họa. Lần seed sau giữ nguyên mật khẩu, hồ sơ và lịch sử đã có. Cohort đã tồn tại sẽ không được tạo lại hoặc cập nhật thời gian tự động.
+Setup tạo `.env` từ `.env.example` nếu chưa có, cài dependency theo lockfile, dựng PostgreSQL/pgvector 16, chạy migration đến head hiện tại (0016; giữ 12 migration Alpha gốc) rồi nạp tài khoản và cohort minh họa. Lần seed sau giữ nguyên mật khẩu, hồ sơ và lịch sử đã có. Cohort đã tồn tại sẽ không được tạo lại hoặc cập nhật thời gian tự động.
 
 Nếu chỉ cần người học và chưa cần dashboard: thêm `-SkipCohort` vào lệnh setup. Tạo cohort lần đầu có thể mất vài phút.
 
@@ -64,11 +64,11 @@ Tài khoản local do `seed-alpha` tạo:
 
 | Loại | Đăng nhập |
 |---|---|
-| Người học | Mã kích hoạt `DEMO-0001` |
+| Người học | `learner.demo` / `AlphaLocal2026!` |
 | Quản trị | `admin@alpha.local` / `AlphaLocal2026!` |
 | Chỉ xem báo cáo | `viewer@alpha.local` / `AlphaLocal2026!` |
 
-Chọn form **Người học** hoặc **Cán bộ** để gọi backend thật. Nút “Dùng dữ liệu trải nghiệm” vẫn là demo trong trình duyệt, không phải đường nghiệm thu Alpha.
+Nhập username người học hoặc email cán bộ vào form **Tên đăng nhập / Mật khẩu** để gọi backend thật. Xem [cấp và đặt lại tài khoản](docs/phase1/password-login.md). Nút “Dùng dữ liệu trải nghiệm” vẫn là demo trong trình duyệt, không phải đường nghiệm thu Alpha.
 
 Mật khẩu và database credential trên chỉ dành cho môi trường local. Không dùng cấu hình này khi triển khai online. Không commit `.env`.
 
@@ -94,7 +94,7 @@ powershell -ExecutionPolicy Bypass -File scripts/test-alpha.ps1
 
 Lệnh này kiểm tra OpenAPI, chạy pytest, test SSE frontend, build và Playwright desktop/mobile. Playwright tự mở Vite nếu chưa chạy. **Browser plugin not available** trong phiên triển khai; kiểm thử trình duyệt sử dụng Playwright.
 
-Pytest dựng lại schema của `DATABASE_URL_TEST`; phải khác `DATABASE_URL`. Playwright tạo tài khoản `ALPHA-E2E-*` mới qua fixture local, không reset tài khoản `DEMO-0001`. Artifact nằm trong `.local/` và `test-results/`, không commit.
+Pytest dựng lại schema của `DATABASE_URL_TEST`; phải khác `DATABASE_URL`. Playwright tạo password account `e2e.*` mới qua fixture local, không reset tài khoản `learner.demo`. Artifact nằm trong `.local/` và `test-results/`, không commit.
 
 ## Backup, phục hồi và reset
 

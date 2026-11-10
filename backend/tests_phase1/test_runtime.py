@@ -6,6 +6,7 @@ from datetime import timedelta
 from concurrent.futures import ThreadPoolExecutor
 import pytest
 import psycopg
+from fastapi.testclient import TestClient
 from app.application import create_app
 from app.db import connect
 from app.privacy import clean, validate_prompt
@@ -46,8 +47,28 @@ def test_partition_and_no_business_gateway():
     assert "/v1/items/{question_id}/hint" in chat
     assert not hasattr(b.state, "model_slots") and not hasattr(b.state, "worker")
     merged = combined_openapi()
-    assert sum(len(v) for v in merged["paths"].values()) == 59
+    assert sum(len(v) for v in merged["paths"].values()) == 60
     assert not any(path in business and set(business[path]) & set(chat[path]) for path in chat)
+    assert "/v1/auth/login" in business and "/v1/auth/login" not in chat
+
+
+def test_password_login_works_across_business_replicas_with_private_credentials(world):
+    b, (chat, _), _, url = world
+    from app.services.auth import set_learner_credentials, password_login
+    with connect(url) as conn:
+        lid = conn.execute("select id from learner where pseudonym_id='HV-DEMO-001'").fetchone()["id"]
+        set_learner_credentials(conn, lid, "phase.student", "PhasePassword2026!")
+    with connect(url) as conn:
+        conn.execute("set role phase_business")
+        assert password_login(conn, "phase.student", "PhasePassword2026!", "10.0.0.9", utcnow())["role"] == "learner"
+    body = {"username": "phase.student", "password": "PhasePassword2026!"}
+    first = b.post("/v1/auth/login", json=body)
+    assert first.status_code == 200 and first.json()["role"] == "learner"
+    with TestClient(create_app("real", url, service="business")) as second:
+        token = first.json()["access_token"]
+        assert second.get("/v1/me", headers={"Authorization": "Bearer " + token}).status_code == 200
+        assert second.post("/v1/auth/login", json=body).status_code == 200
+    assert chat.post("/v1/auth/login", json=body).status_code == 404
 
 
 def test_provider_requires_explicit_approval(monkeypatch):
@@ -160,7 +181,8 @@ def test_database_privileges(world):
     with connect(url) as conn:
         conn.execute("set role phase_chat")
         conn.execute("select * from ai_turn")
-        for query in ("select * from learner_identity", "update exam_attempt set score=0", "update card set suspended=true", "create table forbidden(x int)"):
+        for query in ("select * from learner_identity", "select * from learner_credential",
+                      "update exam_attempt set score=0", "update card set suspended=true", "create table forbidden(x int)"):
             with pytest.raises(psycopg.errors.InsufficientPrivilege), conn.transaction(): conn.execute(query)
         conn.execute("reset role; set role phase_business")
         with pytest.raises(psycopg.errors.InsufficientPrivilege), conn.transaction(): conn.execute("select * from ai_model_call")

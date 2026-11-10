@@ -36,6 +36,13 @@ def main(argv: list[str] | None = None) -> None:
     staff.add_argument("--email", required=True)
     staff.add_argument("--name", required=True)
     staff.add_argument("--role", required=True, choices=("reviewer", "admin", "ministry_viewer"))
+    learner = commands.add_parser("create-learner", help="create a password account or bind it to an existing learner")
+    learner.add_argument("--username", required=True)
+    learner.add_argument("--name")
+    learner.add_argument("--audience", choices=("student", "graduate"), default="student")
+    learner.add_argument("--learner-id", type=int, help="bind credentials to this learner without changing learning records")
+    reset = commands.add_parser("reset-learner-password", help="reset the password and revoke existing sessions")
+    reset.add_argument("--username", required=True)
     commands.add_parser("seed", help="load the blueprint, the demo content and a dev learner; dev and test only")
     alpha = commands.add_parser("seed-alpha", help="repeatable local learner, staff and sample dashboard setup")
     alpha.add_argument("--no-cohort", action="store_true", help="skip the sample dashboard history")
@@ -74,6 +81,34 @@ def main(argv: list[str] | None = None) -> None:
         except ValueError as e:
             sys.exit(str(e))
         print(f"created staff account {staff_id} ({args.role})")
+    elif args.command in ("create-learner", "reset-learner-password"):
+        import getpass
+        import os
+        from datetime import datetime, timezone
+        from psycopg.errors import UniqueViolation
+        from app.db import connect
+        from app.services.auth import create_password_learner, set_learner_credentials, reset_learner_password
+
+        password = os.environ.get("LEARNER_PASSWORD")
+        if not password:
+            password = getpass.getpass("Password: ")
+            if getpass.getpass("Again: ") != password:
+                sys.exit("the two passwords differ")
+        try:
+            with connect() as conn:
+                if args.command == "reset-learner-password":
+                    reset_learner_password(conn, args.username, password, datetime.now(timezone.utc))
+                elif args.learner_id is not None:
+                    set_learner_credentials(conn, args.learner_id, args.username, password)
+                else:
+                    if not args.name:
+                        raise ValueError("--name is required when creating a new learner")
+                    create_password_learner(conn, args.username, password, args.name, args.audience)
+        except ValueError as error:
+            sys.exit(str(error))
+        except UniqueViolation:
+            sys.exit("username or learner credentials already exist")
+        print("learner credentials saved" if args.command == "create-learner" else "password reset; old sessions revoked")
     elif args.command == "seed-alpha":
         import json
         from app.db import connect

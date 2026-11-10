@@ -51,3 +51,8 @@ def bind_activation_code(conn, code_id: int, learner_id: int, now: datetime) -> 
 
 def delete_subject_tokens(conn, subject_type: str, subject_id: int) -> None:
     conn.execute("delete from auth_token where subject_type = %s and subject_id = %s", (subject_type, subject_id))
+
+
+def revoke_subject(conn, subject_type: str, subject_id: int, now: datetime) -> None:
+    conn.execute("update auth_token set revoked_at=%s where subject_type=%s and subject_id=%s and revoked_at is null",
+                 (now, subject_type, subject_id))

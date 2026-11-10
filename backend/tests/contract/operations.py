@@ -4,6 +4,7 @@ from fastapi.routing import RouteContext, iter_route_contexts
 
 # Every (METHOD, path) the contract must contain.
 EXPECTED: set[tuple[str, str]] = {
+    ("POST", "/v1/auth/login"),
     # auth, consent, account
     ("POST", "/v1/auth/activate"),
     ("POST", "/v1/auth/staff/login"),
@@ -71,6 +72,7 @@ EXPECTED: set[tuple[str, str]] = {
 
 # Operations that are real. The others answer 501 in real mode.
 IMPLEMENTED: set[tuple[str, str]] = {
+    ("POST", "/v1/auth/login"),
     ("POST", "/v1/auth/activate"),
     ("POST", "/v1/auth/staff/login"),
     ("POST", "/v1/auth/refresh"),

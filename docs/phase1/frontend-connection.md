@@ -23,7 +23,7 @@ npm.cmd run dev:full -- -SkipSetup
 
 - Frontend phát triển: `http://127.0.0.1:5190/dang-nhap`.
 - Bản build Docker: `http://127.0.0.1:18880/dang-nhap`.
-- Người học local: mã `DEMO-0001`; nhập ở form Người học để gọi backend thật.
+- Người học local: `learner.demo` / `AlphaLocal2026!`; cán bộ nhập email vào cùng form. Xem [cấp tài khoản](password-login.md).
 - Tài khoản cán bộ local theo README. Nút dùng dữ liệu trải nghiệm vẫn chỉ dùng demo trong trình duyệt.
 
 Script `scripts/start-local.ps1` lấy `PHASE_HTTP_PORT` từ `.env.phase1` hoặc biến môi trường, mặc định `18880`, rồi đặt `BACKEND_URL` cho Vite. Có thể dùng `-Port 5191` khi cần cổng frontend khác. Trong phiên cấu hình hiện tại, `.env.local` cũng đặt `BACKEND_URL=http://127.0.0.1:18880` để `npm.cmd run dev` hoạt động trực tiếp. Các file môi trường thật không được commit.

@@ -5,7 +5,7 @@ import pytest
 EXPECTED_TABLES = {
     "core_issue_group", "core_issue", "exam_competency", "exam_competency_component", "competency_node",
     "organisation", "staff_user", "learner", "learner_identity", "import_batch", "activation_code", "auth_token",
-    "consent_record", "deletion_request",
+    "consent_record", "deletion_request", "learner_credential",
     "document", "passage", "glossary_term", "module", "content_item", "question", "unit", "unit_item", "exam_form",
     "review_decision", "status_transition", "error_report",
     "mastery", "unit_session", "exam_attempt", "attempt_answer", "practice_set", "item_response", "card",

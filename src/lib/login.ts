@@ -2,7 +2,7 @@ import type { TokenPair } from "./api";
 
 export type UsernameLoginResult = TokenPair;
 
-/** Phase 1 staff accounts use email as their username and keep rotating access/refresh tokens. */
+/** Unified Phase 1 sign-in, preserving the server role and rotating token pair. */
 export async function usernameLogin(
   username: string,
   password: string,
@@ -10,10 +10,10 @@ export async function usernameLogin(
 ): Promise<UsernameLoginResult> {
   let response: Response;
   try {
-    response = await fetcher("/api/v1/auth/staff/login", {
+    response = await fetcher("/api/v1/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: username.trim(), password }),
+      body: JSON.stringify({ username: username.trim(), password }),
     });
   } catch {
     throw new Error("Không kết nối được máy chủ. Vui lòng thử lại.");

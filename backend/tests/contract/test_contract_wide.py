@@ -23,8 +23,8 @@ IDEMPOTENT = {
 }
 
 
-def test_the_contract_has_all_55_operations_and_only_those_can_be_implemented():
-    assert len(EXPECTED) == 55
+def test_the_contract_has_all_56_operations_and_only_those_can_be_implemented():
+    assert len(EXPECTED) == 56
     assert IMPLEMENTED <= EXPECTED
 
 
@@ -61,6 +61,7 @@ def test_a_pass_needs_no_comment():
 
 
 PHASE_3 = {
+    ("POST", "/v1/auth/login"),
     ("POST", "/v1/auth/activate"), ("POST", "/v1/auth/staff/login"), ("POST", "/v1/auth/refresh"),
     ("POST", "/v1/auth/logout"), ("GET", "/v1/consent/current"), ("POST", "/v1/consent"),
     ("DELETE", "/v1/consent"), ("GET", "/v1/me"), ("PATCH", "/v1/me"), ("GET", "/v1/me/data"), ("DELETE", "/v1/me"),
@@ -94,7 +95,7 @@ PHASE_5B = {
 
 def test_the_operations_of_phases_3_to_7_are_implemented():
     assert (len(PHASE_4), len(PHASE_5A), len(PHASE_5B)) == (21, 7, 5)
-    assert IMPLEMENTED == PHASE_3 | PHASE_4 | PHASE_5A | PHASE_5B | PHASE_6 | PHASE_7 and len(IMPLEMENTED) == 48
+    assert IMPLEMENTED == PHASE_3 | PHASE_4 | PHASE_5A | PHASE_5B | PHASE_6 | PHASE_7 and len(IMPLEMENTED) == 49
 
 
 PHASE_6 = {("GET", "/v1/admin/dashboard/overview"), ("GET", "/v1/admin/dashboard/export")}

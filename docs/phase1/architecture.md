@@ -29,9 +29,9 @@ Backend vẫn có entrypoint Alpha tại `app.main:app`; hai entrypoint mới l�
 | `/v1/items/{id}/hint`, `/v1/items/{id}/explain` | Chat |
 | `/v1/*` còn lại | Business |
 
-Frontend tiếp tục gọi `/api/v1`; backend nhận `/v1`. Caddy đặt API trước SPA fallback. `/metrics`, `/readyz`, docs và OpenAPI không xuất qua proxy công khai. Mỗi app xuất hợp đồng của mình khi truy cập trong mạng nội bộ; `openapi.yaml` tại root là hợp đồng tổng hợp 59 operations. Alpha vẫn có 55 operations; bảy stub tiếp tục trả 501.
+Frontend tiếp tục gọi `/api/v1`; backend nhận `/v1`. Caddy đặt API trước SPA fallback. `/metrics`, `/readyz`, docs và OpenAPI không xuất qua proxy công khai. Mỗi app xuất hợp đồng của mình khi truy cập trong mạng nội bộ; `openapi.yaml` tại root là hợp đồng tổng hợp 60 operations. Alpha vẫn có 56 operations; bảy stub tiếp tục trả 501.
 
-[Ma trận đầy đủ 59 operations](api-matrix.md) được tạo từ chính OpenAPI của hai ứng dụng. Đường dẫn sai dưới `/api`, kể cả thiếu `/v1`, luôn trả lỗi JSON thay vì trang SPA.
+[Ma trận đầy đủ 60 operations](api-matrix.md) được tạo từ chính OpenAPI của hai ứng dụng. Đường dẫn sai dưới `/api`, kể cả thiếu `/v1`, luôn trả lỗi JSON thay vì trang SPA.
 
 ## Một turn đi qua hệ thống
 
@@ -85,3 +85,5 @@ Readiness khác liveness. Business kiểm tra DB/schema; Chat thêm Redis/worker
 Compose không tự rolling update. Script release drain một instance, chờ turn đang chạy, đợi proxy bỏ upstream rồi tạo lại container. Backup local mặc định mỗi 24 giờ trong profile operations, không tự xóa bản cũ; đây chưa phải RPO/RTO. Rollback chỉ dùng code tương thích schema; quay lại Alpha cũ cần restore DB riêng và kiểm tra trước khi đổi URL.
 
 Tham chiếu cơ chế: [Caddy reverse_proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy), [Lua nguyên tử trong Redis](https://redis.io/docs/latest/develop/programmability/eval-intro/) và [quyền PostgreSQL 16](https://www.postgresql.org/docs/16/ddl-priv.html). Các lựa chọn cấu hình local phải được đo lại trước khi áp dụng cho hạ tầng thật.
+
+Đăng nhập tên/mật khẩu đã được bổ sung theo lựa chọn người phụ trách ngày 10/11/2026: migration 0016, credentials riêng cho Business, form chung và token pair Phase 1. Xem [runbook đăng nhập](password-login.md). Các API mã kích hoạt/staff cũ được giữ tương thích.

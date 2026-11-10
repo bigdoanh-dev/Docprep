@@ -1,14 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { execFileSync } from "node:child_process";
-import path from "node:path";
-
-const root = process.cwd();
-const python = path.join(
-  root,
-  "backend",
-  ".venv",
-  process.platform === "win32" ? "Scripts/python.exe" : "bin/python",
-);
+import { passwordAccount } from "./support/passwordAccount";
 
 async function headers(page: Page) {
   const token = await page.evaluate(
@@ -17,7 +8,7 @@ async function headers(page: Page) {
   return { Authorization: `Bearer ${token}` };
 }
 
-test("learner: activate, consent, learn, cards, exam, progress and chat availability", async ({
+test("learner: password login, consent, learn, cards, exam, progress and chat availability", async ({
   page,
   request,
 }, testInfo) => {
@@ -49,36 +40,17 @@ test("learner: activate, consent, learn, cards, exam, progress and chat availabi
   const unauthorized = await request.get("/api/v1/me");
   expect(unauthorized.status()).toBe(401);
   expect(unauthorized.headers()["content-type"]).toContain("application/json");
-  const code = process.env.PHASE1_URL
-    ? execFileSync(
-        "docker",
-        [
-          "compose",
-          "--env-file",
-          ".env.phase1",
-          "-f",
-          "deploy/compose.phase1.yml",
-          "run",
-          "--rm",
-          "--no-deps",
-          "seed",
-          "python",
-          "-m",
-          "seed.browser",
-        ],
-        { cwd: root, encoding: "utf8" },
-      ).trim()
-    : execFileSync(python, ["-m", "seed.browser"], {
-        cwd: path.join(root, "backend"),
-        encoding: "utf8",
-      }).trim();
+  const account = passwordAccount();
   await page.goto("/dang-nhap");
   await expect(page).toHaveTitle(/DocPrep/i);
   await expect(page.getByRole("note")).toContainText(
     runtime.model_provider === "disabled" ? "AI đang tắt" : "AI mô phỏng",
   );
-  await page.getByLabel("Mã kích hoạt", { exact: true }).fill(code);
-  await page.getByRole("button", { name: "Kích hoạt và đăng nhập" }).click();
+  await page
+    .getByLabel("Tên đăng nhập", { exact: true })
+    .fill(account.username);
+  await page.getByLabel("Mật khẩu", { exact: true }).fill(account.password);
+  await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
   await expect(page).toHaveURL(/dong-y/);
   await page
     .getByRole("checkbox", { name: "Tôi đồng ý (bắt buộc)", exact: true })
@@ -347,8 +319,7 @@ for (const email of ["viewer@alpha.local", "admin@alpha.local"]) {
         errors.push(message.text());
     });
     await page.goto("/dang-nhap");
-    await page.getByRole("button", { name: "Cán bộ", exact: true }).click();
-    await page.getByLabel("Email công vụ").fill(email);
+    await page.getByLabel("Tên đăng nhập", { exact: true }).fill(email);
     await page.getByLabel("Mật khẩu", { exact: true }).fill("AlphaLocal2026!");
     const overview = page.waitForResponse((r) =>
       r.url().includes("/api/v1/admin/dashboard/overview"),

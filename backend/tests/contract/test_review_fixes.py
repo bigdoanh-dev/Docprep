@@ -107,7 +107,7 @@ def test_an_unknown_request_field_is_rejected(mock_client):
 # 6b. Operation ids were FastAPI's path-derived defaults.
 def test_operation_ids_are_short_and_unique():
     ids = [op["operationId"] for ops in SPEC["paths"].values() for op in ops.values()]
-    assert len(ids) == len(set(ids)) == 55
+    assert len(ids) == len(set(ids)) == 56
     assert not [i for i in ids if "_v1_" in i or not re.fullmatch(r"[a-z][a-z0-9_]*", i)]
 
 

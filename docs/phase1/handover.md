@@ -13,7 +13,7 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-phase1.ps1
 
 Script tạo `.env.phase1` với credentials ngẫu nhiên khi file chưa tồn tại, dựng image, chuẩn bị role, chạy migration/grants một lần rồi khởi động bốn app. Seed chỉ chạy trong dev/test và giữ lại dữ liệu đã có. Không dùng mật khẩu mẫu của Alpha cho PostgreSQL/Redis Phase 1.
 
-Mở **http://127.0.0.1:18880**. Learner local: `DEMO-0001`; staff local: `admin@alpha.local` hoặc `viewer@alpha.local`, mật khẩu `AlphaLocal2026!`. Đây là tài khoản minh họa được seed trong database Phase 1 riêng. Không tạo các tài khoản này trong production.
+Mở **http://127.0.0.1:18880**. Learner local: `learner.demo` / `AlphaLocal2026!`; staff local: `admin@alpha.local` hoặc `viewer@alpha.local`, mật khẩu `AlphaLocal2026!`. Đây là tài khoản minh họa được seed trong database Phase 1 riêng. Không tạo các tài khoản này trong production.
 
 Nếu đã có dữ liệu và chỉ muốn cập nhật runtime:
 
