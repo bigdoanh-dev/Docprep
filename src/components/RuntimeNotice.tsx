@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
-type Runtime = { mode: string; model_provider: string; demo_content: boolean; service?: string };
+type Runtime = {
+  mode: string;
+  model_provider: string;
+  demo_content: boolean;
+  service?: string;
+};
 let runtime: Promise<Runtime | null> | undefined;
 
 export function RuntimeNotice() {
@@ -19,7 +24,11 @@ export function RuntimeNotice() {
       active = false;
     };
   }, []);
-  if (!info?.demo_content) return null;
+  if (
+    !info?.demo_content ||
+    (info.mode !== "mock" && info.model_provider === "disabled")
+  )
+    return null;
   const version = info.service === "chat" ? "Phase 1" : "Alpha V1";
   return (
     <p className="demo-strip" role="note">
@@ -27,11 +36,9 @@ export function RuntimeNotice() {
         ? "API mô phỏng — dữ liệu minh họa"
         : info.model_provider === "scripted"
           ? `${version} · AI mô phỏng — dữ liệu minh họa`
-          : info.model_provider === "disabled"
-            ? `${version} · AI đang tắt — dữ liệu minh họa`
           : info.model_provider === "ollama"
             ? `${version} · AI thử nghiệm — dữ liệu minh họa, chưa nghiệm thu examiner`
-          : `${version} — dữ liệu minh họa`}
+            : `${version} — dữ liệu minh họa`}
     </p>
   );
 }

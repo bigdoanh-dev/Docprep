@@ -43,9 +43,11 @@ test("learner: password login, consent, learn, cards, exam, progress and chat av
   const account = passwordAccount();
   await page.goto("/dang-nhap");
   await expect(page).toHaveTitle(/DocPrep/i);
-  await expect(page.getByRole("note")).toContainText(
-    runtime.model_provider === "disabled" ? "AI đang tắt" : "AI mô phỏng",
-  );
+  if (runtime.model_provider === "disabled") {
+    await expect(page.locator(".demo-strip")).toHaveCount(0);
+  } else {
+    await expect(page.getByRole("note")).toContainText("AI mô phỏng");
+  }
   await page
     .getByLabel("Tên đăng nhập", { exact: true })
     .fill(account.username);
@@ -343,7 +345,14 @@ for (const email of ["viewer@alpha.local", "admin@alpha.local"]) {
       page.getByText("Học viên hoạt động", { exact: true }),
     ).toBeVisible();
     await expect(page.getByRole("status")).toHaveCount(0);
-    await expect(page.getByRole("note")).toContainText("dữ liệu minh họa");
+    const runtime = await (await page.request.get("/api/health")).json();
+    if (runtime.model_provider === "disabled") {
+      await expect(page.locator(".demo-strip")).toHaveCount(0);
+    } else {
+      await expect(page.locator(".demo-strip")).toContainText(
+        "dữ liệu minh họa",
+      );
+    }
     await page.screenshot({
       path: testInfo.outputPath("alpha-dashboard.png"),
       animations: "disabled",

@@ -18,7 +18,7 @@ test("disabled AI: real business API works and chat fails clearly without a fabr
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/dang-nhap");
-  await expect(page.getByRole("note")).toContainText("AI đang tắt");
+  await expect(page.locator(".demo-strip")).toHaveCount(0);
   await page
     .getByLabel("Tên đăng nhập", { exact: true })
     .fill(account.username);
@@ -34,7 +34,7 @@ test("disabled AI: real business API works and chat fails clearly without a fabr
   await page.getByRole("button", { name: "Bỏ qua, vào học ngay" }).click();
   await expect(page).toHaveURL(/luyen-tap\/[^/]+$/);
   await page.goto("/");
-  await expect(page.getByRole("note")).toContainText("AI đang tắt");
+  await expect(page.locator(".demo-strip")).toHaveCount(0);
   const auth = await page.evaluate(() => ({
     Authorization: `Bearer ${JSON.parse(localStorage.getItem("yhdp.session")!).access_token}`,
   }));
