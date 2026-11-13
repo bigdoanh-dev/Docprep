@@ -35,8 +35,11 @@ def unit_answer(request: Request, unit_id: str, body: UnitAnswer, idempotency_ke
 
 
 @router.post("/units/{unit_id}/advance", response_model=UnitView, summary="Move past the current item", **LEARNER)
-def unit_advance(request: Request, unit_id: str, body: UnitAdvance, conn=Conn, now=Now, learner=Learner):
-    return mock_example(request, UnitView) or units_service.advance(conn, learner, unit_id, body.unit_item_id, now)
+def unit_advance(request: Request, unit_id: str, body: UnitAdvance,
+                 idempotency_key: str | None = IDEMPOTENCY, conn=Conn, now=Now, learner=Learner):
+    return mock_example(request, UnitView) or run_once(
+        conn, idempotency_key, learner["pseudonym_id"], f"POST /v1/units/{unit_id}/advance",
+        lambda: units_service.advance(conn, learner, unit_id, body.unit_item_id, now))
 
 
 @router.post("/items/{question_id}/explain", summary='Tutor "Giải thích thêm", after answering; streamed',

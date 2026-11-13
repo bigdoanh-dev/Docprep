@@ -34,6 +34,12 @@ def open_session(conn, learner_id: int, unit_id: str) -> dict | None:
            order by id desc limit 1 for update""", (learner_id, unit_id)).fetchone()
 
 
+def latest_session(conn, learner_id: int, unit_id: str) -> dict | None:
+    return conn.execute(
+        """select * from unit_session where learner_id = %s and unit_id = %s
+           order by id desc limit 1 for update""", (learner_id, unit_id)).fetchone()
+
+
 def create_session(conn, learner_id: int, unit_id: str, queue: list[str], now: datetime) -> dict:
     return conn.execute(
         """insert into unit_session(learner_id, unit_id, queue, started_at, updated_at)

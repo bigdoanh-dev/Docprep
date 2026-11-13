@@ -61,6 +61,7 @@ export function Unit() {
   const item = view?.item ?? null;
   const shownAt = useRef(0); // when this item appeared: the answer time sent with a quiz answer
   const answerKey = useRef(""); // one key per item shown, so "Kiểm tra" tapped again is the same answer
+  const advanceKey = useRef("");
 
   // A reload on an answered quiz item restores its feedback instead of offering the question again.
   useEffect(() => {
@@ -74,6 +75,7 @@ export function Unit() {
   useEffect(() => {
     shownAt.current = Date.now();
     answerKey.current = newKey();
+    advanceKey.current = newKey();
     setSent(null);
   }, [item?.unit_item_id]);
 
@@ -112,9 +114,13 @@ export function Unit() {
     run(async () => {
       if (!item) return;
       setData(
-        await api.post<UnitView>(`/units/${unitId}/advance`, {
-          unit_item_id: item.unit_item_id,
-        }),
+        await api.post<UnitView>(
+          `/units/${unitId}/advance`,
+          {
+            unit_item_id: item.unit_item_id,
+          },
+          { idempotencyKey: advanceKey.current },
+        ),
       );
     });
 

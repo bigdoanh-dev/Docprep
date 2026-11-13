@@ -6,6 +6,7 @@ from app.errors import ApiError
 from app.repo import content
 from app.repo import responses as responses_repo
 from app.repo import units as repo
+from app.repo import learners as learners_repo
 from app.services.responses import record_response, require_question
 from app.services.session_progress import step_completed
 
@@ -19,6 +20,8 @@ def _unit(conn, unit_id: str) -> dict:
 
 def _session(conn, learner: dict, unit_id: str, now: datetime) -> dict:
     """The learner's unfinished pass through this unit, created on first use in the authored order."""
+    # An absent session cannot be locked by SELECT FOR UPDATE. Lock its owner first.
+    learners_repo.lock(conn, learner["id"])
     return (repo.open_session(conn, learner["id"], unit_id)
             or repo.create_session(conn, learner["id"], unit_id, repo.authored_item_ids(conn, unit_id), now))
 
@@ -114,7 +117,11 @@ def answer(conn, learner: dict, unit_id: str, unit_item_id: str, chosen: str, no
 
 def advance(conn, learner: dict, unit_id: str, unit_item_id: str, now: datetime) -> dict:
     unit = _unit(conn, unit_id)
-    session = _session(conn, learner, unit_id, now)
+    learners_repo.lock(conn, learner["id"])
+    session = repo.latest_session(conn, learner["id"], unit_id) or _session(conn, learner, unit_id, now)
+    # Retrying a completed mutation must not start a new pass. Opening the unit explicitly does.
+    if session["done"]:
+        return _view(conn, session, unit)
     # Only the current item can be left, so a repeated tap does not skip a step.
     if session["queue"][session["cursor"]] == unit_item_id:
         cursor = session["cursor"] + 1

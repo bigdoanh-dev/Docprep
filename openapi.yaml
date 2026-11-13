@@ -1204,6 +1204,16 @@ paths:
         schema:
           type: string
           title: Unit Id
+      - name: idempotency-key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Repeat with the same key to retry safely; the stored response is returned.
+          title: Idempotency-Key
+        description: Repeat with the same key to retry safely; the stored response is returned.
       requestBody:
         required: true
         content:
