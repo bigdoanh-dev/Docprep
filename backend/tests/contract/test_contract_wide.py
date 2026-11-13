@@ -16,6 +16,7 @@ PREDICTION = re.compile(
 
 IDEMPOTENT = {
     ("post", "/v1/units/{unit_id}/advance"),
+    ("post", "/v1/chat/sessions/{session_id}/messages"),
     ("post", "/v1/units/{unit_id}/responses"),
     ("post", "/v1/session/today/practice/responses"),
     ("post", "/v1/practice-sets/{set_id}/responses"),

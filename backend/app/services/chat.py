@@ -23,6 +23,7 @@ from app.repo import chat as repo
 from app.repo import content
 from app.repo import exams as exams_repo
 from app.repo import responses as responses_repo
+from app.repo import learners as learners_repo
 from app.schemas.chat import AnswerEvent, FinalEvent, StatusEvent, StepEvent
 from app.services import suggestions
 from app.services.responses import require_question
@@ -129,6 +130,12 @@ def rate(conn, learner: dict, message_id: int, helpful: bool) -> dict:
 
 
 # ---- one turn -----------------------------------------------------------------------------------
+
+def require_tutor_available(conn, learner: dict, now: datetime) -> None:
+    learners_repo.lock(conn, learner["id"])
+    if exams_repo.has_running_attempt(conn, learner["id"], now):
+        raise ApiError(409, "tutor_unavailable", "Không hỏi gia sư trong khi làm bài thi. Hãy nộp bài trước.")
+
 
 def begin_turn(conn, learner: dict, session_id: int, text: str, detail: bool, now: datetime,
                clarifies_message_id: int | None = None) -> dict:

@@ -1,7 +1,7 @@
 """Hỏi đáp: sessions, the streamed answer, suggestions, sources, rating."""
 from fastapi import APIRouter, Query, Request
 
-from app.api.access import MOCK_STATE, Learner, access, conflict
+from app.api.access import IDEMPOTENCY, MOCK_STATE, Learner, access, conflict
 from app.api.deps import Conn, Gateway, Now
 from app.api.mock_chat import mock_sse_response
 from app.api.streams import sse_from
@@ -11,6 +11,7 @@ from app.schemas.chat import (ChatMessageList, ChatSessionList, ChatSessionRef, 
                               PassageView, RatingRequest, SuggestionAccepted)
 from app.schemas.common import Ok
 from app.services import chat as chat_service
+from app.services import chat_delivery
 from app.services import suggestions as suggestions_service
 from app.sse import EventStreamResponse
 
@@ -52,15 +53,27 @@ def list_chat_messages(request: Request, session_id: int, cursor: str | None = N
 
 
 @router.post("/chat/sessions/{session_id}/messages", summary="Ask a question; the answer is streamed",
-             response_class=EventStreamResponse, **access("learner", responses=sse_responses(STREAM_DESCRIPTION)))
+             response_class=EventStreamResponse, **access("learner", responses={**sse_responses(STREAM_DESCRIPTION), **conflict(
+                 "`tutor_unavailable`: an exam is running. `chat_turn_pending`: this key is still processing. "
+                 "`idempotency_conflict`: the key was used with another payload.")}))
 def ask_question(request: Request, session_id: int, body: NewChatMessage, x_mock_state: str | None = MOCK_STATE,
+                 idempotency_key: str | None = IDEMPOTENCY,
                  conn=Conn, now=Now, learner=Learner, gateway=Gateway):
     if request.app.state.mode == "mock":
         return mock_sse_response(request, x_mock_state)
-    session = chat_service.begin_turn(conn, learner, session_id, body.text, body.detail, now, body.clarifies_message_id)
-    return sse_from(request, lambda connect: chat_service.answer_events(
-        connect, request.app.state.model_slots, gateway, learner, session, body.text, body.detail,
-        body.clarifies_message_id is not None, now))
+    chat_service.require_tutor_available(conn, learner, now)
+    route = f"POST /v1/chat/sessions/{session_id}/messages"
+    payload = body.model_dump(mode="json")
+    session, replay = chat_delivery.begin(
+        conn, idempotency_key, learner["pseudonym_id"], route, payload,
+        lambda: chat_service.begin_turn(conn, learner, session_id, body.text, body.detail,
+                                        now, body.clarifies_message_id))
+    if replay is not None:
+        return sse_from(request, lambda connect: iter(replay))
+    return sse_from(request, lambda connect: chat_delivery.remember(
+        connect, idempotency_key, learner["pseudonym_id"], route, payload,
+        chat_service.answer_events(connect, request.app.state.model_slots, gateway, learner,
+                                   session, body.text, body.detail, body.clarifies_message_id is not None, now)))
 
 
 @router.post("/chat/suggestions/{suggestion_id}/accept", response_model=SuggestionAccepted,

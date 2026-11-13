@@ -48,6 +48,12 @@ def expired(conn, learner_id: int, now: datetime) -> list[dict]:
            order by id for update""", (learner_id, now)).fetchall()
 
 
+def has_running_attempt(conn, learner_id: int, now: datetime) -> bool:
+    return conn.execute(
+        """select 1 from exam_attempt where learner_id = %s and submitted_at is null
+           and deadline_at > %s limit 1""", (learner_id, now)).fetchone() is not None
+
+
 def attempt(conn, learner_id: int, attempt_id: int) -> dict | None:
     """The learner's own attempt, locked: a save and a hand-in of the same attempt wait in turn."""
     return conn.execute("select * from exam_attempt where id = %s and learner_id = %s for update",
