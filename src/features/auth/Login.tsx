@@ -63,9 +63,19 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [signedInPath, setSignedInPath] = useState<string | null>(null);
 
   if (actor && actor.mode !== "demo")
-    return <Navigate to={roleHome(actor.role)} replace />;
+    return (
+      <Navigate
+        to={
+          signedInPath ??
+          safeNextPath(params.get("next")) ??
+          roleHome(actor.role)
+        }
+        replace
+      />
+    );
 
   const chooseMode = (nextMode: "learner" | "demo") => {
     if (busy) return;
@@ -92,19 +102,18 @@ export function Login({ onDemoStart }: { onDemoStart: () => void }) {
         );
       }
       (signedIn.role === "learner" ? session : staffSession).signIn(signedIn);
+      const next = safeNextPath(params.get("next"));
+      setSignedInPath(
+        signedIn.consent_required
+          ? `/dong-y${next ? `?next=${encodeURIComponent(next)}` : ""}`
+          : (next ?? roleHome(signedIn.role as Role)),
+      );
       setActor({
         role: signedIn.role as Role,
         mode: "live",
         name: signedIn.role === "learner" ? "Người học" : "Cán bộ",
         id: `live-${signedIn.role}`,
       });
-      const next = safeNextPath(params.get("next"));
-      navigate(
-        signedIn.consent_required
-          ? `/dong-y${next ? `?next=${encodeURIComponent(next)}` : ""}`
-          : (next ?? roleHome(signedIn.role as Role)),
-        { replace: true },
-      );
     } catch (cause) {
       setError((cause as Error).message);
       setBusy(false);

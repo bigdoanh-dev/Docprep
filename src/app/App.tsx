@@ -53,6 +53,7 @@ import {
 } from "../lib/client";
 import { roleHome, setActor, useActor, type Role } from "./identity";
 import { Shell } from "./Shell";
+import { RouteErrorBoundary } from "../components/RouteErrorBoundary";
 const Management = lazy(
   () => import("../features/management/ManagementWorkspace"),
 );
@@ -177,20 +178,20 @@ export default function App() {
       <a className="skip-link" href="#main-content">
         Bỏ qua điều hướng
       </a>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route
-            path="/dang-nhap"
-            element={<Login onDemoStart={() => setDemoSessionStarted(true)} />}
-          />
-          <Route
-            path="/quan-ly/dang-nhap"
-            element={<Navigate to="/dang-nhap" replace />}
-          />
+      <RouteErrorBoundary>
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route
+              path="/dang-nhap"
+              element={
+                <Login onDemoStart={() => setDemoSessionStarted(true)} />
+              }
+            />
+            <Route
+              path="/quan-ly/dang-nhap"
+              element={<Navigate to="/dang-nhap" replace />}
+            />
 
-          <Route
-            element={<RequireLogin demoSessionStarted={demoSessionStarted} />}
-          >
             {/* Static Portal Pages */}
             <Route element={<PortalLayout />}>
               <Route
@@ -276,47 +277,53 @@ export default function App() {
                 element={<Navigate to="/tiep-can" replace />}
               />
             </Route>
-            <Route element={<Entry />}>
-              <Route element={<Shell />}>
-                <Route path="/" element={<Home />} />
-              </Route>
-            </Route>
-            <Route element={<RoleGate roles={["learner"]} />}>
-              <Route element={<LearnerGate />}>
+            <Route
+              element={<RequireLogin demoSessionStarted={demoSessionStarted} />}
+            >
+              <Route element={<Entry />}>
                 <Route element={<Shell />}>
-                  {learning.map(([path, element]) => (
-                    <Route key={path} path={path} element={element} />
-                  ))}
+                  <Route path="/" element={<Home />} />
                 </Route>
               </Route>
-            </Route>
-            <Route element={<RoleGate roles={["admin"]} />}>
-              <Route element={<Shell />}>
-                <Route path="/quan-tri/*" element={<Management />} />
+              <Route element={<RoleGate roles={["learner"]} />}>
+                <Route element={<LearnerGate />}>
+                  <Route element={<Shell />}>
+                    {learning.map(([path, element]) => (
+                      <Route key={path} path={path} element={element} />
+                    ))}
+                  </Route>
+                </Route>
               </Route>
-            </Route>
-            <Route element={<RoleGate roles={["ministry_viewer", "admin"]} />}>
-              <Route element={<Shell />}>
-                <Route path="/quan-ly/*" element={<Management />} />
+              <Route element={<RoleGate roles={["admin"]} />}>
+                <Route element={<Shell />}>
+                  <Route path="/quan-tri/*" element={<Management />} />
+                </Route>
               </Route>
-            </Route>
-            <Route
-              element={
-                <RoleGate roles={["learner", "admin", "ministry_viewer"]} />
-              }
-            >
-              <Route element={<Shell />}>
-                <Route path="/profile" element={<Account />} />
-                <Route
-                  path="/tai-khoan"
-                  element={<Navigate to="/profile" replace />}
-                />
+              <Route
+                element={<RoleGate roles={["ministry_viewer", "admin"]} />}
+              >
+                <Route element={<Shell />}>
+                  <Route path="/quan-ly/*" element={<Management />} />
+                </Route>
               </Route>
+              <Route
+                element={
+                  <RoleGate roles={["learner", "admin", "ministry_viewer"]} />
+                }
+              >
+                <Route element={<Shell />}>
+                  <Route path="/profile" element={<Account />} />
+                  <Route
+                    path="/tai-khoan"
+                    element={<Navigate to="/profile" replace />}
+                  />
+                </Route>
+              </Route>
+              <Route path="*" element={<NotFound />} />
             </Route>
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </Suspense>
+          </Routes>
+        </Suspense>
+      </RouteErrorBoundary>
     </BrowserRouter>
   );
 }

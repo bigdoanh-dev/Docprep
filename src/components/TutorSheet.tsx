@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { ApiError, api, type Citation, type Hint } from "../lib/api";
 import { postSSE } from "../lib/sse";
 import { AiStar } from "./AiStar";
@@ -10,6 +10,7 @@ import {
   type StreamStatus,
 } from "./Answer";
 import { Sheet } from "./Sheet";
+import { newKey } from "../lib/keys";
 
 // Tutor sheet on a quiz item (R1.0), with no free-text input. Two actions, each its own mode:
 //   hint     "Gợi ý", before the answer: one hint, fetched once for as long as the item is shown.
@@ -34,7 +35,7 @@ export function TutorSheet({
   const [hint, setHint] = useState<Hint>();
   const [refused, setRefused] = useState<string>(); // the server will not give a hint here: asking again changes nothing
   const [error, setError] = useState<string>();
-  const hintKey = useRef(crypto.randomUUID());
+  const [hintKey] = useState(newKey);
 
   const explain = async () => {
     setStatus("answering");
@@ -67,7 +68,11 @@ export function TutorSheet({
     setStatus("answering");
     setError(undefined);
     try {
-      setHint(await api.post<Hint>(`/items/${questionId}/hint`, undefined, { idempotencyKey: hintKey.current }));
+      setHint(
+        await api.post<Hint>(`/items/${questionId}/hint`, undefined, {
+          idempotencyKey: hintKey,
+        }),
+      );
     } catch (e) {
       if (e instanceof ApiError && e.code === "hint_unavailable")
         setRefused(e.message);
