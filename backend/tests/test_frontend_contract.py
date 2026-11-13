@@ -44,7 +44,7 @@ def test_empty_assessments_include_all_groups_and_issues(learner_api):
     assert len(data["specialties"]) == len(data["bloom_by_specialty"]) == 8
     assert sum(len(g["issues"]) for g in data["issues_by_specialty"]) == 54
     assert all(i["total"] == i["correct"] == 0 for g in data["issues_by_specialty"] for i in g["issues"])
-    assert [l["label_vi"] for l in data["levels"]] == ["Nhớ, Hiểu", "Vận dụng", "Phân tích, Đánh giá"]
+    assert [l["label_vi"] for l in data["levels"]] == ["Ghi nhớ", "Hiểu", "Vận dụng", "Phân tích", "Đánh giá", "Sáng tạo"]
 
 
 def test_results_and_progress_count_answered_items_and_preserve_unknowns(learner_api, api, tokens_for_new_learner):
@@ -54,14 +54,15 @@ def test_results_and_progress_count_answered_items_and_preserve_unknowns(learner
     assert (result["total"], result["score"], result["blank"]) == (10, 5, 3)
     progress = learner_api.get("/v1/progress/skills").json()
     for data in (result, progress):
-        assert sum(l["total"] for l in data["levels"]) == 7
-        assert sum(l["correct"] for l in data["levels"]) == 5
+        legacy = data.get("unclassified_bloom", {"correct": 0, "total": 0})
+        assert sum(l["total"] for l in data["levels"]) + legacy["total"] == 7
+        assert sum(l["correct"] for l in data["levels"]) + legacy["correct"] == 5
         assert sum(s["total"] for s in data["specialties"]) == 7
-        assert sum(l["total"] for g in data["bloom_by_specialty"] for l in g["levels"]) == 7
+        assert sum(l["total"] for g in data["bloom_by_specialty"] for l in g["levels"]) + legacy["total"] == 7
         assert all(s["total"] == 0 for s in data["specialties"][1:])
         # Foundation answers belong to g1, but are never assigned a made-up core issue.
         assert sum(i["total"] for g in data["issues_by_specialty"] for i in g["issues"]) < 7
-    for key in ("levels", "specialties", "bloom_by_specialty", "issues_by_specialty"):
+    for key in ("specialties", "issues_by_specialty"):
         assert result[key] == progress[key]
     other = tokens_for_new_learner()
     assert api.get(f"/v1/attempts/{attempt['attempt_id']}/results", headers=other).status_code == 404

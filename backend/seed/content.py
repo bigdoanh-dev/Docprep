@@ -92,6 +92,8 @@ def validate_content(content: dict, blueprint: dict) -> list[str]:
             errors.append(f"{where}: unknown competency {q.get('competency_code')}")
         if q.get("exam_competency_component") not in components:
             errors.append(f"{where}: unknown component {q.get('exam_competency_component')}")
+        if q.get("bloom_level_6") is not None and q["bloom_level_6"] not in (1, 2, 3, 4, 5, 6):
+            errors.append(f"{where}: bloom_level_6 must be an explicit level from 1 to 6")
         if q.get("bloom_level") not in (1, 2, 3):
             errors.append(f"{where}: bloom_level must be 1, 2 or 3")
         if q.get("difficulty") not in labels:
@@ -234,7 +236,7 @@ def write_content(conn, content: dict, blueprint: dict, reviewers: tuple[int, in
         wanted = {
             "stem": q["stem"].strip(), "options": options, "explanation": q["explanation"].strip(),
             "competency_code": q["competency_code"], "core_issue_id": core_issue_of(q["competency_code"]),
-            "exam_competency_component_id": q["exam_competency_component"], "bloom_level": q["bloom_level"],
+            "exam_competency_component_id": q["exam_competency_component"], "bloom_level": q["bloom_level"], "bloom_level_6": q.get("bloom_level_6"),
             "difficulty_label": q["difficulty"], "source_passage_ids": q["sources"],
         }
         stored = _stored(conn, "question", q["id"], tuple(wanted))
@@ -243,8 +245,8 @@ def write_content(conn, content: dict, blueprint: dict, reviewers: tuple[int, in
             continue
         conn.execute(
             """insert into question(stem, options, explanation, competency_code, core_issue_id,
-               exam_competency_component_id, bloom_level, difficulty_label, source_passage_ids, id, difficulty_b, status)
-               values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'draft')""",
+               exam_competency_component_id, bloom_level, bloom_level_6, difficulty_label, source_passage_ids, id, difficulty_b, status)
+               values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'draft')""",
             (wanted["stem"], Jsonb(options), *list(wanted.values())[2:], q["id"], initial_b[q["difficulty"]]))
         _approve(conn, "question", q["id"], reviewer_rows)
 

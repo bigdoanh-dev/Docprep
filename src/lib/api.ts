@@ -539,6 +539,7 @@ export type Deck = {
 // ---- Tiến độ ----
 
 export type ProgressSkills = {
+  unclassified_bloom?: { correct: number; total: number };
   issues_by_specialty?: SpecialtyIssues[];
   days_to_exam: number;
   scope: "latest3" | "all";

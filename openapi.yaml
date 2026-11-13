@@ -4011,6 +4011,19 @@ components:
       title: Alert
       description: Something a rule found worth attention. The sentences are templates filled with the numbers that triggered
         it.
+    AssessmentCount:
+      properties:
+        correct:
+          type: integer
+          title: Correct
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - correct
+      - total
+      title: AssessmentCount
     AttemptItemView:
       properties:
         module_id:
@@ -5565,6 +5578,9 @@ components:
           - 1
           - 2
           - 3
+          - 4
+          - 5
+          - 6
           title: Level
         label_vi:
           type: string
@@ -6923,6 +6939,9 @@ components:
             $ref: '#/components/schemas/SpecialtyIssues'
           type: array
           title: Issues By Specialty
+        unclassified_bloom:
+          $ref: '#/components/schemas/AssessmentCount'
+          description: Answered items still using the legacy grouped Bloom taxonomy; never split into invented six-level counts.
         days_to_exam:
           type: integer
           title: Days To Exam
@@ -6956,6 +6975,7 @@ components:
       - specialties
       - bloom_by_specialty
       - issues_by_specialty
+      - unclassified_bloom
       - days_to_exam
       - scope
       - coverage
@@ -7002,18 +7022,30 @@ components:
           total_topics: 54
         days_to_exam: 142
         levels:
-        - correct: 12
-          label_vi: Nhớ, Hiểu
+        - correct: 0
+          label_vi: Ghi nhớ
           level: 1
-          total: 15
-        - correct: 19
-          label_vi: Vận dụng
+          total: 0
+        - correct: 0
+          label_vi: Hiểu
           level: 2
-          total: 32
-        - correct: 4
-          label_vi: Phân tích, Đánh giá
+          total: 0
+        - correct: 0
+          label_vi: Vận dụng
           level: 3
-          total: 9
+          total: 0
+        - correct: 0
+          label_vi: Phân tích
+          level: 4
+          total: 0
+        - correct: 0
+          label_vi: Đánh giá
+          level: 5
+          total: 0
+        - correct: 0
+          label_vi: Sáng tạo
+          level: 6
+          total: 0
         mock_scores:
         - attempt_id: 3
           score: 29
@@ -7046,6 +7078,9 @@ components:
           rank: 3
           total: 3
         scope: latest3
+        unclassified_bloom:
+          correct: 35
+          total: 56
     QuestionBank:
       properties:
         approved:

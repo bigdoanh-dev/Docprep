@@ -18,6 +18,7 @@ type Props = {
   levels: (AssessmentCount & { level: number; label_vi: string })[];
   bySpecialty?: BloomSpecialty[];
   byIssue?: SpecialtyIssues[];
+  unclassifiedBloom?: AssessmentCount;
 };
 
 export function SpecialtyAnalysis({
@@ -25,6 +26,7 @@ export function SpecialtyAnalysis({
   levels,
   bySpecialty,
   byIssue,
+  unclassifiedBloom,
 }: Props) {
   const headingId = useId();
   const [perspective, setPerspective] =
@@ -182,6 +184,13 @@ export function SpecialtyAnalysis({
           </button>
         </div>
       </div>
+      {perspective === "bloom" && !!unclassifiedBloom?.total && (
+        <p role="status" className="muted small">
+          {unclassifiedBloom.total} câu trả lời đang dùng phân nhóm Bloom cũ,
+          chưa được phân loại theo 6 mức. Các câu này vẫn được tính trong thống
+          kê chuyên khoa và điểm bài thi.
+        </p>
+      )}
       <div className="field matrix-filter">
         <label htmlFor={`${headingId}-specialty`}>
           {perspective === "specialty"
@@ -261,7 +270,9 @@ export function SpecialtyAnalysis({
         )}
         {!hasAssessment && (
           <p className="muted small">
-            Nộp đề thi thử để xem kết quả theo {perspectiveLabel}.{" "}
+            {perspective === "bloom" && unclassifiedBloom?.total
+              ? "Chưa có câu trả lời được phân loại theo 6 mức trong phạm vi này."
+              : `Nộp đề thi thử để xem kết quả theo ${perspectiveLabel}.`}{" "}
             <Link to="/thi-thu" className="link-btn">
               Làm đề thi thử
             </Link>

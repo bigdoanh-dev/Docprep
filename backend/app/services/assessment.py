@@ -1,8 +1,10 @@
 """Classification and assessment counts from the exact question versions answered.
 
-The bank stores three grouped Bloom bands, not the six individual Bloom levels.
+Legacy versions store three grouped Bloom bands. Progress uses explicit six-level
+metadata when present and counts legacy answers separately without guessing their level.
 Unanswered questions are not assessments; empty groups remain unassessed.
 """
+SIX_LEVELS = {1: "Ghi nhớ", 2: "Hiểu", 3: "Vận dụng", 4: "Phân tích", 5: "Đánh giá", 6: "Sáng tạo"}
 LEVELS = {1: "Nhớ, Hiểu", 2: "Vận dụng", 3: "Phân tích, Đánh giá"}
 
 
@@ -41,12 +43,13 @@ def form_scope(conn, form: dict) -> dict:
             "module_name": module["short_name"] if module else None}
 
 
-def summary(conn, learner_id: int, attempt_ids: list[int]) -> dict:
+def summary(conn, learner_id: int, attempt_ids: list[int], *, six_levels: bool = False) -> dict:
     modules, issues = _catalog(conn)
 
     def levels():
-        return [{"level": n, "label_vi": label, "correct": 0, "total": 0} for n, label in LEVELS.items()]
+        return [{"level": n, "label_vi": label, "correct": 0, "total": 0} for n, label in (SIX_LEVELS if six_levels else LEVELS).items()]
 
+    unclassified = {"correct": 0, "total": 0}
     overall = levels()
     specialties = [{"module_id": m["id"], "name": m["short_name"], "correct": 0, "total": 0} for m in modules]
     bloom = [{"module_id": m["id"], "name": m["short_name"], "levels": levels()} for m in modules]
@@ -59,20 +62,23 @@ def summary(conn, learner_id: int, attempt_ids: list[int]) -> dict:
             module_of.setdefault(code, index)
     issue_counts = {i["issue_id"]: i for group in by_issue for i in group["issues"]}
     rows = conn.execute(
-        """select q.competency_code, q.core_issue_id, q.bloom_level,
+        """select q.competency_code, q.core_issue_id, q.bloom_level, q.bloom_level_6,
                   count(*) as total, count(*) filter (where r.correct) as correct
            from item_response r join question q on q.id = r.question_id and q.version = r.question_version
            where r.learner_id = %s and r.attempt_id = any(%s)
-           group by q.competency_code, q.core_issue_id, q.bloom_level""", (learner_id, attempt_ids))
+           group by q.competency_code, q.core_issue_id, q.bloom_level, q.bloom_level_6""", (learner_id, attempt_ids))
     for row in rows:
-        targets = [overall[row["bloom_level"] - 1]]
+        level = row["bloom_level_6"] if six_levels else row["bloom_level"]
+        targets = [overall[level - 1]] if level else [unclassified]
         index = module_of.get(row["competency_code"])
         if index is not None:
-            targets += [specialties[index], bloom[index]["levels"][row["bloom_level"] - 1]]
+            targets.append(specialties[index])
+            if level:
+                targets.append(bloom[index]["levels"][level - 1])
         if row["core_issue_id"] in issue_counts:
             targets.append(issue_counts[row["core_issue_id"]])
         for target in targets:
             for key in ("correct", "total"):
                 target[key] += row[key]
     return {"levels": overall, "specialties": specialties, "bloom_by_specialty": bloom,
-            "issues_by_specialty": by_issue}
+            "issues_by_specialty": by_issue, **({"unclassified_bloom": unclassified} if six_levels else {})}

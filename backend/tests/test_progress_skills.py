@@ -41,7 +41,8 @@ def test_a_new_learner_gets_empty_blocks_not_invented_ones(learner_api):
         (1, "CI-01", 0, None), (2, "CI-04", 0, None), (3, "FND", 0, None)]      # the topics that have questions
     assert body["mock_scores"] == [] and body["group_grid"] is None
     assert [(lv["level"], lv["label_vi"], lv["total"]) for lv in body["levels"]] == [
-        (1, "Nhớ, Hiểu", 0), (2, "Vận dụng", 0), (3, "Phân tích, Đánh giá", 0)]
+        (1, "Ghi nhớ", 0), (2, "Hiểu", 0), (3, "Vận dụng", 0),
+        (4, "Phân tích", 0), (5, "Đánh giá", 0), (6, "Sáng tạo", 0)]
 
 
 def test_a_finished_mock_shows_its_real_score_and_what_it_assessed(learner_api, clock):
@@ -49,7 +50,9 @@ def test_a_finished_mock_shows_its_real_score_and_what_it_assessed(learner_api, 
     body = skills(learner_api)
     assert body["mock_scores"] == [{"attempt_id": results["attempt_id"], "title": "Đề thi thử số 1",
                                     "submitted_at": results["submitted_at"], "score": 8, "total": 10}]
-    assert sum(lv["total"] for lv in body["levels"]) == 10 and sum(lv["correct"] for lv in body["levels"]) == 8
+    assert body["unclassified_bloom"] == {"correct": 8, "total": 10}
+    assert sum(lv["total"] for lv in body["levels"]) == 0
+    assert sum(s["total"] for s in body["specialties"]) == 10
     assert body["coverage"]["assessed_topics"] == 1                         # CI-04: three answers. CI-01: one. FND is not a core issue
     assert body["coverage"]["modules"][0]["topics_assessed"] == 1
     answered = {p["competency_code"]: p["total"] for p in body["priorities"]}
@@ -62,8 +65,8 @@ def test_the_scope_chooses_which_mocks_count(learner_api, clock):
     assert [s["attempt_id"] for s in skills(learner_api)["mock_scores"]] == ids[1:]         # the last three, oldest first
     everything = skills(learner_api, scope="all")
     assert [s["attempt_id"] for s in everything["mock_scores"]] == ids and everything["scope"] == "all"
-    assert sum(lv["total"] for lv in skills(learner_api)["levels"]) == 30
-    assert sum(lv["total"] for lv in everything["levels"]) == 40
+    assert skills(learner_api)["unclassified_bloom"]["total"] == 30
+    assert everything["unclassified_bloom"]["total"] == 40
 
 
 def test_a_priority_names_the_unit_with_most_wrong_answers(learner_api):
@@ -96,3 +99,16 @@ def test_another_learner_sees_only_their_own_records(api, learner_api, clock, to
 def test_an_unknown_scope_is_refused_and_mock_mode_answers(learner_api, mock_client):
     assert learner_api.get("/v1/progress/skills", params={"scope": "week"}).status_code == 422
     assert mock_client.get("/v1/progress/skills").status_code == 200
+
+
+def test_explicit_six_level_metadata_counts_without_relabelling_legacy(learner_api, clock, conn):
+    # Metadata on these test-only question versions is explicit; old grouped answers stay separate.
+    from tests.test_frontend_contract import new_question_version
+    original = conn.execute("select * from question where id = 'q-dt-07' and status = 'approved'").fetchone()
+    new_question_version(conn, original, bloom_level_6=6)
+    sit(learner_api, clock)
+    body = skills(learner_api)
+    assert body["levels"][5] == {"level": 6, "label_vi": "Sáng tạo", "correct": 1, "total": 1}
+    assert body["unclassified_bloom"] == {"correct": 9, "total": 9}
+    assert sum(s["total"] for s in body["specialties"]) == 10
+    assert sum(g["levels"][5]["total"] for g in body["bloom_by_specialty"]) == 1

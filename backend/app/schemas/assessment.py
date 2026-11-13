@@ -22,7 +22,7 @@ class AssessmentCount(Schema):
 
 
 class LevelAccuracy(AssessmentCount):
-    level: Literal[1, 2, 3]
+    level: Literal[1, 2, 3, 4, 5, 6]
     label_vi: str
 
 

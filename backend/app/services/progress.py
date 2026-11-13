@@ -59,7 +59,7 @@ def skills(conn, learner: dict, scope: str, now: datetime) -> dict:
     # Real scores of finished mock attempts, oldest first, and the answers given in them by level.
     attempts = list(reversed(repo.mock_attempts(conn, learner["id"], 3 if scope == "latest3" else None)))
     return {
-        **assessment.summary(conn, learner["id"], [a["attempt_id"] for a in attempts]),
+        **assessment.summary(conn, learner["id"], [a["attempt_id"] for a in attempts], six_levels=True),
         "days_to_exam": _days_to_exam(learner, now),
         "scope": scope,
         "coverage": {"assessed_topics": len(assessed & set(core)), "total_topics": len(core), "modules": modules},

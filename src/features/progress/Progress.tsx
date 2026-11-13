@@ -217,6 +217,7 @@ export function Progress() {
             <SpecialtyAnalysis
               specialties={data.specialties}
               levels={data.levels}
+              unclassifiedBloom={data.unclassified_bloom}
               bySpecialty={data.bloom_by_specialty}
               byIssue={data.issues_by_specialty}
             />

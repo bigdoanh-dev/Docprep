@@ -9,7 +9,7 @@ from pydantic import Field
 
 from app.schemas import _samples as s
 from app.schemas.base import Schema, with_example
-from app.schemas.assessment import AssessmentSummary, LevelAccuracy
+from app.schemas.assessment import AssessmentSummary, LevelAccuracy, AssessmentCount
 
 _TODAY = date(2026, 10, 10)
 _PATTERN = [0, 15, 30, 0, 45, 20, 10]
@@ -73,6 +73,7 @@ class GroupGrid(Schema):
 
 
 class ProgressSkills(AssessmentSummary):
+    unclassified_bloom: AssessmentCount = Field(description="Answered items still using the legacy grouped Bloom taxonomy; never split into invented six-level counts.")
     days_to_exam: int
     scope: Literal["latest3", "all"]
     coverage: Coverage
@@ -82,6 +83,7 @@ class ProgressSkills(AssessmentSummary):
     levels: list[LevelAccuracy]
 
     model_config = with_example({
+        "unclassified_bloom": {"correct": 35, "total": 56},
         "days_to_exam": 142,
         "scope": "latest3",
         "coverage": {
@@ -104,11 +106,8 @@ class ProgressSkills(AssessmentSummary):
              "total": 40},
         ],
         "group_grid": None,
-        "levels": [
-            {"level": 1, "label_vi": "Nhớ, Hiểu", "correct": 12, "total": 15},
-            {"level": 2, "label_vi": "Vận dụng", "correct": 19, "total": 32},
-            {"level": 3, "label_vi": "Phân tích, Đánh giá", "correct": 4, "total": 9},
-        ],
+        "levels": [{"level": n, "label_vi": label, "correct": 0, "total": 0} for n, label in enumerate(
+            ["Ghi nhớ", "Hiểu", "Vận dụng", "Phân tích", "Đánh giá", "Sáng tạo"], 1)],
     })
 
 
