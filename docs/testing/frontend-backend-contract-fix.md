@@ -1,5 +1,7 @@
 # Đồng bộ hợp đồng frontend/backend — 07/11/2026
 
+> Cập nhật 13/11/2026: phần Tiến độ đã chuyển sang contract 6 mức với số liệu nhóm cũ được giữ riêng. Xem [biên bản sửa lỗi](confirmed-bug-fixes-2026-11-13.md). Nội dung bên dưới là ghi nhận của đợt tích hợp trước.
+
 Đã sửa các chỗ lệch trong [báo cáo audit trước khi sửa](frontend-backend-audit.md). Frontend gốc repo sử dụng dữ liệu thật từ backend Phase 1; các thống kê mới được tính từ bản ghi của người học.
 
 ## Thay đổi
