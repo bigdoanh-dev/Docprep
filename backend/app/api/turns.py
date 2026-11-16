@@ -11,7 +11,7 @@ from app.api.deps import Conn, Now
 from app.errors import ApiError
 from app.openapi import sse_responses
 from app.privacy import clean_tree
-from app.repo import turns, chat, units, practice
+from app.repo import turns, chat, units, practice, corpus
 from app.schemas.chat import NewChatMessage
 from app.schemas.units import Hint
 from app.schemas.base import Schema
@@ -56,6 +56,8 @@ def _submit(request, conn, learner, now, kind, route, key, raw):
     if key is not None and (not key.strip() or len(key) > 128):
         raise ApiError(422, "invalid_request", "Idempotency-Key phải có từ 1 đến 128 ký tự.")
     payload = clean_tree(raw)
+    payload['_corpus_version'] = corpus.selected(conn)
+    corpus.recheck(conn,payload['_corpus_version'],cfg.provider)
     if raw.get('mode') in ('kiem_tra','cham'):
         raise ApiError(501,'tutor_mode_not_supported','Tạo và chấm câu hỏi gia sư mới chưa được mở trong Phase 1.')
 

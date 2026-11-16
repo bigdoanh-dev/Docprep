@@ -45,6 +45,7 @@ services:
       BUSINESS_DB_PASSWORD: ${BUSINESS_DB_PASSWORD:?required}
       CHAT_DB_PASSWORD: ${CHAT_DB_PASSWORD:?required}
       MIGRATOR_DB_PASSWORD: ${MIGRATOR_DB_PASSWORD:?required}
+      PUBLISHER_DB_PASSWORD: ${PUBLISHER_DB_PASSWORD:-}
     volumes:
       - phase_pg:/var/lib/postgresql/data
       - ./init-roles.sh:/docker-entrypoint-initdb.d/10-roles.sh:ro
@@ -91,6 +92,16 @@ services:
     volumes:
       - ../.local:/artifacts
       - ../backend:/srv/backend:ro
+  publisher:
+    <<: *runtime
+    profiles: [tools]
+    environment:
+      APP_ENV: ${APP_ENV:?required}
+      PUBLISH_DATABASE_URL: postgresql://phase_publisher:${PUBLISHER_DB_PASSWORD:-not_configured}@db:5432/phase1
+    entrypoint: [python, -m, app.content.cli]
+    volumes:
+      - ../.local/content:/exports
+    healthcheck: {disable: true}
   api-1:
     <<: *runtime
     environment: *business-env
@@ -172,6 +183,7 @@ services:
     volumes:
       - ../backend:/srv/backend:ro
       - ./:/srv/deploy:ro
+      - ../openapi.yaml:/srv/openapi.yaml:ro
       - ../.local:/artifacts
     command: [python, -m, pytest, tests_phase1, -q, --tb=short, -p, no:cacheprovider, --junitxml=/artifacts/phase1-tests.xml]
     depends_on:

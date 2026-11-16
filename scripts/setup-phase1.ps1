@@ -11,7 +11,7 @@ try {
         $content = Get-Content -LiteralPath '.env.phase1.example' -Raw
         $rng = [Security.Cryptography.RandomNumberGenerator]::Create()
         try {
-            foreach ($name in @('OWNER_DB_PASSWORD','MIGRATOR_DB_PASSWORD','BUSINESS_DB_PASSWORD','CHAT_DB_PASSWORD','REDIS_PASSWORD','GRAFANA_PASSWORD')) {
+            foreach ($name in @('OWNER_DB_PASSWORD','MIGRATOR_DB_PASSWORD','BUSINESS_DB_PASSWORD','CHAT_DB_PASSWORD','REDIS_PASSWORD','GRAFANA_PASSWORD','PUBLISHER_DB_PASSWORD')) {
                 $buffer = New-Object byte[] 24
                 $rng.GetBytes($buffer)
                 $value = [BitConverter]::ToString($buffer).Replace('-','').ToLowerInvariant()
@@ -19,6 +19,13 @@ try {
             }
         } finally { $rng.Dispose() }
         [IO.File]::WriteAllText((Join-Path (Get-Location) '.env.phase1'), $content, [Text.UTF8Encoding]::new($false))
+    }
+    if (-not (Select-String -LiteralPath '.env.phase1' -Pattern '^PUBLISHER_DB_PASSWORD=' -Quiet)) {
+        $bytes = New-Object byte[] 24
+        $rng = [Security.Cryptography.RandomNumberGenerator]::Create()
+        try { $rng.GetBytes($bytes) } finally { $rng.Dispose() }
+        $publisherPassword = [BitConverter]::ToString($bytes).Replace('-','').ToLowerInvariant()
+        Add-Content -LiteralPath '.env.phase1' -Value "`nPUBLISHER_DB_PASSWORD=$publisherPassword" -Encoding UTF8
     }
     & docker compose --env-file .env.phase1 -f deploy/compose.phase1.yml up -d --wait db redis
     if ($LASTEXITCODE) { throw 'Phase 1 database/Redis startup failed' }

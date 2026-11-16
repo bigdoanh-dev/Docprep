@@ -14,6 +14,7 @@ EXPECTED_TABLES = {
     "auth_failure",
     "ai_turn", "ai_outbox", "ai_model_call", "ai_purge",
     "embedding_index", "passage_embedding",
+    "corpus_release", "corpus_release_member", "corpus_activation", "corpus_activation_event",
 }
 
 

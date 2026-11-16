@@ -40,27 +40,33 @@ def approved_content(conn, content_id: str) -> dict | None:
 
 def citations_for(conn, passage_ids: list[str]) -> list[dict]:
     """Citation fields for those passages. `n` is the position in the list given; an unknown id is skipped."""
+    from app.repo import corpus
+    corpus.scope(conn)
     rows = {r["passage_id"]: r for r in conn.execute(
         """select p.id as passage_id, d.title as document, p.chapter, p.section, p.page_start as page, p.article
-           from passage p join document d on d.id = p.document_id where p.id = any(%s)""", (passage_ids,))}
+           from passage p join document d on d.id = p.document_id where p.id = any(%s) and corpus_passage_visible(p.id)""", (passage_ids,))}
     return [{"n": n, **rows[pid]} for n, pid in enumerate(passage_ids, start=1) if pid in rows]
 
 
 def passage_source(conn, passage_id: str) -> dict | None:
     """Where a passage is in its document, for a card's citation line."""
+    from app.repo import corpus
+    corpus.scope(conn)
     return conn.execute(
         """select p.page_start, p.article, d.title from passage p join document d on d.id = p.document_id
-           where p.id = %s""", (passage_id,)).fetchone()
+           where p.id = %s and corpus_passage_visible(p.id,true)""", (passage_id,)).fetchone()
 
 
 def passage_view(conn, passage_id: str) -> dict | None:
     """A source as the learner may see it: an excerpt within the document's limit, never the full text.
     A placeholder passage of the sample bank is not a source and is not shown."""
+    from app.repo import corpus
+    corpus.scope(conn)
     row = conn.execute(
         """select p.id, d.title as document, p.chapter, p.section, p.page_start as page, p.article, p.text,
                   d.excerpt_limit, d.demo_label, d.validity_note
            from passage p join document d on d.id = p.document_id
-           where p.id = %s and not d.is_synthetic""", (passage_id,)).fetchone()
+           where p.id = %s and not d.is_synthetic and corpus_passage_visible(p.id,true)""", (passage_id,)).fetchone()
     if row is None:
         return None
     text, limit = row.pop("text"), row.pop("excerpt_limit")
@@ -136,8 +142,10 @@ def glossary(conn) -> list[dict]:
 def documents_in_scope(conn, module_id: str | None) -> list[dict]:
     """The documents retrieval looks in: all of them, or those with a passage of the học phần. Each
     with the pages its passages span. A document of the sample bank is never searched, so never listed."""
+    from app.repo import corpus
+    corpus.scope(conn)
     scope = "and p.competency_code = any(select unnest(competency_codes) from module where id = %s)" if module_id else ""
     return conn.execute(
         f"""select d.title, min(p.page_start) as first_page, max(p.page_start) as last_page
-            from passage p join document d on d.id = p.document_id where not d.is_synthetic {scope}
+            from passage p join document d on d.id = p.document_id where not d.is_synthetic and corpus_passage_visible(p.id) {scope}
             group by d.id, d.title order by d.title""", (module_id,) if module_id else ()).fetchall()

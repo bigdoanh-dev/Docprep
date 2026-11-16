@@ -1,0 +1,22 @@
+{
+    admin off
+}
+:80 {
+    header X-Content-Type-Options nosniff
+    header Referrer-Policy no-referrer
+    route {
+        @api_prefix path /api /api/*
+        vars @api_prefix content_api true
+        @private path /metrics /readyz /docs* /openapi.json /api/metrics /api/readyz /api/docs* /api/openapi.json
+        respond @private 404
+        uri strip_prefix /api
+        reverse_proxy /health content-api:8000
+        reverse_proxy /v1/* content-api:8000
+        @unknown_api vars content_api true
+        header @unknown_api Content-Type application/json
+        respond @unknown_api `{"error":{"code":"not_found","message_vi":"Không tìm thấy API."}}` 404
+        root * /srv/web
+        try_files {path} /content.html
+        file_server
+    }
+}

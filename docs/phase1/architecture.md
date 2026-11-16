@@ -4,6 +4,8 @@ Tài liệu này mô tả đợt nâng cấp hạ tầng từ Alpha, theo các l
 
 Cập nhật tích hợp YHDP ngày 06/11: [ma trận nguồn/hợp đồng](yhdp-source-map.md), [báo cáo mới](yhdp-verification.md) và [vận hành Ollama](ollama-local.md). UI dùng nguồn `c661586`, nghiệp vụ vẫn ở Phase 1. Kết quả ngày 03/11 là baseline lịch sử, không chứng minh adapter/model thật.
 
+**Cập nhật kho content 16/11:** có thêm Content API/giao diện/tài khoản và PostgreSQL riêng cho biên soạn. Import giữ chunk chưa xác nhận; reviewer xác nhận phân loại và nội dung bằng hai quyết định. Publisher chuyển snapshot local/dev sang candidate ở runtime, sau đó mới activate. Runtime pin corpus theo turn và chặn nguồn revoked; không kết nối trực tiếp đến DB content. Xem [runbook và ERD](content-workspace.md), [kiểm chứng mới](content-workspace-verification.md). Chuẩn chữ ký và mapping chuyên môn vẫn chờ xác nhận; không coi luồng unsigned local là corpus đã nghiệm thu.
+
 ## Đơn vị triển khai
 
 Frontend React → Caddy → Business API ×2 hoặc Chat Orchestrator ×2 → PostgreSQL.

@@ -1,0 +1,34 @@
+sequenceDiagram
+    participant ui as Frontend
+    participant proxy as Caddy
+    participant chat as Chat nhận request
+    participant pg as PostgreSQL runtime
+    participant redis as Redis chung
+    participant worker as Worker trong một Chat
+    participant gateway as Gateway trong Chat
+    participant model as Model dev/test
+    ui->>proxy: POST chat, explain hoặc hint kèm token và key
+    proxy->>chat: Chuyển tới một Chat instance
+    chat->>chat: Kiểm tra quyền, consent và exam guard
+    alt Provider disabled - cấu hình hiện tại
+        chat-->>proxy: 503 ai_disabled
+        proxy-->>ui: Hiển thị AI chưa được bật
+    else Provider được bật hợp lệ trong dev/test
+        chat->>pg: Admission, idempotency, pin corpus, lưu turn và outbox
+        pg-->>chat: Commit turn hoặc gắn lại turn cũ
+        chat->>redis: Publisher phát outbox vào FIFO
+        worker->>redis: Claim theo thứ tự, learner lock, lease và fencing
+        worker->>pg: Kiểm tra lại điều kiện và lấy nguồn
+        worker->>gateway: Nhả connection DB rồi gọi model qua gateway
+        gateway->>redis: Reserve model slot toàn cục
+        gateway->>pg: Ghi durable model-call marker
+        gateway->>model: Request đã kiểm tra payload
+        model-->>gateway: Kết quả hoặc lỗi provider
+        gateway-->>worker: Kết quả chuẩn hóa và trạng thái lời gọi
+        worker->>pg: Kiểm tra lại quyền, fence, corpus và commit kết quả
+        worker->>redis: Ghi event answer hoặc terminal final
+        chat->>redis: Đọc event stream bằng subscriber
+        chat-->>proxy: SSE có id, heartbeat và final
+        proxy-->>ui: Cập nhật kết quả
+        ui->>proxy: Reconnect với Last-Event-ID hoặc đọc snapshot turn
+    end

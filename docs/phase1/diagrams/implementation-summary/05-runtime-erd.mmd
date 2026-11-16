@@ -1,0 +1,39 @@
+erDiagram
+    learner ||--o| learner_credential : credentials
+    learner ||--o{ unit_session : learns
+    learner ||--o{ item_response : answers
+    learner ||--o{ mastery : tracks
+    learner ||--o{ card : owns
+    card ||--o{ card_review : reviews
+    learner ||--o{ exam_attempt : takes
+    exam_attempt ||--o{ attempt_answer : saves
+    learner ||--o{ practice_set : practices
+    practice_set o|--o{ item_response : contains
+    learner o|--o{ ai_turn : requests
+    chat_session o|--o{ ai_turn : groups
+    chat_session ||--o{ chat_message : stores
+    ai_turn ||--o| ai_outbox : dispatches
+    ai_turn o|--o{ chat_message : produces
+    learner {
+        int id PK
+        text pseudonym_id
+        boolean active
+    }
+    ai_turn {
+        uuid id PK
+        bigint seq
+        int learner_id FK
+        int session_id FK
+        text status
+        text idempotency_key
+        bigint fence
+        jsonb payload
+        jsonb result
+    }
+    exam_attempt {
+        int id PK
+        int learner_id FK
+        timestamptz deadline_at
+        timestamptz submitted_at
+        int score
+    }

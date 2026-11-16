@@ -1,6 +1,10 @@
 # AI Tutor / DocPrep
 
-Frontend tại `src/` đã ghép các cập nhật từ `main` (`46f6b3e`) vào nhánh `feat/alpha-v1-backend-2`, giữ phần tích hợp backend Phase 1. Nhánh `feat/alpha-v1-backend` được giữ nguyên tại `13fb683`. Xem [ghi chú ghép frontend và kết quả kiểm tra](docs/phase1/frontend-merge.md).
+[Báo cáo tổng hợp backend và 6 sơ đồ hệ thống](docs/phase1/implementation-summary.md) — kết quả triển khai, dữ liệu hiện tại, kiểm thử và những phần còn chờ nghiệm thu.
+
+**Kho tài liệu YHDP:** đã bổ sung Content API và giao diện reviewer riêng, hai nhóm chunk, xác nhận nhãn/nội dung và publication local/dev. Xem [hướng dẫn kho content](docs/phase1/content-workspace.md). Khởi động bằng `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/setup-content.ps1`, mở **http://127.0.0.1:18882**. Tài khoản content được cấp riêng; không dùng tài khoản learner.
+
+Frontend tại `src/` đã ghép các cập nhật từ `main` (`46f6b3e`) và tích hợp backend Phase 1. Nhánh `feat/alpha-v1-backend` đã cập nhật đến `29708ae`. Xem [hướng dẫn chạy Windows mới](README-RUN-LOCAL.md) và [ghi chú ghép frontend](docs/phase1/frontend-merge.md).
 
 Để chạy frontend mới với backend Phase 1 trên Windows, mở Docker Desktop rồi chạy `npm.cmd run dev:full` tại gốc repo. Lệnh chuẩn bị backend và dữ liệu local, kiểm tra API thật rồi mở Vite tại **http://127.0.0.1:5190/dang-nhap**. Khi backend đã chạy, dùng `npm.cmd run dev:full -- -SkipSetup` để chỉ mở frontend. Script tự đặt proxy theo cổng Phase 1 trong `.env.phase1`; mặc định là `18880`. Xem [hướng dẫn kết nối và kiểm tra](docs/phase1/frontend-connection.md).
 

@@ -12,6 +12,7 @@ from dataclasses import dataclass
 
 from app.chat.normalise import Normalised, fold_dashes, tokens
 from app.config import settings
+from app.repo import corpus
 
 _COLUMNS = """p.id, p.document_id, d.title as document_title, p.chapter, p.section, p.page_start, p.article,
               p.text, p.text_unaccented, p.context, p.context_unaccented, p.competency_code"""
@@ -45,10 +46,11 @@ def _passage(row: dict, score: float) -> Passage:
                    article=row["article"], text=row["text"], score=score, competency_code=row["competency_code"])
 
 
-_REAL = "not exists (select 1 from document d where d.id = p.document_id and d.is_synthetic)"
+_REAL = "not exists (select 1 from document d where d.id = p.document_id and d.is_synthetic) and corpus_passage_visible(p.id)"
 
 
 def _idf(conn, terms: list[str]) -> dict[str, float]:
+    corpus.scope(conn)
     # The sample bank's placeholder passages are not part of the corpus: they are neither counted nor found.
     total = conn.execute(f"select count(*) c from passage p where {_REAL}").fetchone()["c"]
     rows = conn.execute(
@@ -83,6 +85,7 @@ def search(conn, n: Normalised, top_k: int, min_score: float, module_id: str | N
 
 
 def find(conn, n: Normalised, top_k: int, min_score: float, module_id: str | None = None) -> Found:
+    corpus.scope(conn)
     if not n.terms:
         return Found([])
     tsquery = " | ".join(n.terms)  # terms are \w+ tokens, so no escaping is needed
@@ -94,7 +97,7 @@ def find(conn, n: Normalised, top_k: int, min_score: float, module_id: str | Non
     rows = conn.execute(
         f"""select {_COLUMNS}, ts_rank_cd(p.tsv, to_tsquery('simple', %s), 1) as rank
             from passage p join document d on d.id = p.document_id
-            where p.tsv @@ to_tsquery('simple', %s) and not d.is_synthetic {module_filter}""", params).fetchall()
+            where p.tsv @@ to_tsquery('simple', %s) and not d.is_synthetic and corpus_passage_visible(p.id) {module_filter}""", params).fetchall()
     if not rows:
         return Found([])
 
@@ -121,7 +124,8 @@ def find(conn, n: Normalised, top_k: int, min_score: float, module_id: str | Non
 
 
 def get_passages(conn, ids: list[str]) -> dict[str, Passage]:
+    corpus.scope(conn)
     rows = conn.execute(
-        f"select {_COLUMNS} from passage p join document d on d.id = p.document_id where p.id = any(%s)",
+        f"select {_COLUMNS} from passage p join document d on d.id = p.document_id where p.id = any(%s) and corpus_passage_visible(p.id)",
         (ids,)).fetchall()
     return {r["id"]: _passage(r, 0.0) for r in rows}

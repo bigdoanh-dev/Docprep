@@ -6,6 +6,10 @@ dist/
 .env.phase1
 .env.phase1.*
 !.env.phase1.example
+.env.content
+.env.content.*
+!.env.content.example
+dist-content/
 .venv/
 __pycache__/
 *.py[cod]

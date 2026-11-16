@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5190",
     "dev:full": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/start-local.ps1",
+    "dev:content": "vite --config vite.content.config.ts --strictPort --open /content.html",
+    "build:content": "tsc -b && vite build --config vite.content.config.ts",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "tsx --tsconfig tsconfig.app.json --test \"tests/*.test.ts\"",

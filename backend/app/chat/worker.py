@@ -17,7 +17,7 @@ from app.errors import ApiError
 from app.gateway import GatewayError
 from app.ollama_gateway import ModelCallUncertain, OllamaGateway
 from app.privacy import clean_tree, validate_prompt
-from app.repo import turns, chat, content, responses, units, practice
+from app.repo import turns, chat, content, responses, units, practice, corpus
 from app.services import suggestions, hints
 from app.services.chat import _summary
 from app.services.responses import require_question
@@ -248,6 +248,7 @@ class ChatWorker:
 
     def check(self, turn):
         with self.pool.connection() as conn:
+            corpus.recheck(conn,turn['payload'].get('_corpus_version',turn['payload'].get('corpus_version',settings()['corpus_version'])),self.cfg.provider)
             if turn['learner_id'] is not None:
                 turns.guard(conn, turn["learner_id"], utcnow())
             current = turns.get(conn, turn["id"])
@@ -306,11 +307,9 @@ class ChatWorker:
         if not isinstance(gateway, OllamaGateway) or turn['payload']['model'] != gateway.cfg.embedding:
             raise TurnStopped('index_model_not_configured')
         version = turn['payload']['corpus_version']
-        if version != settings()['corpus_version']:
-            raise TurnStopped('corpus_version_changed')
         revision = gateway.revisions()[gateway.cfg.embedding]
         with self.pool.connection() as conn:
-            snapshot = embeddings.corpus(conn)
+            snapshot = embeddings.corpus(conn,version)
             previous = {r['passage_id']:r['content_hash'] for r in conn.execute(
                 'select passage_id,content_hash from passage_embedding where model=%s and revision=%s and corpus_version=%s',
                 (gateway.cfg.embedding,revision,version))}
@@ -336,7 +335,7 @@ class ChatWorker:
             current = conn.execute('select status,fence from ai_turn where id=%s for update',(turn['id'],)).fetchone()
             if not current or current['status']!='running' or current['fence']!=turn['fence']:
                 raise TurnStopped('ai_cancelled')
-            actual = embeddings.corpus(conn)
+            actual = embeddings.corpus(conn,version)
             if [(r['id'],r['content_hash']) for r in snapshot] != [(r['id'],r['content_hash']) for r in actual]:
                 raise TurnStopped('corpus_changed_during_index')
             conn.execute('update embedding_index set completed_at=now() where model=%s and revision=%s and corpus_version=%s',
@@ -348,6 +347,11 @@ class ChatWorker:
             conn.execute("update ai_turn set status='completed',finished_at=now(),result=%s where id=%s",(Jsonb(result),turn['id']))
 
     def run(self, turn):
+        version=turn['payload'].get('_corpus_version',turn['payload'].get('corpus_version',settings()['corpus_version']))
+        with corpus.pinned(version,index=turn['kind']=='index'):
+            self._run_pinned(turn)
+
+    def _run_pinned(self, turn):
         try:
             self.check(turn)
             if turn['kind'] == 'index':
@@ -378,7 +382,7 @@ class ChatWorker:
                     self.check(turn)
                     with self.pool.connection() as conn:
                         session = chat.own_session(conn, learner['pseudonym_id'], turn['session_id'])
-                        found = embeddings.search(conn, normalised, vector, settings()['corpus_version'], session['module_id'])
+                        found = embeddings.search(conn, normalised, vector, turn['payload'].get('_corpus_version',settings()['corpus_version']), session['module_id'])
                         pending = []
                         for kind, data in pipeline.prepare_answer(conn, turn['payload']['text'], session['module_id'],
                                 turn['payload'].get('detail', False), turn['payload'].get('clarifies_message_id') is not None,
@@ -396,6 +400,7 @@ class ChatWorker:
                             self.coord.emit(turn["id"], kind, {"status": data} if kind == "status" else data)
             self.check(turn)
             with self.pool.connection() as conn:
+                corpus.recheck(conn,turn['payload'].get('_corpus_version',settings()['corpus_version']),self.cfg.provider,lock=True)
                 learner = turns.guard(conn, turn["learner_id"], utcnow())
                 current = conn.execute("select * from ai_turn where id=%s for update", (turn["id"],)).fetchone()
                 if not current or current["status"] != "running" or current["fence"] != turn["fence"]:
@@ -408,7 +413,7 @@ class ChatWorker:
                     claims_checked=outcome.claims_checked, claims_removed=outcome.claims_removed,
                     clarify_options=clean_tree(outcome.clarify_options), searched=outcome.searched,
                     nearest_chapter=outcome.nearest_chapter, model_version=model.model if model else None,
-                    prompt_version=model.prompt_version if model else None, corpus_version=settings()["corpus_version"],
+                    prompt_version=model.prompt_version if model else None, corpus_version=turn['payload'].get('_corpus_version',settings()['corpus_version']),
                     latency_ms=model.latency_ms if model else None, tokens_in=model.tokens_in if model else None,
                     tokens_out=model.tokens_out if model else None, cost=model.cost if model else None)
                 conn.execute("update chat_message set ai_turn_id=%s where id=%s", (turn["id"], mid))

@@ -17,13 +17,20 @@ def test_a_database_stamped_0011_without_the_document_flag_gets_it(conn):
     """0011 gained `document.is_synthetic` after its first commit; 0012 adds it where it is missing."""
     # Reconstruct the older schema rather than merely changing its version label while
     # retaining the later Phase 1 tables/triggers. This fixture uses the disposable test DB.
-    conn.execute("""drop table learner_credential;
+    conn.execute("""drop trigger published_passage_immutable on passage;
+                    drop function published_passage_immutable();
+                    drop function corpus_passage_visible(text,boolean);
+                    alter table passage drop column release_id;
+                    drop table corpus_activation_event,corpus_activation,corpus_release_member,corpus_release;
+                    drop function corpus_snapshot_immutable();
+                    drop table learner_credential;
                     drop function invalidate_passage_embedding() cascade;
                     drop table passage_embedding,embedding_index;
                     drop function phase1_invalidate_ai() cascade;
                     drop table ai_outbox, ai_model_call, ai_purge;
                     alter table chat_message drop column ai_turn_id;
                     drop table ai_turn;
+                    alter table question drop column bloom_level_6;
                     alter table document drop column is_synthetic""")
     conn.execute("update alembic_version set version_num = '0011'")
     conn.commit()
@@ -36,6 +43,32 @@ def test_a_database_stamped_0011_without_the_document_flag_gets_it(conn):
 
 def test_a_migrated_database_is_ready(conn):
     assert pending_migrations(conn) is False
+    check_ready(conn)
+
+
+def test_upgrade_from_legacy_local_corpus_0017_preserves_data(conn):
+    from uuid import uuid4
+    rid=uuid4()
+    conn.execute("insert into corpus_release(id,version,manifest,manifest_sha256,trust,status) values(%s,'legacy-preserved','{}','test','local_dev','candidate')",(rid,))
+    conn.execute('alter table question drop column bloom_level_6')
+    conn.execute("update alembic_version set version_num='0017'")
+    conn.commit()
+    migrate(env('DATABASE_URL_TEST'))
+    assert conn.execute('select id from corpus_release where id=%s',(rid,)).fetchone()['id']==rid
+    assert conn.execute("select 1 from information_schema.columns where table_name='question' and column_name='bloom_level_6'").fetchone()
+    check_ready(conn)
+
+
+def test_upgrade_from_upstream_bloom_0017_adds_corpus(conn):
+    conn.execute('''drop trigger published_passage_immutable on passage;
+        drop function published_passage_immutable(); drop function corpus_passage_visible(text,boolean);
+        alter table passage drop column release_id;
+        drop table corpus_activation_event,corpus_activation,corpus_release_member,corpus_release;
+        drop function corpus_snapshot_immutable()''')
+    conn.execute("update alembic_version set version_num='0017'")
+    conn.commit()
+    migrate(env('DATABASE_URL_TEST'))
+    assert conn.execute("select to_regclass('public.corpus_release') is not null present").fetchone()['present']
     check_ready(conn)
 
 

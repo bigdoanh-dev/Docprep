@@ -24,3 +24,17 @@ grant select on alembic_version to phase_business;
 -- Derived indexes belong to Chat; approved passage/document content stays read-only.
 revoke all on embedding_index,passage_embedding from phase_business;
 grant select,insert,update,delete on embedding_index,passage_embedding to phase_chat;
+
+-- Publication snapshots are managed by the dedicated operator, never Business/Chat.
+revoke insert,update,delete on document,passage,corpus_release,corpus_release_member,corpus_activation,corpus_activation_event from phase_business;
+grant select on corpus_release,corpus_release_member,corpus_activation to phase_chat;
+do $$ begin
+ if exists(select 1 from pg_roles where rolname='phase_publisher') then
+  grant usage on schema public to phase_publisher;
+  grant select on document,passage,core_issue,competency_node,exam_competency_component,
+    corpus_release,corpus_release_member,corpus_activation,corpus_activation_event to phase_publisher;
+  grant insert on document,passage,corpus_release,corpus_release_member,corpus_activation,corpus_activation_event to phase_publisher;
+  grant update(status) on corpus_release to phase_publisher;
+  grant update on corpus_activation to phase_publisher;
+ end if;
+end $$;

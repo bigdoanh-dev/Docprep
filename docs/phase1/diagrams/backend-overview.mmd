@@ -1,0 +1,37 @@
+flowchart LR
+    subgraph client["Giao diện"]
+        frontend["Frontend React"]
+    end
+    subgraph gateway["Cổng vào"]
+        caddy["Caddy reverse proxy"]
+    end
+    subgraph service["Backend FastAPI"]
+        business["Business API ×2"]
+        chat["Chat Orchestrator ×2"]
+    end
+    subgraph datastore["Dữ liệu và điều phối"]
+        postgres[("PostgreSQL 16 + pgvector")]
+        redis[("Redis 7.4")]
+    end
+    subgraph external["AI chưa kích hoạt"]
+        ollama["Ollama: generation và embedding"]
+    end
+
+    frontend <-->|"REST / SSE qua /api/v1"| caddy
+    caddy -->|"Tài khoản / học / ôn / thi"| business
+    caddy -->|"Chat / hint / explain / nguồn"| chat
+    business -->|"Dữ liệu nghiệp vụ"| postgres
+    chat -->|"Hội thoại / nguồn / turn / outbox"| postgres
+    chat <-->|"FIFO / slot / lock / events"| redis
+    chat -.->|"Model Gateway nội bộ: provider disabled"| ollama
+
+    classDef app fill:#eaf2ff,stroke:#3b6bad,color:#18345c
+    classDef chatApp fill:#f0eaff,stroke:#8263ad,color:#36254e
+    classDef database fill:#e8f5ef,stroke:#38866a,color:#174e3a
+    classDef queue fill:#fff0e9,stroke:#bd7048,color:#6c3c24
+    classDef disabled fill:#f2f3f5,stroke:#8b93a1,color:#565e6b,stroke-dasharray:5 4
+    class frontend,caddy,business app
+    class chat chatApp
+    class postgres database
+    class redis queue
+    class ollama disabled

@@ -1,0 +1,43 @@
+erDiagram
+    CONTENT_USER ||--o{ CONTENT_USER_ROLE : has
+    CONTENT_USER ||--o{ CONTENT_TOKEN : owns
+    CONTENT_USER ||--o{ CONTENT_AUDIT_EVENT : records
+    CONTENT_USER ||--o{ CONTENT_OPERATION : retries
+    CONTENT_USER ||--o{ CONTENT_IMPORT_BATCH : imports
+    SOURCE_DOCUMENT ||--o{ SOURCE_DOCUMENT_REVISION : versions
+    CONTENT_IMPORT_BATCH ||--o{ SOURCE_DOCUMENT_REVISION : creates
+    SOURCE_DOCUMENT_REVISION ||--o{ SOURCE_ASSET : stores
+    SOURCE_DOCUMENT_REVISION ||--o{ DOCUMENT_CHUNK : contains
+    DOCUMENT_CHUNK ||--|| CHUNK_STATE : tracks
+    DOCUMENT_CHUNK ||--o{ CHUNK_TAG_SET : proposes
+    TAXONOMY_SNAPSHOT ||--o{ TAXONOMY_ISSUE : defines
+    TAXONOMY_SNAPSHOT ||--o{ TAXONOMY_DOMAIN : defines
+    TAXONOMY_SNAPSHOT ||--o{ CHUNK_TAG_SET : governs
+    CHUNK_TAG_SET ||--o{ CHUNK_ISSUE_TAG : labels
+    CHUNK_TAG_SET ||--o{ CHUNK_DOMAIN_TAG : labels
+    TAXONOMY_ISSUE ||--o{ CHUNK_ISSUE_TAG : validates
+    TAXONOMY_DOMAIN ||--o{ CHUNK_DOMAIN_TAG : validates
+    DOCUMENT_CHUNK ||--o{ CHUNK_REVIEW_TASK : requires
+    CHUNK_REVIEW_TASK ||--o{ CHUNK_REVIEW_DECISION : records
+    CONTENT_USER ||--o{ CHUNK_REVIEW_DECISION : confirms
+    CHUNK_TAG_SET ||--o{ CHUNK_REVIEW_DECISION : identifies
+    DOCUMENT_CHUNK {
+        uuid id PK
+        uuid revision_id FK
+        text source_chunk_id
+        text content_sha256
+        jsonb location
+    }
+    CHUNK_STATE {
+        uuid chunk_id PK,FK
+        text classification_status
+        text content_status
+        uuid confirmed_tag_set_id FK
+        int row_version
+    }
+    CONTENT_TOKEN {
+        text hash PK
+        uuid user_id FK
+        text kind
+        timestamptz expires_at
+    }

@@ -1,0 +1,26 @@
+flowchart LR
+    subgraph client["Người sử dụng"]
+        learner["Người học và cán bộ"]
+        editor["Đội biên soạn nội dung"]
+    end
+    subgraph gateway["Giao diện web"]
+        learningWeb["Frontend học tập"]
+        contentWeb["Frontend biên soạn"]
+    end
+    subgraph service["Backend"]
+        learningBackend["Business API và Chat Orchestrator"]
+        contentBackend["Content API"]
+        publisher["Publisher CLI"]
+    end
+    subgraph datastore["Lưu trữ riêng theo trách nhiệm"]
+        learningDb[("PostgreSQL runtime và Redis")]
+        authoringDb[("PostgreSQL content và asset volume")]
+    end
+    subgraph external["Tích hợp chưa bật"]
+        model["Ollama generator và embedding"]
+    end
+    learner --> learningWeb --> learningBackend --> learningDb
+    editor --> contentWeb --> contentBackend --> authoringDb
+    contentBackend -. "Xuất gói và chuyển thủ công" .-> publisher
+    publisher -->|"Nhập candidate rồi activate riêng"| learningDb
+    learningBackend -. "Qua gateway; hiện disabled" .-> model

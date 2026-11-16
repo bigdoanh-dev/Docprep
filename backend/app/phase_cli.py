@@ -22,7 +22,8 @@ def main():
     release.add_argument("call_id", type=UUID)
     release.add_argument("--confirm-stopped", action="store_true", required=True)
     commands.add_parser("drain")
-    commands.add_parser('index')
+    index=commands.add_parser('index')
+    index.add_argument('--corpus-version')
     state = commands.add_parser('job')
     state.add_argument('turn_id',type=UUID)
     commands.add_parser('check-models')
@@ -66,7 +67,10 @@ def main():
             try: admission.require_ready()
             finally: admission.close()
             with connect() as conn:
-                job = embeddings.enqueue(conn,cfg,model.embedding,settings()['corpus_version'],utcnow())
+                from app.repo import corpus
+                version=args.corpus_version or corpus.selected(conn)
+                corpus.recheck(conn,version,cfg.provider)
+                job = embeddings.enqueue(conn,cfg,model.embedding,version,utcnow())
             print(json.dumps({'turn_id':str(job['id']),'status':job['status']}))
     elif args.command == 'job':
         from app.repo import turns

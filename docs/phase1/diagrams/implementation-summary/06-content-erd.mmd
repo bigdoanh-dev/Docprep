@@ -1,0 +1,45 @@
+erDiagram
+    content_user ||--o{ content_user_role : has
+    content_user ||--o{ content_token : owns
+    content_user o|--o{ content_import_batch : imports
+    content_user o|--o{ content_audit_event : records
+    source_document ||--o{ source_document_revision : versions
+    content_import_batch ||--o{ source_document_revision : creates
+    source_document_revision ||--o{ source_asset : stores
+    source_document_revision ||--o{ document_chunk : contains
+    document_chunk ||--|| chunk_state : tracks
+    document_chunk ||--o{ chunk_tag_set : labels
+    taxonomy_snapshot ||--o{ chunk_tag_set : governs
+    taxonomy_snapshot ||--o{ taxonomy_issue : defines
+    taxonomy_snapshot ||--o{ taxonomy_domain : defines
+    chunk_tag_set ||--o{ chunk_issue_tag : issues
+    chunk_tag_set ||--o{ chunk_domain_tag : domains
+    taxonomy_issue ||--o{ chunk_issue_tag : validates
+    taxonomy_domain ||--o{ chunk_domain_tag : validates
+    document_chunk ||--o{ chunk_review_task : requires
+    chunk_review_task ||--o{ chunk_review_decision : records
+    content_user ||--o{ chunk_review_decision : accepts
+    chunk_review_decision o|--o| chunk_state : effective_decision
+    document_chunk {
+        uuid id PK
+        uuid revision_id FK
+        text source_chunk_id
+        text content_sha256
+        jsonb location
+    }
+    chunk_state {
+        uuid chunk_id PK,FK
+        text classification_status
+        text content_status
+        uuid proposed_tag_set_id FK
+        uuid confirmed_tag_set_id FK
+        int row_version
+    }
+    chunk_review_decision {
+        uuid id PK
+        uuid chunk_id FK
+        uuid reviewer_id FK
+        text purpose
+        text decision
+        text policy_version
+    }

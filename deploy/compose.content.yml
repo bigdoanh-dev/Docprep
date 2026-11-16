@@ -1,0 +1,88 @@
+name: docprep-content
+x-content: &content
+  image: docprep-content-backend:local
+  build:
+    context: ..
+    dockerfile: deploy/Dockerfile.backend
+  environment: &env
+    APP_ENV: ${APP_ENV:-dev}
+    CONTENT_DATABASE_URL: postgresql://content_app:${CONTENT_APP_PASSWORD:?required}@content-db:5432/content_workspace
+    CONTENT_ASSET_ROOT: /content-assets
+  volumes:
+    - content_assets:/content-assets
+    - ../.local/content:/exports
+  networks: [content]
+services:
+  content-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: content_workspace
+      POSTGRES_USER: content_owner
+      POSTGRES_PASSWORD: ${CONTENT_OWNER_PASSWORD:?required}
+      CONTENT_APP_PASSWORD: ${CONTENT_APP_PASSWORD:?required}
+    volumes:
+      - content_pg:/var/lib/postgresql/data
+      - ./init-content.sh:/docker-entrypoint-initdb.d/10-content.sh:ro
+    networks: [content]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U content_owner -d content_workspace"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  content-migrate:
+    <<: *content
+    user: "0"
+    environment:
+      <<: *env
+      CONTENT_DATABASE_URL: postgresql://content_owner:${CONTENT_OWNER_PASSWORD:?required}@content-db:5432/content_workspace
+    command: [sh, -c, "chown 10001:10001 /content-assets /exports && exec python -m app.content.cli migrate"]
+    depends_on:
+      content-db: {condition: service_healthy}
+  content-api:
+    <<: *content
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command: [uvicorn, app.main_content:app, --host, 0.0.0.0, --port, "8000", --no-access-log, --no-proxy-headers]
+    restart: unless-stopped
+    depends_on:
+      content-migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/readyz')"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  content-web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.content-web
+    ports: ["127.0.0.1:${CONTENT_HTTP_PORT:-18882}:80"]
+    depends_on: [content-api]
+    networks: [content]
+  content-operator:
+    <<: *content
+    profiles: [tools]
+    environment:
+      <<: *env
+      CONTENT_DATABASE_URL: postgresql://content_owner:${CONTENT_OWNER_PASSWORD:?required}@content-db:5432/content_workspace
+    entrypoint: [python, -m, app.content.cli]
+  content-test:
+    <<: *content
+    profiles: [tools]
+    environment:
+      <<: *env
+      APP_ENV: test
+      CONTENT_TEST_DATABASE_URL: postgresql://content_owner:${CONTENT_OWNER_PASSWORD:?required}@content-db:5432/content_workspace_test
+      CONTENT_DATABASE_URL: postgresql://content_app:${CONTENT_APP_PASSWORD:?required}@content-db:5432/content_workspace_test
+      CONTENT_TEST_SOURCE: /exports/input/data.zip
+    command: [python, -m, pytest, tests_content, -q, --tb=short, -p, no:cacheprovider]
+    volumes:
+      - ../backend:/srv/backend:ro
+      - content_assets:/content-assets
+      - ../.local/content:/exports
+networks:
+  content:
+volumes:
+  content_pg:
+  content_assets:

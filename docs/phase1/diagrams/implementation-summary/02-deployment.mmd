@@ -1,0 +1,38 @@
+flowchart LR
+    subgraph client["Trình duyệt và operator"]
+        learnerWeb["React học tập"]
+        reviewerWeb["React reviewer"]
+        operator["Người vận hành"]
+    end
+    subgraph gateway["Reverse proxy local"]
+        learningProxy["Caddy runtime :18880"]
+        contentProxy["Caddy content :18882"]
+    end
+    subgraph service["Các ứng dụng độc lập"]
+        apiOne["Business API 1"]
+        apiTwo["Business API 2"]
+        chatOne["Chat 1 kèm worker và gateway"]
+        chatTwo["Chat 2 kèm worker và gateway"]
+        contentApi["Content API"]
+        publisherCli["Publisher CLI chạy khi cần"]
+    end
+    subgraph datastore["Chỉ truy cập trong mạng nội bộ"]
+        runtimeDb[("PostgreSQL 16 + pgvector: phase1")]
+        redis[("Redis dùng chung")]
+        contentDb[("PostgreSQL 16: content_workspace")]
+        assets[("Asset volume theo SHA-256")]
+    end
+    subgraph external["Model chưa bật"]
+        ollama["Ollama trên hạ tầng model"]
+    end
+    learnerWeb -->|"REST và SSE qua /api/v1"| learningProxy
+    reviewerWeb -->|"REST qua /api/v1"| contentProxy
+    learningProxy --> apiOne & apiTwo & chatOne & chatTwo
+    contentProxy --> contentApi
+    apiOne & apiTwo --> runtimeDb
+    chatOne & chatTwo --> runtimeDb
+    chatOne & chatTwo --> redis
+    contentApi --> contentDb & assets
+    operator --> publisherCli
+    publisherCli -->|"Chỉ ghi nguồn và release"| runtimeDb
+    chatOne & chatTwo -. "Adapter sẵn có; generation disabled" .-> ollama

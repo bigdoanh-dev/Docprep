@@ -1,0 +1,19 @@
+flowchart TD
+    sourceZip["data.zip"] --> importer["Importer đọc SQLite làm nguồn chuẩn"]
+    importer --> compare["Đối chiếu JSONL, hash, taxonomy và asset"]
+    compare --> contentDb["DB content: document, revision, chunk và nhãn gốc"]
+    contentDb --> pending["Mặc định: chưa xác nhận phân loại, nội dung pending"]
+    pending --> manual["Reviewer kiểm tra từng đoạn"]
+    pending --> temporary["Lựa chọn hiện tại: chấp nhận nguồn tạm trong dev/test"]
+    manual --> decisions["Hai quyết định riêng: classification và content"]
+    temporary --> baseline["source-baseline-v1: 477 đoạn và 954 quyết định"]
+    baseline --> accepted["Classified và approved; vẫn lưu cờ chất lượng và lịch sử"]
+    decisions -->|"Cả hai quyết định accept"| accepted
+    accepted --> mapping["Đối chiếu và xác nhận mapping sang runtime"]
+    mapping --> export["Export manifest local_dev có hash và approval snapshots"]
+    export --> transfer["Chuyển file cho Publisher CLI"]
+    transfer --> candidate["Nhập candidate vào PostgreSQL runtime"]
+    candidate --> activation["Activate version có chủ đích"]
+    activation --> retrieval["Chat truy xuất theo corpus version đã pin"]
+    accepted --> revise["Sau này sửa nhãn hoặc yêu cầu rà soát nội dung"]
+    revise --> manual

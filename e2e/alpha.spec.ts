@@ -240,10 +240,19 @@ test("learner: password login, consent, learn, cards, exam, progress and chat av
   const progressLegend = page.getByRole("list", {
     name: "Chú giải theo mức độ vận dụng",
   });
-  await expect(progressLegend.getByRole("button")).toHaveCount(3);
-  await expect(progressLegend.getByRole("button").nth(1)).toContainText(
+  await expect(progressLegend.getByRole("button")).toHaveCount(6);
+  for (const [index, label] of [
+    "Ghi nhớ",
+    "Hiểu",
     "Vận dụng",
-  );
+    "Phân tích",
+    "Đánh giá",
+    "Sáng tạo",
+  ].entries()) {
+    await expect(progressLegend.getByRole("button").nth(index)).toContainText(
+      label,
+    );
+  }
   await page
     .getByLabel("Xem mức độ vận dụng theo chuyên khoa", { exact: true })
     .selectOption("g2");

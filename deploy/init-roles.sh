@@ -18,3 +18,10 @@ FROM pg_sequences WHERE schemaname='public' AND sequenceowner='phase_owner' \gex
 SELECT 'ALTER FUNCTION phase1_invalidate_ai() OWNER TO phase_migrator'
 WHERE to_regprocedure('phase1_invalidate_ai()') IS NOT NULL \gexec
 SQL
+
+if [ -n "${PUBLISHER_DB_PASSWORD:-}" ]; then
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -v pp="$PUBLISHER_DB_PASSWORD" <<'SQL'
+SELECT format('CREATE ROLE phase_publisher LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD %L', :'pp')
+WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='phase_publisher') \gexec
+SQL
+fi

@@ -10,14 +10,16 @@ from uuid import uuid4
 from psycopg.types.json import Jsonb
 from app.errors import ApiError
 from app.repo import turns
+from app.repo import corpus as releases
 from app.chat.retrieval import Found, _passage, _COLUMNS
 
 HASH = "encode(sha256(convert_to(p.text || chr(31) || p.context,'UTF8')),'hex')"
 
 
-def corpus(conn):
+def corpus(conn,version=None):
+    releases.scope(conn,version,index=True)
     return conn.execute(f"""select p.id,p.text,p.context,{HASH} as content_hash
-        from passage p join document d on d.id=p.document_id where not d.is_synthetic order by p.id""").fetchall()
+        from passage p join document d on d.id=p.document_id where not d.is_synthetic and corpus_passage_visible(p.id) order by p.id""").fetchall()
 
 
 def enqueue(conn, cfg, model, corpus_version, now):
@@ -58,10 +60,11 @@ def store(conn, rows, result, version):
 
 
 def ready(conn, model, revision, version):
+    releases.scope(conn,version,index=True)
     metadata = conn.execute('select * from embedding_index where model=%s and revision=%s and corpus_version=%s', (model,revision,version)).fetchone()
     if not metadata or not metadata['completed_at']: return False
     return not conn.execute(f"""select 1 from passage p join document d on d.id=p.document_id
-        where not d.is_synthetic and not exists(select 1 from passage_embedding e
+        where not d.is_synthetic and corpus_passage_visible(p.id) and not exists(select 1 from passage_embedding e
         where e.passage_id=p.id and e.model=%s and e.revision=%s and e.corpus_version=%s and e.content_hash={HASH}
         and vector_dims(e.embedding)=%s) limit 1""", (model,revision,version,metadata['dimensions'])).fetchone()
 
@@ -70,13 +73,14 @@ def search(conn, normalised, result, version, module_id=None):
     if not ready(conn, result.model, result.revision, version):
         raise ApiError(503, 'retrieval_index_not_ready', 'Chỉ mục nguồn chưa sẵn sàng. Cần lập lại index.')
     dimension = len(result.vectors[0])
+    releases.scope(conn,version,index=False)
     metadata = conn.execute('select dimensions from embedding_index where model=%s and revision=%s and corpus_version=%s', (result.model,result.revision,version)).fetchone()
     if metadata['dimensions'] != dimension:
         raise ApiError(503, 'retrieval_index_not_ready', 'Kích thước embedding đã thay đổi.')
     scope = '' if module_id is None else 'and p.competency_code=any(select unnest(competency_codes) from module where id=%s)'
     dense = conn.execute(f"""select p.id from passage_embedding e join passage p on p.id=e.passage_id
         join document d on d.id=p.document_id where e.model=%s and e.revision=%s and e.corpus_version=%s
-        and not d.is_synthetic and vector_dims(e.embedding)=%s and e.content_hash={HASH}
+        and not d.is_synthetic and corpus_passage_visible(p.id) and vector_dims(e.embedding)=%s and e.content_hash={HASH}
         and (1-(e.embedding <=> %s::vector))>0 {scope}
         order by e.embedding <=> %s::vector,p.id limit 30""",
         # One vector for the positivity gate and one for ordering; scope is between them.
@@ -84,7 +88,7 @@ def search(conn, normalised, result, version, module_id=None):
     sparse = []
     if normalised.terms:
         sparse = conn.execute(f"""select p.id from passage p join document d on d.id=p.document_id
-            where not d.is_synthetic and p.tsv @@ to_tsquery('simple',%s) {scope}
+            where not d.is_synthetic and corpus_passage_visible(p.id) and p.tsv @@ to_tsquery('simple',%s) {scope}
             order by ts_rank_cd(p.tsv,to_tsquery('simple',%s),1) desc,p.id limit 30""",
             [' | '.join(normalised.terms), *([module_id] if module_id is not None else []), ' | '.join(normalised.terms)]).fetchall()
     scores = {}
