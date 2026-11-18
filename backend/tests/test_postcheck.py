@@ -68,3 +68,17 @@ def test_quote_match_ignores_dash_and_quote_typography():
     passages = {"p": "Nghiên cứu bệnh–chứng dùng “tỷ suất chênh” để đo sự kết hợp."}
     ev = [Evidence("p", 'Nghiên cứu bệnh-chứng dùng "tỷ suất chênh"')]
     assert len(check_tier1([Claim("Bệnh–chứng dùng tỷ suất chênh.", ["p"])], ev, passages)) == 1
+
+
+def test_a_quote_copied_from_a_table_cell_matches_its_br_line_breaks():
+    """Chunked tables join cell lines with <br>; a model that copies the cell writes newlines."""
+    passages = {"t1": "| Có ≥ 1 dấu hiệu sau:<br>1. Vật vã, lừ đừ.<br>2. Đau bụng nhiều và liên tục.<BR/>3. Nôn ói nhiều *. |"}
+    quote = "Có ≥ 1 dấu hiệu sau:\n1. Vật vã, lừ đừ.\n2. Đau bụng nhiều và liên tục.\n3. Nôn ói nhiều"
+    kept = check_tier1([Claim("Vật vã, lừ đừ là dấu hiệu cảnh báo.", ["t1"])], [Evidence("t1", quote)], passages)
+    assert len(kept) == 1
+
+
+def test_a_br_does_not_make_different_words_match():
+    passages = {"t1": "1. Vật vã, lừ đừ.<br>2. Đau bụng nhiều và liên tục."}
+    quote = "1. Vật vã, lừ đừ.\n2. Đau ngực nhiều và liên tục."
+    assert check_tier1([Claim("Đau ngực là dấu hiệu.", ["t1"])], [Evidence("t1", quote)], passages) == []

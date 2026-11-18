@@ -48,9 +48,15 @@ _TYPOGRAPHY.update({ord(c): '"' for c in "\u201c\u201d"})
 _TYPOGRAPHY.update({ord(c): chr(39) for c in "\u2018\u2019"})
 
 
+# Chunked tables keep line breaks inside a cell as <br>; a model copying the cell writes a newline.
+_LINE_BREAK = re.compile(r"<br\s*/?>", re.IGNORECASE)
+
+
 def _squash(s: str) -> str:
-    """Whitespace, case, and dash/quote typography do not matter when matching a quote."""
-    return " ".join(unicodedata.normalize("NFC", s).translate(_TYPOGRAPHY).split()).casefold()
+    """Whitespace (including a table cell's <br>), case, and dash/quote typography do not matter
+    when matching a quote. The words themselves must still match exactly."""
+    s = _LINE_BREAK.sub(" ", unicodedata.normalize("NFC", s))
+    return " ".join(s.translate(_TYPOGRAPHY).split()).casefold()
 
 
 def check_tier1(claims: list[Claim], evidence: list[Evidence], passages: dict[str, str]) -> list[Claim]:
