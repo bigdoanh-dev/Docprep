@@ -75,6 +75,37 @@ def test_real_model_and_modified_release_fail_closed(world,monkeypatch):
             with pytest.raises(RuntimeError,match='dev/test'):publication.activate(conn,'content-test-a','operator','not allowed')
 
 
+def test_authored_references_survive_corpus_switch_without_exposing_unpublished_sources(world):
+    _,chats,_,url=world
+    with connect(url) as conn:
+        # Existing lessons/questions point at legacy sources independent of the AI corpus.
+        legacy=content.citations_for(conn,['tc-p02'])[0]
+        a=package(conn,'references-a');ar=publication.publish(conn,a,'operator')
+        publication.activate(conn,'references-a','operator','first source')
+        a_pid=conn.execute('select passage_id from corpus_release_member where release_id=%s',(ar['release_id'],)).fetchone()['passage_id']
+        b=package(conn,'references-b');br=publication.publish(conn,b,'operator')
+        b_pid=conn.execute('select passage_id from corpus_release_member where release_id=%s',(br['release_id'],)).fetchone()['passage_id']
+        assert content.citations_for(conn,['tc-p02'])==[legacy]
+        assert content.citations_for(conn,[b_pid])==[]
+        with corpus.pinned('references-b',index=True):
+            corpus.scope(conn)
+            assert content.citations_for(conn,[b_pid])==[]
+            assert content.passage_source(conn,b_pid) is None
+            assert content.passage_view(conn,b_pid) is None
+        publication.activate(conn,'references-b','operator','switch active corpus')
+        # Retrieval stays scoped to B, while bibliographic metadata may cite ready A.
+        assert get_passages(conn,[a_pid])=={}
+        refs=content.citations_for(conn,[a_pid,'missing',b_pid,'tc-p02'])
+        assert [(r['n'],r['passage_id']) for r in refs]==[(1,a_pid),(3,b_pid),(4,'tc-p02')]
+        publication.activate(conn,'references-b','operator','withdraw B',revoke=True)
+        assert content.citations_for(conn,[b_pid])==[]
+        assert content.citations_for(conn,[a_pid])[0]['passage_id']==a_pid
+        assert content.passage_source(conn,a_pid) is not None
+        assert content.passage_view(conn,a_pid) is not None
+    assert chats[0].get('/v1/passages/'+a_pid).status_code==200
+    assert chats[1].get('/v1/passages/'+b_pid).status_code==404
+
+
 def test_publisher_and_business_cannot_write_outside_their_domains(world):
     _,_,_,url=world
     with connect(url) as conn:
