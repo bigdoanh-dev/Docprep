@@ -38,35 +38,39 @@ def approved_content(conn, content_id: str) -> dict | None:
     return conn.execute("select * from content_item where id = %s and status = 'approved'", (content_id,)).fetchone()
 
 
+# Authored and historical references may use any published source, independently
+# of the corpus currently selected for AI retrieval. Do not use index visibility:
+# a candidate remains private even on a connection used by an index job.
+_CITABLE_SOURCE = """(p.release_id is null or exists (
+    select 1 from corpus_release r where r.id=p.release_id and r.status='ready'))"""
+
+
 def citations_for(conn, passage_ids: list[str]) -> list[dict]:
-    """Citation fields for those passages. `n` is the position in the list given; an unknown id is skipped."""
-    from app.repo import corpus
-    corpus.scope(conn)
+    """Keep authored references across corpus switches; skip unknown, candidate and revoked sources.
+
+    `n` retains the position in the supplied list so in-text reference numbers stay stable.
+    """
     rows = {r["passage_id"]: r for r in conn.execute(
-        """select p.id as passage_id, d.title as document, p.chapter, p.section, p.page_start as page, p.article
-           from passage p join document d on d.id = p.document_id where p.id = any(%s) and corpus_passage_visible(p.id)""", (passage_ids,))}
+        f"""select p.id as passage_id, d.title as document, p.chapter, p.section, p.page_start as page, p.article
+           from passage p join document d on d.id = p.document_id where p.id = any(%s) and {_CITABLE_SOURCE}""", (passage_ids,))}
     return [{"n": n, **rows[pid]} for n, pid in enumerate(passage_ids, start=1) if pid in rows]
 
 
 def passage_source(conn, passage_id: str) -> dict | None:
     """Where a passage is in its document, for a card's citation line."""
-    from app.repo import corpus
-    corpus.scope(conn)
     return conn.execute(
-        """select p.page_start, p.article, d.title from passage p join document d on d.id = p.document_id
-           where p.id = %s and corpus_passage_visible(p.id,true)""", (passage_id,)).fetchone()
+        f"""select p.page_start, p.article, d.title from passage p join document d on d.id = p.document_id
+           where p.id = %s and {_CITABLE_SOURCE}""", (passage_id,)).fetchone()
 
 
 def passage_view(conn, passage_id: str) -> dict | None:
     """A source as the learner may see it: an excerpt within the document's limit, never the full text.
     A placeholder passage of the sample bank is not a source and is not shown."""
-    from app.repo import corpus
-    corpus.scope(conn)
     row = conn.execute(
-        """select p.id, d.title as document, p.chapter, p.section, p.page_start as page, p.article, p.text,
+        f"""select p.id, d.title as document, p.chapter, p.section, p.page_start as page, p.article, p.text,
                   d.excerpt_limit, d.demo_label, d.validity_note
            from passage p join document d on d.id = p.document_id
-           where p.id = %s and not d.is_synthetic and corpus_passage_visible(p.id,true)""", (passage_id,)).fetchone()
+           where p.id = %s and not d.is_synthetic and {_CITABLE_SOURCE}""", (passage_id,)).fetchone()
     if row is None:
         return None
     text, limit = row.pop("text"), row.pop("excerpt_limit")

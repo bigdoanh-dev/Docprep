@@ -6703,6 +6703,12 @@ components:
       title: PriorityTopic
     ProgressRhythm:
       properties:
+        streak_days:
+          type: integer
+          minimum: 0.0
+          title: Streak Days
+          description: Consecutive study days in Asia/Ho_Chi_Minh, anchored at today or yesterday. Same study kinds as week.study_days;
+            app visits do not count. No 56-day cap.
         days_to_exam:
           type: integer
           title: Days To Exam
@@ -6740,6 +6746,7 @@ components:
           description: This week, newest first.
       type: object
       required:
+      - streak_days
       - days_to_exam
       - week
       - heatmap
@@ -6932,6 +6939,7 @@ components:
           module_id: g1
           now: 0.93
           short_name: Sức khỏe quần thể và dự phòng
+        streak_days: 5
         week:
           days_elapsed: 6
           minutes: 200

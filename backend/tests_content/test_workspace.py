@@ -85,6 +85,70 @@ def test_role_and_invalid_labels(workspace):
         with pytest.raises(ApiError,match='invalid_tags'):service.validate_tags(conn,t,report['taxonomy_version'])
 
 
+def test_six_level_bloom_api_persists_and_exports_explicit_creative_tag(workspace):
+    url,user,_=workspace
+    with db.connect() as conn:
+        load(conn,user,mapping={'approved':True,'version':'TEST-ONLY'})
+        cid=str(conn.execute('select id from document_chunk limit 1').fetchone()['id'])
+    with TestClient(create_app(url)) as client:
+        tokens=client.post('/v1/auth/login',json={'username':'reviewer.test','password':'ReviewTest2026!'}).json()
+        h={'Authorization':'Bearer '+tokens['access_token']}
+        levels=['Nhớ','Hiểu','Áp dụng','Phân tích','Đánh giá','Sáng tạo']
+        assert client.get('/v1/taxonomies',headers=h).json()['bloom']==levels
+        assert client.app.openapi()['components']['schemas']['Bloom']['properties']['level']['enum']==levels
+        original=client.get('/v1/chunks/'+cid,headers=h).json()
+        t=original['proposed_tags']
+        payload={k:t[k] for k in ['van_de','mien','bloom_ceiling','content_type','population','ly_do']}
+        payload['bloom_ceiling']={'level':'Sáng tạo','conf':0.8}
+        body={'row_version':original['row_version'],'taxonomy_version':t['taxonomy_version'],'tags':payload}
+        result=client.post('/v1/chunks/'+cid+'/tags',headers={**h,'Idempotency-Key':'creative-tag'},json=body)
+        assert result.status_code==200,result.text
+        assert client.post('/v1/chunks/'+cid+'/tags',headers={**h,'Idempotency-Key':'creative-tag'},json=body).json()==result.json()
+        saved=client.get('/v1/chunks/'+cid,headers=h).json()
+        assert saved['proposed_tags']['bloom_ceiling']=={'level':'Sáng tạo','conf':0.8}
+        for purpose in ('classification','content'):
+            state=client.get('/v1/chunks/'+cid,headers=h).json()
+            decision=client.post('/v1/chunks/'+cid+'/decisions',headers={**h,'Idempotency-Key':purpose},
+                json={'row_version':state['row_version'],'purpose':purpose,'decision':'accept','comment':'Test fixture only.'})
+            assert decision.status_code==200,decision.text
+        # The old imported tag is immutable; only a new explicit proposal uses level 6.
+        with db.connect() as conn:
+            assert service.tag_view(conn,original['proposed_tag_set_id'])['bloom_ceiling']==t['bloom_ceiling']
+            exported=publication.export_release(conn,user,'creative-fixture',[cid])
+            assert exported['manifest']['chunks'][0]['classification']['bloom_ceiling']['level']=='Sáng tạo'
+        payload['bloom_ceiling']={'level':'Không hợp lệ'}
+        invalid=client.post('/v1/chunks/'+cid+'/tags',headers={**h,'Idempotency-Key':'bad-bloom'},json=body)
+        assert invalid.status_code==422
+        with db.connect() as conn:
+            assert conn.execute('select count(*) n from chunk_tag_set where chunk_id=%s',(cid,)).fetchone()['n']==2
+
+
+def test_bloom_migration_preserves_five_level_history_and_runs_again(workspace):
+    _,user,_=workspace
+    with db.connect() as conn:
+        load(conn,user)
+        before=conn.execute('select id,bloom_ceiling from chunk_tag_set order by id').fetchall()
+        # Recreate the previous schema constraint on this dedicated test DB only.
+        conn.execute('alter table chunk_tag_set drop constraint chunk_tag_set_bloom_ceiling_check')
+        conn.execute("alter table chunk_tag_set add constraint chunk_tag_set_bloom_ceiling_check check (bloom_ceiling in ('Nhớ','Hiểu','Áp dụng','Phân tích','Đánh giá'))")
+        conn.execute('delete from content_schema_version where version=4')
+        with pytest.raises(RuntimeError,match='not ready'):db.check_ready(conn)
+    db.migrate()
+    db.migrate()
+    with db.connect() as conn:
+        assert conn.execute('select id,bloom_ceiling from chunk_tag_set order by id').fetchall()==before
+        assert conn.execute('select count(*) n from content_schema_version where version=4').fetchone()['n']==1
+        t=service.tag_view(conn,before[0]['id'])
+        payload={k:t[k] for k in ['van_de','mien','bloom_ceiling','content_type','population','ly_do']}
+        payload['bloom_ceiling']={'level':'Sáng tạo'}
+        tid=service.insert_tag(conn,t['chunk_id'],t['taxonomy_version'],payload,actor=user['id'])
+        assert service.tag_view(conn,tid)['bloom_ceiling']['level']=='Sáng tạo'
+        # Direct SQL cannot bypass the supported taxonomy, even with the owner role.
+        with pytest.raises(psycopg.errors.CheckViolation):
+            with conn.transaction():
+                conn.execute("insert into chunk_tag_set select (jsonb_populate_record(null::chunk_tag_set, to_jsonb(t)||jsonb_build_object('id',%s::text,'bloom_ceiling','Không hợp lệ'))).* from chunk_tag_set t where id=%s",(str(uuid4()),tid))
+
+
 def test_publication_requires_both_approvals_and_mapping(workspace):
     _,user,_=workspace
     with db.connect() as conn:

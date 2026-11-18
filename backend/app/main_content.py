@@ -56,7 +56,7 @@ class Domain(Input):
 
 
 class Bloom(Input):
-    level: Literal['Nhớ','Hiểu','Áp dụng','Phân tích','Đánh giá']
+    level: service.BloomLevel
     conf: float | None = Field(default=None,ge=0,le=1)
 
 

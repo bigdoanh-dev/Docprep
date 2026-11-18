@@ -161,6 +161,7 @@ class ActivityEntry(Schema):
 
 
 class ProgressRhythm(Schema):
+    streak_days: int = Field(ge=0, description="Consecutive study days in Asia/Ho_Chi_Minh, anchored at today or yesterday. Same study kinds as week.study_days; app visits do not count. No 56-day cap.")
     days_to_exam: int
     week: WeekTime
     heatmap: list[DayMinutes] = Field(description="The last 8 weeks, one entry per day, oldest first.")
@@ -171,6 +172,7 @@ class ProgressRhythm(Schema):
     activity: list[ActivityEntry] = Field(description="This week, newest first.")
 
     model_config = with_example({
+        "streak_days": 5,
         "days_to_exam": 142,
         "week": {"minutes": 200, "previous_minutes": 165, "study_days": 5, "days_elapsed": 6},
         "heatmap": _HEATMAP,

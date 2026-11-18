@@ -2,11 +2,13 @@
 import hashlib
 import json
 from uuid import uuid4
+from typing import Literal, get_args
 from psycopg.types.json import Jsonb
 from app.errors import ApiError
 from .auth import audit, require
 
-BLOOM = ('Nhớ','Hiểu','Áp dụng','Phân tích','Đánh giá')
+BloomLevel = Literal['Nhớ','Hiểu','Áp dụng','Phân tích','Đánh giá','Sáng tạo']
+BLOOM = get_args(BloomLevel)
 TYPES = ('định_nghĩa','dịch_tễ','nguyên_nhân','lâm_sàng','cận_lâm_sàng','chẩn_đoán',
          'chẩn_đoán_phân_biệt','điều_trị','phòng_bệnh','tiên_lượng','quy_trình','khác')
 POPULATIONS = ('trẻ_em','thiếu_niên','người_lớn','thai_phụ','người_cao_tuổi','cộng_đồng')

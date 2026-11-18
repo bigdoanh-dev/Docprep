@@ -2,7 +2,6 @@ import { onOpenTutor, type TutorRequest } from "../lib/tutorLink";
 import {
   Bell,
   BookOpen,
-  Flame,
   Home,
   Layers,
   BarChart3,
@@ -22,6 +21,7 @@ import { Sheet } from "../components/Sheet";
 import { Chat } from "../features/chat/Chat";
 import { AssistantLauncher } from "../components/AssistantLauncher";
 import { RuntimeNotice } from "../components/RuntimeNotice";
+import { StreakBadge } from "../components/StreakBadge";
 
 const learnerTabs = [
   ["/", "Trang chủ", Home],
@@ -146,20 +146,14 @@ export function Shell({ children }: { children?: ReactNode } = {}) {
             {actor.role === "learner" ? (
               !onboarding && (
                 <>
-                  <Link
-                    to="/tien-do/nhip-hoc"
-                    className="streak-badge"
-                    aria-label={
+                  <StreakBadge
+                    key={`${actor.mode}:${actor.id}`}
+                    demoDays={
                       actor.mode === "demo"
-                        ? `Chuỗi ôn tập ${streak(w.activity.map((a) => a.date))} ngày`
-                        : "Xem nhịp học từ máy chủ"
+                        ? streak(w.activity.map((a) => a.date))
+                        : undefined
                     }
-                  >
-                    <Flame size={18} fill="currentColor" />
-                    {actor.mode === "demo"
-                      ? streak(w.activity.map((a) => a.date))
-                      : "Nhịp học"}
-                  </Link>
+                  />
                   <Link
                     className="header-bell"
                     to="/thong-bao"

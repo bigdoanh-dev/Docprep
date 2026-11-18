@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { readFile } from "node:fs/promises";
 
 test("content reviewer: source, proposal, approvals, release and reload", async ({
   page,
@@ -11,6 +12,9 @@ test("content reviewer: source, proposal, approvals, release and reload", async 
   const backend = process.env.CONTENT_QA_API_URL!;
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
   // Real isolated API/database behind the same reviewer build; no fabricated API responses.
   await page.route("**/api/v1/**", async (route) => {
     const path = new URL(route.request().url()).pathname.replace(/^\/api/, "");
@@ -45,6 +49,16 @@ test("content reviewer: source, proposal, approvals, release and reload", async 
   await expect(
     detail.getByText(/Dữ liệu dẫn xuất; chưa kèm file gốc/),
   ).toBeVisible();
+  const bloom = detail.getByRole("combobox", { name: "Bloom trần", exact: true });
+  await expect(bloom.locator("option")).toHaveText([
+    "Nhớ",
+    "Hiểu",
+    "Áp dụng",
+    "Phân tích",
+    "Đánh giá",
+    "Sáng tạo",
+  ]);
+  await bloom.selectOption("Sáng tạo");
   await detail
     .getByLabel("Lý do phân loại")
     .fill("Automated QA: proposal only, not clinical approval.");
@@ -84,7 +98,12 @@ test("content reviewer: source, proposal, approvals, release and reload", async 
     .getByRole("button", { name: "Xuất manifest", exact: true })
     .click();
   const file = await downloaded;
-  await file.saveAs(testInfo.outputPath("release.json"));
+  const releasePath = testInfo.outputPath("release.json");
+  await file.saveAs(releasePath);
+  const release = JSON.parse(await readFile(releasePath, "utf8"));
+  expect(release.manifest.chunks[0].classification.bloom_ceiling.level).toBe(
+    "Sáng tạo",
+  );
   await page.reload();
   await expect(
     page.getByRole("heading", { name: "Biên soạn tài liệu YHDP" }),
@@ -96,6 +115,8 @@ test("content reviewer: source, proposal, approvals, release and reload", async 
     detail.getByRole("heading", { name: "Lịch sử quyết định" }),
   ).toBeVisible();
   await expect(detail.locator(".decision")).toHaveCount(2);
+  await expect(bloom).toHaveValue("Sáng tạo");
+  await bloom.scrollIntoViewIfNeeded();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth > innerWidth + 1,

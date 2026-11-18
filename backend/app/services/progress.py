@@ -151,6 +151,7 @@ def rhythm(conn, learner: dict, now: datetime) -> dict:
 
     return {
         "days_to_exam": _days_to_exam(learner, now),
+        "streak_days": repo.streak_days(conn, learner["pseudonym_id"], timezone, now, STUDY_KINDS),
         "week": {"minutes": sum(minutes.get(d, 0) for d in this_week),
                  "previous_minutes": sum(minutes.get(d, 0) for d in last_week),
                  "study_days": len(active & set(this_week)), "days_elapsed": today.weekday() + 1},

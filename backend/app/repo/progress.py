@@ -64,6 +64,18 @@ def study_ms_by_day(conn, learner_pid: str, timezone: str, since: datetime) -> d
         (timezone, learner_pid, since))}
 
 
+def streak_days(conn, learner_pid: str, timezone: str, now: datetime, kinds: list[str]) -> int:
+    """Consecutive local study dates through today or yesterday; no heatmap window/time rounding."""
+    return conn.execute("""with days as (
+        select distinct (occurred_at at time zone %(tz)s)::date as study_day from activity_event
+        where learner_pid=%(pid)s and kind=any(%(kinds)s) and occurred_at<=%(now)s
+    ), ranked as (
+        select study_day, row_number() over(order by study_day desc)::int n, max(study_day) over() anchor from days
+    ) select count(*)::int streak from ranked
+      where anchor >= (%(now)s::timestamptz at time zone %(tz)s)::date - 1
+        and study_day=anchor-(n-1)""",{'tz':timezone,'pid':learner_pid,'kinds':kinds,'now':now}).fetchone()['streak']
+
+
 def active_days(conn, learner_pid: str, timezone: str, since: datetime, kinds: list[str]) -> set[date]:
     """Local days with at least one event of those kinds."""
     return {r["day"] for r in conn.execute(
