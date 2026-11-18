@@ -9,6 +9,7 @@ from app import events
 from app.engine.scheduler import new_state
 from app.schemas.progress import ProgressRhythm
 from app.services import practice
+from app.services import progress as progress_service
 from tests.conftest import answer_all, correct_key, make_wrong_unit_answer, walk_unit
 
 NOW = datetime(2026, 10, 10, 9, 0, tzinfo=timezone.utc)      # Saturday, 16:00 in Hà Nội
@@ -38,6 +39,7 @@ def add_card(conn, learner, question_id: str, due_at: datetime) -> None:
 def test_a_new_learner_gets_empty_blocks(learner_api):
     body = rhythm(learner_api)
     ProgressRhythm.model_validate(body)
+    assert body['streak_days']==0
     assert body["week"] == {"minutes": 0, "previous_minutes": 0, "study_days": 0, "days_elapsed": 6}
     assert len(body["heatmap"]) == 56 and body["heatmap"][-1] == {"date": "2026-10-10", "minutes": 0}
     assert body["heatmap"][0]["date"] == "2026-08-16" and all(d["minutes"] == 0 for d in body["heatmap"])
@@ -71,6 +73,35 @@ def test_days_and_weeks_are_the_learners_local_ones(learner_api, conn):
     days = {d["date"]: d["minutes"] for d in body["heatmap"]}
     assert (days["2026-10-09"], days["2026-10-10"], days["2026-10-04"], days["2026-10-05"]) == (1, 2, 7, 4)
     assert body["week"] == {"minutes": 7, "previous_minutes": 7, "study_days": 3, "days_elapsed": 6}
+
+
+def test_streak_deduplicates_days_keeps_yesterday_and_expires_after_a_gap(learner_api,conn,clock,learner):
+    for age in (0,0,1,2):log(conn,NOW-timedelta(days=age),minutes=0)
+    events.record(conn,'OTHER-LEARNER','card_review',NOW-timedelta(days=3))
+    conn.commit()
+    assert rhythm(learner_api)['streak_days']==3
+    clock.advance(days=1)
+    assert progress_service.rhythm(conn,learner,clock.now)['streak_days']==3
+    clock.advance(days=1)
+    assert progress_service.rhythm(conn,learner,clock.now)['streak_days']==0
+
+
+def test_streak_uses_vietnam_midnight_and_is_not_limited_to_heatmap(learner_api,conn,clock,learner):
+    for age in range(70):log(conn,NOW-timedelta(days=age),minutes=0)
+    assert rhythm(learner_api)['streak_days']==70
+    assert len(rhythm(learner_api)['heatmap'])==56
+    # Midnight in Vietnam starts a new day at 17:00 UTC.
+    clock.now=datetime(2026,10,10,17,0,tzinfo=timezone.utc)
+    assert progress_service.rhythm(conn,learner,clock.now)['streak_days']==70
+    log(conn,clock.now,minutes=0)
+    assert progress_service.rhythm(conn,learner,clock.now)['streak_days']==71
+
+
+def test_streak_does_not_count_non_study_events_or_old_days(learner_api,conn):
+    events.record(conn,PID,'visit',NOW)
+    events.record(conn,PID,'card_review',NOW+timedelta(days=1))
+    log(conn,NOW-timedelta(days=2))
+    assert rhythm(learner_api)['streak_days']==0
 
 
 def test_memory_follows_the_cards(learner_api, conn, clock):

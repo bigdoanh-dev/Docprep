@@ -142,6 +142,7 @@
     "scope": "latest3"
   },
   "ProgressRhythm": {
+    "streak_days": 5,
     "activity": [
       {
         "kind": "unit",

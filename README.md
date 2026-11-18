@@ -121,7 +121,7 @@ cd backend
 
 ## Phạm vi và tài liệu
 
-Alpha gồm tài khoản/consent, học, phiên ngày, ôn thẻ đến hạn, thi thử, tiến độ, chat kịch bản và dashboard. CSV, bàn duyệt, luyện tập tự chọn, toàn bộ thư viện thẻ và đồng bộ bookmark/thông báo/lộ trình chưa được mở. Header live dẫn tới nhịp học từ server, không hiển thị streak từ localStorage như số liệu chính thức.
+Alpha gồm tài khoản/consent, học, phiên ngày, ôn thẻ đến hạn, thi thử, tiến độ, chat kịch bản và dashboard. CSV, bàn duyệt, luyện tập tự chọn, toàn bộ thư viện thẻ và đồng bộ bookmark/thông báo/lộ trình chưa được mở. Header live hiển thị `streak_days` từ `/v1/progress/rhythm`, không dùng streak localStorage làm số liệu chính thức. Số 0 là đã tải và chưa có chuỗi; `…` là đang tải, `—` là tải lỗi. Ngày học theo múi giờ Việt Nam và cùng loại hoạt động với `week.study_days`; nếu hôm nay chưa học thì giữ chuỗi đến hôm qua, bỏ trọn một ngày thì về 0.
 
 - [Hướng dẫn trình diễn và backlog](docs/alpha-v1/handover.md)
 - [Thiết kế kiến trúc hệ thống](docs/alpha-v1/architecture.md)

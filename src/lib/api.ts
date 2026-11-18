@@ -8,6 +8,7 @@ import { demoCall, DemoError, demoStream } from "./demo/store";
 import type { Session, Tokens } from "./session";
 
 const BASE = "/api/v1";
+export const LEARNING_UPDATED = "yhdp-learning-updated";
 function trackLearning(
   method: string,
   path: string,
@@ -21,6 +22,12 @@ function trackLearning(
     correct?: boolean;
   };
   if (getActor()?.role !== "learner") return;
+  if (
+    method === "POST" &&
+    /\/(responses|reviews|submit|attempts)$/.test(path)
+  ) {
+    window.dispatchEvent(new Event(LEARNING_UPDATED));
+  }
   if (/^\/attempts\/\d+\/(submit|results)$/.test(path) && data?.submitted_at) {
     recordActivity(
       `exam:${data.attempt_id}`,
@@ -595,6 +602,7 @@ export type CurvePoint = {
   kind: "review" | "decay" | "projected";
 };
 export type ProgressRhythm = {
+  streak_days: number;
   days_to_exam: number;
   week: {
     minutes: number;
