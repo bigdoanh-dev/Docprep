@@ -24,12 +24,12 @@ def get_consent_text(request: Request):
                  "`consent_version_outdated`: the texts changed since the client fetched them; show the current ones.")))
 def give_consent(request: Request, body: ConsentRequest, conn=Conn, now=Now, principal=Caller):
     return mock_example(request, ConsentStatus) or account_service.give_consent(
-        conn, principal.subject_id, body.version, body.service, body.research, now)
+        conn, principal.subject_id, body.version, body.service, body.research, now, body.personalization)
 
 
 @router.delete("/consent", response_model=ConsentStatus, summary="Withdraw one consent", **LEARNER)
-def withdraw_consent(request: Request, kind: Literal["service", "research"] = "research", conn=Conn, now=Now,
-                     principal=Caller):
+def withdraw_consent(request: Request, kind: Literal["service", "research", "personalization"] = "research",
+                     conn=Conn, now=Now, principal=Caller):
     return mock_example(request, ConsentStatus) or account_service.withdraw_consent(
         conn, principal.subject_id, kind, now)
 

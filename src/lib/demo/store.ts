@@ -76,6 +76,7 @@ function initial() {
         version: "2026-10",
         service_given_at: null,
         research_given_at: null,
+        personalization_given_at: null as string | null,
       },
     },
     units: {} as Record<string, any>,
@@ -618,12 +619,25 @@ export async function demoRequest(
     if (p === "/auth/logout") return { ok: true };
     if (p === "/consent/current") return examples.ConsentText;
     if (p === "/consent") {
-      if (method === "DELETE") s.me.consent.research_given_at = null;
-      else {
+      if (method === "DELETE") {
+        const kind = parsed.searchParams.get("kind") ?? "research";
+        if (kind === "personalization")
+          s.me.consent.personalization_given_at = null;
+        else if (kind === "service") s.me.consent.service_given_at = null;
+        else s.me.consent.research_given_at = null;
+      } else {
+        // personalization left out keeps the current choice, as on the server.
+        const personal =
+          body.personalization === undefined || body.personalization === null
+            ? (s.me.consent.personalization_given_at ?? null)
+            : body.personalization
+              ? (s.me.consent.personalization_given_at ?? now())
+              : null;
         s.me.consent = {
           version: body.version,
           service_given_at: body.service ? now() : null,
           research_given_at: body.research ? now() : null,
+          personalization_given_at: personal,
         };
       }
       return s.me.consent;

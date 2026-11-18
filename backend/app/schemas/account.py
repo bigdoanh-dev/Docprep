@@ -10,6 +10,7 @@ _CONSENT = {
     "version": "2026-10",
     "service_given_at": "2026-10-10T02:05:00Z",
     "research_given_at": None,
+    "personalization_given_at": None,
 }
 _ME = {
     "pseudonym_id": "HV-000123",
@@ -30,12 +31,15 @@ class ConsentText(Schema):
     version: str
     service_text_vi: str
     research_text_vi: str
+    personalization_text_vi: str
 
     model_config = with_example({
         "version": "2026-10",
         "service_text_vi": "Văn bản mẫu: tôi đồng ý để ứng dụng lưu kết quả học tập của tôi nhằm cung cấp dịch vụ ôn thi.",
         "research_text_vi": "Văn bản mẫu: tôi đồng ý cho phép dùng nhật ký sử dụng đã ẩn danh của tôi cho nghiên cứu. "
                             "Tôi có thể rút lại bất cứ lúc nào.",
+        "personalization_text_vi": "Văn bản mẫu: tôi đồng ý để gia sư AI ghi nhớ lịch sử trò chuyện và quá trình học "
+                                   "của tôi nhằm cá nhân hoá cách giải thích. Tôi có thể tắt bất cứ lúc nào.",
     })
 
 
@@ -43,14 +47,18 @@ class ConsentRequest(RequestSchema):
     version: str
     service: bool
     research: bool = False
+    # Optional and off by default. Left out (null), the learner's current choice stands; true turns it on,
+    # false turns it off. Research keeps its older rule: left out means off.
+    personalization: bool | None = None
 
-    model_config = with_example({"version": "2026-10", "service": True, "research": False})
+    model_config = with_example({"version": "2026-10", "service": True, "research": False, "personalization": False})
 
 
 class ConsentStatus(Schema):
     version: str | None = None
     service_given_at: datetime | None = None
     research_given_at: datetime | None = None
+    personalization_given_at: datetime | None = None
 
     model_config = with_example(_CONSENT)
 

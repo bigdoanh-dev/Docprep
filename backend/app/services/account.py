@@ -15,19 +15,24 @@ from app.repo import learners as learner_repo
 def consent_text() -> dict:
     cfg = settings()["consent"]
     return {"version": cfg["version"], "service_text_vi": cfg["service_text_vi"],
-            "research_text_vi": cfg["research_text_vi"]}
+            "research_text_vi": cfg["research_text_vi"],
+            "personalization_text_vi": cfg["personalization_text_vi"]}
 
 
 def consent_status(conn, learner_id: int) -> dict:
     service = consent_repo.active(conn, learner_id, "service")
     research = consent_repo.active(conn, learner_id, "research")
+    personalization = consent_repo.active(conn, learner_id, "personalization")
     return {"version": service["version"] if service else None,
             "service_given_at": service["given_at"] if service else None,
-            "research_given_at": research["given_at"] if research else None}
+            "research_given_at": research["given_at"] if research else None,
+            "personalization_given_at": personalization["given_at"] if personalization else None}
 
 
-def give_consent(conn, learner_id: int, version: str, service: bool, research: bool, now: datetime) -> dict:
-    """Record the service consent (required) and set the research consent (optional) as asked."""
+def give_consent(conn, learner_id: int, version: str, service: bool, research: bool, now: datetime,
+                 personalization: bool | None = None) -> dict:
+    """Record the service consent (required) and set the optional ones as asked. personalization None
+    keeps the learner's current choice, as long as it was given to the current text."""
     current = settings()["consent"]["version"]
     if version != current:
         raise ApiError(409, "consent_version_outdated", "Nội dung đồng ý đã thay đổi. Vui lòng đọc lại.")
@@ -43,6 +48,12 @@ def give_consent(conn, learner_id: int, version: str, service: bool, research: b
         active_research = None
     if research and active_research is None:
         consent_repo.give(conn, learner_id, "research", current, now)
+    active_personal = consent_repo.active(conn, learner_id, "personalization")
+    if active_personal and (personalization is False or active_personal["version"] != current):
+        consent_repo.withdraw(conn, learner_id, "personalization", now)
+        active_personal = None
+    if personalization and active_personal is None:
+        consent_repo.give(conn, learner_id, "personalization", current, now)
     return consent_status(conn, learner_id)
 
 

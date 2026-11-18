@@ -16,6 +16,7 @@
     "target_retention": 0.9
   },
   "ConsentText": {
+    "personalization_text_vi": "Văn bản mẫu: tôi đồng ý để gia sư AI ghi nhớ lịch sử trò chuyện và quá trình học của tôi nhằm cá nhân hoá cách giải thích. Tôi có thể tắt bất cứ lúc nào.",
     "research_text_vi": "Văn bản mẫu: tôi đồng ý cho phép dùng nhật ký sử dụng đã ẩn danh của tôi cho nghiên cứu. Tôi có thể rút lại bất cứ lúc nào.",
     "service_text_vi": "Văn bản mẫu: tôi đồng ý để ứng dụng lưu kết quả học tập của tôi nhằm cung cấp dịch vụ ôn thi.",
     "version": "2026-10"

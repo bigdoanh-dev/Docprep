@@ -51,9 +51,9 @@ export function Account() {
   const [draft, setDraft] = useState<any>({}),
     [busy, setBusy] = useState(false),
     [actionError, setActionError] = useState(""),
-    [confirm, setConfirm] = useState<"delete" | "research" | "service" | null>(
-      null,
-    ),
+    [confirm, setConfirm] = useState<
+      "delete" | "research" | "service" | "personalization" | null
+    >(null),
     [phrase, setPhrase] = useState("");
   const values = { ...data, ...draft };
   const run = async (fn: () => Promise<void>) => {
@@ -258,6 +258,39 @@ export function Account() {
               <Download size={17} />
               Xuất dữ liệu của tôi
             </button>
+            <div className="stack" aria-live="polite">
+              <p className="notice">
+                {data.consent?.personalization_given_at
+                  ? "Cá nhân hoá đang bật: gia sư AI được ghi nhớ quá trình học để điều chỉnh cách giải thích."
+                  : "Cá nhân hoá đang tắt: gia sư AI không ghi nhớ lịch sử trò chuyện của bạn."}
+              </p>
+              <button
+                type="button"
+                className="btn"
+                role="switch"
+                aria-checked={!!data.consent?.personalization_given_at}
+                onClick={() =>
+                  data.consent?.personalization_given_at
+                    ? setConfirm("personalization")
+                    : run(async () => {
+                        // Turning it on keeps the other consents as they are.
+                        await api.post("/consent", {
+                          version: data.consent.version,
+                          service: true,
+                          research: !!data.consent.research_given_at,
+                          personalization: true,
+                        });
+                        reload();
+                        notify("Đã bật cá nhân hoá.");
+                      })
+                }
+                disabled={busy || !data.consent?.version}
+              >
+                {data.consent?.personalization_given_at
+                  ? "Tắt cá nhân hoá"
+                  : "Bật cá nhân hoá"}
+              </button>
+            </div>
             <button
               type="button"
               className="btn"
@@ -327,7 +360,9 @@ export function Account() {
             ? "Xác nhận yêu cầu xóa"
             : confirm === "service"
               ? "Rút đồng ý dịch vụ"
-              : "Rút đồng ý nghiên cứu"
+              : confirm === "personalization"
+                ? "Tắt cá nhân hoá"
+                : "Rút đồng ý nghiên cứu"
         }
       >
         <div className="stack">
@@ -352,7 +387,9 @@ export function Account() {
             <p>
               {confirm === "service"
                 ? "Bạn sẽ cần đồng ý lại trước khi tiếp tục học. Việc này không tự xóa dữ liệu đã lưu."
-                : "Việc rút đồng ý nghiên cứu không tự hủy quyền sử dụng dịch vụ học tập."}
+                : confirm === "personalization"
+                  ? "Gia sư AI sẽ không ghi nhớ lịch sử trò chuyện để cá nhân hoá nữa. Bạn vẫn học và hỏi đáp bình thường, và có thể bật lại bất cứ lúc nào."
+                  : "Việc rút đồng ý nghiên cứu không tự hủy quyền sử dụng dịch vụ học tập."}
             </p>
           )}
           {actionError && (
@@ -370,16 +407,18 @@ export function Account() {
                   clearWorkspace();
                   await signOut();
                 } else {
-                  await api.del(
-                    `/consent?kind=${confirm === "service" ? "service" : "research"}`,
-                  );
+                  await api.del(`/consent?kind=${confirm}`);
                   if (confirm === "service") {
                     window.location.assign("/dong-y");
                     return;
                   }
                   setConfirm(null);
                   reload();
-                  notify("Đã rút đồng ý nghiên cứu.");
+                  notify(
+                    confirm === "personalization"
+                      ? "Đã tắt cá nhân hoá."
+                      : "Đã rút đồng ý nghiên cứu.",
+                  );
                 }
               })
             }

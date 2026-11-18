@@ -198,6 +198,7 @@ export type ConsentText = {
   version: string;
   service_text_vi: string;
   research_text_vi: string;
+  personalization_text_vi: string;
 };
 
 // The ministry dashboard's payload lives with the rules that read it (dashboard.ts).

@@ -16,7 +16,8 @@ function safeNext(next: string | null): string {
 }
 
 // Consent, shown after sign-in and whenever the server asks for the current version: the service
-// consent is required, the research consent is separate and optional (FR-ADM-03).
+// consent is required; the research and personalization consents are separate, optional and off
+// until ticked (FR-ADM-03).
 export function Consent() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -26,6 +27,7 @@ export function Consent() {
   );
   const [service, setService] = useState(false);
   const [research, setResearch] = useState(false);
+  const [personalization, setPersonalization] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string>();
 
@@ -39,6 +41,7 @@ export function Consent() {
         version: data.version,
         service: true,
         research,
+        personalization,
       });
       navigate(safeNext(params.get("next")), { replace: true });
     } catch (e) {
@@ -46,6 +49,7 @@ export function Consent() {
         // The texts changed while this screen was open: consent must be given to what is shown.
         setService(false);
         setResearch(false);
+        setPersonalization(false);
         setNotice("Nội dung đã được cập nhật. Vui lòng đọc lại.");
         reload();
       } else {
@@ -88,6 +92,18 @@ export function Consent() {
                   disabled={busy}
                 />
                 Tôi đồng ý (không bắt buộc, có thể rút lại bất cứ lúc nào)
+              </label>
+            </section>
+            <section className="card stack">
+              <p>{data.personalization_text_vi}</p>
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={personalization}
+                  onChange={(e) => setPersonalization(e.target.checked)}
+                  disabled={busy}
+                />
+                Bật cá nhân hoá (không bắt buộc, có thể tắt bất cứ lúc nào)
               </label>
             </section>
           </>

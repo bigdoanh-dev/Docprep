@@ -1,4 +1,4 @@
-"""Consent records: service (required) and research (optional), each withdrawable."""
+"""Consent records: service (required), research and personalization (optional), each withdrawable."""
 
 
 def has_current_service_consent(conn, learner_id: int, version: str) -> bool:

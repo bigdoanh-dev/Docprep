@@ -51,6 +51,23 @@ test("consent is required; research consent is optional", async () => {
   );
   assert.ok((await demoRequest("GET", "/home")).recent.length);
 });
+test("personalization consent is off until turned on, and can be turned off", async () => {
+  await ready();
+  const me = async () => (await demoRequest("GET", "/me")).consent;
+  assert.equal((await me()).personalization_given_at, null);
+  await demoRequest("POST", "/consent", {
+    version: "2026-10",
+    service: true,
+    research: false,
+    personalization: true,
+  });
+  assert.ok((await me()).personalization_given_at);
+  await demoRequest("POST", "/consent", { version: "2026-10", service: true });
+  assert.ok((await me()).personalization_given_at, "left out keeps the choice");
+  await demoRequest("DELETE", "/consent?kind=personalization");
+  assert.equal((await me()).personalization_given_at, null);
+  assert.ok((await me()).service_given_at);
+});
 test("API role separation refuses reviewer learner data and learner review queue", async () => {
   await ready();
   await assert.rejects(demoRequest("GET", "/review/queue"), {

@@ -9,6 +9,7 @@ consent:                        # TODO open issue 17: the legal texts are delive
   version: "2026-10"
   service_text_vi: "Văn bản mẫu: tôi đồng ý để ứng dụng lưu kết quả học tập của tôi nhằm cung cấp dịch vụ ôn thi."
   research_text_vi: "Văn bản mẫu: tôi đồng ý cho phép dùng nhật ký sử dụng đã ẩn danh của tôi cho nghiên cứu. Tôi có thể rút lại bất cứ lúc nào."
+  personalization_text_vi: "Văn bản mẫu: tôi đồng ý để gia sư AI ghi nhớ lịch sử trò chuyện và quá trình học của tôi nhằm cá nhân hoá cách giải thích. Tôi có thể tắt bất cứ lúc nào; khi tắt, dữ liệu cá nhân hoá sẽ bị xoá."
 account_deletion: {learning_records: erase}   # erase | keep_pseudonymous. TODO open issue 13
 # The dev learner created by `python -m app.cli seed`. Học phần ids are g1–g8, the blueprint groups.
 # activation_code signs this learner in on a development machine; it is not a secret.

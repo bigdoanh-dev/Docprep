@@ -335,6 +335,7 @@ paths:
           enum:
           - service
           - research
+          - personalization
           type: string
           default: research
           title: Kind
@@ -4518,6 +4519,11 @@ components:
           type: boolean
           title: Research
           default: false
+        personalization:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Personalization
       additionalProperties: false
       type: object
       required:
@@ -4525,7 +4531,8 @@ components:
       - service
       title: ConsentRequest
       examples:
-      - research: false
+      - personalization: false
+        research: false
         service: true
         version: 2026-10
     ConsentStatus:
@@ -4547,11 +4554,18 @@ components:
             format: date-time
           - type: 'null'
           title: Research Given At
+        personalization_given_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Personalization Given At
       type: object
       required:
       - version
       - service_given_at
       - research_given_at
+      - personalization_given_at
       title: ConsentStatus
       examples:
       - service_given_at: '2026-10-10T02:05:00Z'
@@ -4567,14 +4581,20 @@ components:
         research_text_vi:
           type: string
           title: Research Text Vi
+        personalization_text_vi:
+          type: string
+          title: Personalization Text Vi
       type: object
       required:
       - version
       - service_text_vi
       - research_text_vi
+      - personalization_text_vi
       title: ConsentText
       examples:
-      - research_text_vi: 'Văn bản mẫu: tôi đồng ý cho phép dùng nhật ký sử dụng đã ẩn danh của tôi cho nghiên cứu. Tôi có
+      - personalization_text_vi: 'Văn bản mẫu: tôi đồng ý để gia sư AI ghi nhớ lịch sử trò chuyện và quá trình học của tôi
+          nhằm cá nhân hoá cách giải thích. Tôi có thể tắt bất cứ lúc nào.'
+        research_text_vi: 'Văn bản mẫu: tôi đồng ý cho phép dùng nhật ký sử dụng đã ẩn danh của tôi cho nghiên cứu. Tôi có
           thể rút lại bất cứ lúc nào.'
         service_text_vi: 'Văn bản mẫu: tôi đồng ý để ứng dụng lưu kết quả học tập của tôi nhằm cung cấp dịch vụ ôn thi.'
         version: 2026-10

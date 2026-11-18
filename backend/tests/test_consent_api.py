@@ -83,3 +83,60 @@ def test_research_consent_follows_the_consent_version(api, conn, learner_headers
     assert r.status_code == 200 and r.json()["research_given_at"]
     active = conn.execute("select kind, version from consent_record where withdrawn_at is null order by kind").fetchall()
     assert active == [{"kind": "research", "version": "2027-01"}, {"kind": "service", "version": "2027-01"}]
+
+
+# ---- personalization: optional, off until given, separate from service and research -----------------
+
+def test_personalization_is_off_until_given(api, learner_headers):
+    assert api.get("/v1/consent/current", headers=learner_headers).json()["personalization_text_vi"]
+    status = give(api, learner_headers).json()
+    assert status["personalization_given_at"] is None
+    assert api.get("/v1/me", headers=learner_headers).json()["consent"]["personalization_given_at"] is None
+
+
+def test_personalization_can_be_turned_on_and_off(api, conn, learner_headers):
+    assert give(api, learner_headers, personalization=True).json()["personalization_given_at"]
+    after = api.request("DELETE", "/v1/consent", params={"kind": "personalization"}, headers=learner_headers).json()
+    assert after["personalization_given_at"] is None and after["service_given_at"]
+    assert let_in(api.get("/v1/home", headers=learner_headers))                        # the app stays open
+    kinds = conn.execute("select kind, withdrawn_at is not null as withdrawn from consent_record order by id").fetchall()
+    assert kinds == [{"kind": "service", "withdrawn": False}, {"kind": "personalization", "withdrawn": True}]
+
+
+def test_personalization_is_separate_from_research(api, learner_headers):
+    status = give(api, learner_headers, research=True, personalization=False).json()
+    assert status["research_given_at"] and status["personalization_given_at"] is None
+    api.request("DELETE", "/v1/consent", headers=learner_headers)                      # default kind: research
+    status = give(api, learner_headers, personalization=True).json()
+    assert status["research_given_at"] is None and status["personalization_given_at"]
+
+
+def test_leaving_personalization_out_keeps_the_choice(api, conn, learner_headers):
+    """Older clients that do not send the field neither turn it on nor off."""
+    given = give(api, learner_headers, personalization=True).json()["personalization_given_at"]
+    assert give(api, learner_headers).json()["personalization_given_at"] == given
+    assert give(api, learner_headers, personalization=False).json()["personalization_given_at"] is None
+    assert give(api, learner_headers).json()["personalization_given_at"] is None
+    assert conn.execute("select count(*) c from consent_record where kind = 'personalization'").fetchone()["c"] == 1
+
+
+def test_giving_personalization_twice_keeps_one_record(api, conn, learner_headers):
+    give(api, learner_headers, personalization=True)
+    give(api, learner_headers, personalization=True)
+    assert conn.execute("select count(*) c from consent_record where kind = 'personalization'").fetchone()["c"] == 1
+
+
+def test_personalization_follows_the_consent_version(api, conn, learner_headers, monkeypatch):
+    """Consent given to an older text does not carry over, even when the new request leaves the field out."""
+    from app.config import settings
+    give(api, learner_headers, personalization=True)
+    monkeypatch.setitem(settings()["consent"], "version", "2027-01")
+    r = api.post("/v1/consent", headers=learner_headers, json={"version": "2027-01", "service": True})
+    assert r.status_code == 200 and r.json()["personalization_given_at"] is None
+
+
+def test_turning_personalization_off_keeps_the_app_open(api, learner_headers):
+    """Only the service consent closes the app; turning personalization off never asks for consent again."""
+    give(api, learner_headers, personalization=True)
+    api.request("DELETE", "/v1/consent", params={"kind": "personalization"}, headers=learner_headers)
+    assert api.post("/v1/auth/activate", json={"code": "DEMO-0001"}).json()["consent_required"] is False
