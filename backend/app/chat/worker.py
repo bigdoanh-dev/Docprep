@@ -370,7 +370,7 @@ class ChatWorker:
                             pending.append(("step", data))
                         else:
                             prepared = data
-                if self.cfg.provider == 'ollama' and turn['kind'] == 'chat' and turn['payload'].get('mode','auto') == 'auto' and (
+                if self.cfg.provider in ('ollama', 'anthropic') and turn['kind'] == 'chat' and turn['payload'].get('mode','auto') == 'auto' and (
                         prepared.task == 'answer' or prepared.outcome and prepared.outcome.state == 'insufficient_evidence'):
                     from app.chat.normalise import normalise
                     from app.repo import embeddings

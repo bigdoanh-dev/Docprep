@@ -89,8 +89,9 @@ def test_fake_gateway_scripts_responses_and_records_calls():
 
 def test_only_gateway_imports_anthropic():
     app_dir = Path(__file__).resolve().parents[1] / "app"
-    hits = [p.name for p in app_dir.rglob("*.py") if "import anthropic" in p.read_text(encoding="utf-8")]
-    assert hits == ["gateway.py"]
+    hits = sorted(p.name for p in app_dir.rglob("*.py") if "import anthropic" in p.read_text(encoding="utf-8"))
+    # Only model-gateway modules reach the provider: Alpha's gateway and Phase 1's dev/test hosted port.
+    assert hits == ["anthropic_gateway.py", "gateway.py"]
 
 
 class NoKeyClient:

@@ -31,13 +31,19 @@ def pinned(version,index=False):
     finally:_version.reset(a);_index.reset(b)
 
 
+def unverified_allowed():
+    """Explicit dev/test opt-in to call a real model on an unsigned local_dev release. Off by default;
+    has no effect outside APP_ENV=dev/test."""
+    return os.environ.get('APP_ENV') in ('dev','test') and os.environ.get('PHASE_ALLOW_UNVERIFIED_CORPUS')=='1'
+
+
 def recheck(conn,version,provider=None,lock=False):
     if lock:
         conn.execute('select pg_advisory_xact_lock(hashtextextended(%s,0))',('corpus:'+version,))
     row=conn.execute('select trust,status from corpus_release where version=%s',(version,)).fetchone()
     if row and row['status']=='revoked':
         raise ApiError(409,'corpus_revoked','Nguồn của lượt AI đã bị thu hồi.')
-    if provider=='ollama' and row and row['trust']!='verified':
+    if provider in ('ollama','anthropic') and row and row['trust']!='verified' and not unverified_allowed():
         raise ApiError(503,'corpus_not_verified','Nguồn local chưa được xác minh để gọi model thật.')
     if os.environ.get('APP_ENV') not in ('dev','test') and (not row or row['trust']!='verified'):
         raise ApiError(503,'corpus_not_verified','Cần gói nguồn đã được xác minh.')

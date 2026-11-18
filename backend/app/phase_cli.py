@@ -54,11 +54,16 @@ def main():
         from app.config import settings
         from app.chat.worker import utcnow
         cfg = PhaseConfig.load()
-        if cfg.provider != 'ollama':
-            raise SystemExit('Enable dev/test ollama explicitly before using model operations')
+        if cfg.provider not in ('ollama', 'anthropic'):
+            raise SystemExit('Enable dev/test ollama or anthropic explicitly before using model operations')
         model = OllamaConfig.load()
         if args.command == 'check-models':
-            try: print(json.dumps(OllamaGateway(model).revisions()))
+            if cfg.provider == 'anthropic':
+                from app.anthropic_gateway import AnthropicConfig, HostedGateway
+                gateway = HostedGateway(model, AnthropicConfig.load())
+            else:
+                gateway = OllamaGateway(model)
+            try: print(json.dumps(gateway.revisions()))
             except Exception: raise SystemExit('Ollama unavailable or configured models absent') from None
         else:
             from app.repo import embeddings

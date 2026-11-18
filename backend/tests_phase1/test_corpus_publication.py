@@ -38,7 +38,7 @@ def test_candidate_hidden_then_active_and_durable_citations(world):
         publication.activate(conn,'content-test-a','operator','Verified local snapshot')
         assert corpus.selected(conn)=='content-test-a'
         assert pid in get_passages(conn,[pid])
-        from app.chat.pipeline import _passages_block
+        from app.chat.compose import evidence_block as _passages_block
         from app.privacy import validate_prompt
         validate_prompt('test',[{'role':'user','content':_passages_block(list(get_passages(conn,[pid]).values()))}])
     assert chats[0].get('/v1/passages/'+pid).status_code==200

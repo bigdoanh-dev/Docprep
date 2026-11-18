@@ -35,6 +35,8 @@ x-chat-env: &chat-env
   PHASE_QUEUE_SECONDS: ${PHASE_QUEUE_SECONDS:-60}
   PHASE_TURN_SECONDS: ${PHASE_TURN_SECONDS:-360}
   PHASE_MODEL_SLOTS: ${PHASE_MODEL_SLOTS:-1}
+  # dev/test only: 1 lets a real model run on an unsigned local_dev corpus release.
+  PHASE_ALLOW_UNVERIFIED_CORPUS: ${PHASE_ALLOW_UNVERIFIED_CORPUS:-0}
 services:
   db:
     image: pgvector/pgvector:pg16
