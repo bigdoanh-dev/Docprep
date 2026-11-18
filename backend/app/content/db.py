@@ -39,5 +39,5 @@ def migrate():
 
 
 def check_ready(conn):
-    if conn.execute('select max(version) version from content_schema_version').fetchone()['version'] != 3:
+    if conn.execute('select max(version) version from content_schema_version').fetchone()['version'] != 4:
         raise RuntimeError('Content schema is not ready')

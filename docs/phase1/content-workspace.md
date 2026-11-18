@@ -1,6 +1,6 @@
 # Kho biên soạn tài liệu YHDP
 
-Ngày cập nhật: **16/11/2026**. Đây là luồng **local/dev**: nhập dữ liệu YHDP đã xử lý → sửa nhãn → reviewer xác nhận phân loại và nội dung → xuất gói → publisher nhập candidate → activate. Không có OCR, auto-tagger mới hoặc xác minh model thật trong đợt này.
+Ngày cập nhật: **18/11/2026**. Đây là luồng **local/dev**: nhập dữ liệu YHDP đã xử lý → sửa nhãn → reviewer xác nhận phân loại và nội dung → xuất gói → publisher nhập candidate → activate. Không có OCR, auto-tagger mới hoặc xác minh model thật trong đợt này.
 
 ## Kiến trúc và dữ liệu
 
@@ -10,6 +10,14 @@ Ngày cập nhật: **16/11/2026**. Đây là luồng **local/dev**: nhập dữ
 - Publisher CLI dùng role DB `phase_publisher`, chỉ đọc taxonomy và ghi nguồn/release cần thiết trong runtime. Không đọc identity hoặc ghi điểm/thẻ/thi.
 - [ERD kho tài liệu](content-workspace-erd.mmd); [schema nguồn và workflow](../../backend/content_migrations/0001.sql), [ràng buộc quyết định](../../backend/content_migrations/0002.sql), [quyền duyệt mapping](../../backend/content_migrations/0003.sql).
 - Runtime dùng migration [0018](../../backend/migrations/versions/0018_corpus_releases.py) sau `0017` Bloom từ nhánh Git; giữ nguyên dữ liệu cũ. Bản local trước đồng bộ từng dùng mã `0017` cho corpus; migration `0018` nhận diện schema này, bổ sung metadata Bloom còn thiếu và giữ dữ liệu nguồn đã có.
+
+### Bloom trần của tài liệu
+
+Danh mục hỗ trợ đủ sáu mức theo thứ tự: **Nhớ, Hiểu, Áp dụng, Phân tích, Đánh giá, Sáng tạo**. Mức Sáng tạo có thể chưa có chunk sử dụng nhưng luôn có trong danh mục để biên soạn. `GET /v1/taxonomies` cung cấp danh sách cho form; schema API và kiểm tra nhãn dùng cùng định nghĩa.
+
+Migration content [0004](../../backend/content_migrations/0004.sql) mở rộng ràng buộc database, giữ nguyên toàn bộ nhãn và lịch sử đã lưu. Không tự đổi chunk cũ sang mức 6. Đây là `chunk_tag_set.bloom_ceiling`, độc lập với `question.bloom_level_6` dùng cho thống kê năng lực; sửa nhãn tài liệu không tự gán mức cho câu hỏi.
+
+Kiểm chứng 18/11/2026: 19 test content trên PostgreSQL test đạt; browser QA desktop 1440×1000 và mobile 390×844 đạt luồng chọn Sáng tạo → lưu → xác nhận → xuất manifest → reload. Không có lỗi console/pageerror hoặc tràn ngang trong luồng này. Dùng Playwright vì phiên làm việc không có Browser plugin; API/DB QA tách riêng, không đổi nhãn tài liệu thật. Local content schema đã lên 0004, 477 nhãn nguồn giữ nguyên. Build frontend content đạt; image backend local được cập nhật trên image dependency sẵn có vì Docker Hub gặp lỗi DNS, chưa kiểm chứng build image từ môi trường sạch trong lần này.
 
 ### Hai nhóm chunk
 
