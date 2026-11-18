@@ -49,7 +49,9 @@ blueprint: {foundation_weight: 2.0}    # TODO open issue 26
 retrieval: {top_k: 5, min_score: 0.45, heading_boost: 0.15}
 postcheck: {tier2_enabled: false}
 # max_steps: the most lines the work trace of one answer may show (handover/04, "Work trace").
-chat: {max_steps: 4}
+# prompt_token_budget: an estimate (app/chat/compose.py) the user message plus system prompt may not exceed;
+# below the model's context (YHDP_LLM_NUM_CTX) so the answer still fits. Over it, the lowest-ranked passages go.
+chat: {max_steps: 4, prompt_token_budget: 12000}
 # After an answer: offer practice on a cited topic the learner answered wrongly in the last window_days,
 # with at most max_items questions.
 suggestions: {window_days: 14, max_items: 3}

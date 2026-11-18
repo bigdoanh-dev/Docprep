@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Iterator, Literal
 
 from app.chat import clarify, trace
+from app.chat.compose import Part, compose
 from app.chat.normalise import normalise
 from app.chat.postcheck import Claim, Evidence, check_tier1
 from app.chat.pregate import PREGATE_PATH, is_patient_specific, load_patterns
@@ -91,14 +92,6 @@ def parse_model_json(text: str) -> dict | None:
     except json.JSONDecodeError:
         return None
     return data if isinstance(data, dict) else None
-
-
-def _source_label(p: Passage) -> str:
-    return f"{p.document_title}, {'tr. ' + str(p.page_start) if p.page_start else p.article}"
-
-
-def _passages_block(passages: list[Passage]) -> str:
-    return "\n\n".join(f"[{p.id}] ({_source_label(p)})\n{p.text}" for p in passages)
 
 
 def _insufficient(retrieved_ids: list[str], model: ModelResult | None = None, notice: str | None = None,
@@ -297,13 +290,15 @@ def prepare_answer(conn, query: str, module_id: str | None = None, detail: bool 
         return
 
     yield from _begin(steps, trace.read_step(found.passages))
-    user = f"Câu hỏi: {query}\n"
+    parts = [Part("question", f"Câu hỏi: {query}\n")]
     if detail:
-        user += "Yêu cầu thêm: giải thích chi tiết hơn câu trả lời trước.\n"
-    user += f"\nPassages:\n{_passages_block(found.passages)}"
+        parts.append(Part("instruction", "Yêu cầu thêm: giải thích chi tiết hơn câu trả lời trước.\n"))
+    parts.append(Part("instruction", "\n"))
+    system = _prompt("answer_v1")
+    sent = compose(parts, found.passages, system=system)
     yield from _end(steps, "read")
-    yield ("prepared", Prepared(None, steps, "answer", _prompt("answer_v1"), user, found.passages,
-                                {p.id: p.text for p in found.passages}))
+    yield ("prepared", Prepared(None, steps, "answer", system, sent.user, sent.passages,
+                                {p.id: p.text for p in sent.passages}))
 
 
 def prepare_followup(conn, query, mode, session_id):
@@ -323,8 +318,10 @@ def prepare_followup(conn, query, mode, session_id):
     steps=[]
     yield from _begin(steps,trace.read_step(passages))
     yield from _end(steps,'read')
-    user = f"{instructions.get(mode,'')}\nYêu cầu: {query}\nTrả lời trước: {last['text']}\nPassages:\n{_passages_block(passages)}"
-    yield ('prepared', Prepared(None,steps,'answer',_prompt('answer_v1'),user,passages,{p.id:p.text for p in passages}))
+    system = _prompt('answer_v1')
+    sent = compose([Part('instruction', f"{instructions.get(mode,'')}\n"), Part('question', f"Yêu cầu: {query}\n"),
+                    Part('previous_answer', f"Trả lời trước: {last['text']}\n")], passages, system=system)
+    yield ('prepared', Prepared(None,steps,'answer',system,sent.user,sent.passages,{p.id:p.text for p in sent.passages}))
 
 
 def _item_block(question: dict, chosen: str | None) -> str:
@@ -344,11 +341,12 @@ def prepare_explain(conn, question: dict, chosen: str | None = None) -> Iterator
     by_id = get_passages(conn, question["source_passage_ids"])
     passages = [by_id[pid] for pid in question["source_passage_ids"] if pid in by_id]
     yield from _begin(steps, trace.read_step(passages))
-    user = f"{item}\n\nPassages:\n{_passages_block(passages)}"
+    system = _prompt("tutor_v1")
+    sent = compose([Part("item", f"{item}\n\n")], passages, system=system)
     yield from _end(steps, "read")
     # Numbers and quotes may come from the passages or from the expert material of this item.
-    yield ("prepared", Prepared(None, steps, "tutor", _prompt("tutor_v1"), user, passages,
-                                {p.id: f"{p.text}\n{item}" for p in passages}))
+    yield ("prepared", Prepared(None, steps, "tutor", system, sent.user, sent.passages,
+                                {p.id: f"{p.text}\n{item}" for p in sent.passages}))
 
 
 def prepare_quiz_chat(conn, question: dict, chosen: str | None, text: str) -> Iterator[Event]:
@@ -365,7 +363,9 @@ def prepare_quiz_chat(conn, question: dict, chosen: str | None, text: str) -> It
     by_id = get_passages(conn, question["source_passage_ids"])
     passages = [by_id[pid] for pid in question["source_passage_ids"] if pid in by_id]
     yield from _begin(steps, trace.read_step(passages))
-    user = f"{item}\n\nCâu hỏi của học viên: {text}\n\nPassages:\n{_passages_block(passages)}"
+    system = _prompt("quiz_chat_v1")
+    sent = compose([Part("item", f"{item}\n\n"), Part("question", f"Câu hỏi của học viên: {text}\n\n")],
+                   passages, system=system)
     yield from _end(steps, "read")
-    yield ("prepared", Prepared(None, steps, "quiz_chat", _prompt("quiz_chat_v1"), user, passages,
-                                {p.id: f"{p.text}\n{item}" for p in passages}))
+    yield ("prepared", Prepared(None, steps, "quiz_chat", system, sent.user, sent.passages,
+                                {p.id: f"{p.text}\n{item}" for p in sent.passages}))

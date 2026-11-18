@@ -9,6 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from app import events
+from app.chat.compose import Part, compose
 from app.chat.pipeline import parse_model_json
 from app.chat.retrieval import get_passages
 from app.config import settings
@@ -38,8 +39,8 @@ def _unavailable(message: str) -> ApiError:
 def _user_message(question: dict, passages: list) -> str:
     """The question as the learner sees it: stem and options, nothing that marks the answer."""
     options = "\n".join(f"{o['key']}. {o['text']}" for o in question["options"])
-    sources = "\n\n".join(f"[{p.id}] ({p.document_title})\n{p.text}" for p in passages)
-    return f"Câu hỏi: {question['stem']}\nCác phương án:\n{options}\n\nPassages:\n{sources}"
+    return compose([Part("item", f"Câu hỏi: {question['stem']}\nCác phương án:\n{options}\n\n")], passages,
+                   system=_system(), label=lambda p: p.document_title).user
 
 
 def hint(conn, gateway, learner: dict, question_id: str, now: datetime) -> dict:
