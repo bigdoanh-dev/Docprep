@@ -21,13 +21,16 @@ async def lifespan(app: FastAPI):
     from app.db import check_ready, open_pool
 
     ollama = None
-    if app.state.service == 'chat' and app.state.phase_config.provider in ('ollama', 'anthropic'):
+    if app.state.service == 'chat' and app.state.phase_config.provider in ('ollama', 'anthropic', 'google'):
         from app.ollama_gateway import OllamaConfig, OllamaGateway
         if settings()['postcheck']['tier2_enabled']:
             raise RuntimeError('Examiner model is unconfirmed; keep tier2 disabled')
         if app.state.phase_config.provider == 'anthropic':
             from app.anthropic_gateway import AnthropicConfig, HostedGateway
             ollama = HostedGateway(OllamaConfig.load(), AnthropicConfig.load())
+        elif app.state.phase_config.provider == 'google':
+            from app.google_gateway import GoogleConfig, GoogleGateway
+            ollama = GoogleGateway(OllamaConfig.load(), GoogleConfig.load())
         else:
             ollama = OllamaGateway(OllamaConfig.load())
     cfg = settings()["db"] if app.state.service == "alpha" else {"pool_min": 1, "pool_max": app.state.phase_config.pool_max}

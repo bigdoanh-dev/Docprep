@@ -54,13 +54,16 @@ def main():
         from app.config import settings
         from app.chat.worker import utcnow
         cfg = PhaseConfig.load()
-        if cfg.provider not in ('ollama', 'anthropic'):
-            raise SystemExit('Enable dev/test ollama or anthropic explicitly before using model operations')
+        if cfg.provider not in ('ollama', 'anthropic', 'google'):
+            raise SystemExit('Enable dev/test ollama, anthropic or google explicitly before using model operations')
         model = OllamaConfig.load()
         if args.command == 'check-models':
             if cfg.provider == 'anthropic':
                 from app.anthropic_gateway import AnthropicConfig, HostedGateway
                 gateway = HostedGateway(model, AnthropicConfig.load())
+            elif cfg.provider == 'google':
+                from app.google_gateway import GoogleConfig, GoogleGateway
+                gateway = GoogleGateway(model, GoogleConfig.load())
             else:
                 gateway = OllamaGateway(model)
             try: print(json.dumps(gateway.revisions()))

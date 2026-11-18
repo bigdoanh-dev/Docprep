@@ -86,7 +86,7 @@ def instrument(app):
                 app.state.admission.require_ready()
                 if not app.state.worker.healthy() or app.state.worker.draining:
                     raise RuntimeError("worker_unhealthy")
-                if app.state.phase_config.provider in ('ollama', 'anthropic'):
+                if app.state.phase_config.provider in ('ollama', 'anthropic', 'google'):
                     app.state.model_gateway.revisions()
             return {"ready": True, "service": service, "generation": app.state.phase_config.provider != "disabled" if service == "chat" else False}
         except Exception:

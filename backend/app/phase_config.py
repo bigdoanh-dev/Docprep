@@ -29,10 +29,10 @@ class PhaseConfig:
     @classmethod
     def load(cls):
         provider = os.environ.get("PHASE_MODEL_PROVIDER", "disabled")
-        if provider not in ("disabled", "scripted", "ollama", "anthropic"):
-            raise RuntimeError("Phase 1 model protocol is unapproved; use disabled, scripted or dev/test ollama/anthropic")
-        # anthropic sends learner text to a cloud model: dev/test with demo or synthetic learners only.
-        if provider in ("scripted", "ollama", "anthropic"):
+        if provider not in ("disabled", "scripted", "ollama", "anthropic", "google"):
+            raise RuntimeError("Phase 1 model protocol is unapproved; use disabled, scripted or dev/test ollama/anthropic/google")
+        # anthropic and google send learner text to a cloud model: dev/test with demo or synthetic learners only.
+        if provider in ("scripted", "ollama", "anthropic", "google"):
             require_dev_env("PHASE_MODEL_PROVIDER=" + provider)
         namespace = os.environ.get("PHASE_REDIS_NAMESPACE", "docprep:phase1")
         if not re.fullmatch(r"[a-zA-Z0-9:_-]{1,80}", namespace):

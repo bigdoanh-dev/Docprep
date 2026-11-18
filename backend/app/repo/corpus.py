@@ -43,7 +43,7 @@ def recheck(conn,version,provider=None,lock=False):
     row=conn.execute('select trust,status from corpus_release where version=%s',(version,)).fetchone()
     if row and row['status']=='revoked':
         raise ApiError(409,'corpus_revoked','Nguồn của lượt AI đã bị thu hồi.')
-    if provider in ('ollama','anthropic') and row and row['trust']!='verified' and not unverified_allowed():
+    if provider in ('ollama','anthropic','google') and row and row['trust']!='verified' and not unverified_allowed():
         raise ApiError(503,'corpus_not_verified','Nguồn local chưa được xác minh để gọi model thật.')
     if os.environ.get('APP_ENV') not in ('dev','test') and (not row or row['trust']!='verified'):
         raise ApiError(503,'corpus_not_verified','Cần gói nguồn đã được xác minh.')
