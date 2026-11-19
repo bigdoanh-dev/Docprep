@@ -1,0 +1,16 @@
+# Cùng một câu hỏi được hỏi bởi mọi profile. Chủ đề lấy theo chương có trong yhdp-dev-v1.
+# `topic` khớp với khoá mastery trong profiles.yaml, để người chấm biết câu nào là điểm yếu của ai.
+questions:
+  - id: Q1
+    topic: dengue
+    text: "Các dấu hiệu cảnh báo của sốt xuất huyết Dengue là gì?"
+  - id: Q2
+    topic: tang_huyet_ap
+    text: "Phân độ tăng huyết áp tại trạm y tế xã như thế nào?"
+  - id: Q3
+    topic: dich_te_hoc
+    # "Tỷ lệ mới mắc / hiện mắc ..." finds no passage with today's keyword retrieval (find_q.py): an M1 gap.
+    text: "Độ nhạy và độ đặc hiệu của test sàng lọc là gì?"
+  - id: Q4
+    topic: benh_truyen_nhiem
+    text: "Chẩn đoán bệnh thương hàn dựa vào những gì?"

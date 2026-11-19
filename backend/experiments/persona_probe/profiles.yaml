@@ -1,0 +1,114 @@
+# Hồ sơ người học GIẢ LẬP cho thực nghiệm cá nhân hoá (chỉ dev/test, không phải người thật).
+#
+# Mỗi profile có 3 lớp, đúng như phương án A:
+#   business: tín hiệu học tập mà Business đang lưu (Elo theta → mastery, đúng/sai theo mức Bloom,
+#             điểm thi thử, thẻ ôn). Chat chỉ ĐỌC lớp này, theo mã người học, không có tên thật.
+#   chat:     tín hiệu rút ra từ hội thoại (Chat ghi).
+#   persona:  bản tổng hợp viết tay, dùng ở lần chạy đầu (2026-11-18). Từ lần chạy 2026-11-19, prompt
+#             KHÔNG dùng đoạn này nữa: run.py lấy `business` → Signals → app/chat/personalize.policy_for
+#             → profile_text, đúng như code thật. Đoạn persona giữ lại để so sánh và cho M3 sau này.
+#   expect:   điều người chấm kiểm tra ở câu trả lời.
+#
+# mastery = p_correct(theta, 0) như app/engine/elo.py: 0.5 là trung bình.
+# Chủ đề dùng tên chương trong kho tài liệu đang bật (yhdp-dev-v1).
+
+profiles:
+  - id: P1_nam1_mat_goc
+    label: "Năm 1, mất gốc"
+    business:
+      mastery: {dengue: 0.28, tang_huyet_ap: 0.31, dich_te_hoc: 0.22, benh_truyen_nhiem: 0.30}
+      bloom_accuracy: {nho: 0.55, hieu: 0.30, ap_dung: 0.18, phan_tich: 0.10}
+      mock_exam: {attempts: 1, score: 0.32}
+      cards: {due: 140, recall_7d: 0.41}
+      n_responses: 64
+    chat:
+      - "Hay hỏi lại nghĩa của chữ viết tắt (SXHD, THA, HATT)."
+      - "Bỏ dở khi câu trả lời dài, thường nhắn 'ngắn thôi'."
+    persona:
+      level: "co_ban"
+      text: |
+        Trình độ: mới bắt đầu, nắm rất ít kiến thức nền ở mọi chủ đề.
+        Cách trình bày phù hợp: câu ngắn, từ ngữ đơn giản; viết đầy đủ chữ viết tắt ở lần đầu; nêu ý chính
+        quan trọng nhất trước; tối đa 3 ý.
+    expect:   # quy tắc sư phạm 2026-11-19: chủ đề yếu → cơ bản nhưng kỹ hơn, đủ ý
+      - "Bao phủ ý chính ≈ C0 (không mất ý)"
+      - "Câu ngắn, dễ hiểu; có thể thêm định nghĩa/ví dụ CÓ trong tài liệu"
+      - "Không có ví dụ tự nghĩ ra"
+
+  - id: P2_kha_yeu_dengue
+    label: "Khá, riêng Dengue yếu"
+    business:
+      mastery: {dengue: 0.24, tang_huyet_ap: 0.78, dich_te_hoc: 0.70, benh_truyen_nhiem: 0.66}
+      bloom_accuracy: {nho: 0.80, hieu: 0.68, ap_dung: 0.52, phan_tich: 0.45}
+      weakest_units: ["Dengue · Phân độ và dấu hiệu cảnh báo"]
+      mock_exam: {attempts: 3, score: 0.64}
+      cards: {due: 35, recall_7d: 0.72}
+      n_responses: 410
+    chat:
+      - "Nhầm lẫn giữa SXHD có dấu hiệu cảnh báo và SXHD nặng."
+    persona:
+      level: "kha"
+      text: |
+        Trình độ: khá ở hầu hết chủ đề, nhưng yếu rõ ở sốt xuất huyết Dengue (hay nhầm nhóm có dấu hiệu
+        cảnh báo với nhóm nặng).
+        Cách trình bày phù hợp: với câu hỏi về Dengue thì trả lời kỹ hơn và nêu rõ điểm phân biệt giữa các
+        mức độ; với chủ đề khác thì ngắn gọn, không giảng lại kiến thức cơ bản.
+    expect:
+      - "Câu Dengue (yếu): cơ bản nhưng kỹ hơn, đủ ý như C0"
+      - "Câu không phải Dengue: cô đọng, con số lên trước; bao phủ ≈ C0"
+
+  - id: P3_gioi_on_thi
+    label: "Giỏi, ôn thi nước rút"
+    business:
+      mastery: {dengue: 0.86, tang_huyet_ap: 0.88, dich_te_hoc: 0.82, benh_truyen_nhiem: 0.84}
+      bloom_accuracy: {nho: 0.93, hieu: 0.88, ap_dung: 0.81, phan_tich: 0.74}
+      mock_exam: {attempts: 9, score: 0.86}
+      cards: {due: 8, recall_7d: 0.91}
+      n_responses: 1320
+    chat:
+      - "Thường hỏi 'ngưỡng chính xác là bao nhiêu'."
+    persona:
+      level: "gioi"
+      text: |
+        Trình độ: vững ở mọi chủ đề, đang ôn thi.
+        Cách trình bày phù hợp: cô đọng, dùng đúng thuật ngữ chuyên môn; ưu tiên con số, ngưỡng và tiêu chí
+        cụ thể có trong tài liệu; bỏ phần định nghĩa cơ bản.
+    expect:
+      - "Có con số / ngưỡng / tiêu chí cụ thể (nếu đoạn tài liệu có)"
+      - "Không mở đầu bằng định nghĩa cơ bản"
+
+  - id: P4_nho_tot_hieu_kem
+    label: "Nhớ tốt, vận dụng kém"
+    business:
+      mastery: {dengue: 0.55, tang_huyet_ap: 0.52, dich_te_hoc: 0.48, benh_truyen_nhiem: 0.57}
+      bloom_accuracy: {nho: 0.87, hieu: 0.50, ap_dung: 0.33, phan_tich: 0.28}
+      mock_exam: {attempts: 4, score: 0.55}
+      cards: {due: 20, recall_7d: 0.88}
+      n_responses: 520
+    chat:
+      - "Hay hỏi 'tại sao' và 'khi nào thì áp dụng'."
+    persona:
+      level: "trung_binh"
+      text: |
+        Trình độ: thuộc định nghĩa và danh sách, nhưng làm sai câu vận dụng và phân tích.
+        Cách trình bày phù hợp: không chỉ liệt kê; nêu lý do, điều kiện áp dụng hoặc ý nghĩa của từng điểm
+        khi tài liệu có nói đến.
+    expect:
+      - "Có ít nhất một ý nêu lý do / điều kiện / ý nghĩa, không chỉ liệt kê"
+
+  - id: P5_chua_du_du_lieu
+    label: "Chưa đủ dữ liệu (đối chứng)"
+    business:
+      mastery: {}
+      bloom_accuracy: {}
+      mock_exam: {attempts: 0}
+      cards: {due: 0}
+      n_responses: 3
+    chat: []
+    persona:
+      level: "chua_ro"
+      text: |
+        Trình độ: chưa đủ dữ liệu để đánh giá.
+        Cách trình bày phù hợp: trả lời như bình thường.
+    expect:
+      - "Gần giống baseline; không tự suy diễn trình độ"
