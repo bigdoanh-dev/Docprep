@@ -20,7 +20,7 @@ from typing import Iterator, Literal
 from app.chat import clarify, trace
 from app.chat.compose import Part, compose
 from app.chat.normalise import normalise
-from app.chat.postcheck import Claim, Evidence, check_tier1
+from app.chat.postcheck import Claim, Evidence, check_tier1, resolve_ids
 from app.chat.pregate import PREGATE_PATH, is_patient_specific, load_patterns
 from app.chat.retrieval import Passage, find, get_passages
 from app.chat.trace import Step
@@ -229,7 +229,7 @@ def generate(gw: Gateway, prepared: Prepared) -> Iterator[Event]:
 
     yield ("status", "checking_sources")
     yield from _begin(steps, trace.check_step())
-    claims, evidence = _read_answer(data)
+    claims, evidence = resolve_ids(*_read_answer(data), retrieved_ids)
     produced = len(claims)
     claims = check_tier1(claims, evidence, prepared.check_text)
     claims = [c for c in claims if not _PREDICTION.search(c.text)]

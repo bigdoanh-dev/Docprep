@@ -1,4 +1,4 @@
-from app.chat.postcheck import Claim, Evidence, check_tier1, numbers_in
+from app.chat.postcheck import Claim, Evidence, check_tier1, numbers_in, resolve_ids
 
 P = {
     "p1": "Một xã có 2.000 dân; 50 người mắc. Tỷ lệ hiện mắc là 2,5%.",
@@ -82,3 +82,20 @@ def test_a_br_does_not_make_different_words_match():
     passages = {"t1": "1. Vật vã, lừ đừ.<br>2. Đau bụng nhiều và liên tục."}
     quote = "1. Vật vã, lừ đừ.\n2. Đau ngực nhiều và liên tục."
     assert check_tier1([Claim("Đau ngực là dấu hiệu.", ["t1"])], [Evidence("t1", quote)], passages) == []
+
+
+def test_a_shortened_corpus_id_is_resolved_only_when_it_names_one_sent_passage():
+    """Corpus ids are "yhdp:<doc>:<passage>"; a model sometimes writes only the part after the last ':'."""
+    sent = ["yhdp:d1:aaa111", "yhdp:d1:bbb222", "yhdp:d2:bbb222", "tc-p02"]
+    claims, evidence = resolve_ids(
+        [Claim("x", ["aaa111", "bbb222", "tc-p02", "zzz999"])],
+        [Evidence("aaa111", "q"), Evidence("yhdp:d1:aaa111", "q"), Evidence("bbb222", "q")], sent)
+    assert claims[0].passage_ids == ["yhdp:d1:aaa111", "bbb222", "tc-p02", "zzz999"]   # ambiguous / unknown kept as written
+    assert [e.passage_id for e in evidence] == ["yhdp:d1:aaa111", "yhdp:d1:aaa111", "bbb222"]
+
+
+def test_a_resolved_id_then_passes_the_check():
+    passages = {"yhdp:d1:p2": P["p2"]}
+    claims, evidence = resolve_ids([Claim("Tiêm trong vòng 24 giờ đầu sau sinh.", ["p2"])],
+                                   [Evidence("p2", "trong vòng 24 giờ đầu sau sinh")], list(passages))
+    assert check_tier1(claims, evidence, passages) == [Claim("Tiêm trong vòng 24 giờ đầu sau sinh.", ["yhdp:d1:p2"])]

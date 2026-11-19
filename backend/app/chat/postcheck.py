@@ -28,6 +28,26 @@ class Evidence:
     quote: str
 
 
+def resolve_ids(claims: list[Claim], evidence: list[Evidence], sent: list[str]) -> tuple[list[Claim], list[Evidence]]:
+    """Map an id the model shortened back to the passage it names. Corpus ids are long
+    ("yhdp:<doc hash>:<passage hash>") and a model sometimes copies only the part after the last ':'.
+    An id is rewritten only when that tail names exactly one passage that was sent; anything else is
+    left as written, so the check below still drops it."""
+    known = set(sent)
+    tails: dict[str, list[str]] = {}
+    for pid in sent:
+        tails.setdefault(pid.rsplit(":", 1)[-1], []).append(pid)
+
+    def fix(pid: str) -> str:
+        if pid in known:
+            return pid
+        match = tails.get(pid.rsplit(":", 1)[-1], [])
+        return match[0] if len(match) == 1 else pid
+
+    return ([Claim(c.text, [fix(p) for p in c.passage_ids]) for c in claims],
+            [Evidence(fix(e.passage_id), e.quote) for e in evidence])
+
+
 def _canonical(number: str) -> str:
     """Vietnamese formats: '.' groups thousands (2.000), ',' is the decimal mark (2,5)."""
     if _THOUSANDS.match(number):
