@@ -17,7 +17,9 @@ from typing import Callable, Literal
 from app.chat.retrieval import Passage
 from app.config import settings
 
-PartKind = Literal["question", "instruction", "previous_answer", "item"]
+# learner_profile: presentation rules from app/chat/personalize.py, never data about the learner.
+# verified_claims: stage A's checked claims, for the layout stage (app/chat/adapt.py) only.
+PartKind = Literal["question", "instruction", "previous_answer", "item", "learner_profile", "verified_claims"]
 ALLOWED_KINDS: frozenset[str] = frozenset(PartKind.__args__)
 EVIDENCE_HEADER = "Passages:\n"
 # Characters per token for Vietnamese text in the tokenizers of the configured models: a cautious

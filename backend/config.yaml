@@ -40,7 +40,7 @@ gateway:
   price_per_mtok:                 # USD, list prices cached 2026-09-25
     claude-sonnet-5-5: {in: 2.0, out: 10.0}
     claude-haiku-4-5: {in: 1.0, out: 5.0}
-prompt_versions: {answer: answer-v1, tutor: tutor-v1, check: check-v1, hint: hint-v1, quiz_chat: quiz-chat-v1}
+prompt_versions: {answer: answer-v1, tutor: tutor-v1, check: check-v1, hint: hint-v1, quiz_chat: quiz-chat-v1, render: render-v1}
 # min_score = share of the question's content a passage must cover to count as evidence;
 # heading_boost = ranking bonus when the passage's heading names what was asked
 # Topic weights come from the blueprint (seed/blueprint.yaml): a core issue gets its group's midpoint
@@ -52,6 +52,14 @@ postcheck: {tier2_enabled: false}
 # prompt_token_budget: an estimate (app/chat/compose.py) the user message plus system prompt may not exceed;
 # below the model's context (YHDP_LLM_NUM_CTX) so the answer still fits. Over it, the lowest-ranked passages go.
 chat: {max_steps: 4, prompt_token_budget: 12000}
+# How an answer is laid out for a learner who gave the personalization consent (app/chat/personalize.py,
+# app/chat/adapt.py). low/high: mastery (0–1) cut points; min_responses: answers on the passages'
+# competencies before any rule applies; recall_applied_gap: Bloom 1–2 accuracy minus Bloom 3–6 accuracy
+# that counts as "remembers but does not apply"; min_bloom_items: answers per side before that gap is
+# trusted; additions: sentences beyond the verified claims (a definition, reason or example a passage
+# states) allowed per level, plus reason_additions when the gap rule applies.
+personalization: {enabled: true, min_responses: 10, low: 0.4, high: 0.75, recall_applied_gap: 0.3,
+                  min_bloom_items: 8, additions: {co_ban: 3, trung_binh: 0, nang_cao: 0}, reason_additions: 2}
 # After an answer: offer practice on a cited topic the learner answered wrongly in the last window_days,
 # with at most max_items questions.
 suggestions: {window_days: 14, max_items: 3}

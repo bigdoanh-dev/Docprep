@@ -20,7 +20,9 @@ PASSAGES = [passage("p1"), passage("p2", "Điều 5 nói rõ.", page=None, artic
 
 
 def test_only_allowlisted_kinds_exist():
-    assert ALLOWED_KINDS == {"question", "instruction", "previous_answer", "item"}
+    # learner_profile carries presentation rules only (app/chat/personalize.py), never learner data;
+    # verified_claims carries stage A's checked claims to the layout stage (app/chat/adapt.py).
+    assert ALLOWED_KINDS == {"question", "instruction", "previous_answer", "item", "learner_profile", "verified_claims"}
     for kind in ("pseudonym", "session_id", "learner", "persona", "memory", "time", "ip", "device"):
         with pytest.raises(ValueError):
             Part(kind, "x")

@@ -272,7 +272,7 @@ class ChatWorker:
                 if question:
                     return pipeline.prepare_quiz_chat(conn, question, last["chosen"] if last else None, p["text"])
             return pipeline.prepare_answer(conn, p["text"], session["module_id"], p.get("detail", False),
-                                           p.get("clarifies_message_id") is not None)
+                                           p.get("clarifies_message_id") is not None, learner_id=learner["id"])
         q = require_question(conn, p["question_id"])
         last = responses.last_for_question(conn, learner["id"], q["id"])
         if last is None:
@@ -386,7 +386,7 @@ class ChatWorker:
                         pending = []
                         for kind, data in pipeline.prepare_answer(conn, turn['payload']['text'], session['module_id'],
                                 turn['payload'].get('detail', False), turn['payload'].get('clarifies_message_id') is not None,
-                                found=found):
+                                found=found, learner_id=learner['id']):
                             if kind == 'step': pending.append(('step', data))
                             else: prepared = data
                 for event, data in pending:

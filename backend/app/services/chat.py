@@ -267,7 +267,7 @@ def answer_events(connect: Connect, slots, gateway, learner: dict, session: dict
             if question is not None:
                 last = responses_repo.last_for_question(conn, learner["id"], question_id)
                 return prepare_quiz_chat(conn, question, last["chosen"] if last else None, text)
-        return prepare_answer(conn, text, session["module_id"], detail, clarifying)
+        return prepare_answer(conn, text, session["module_id"], detail, clarifying, learner_id=learner["id"])
 
     return _turn(connect, slots, gateway, session["id"], prepare, now,
                  after_answer=lambda conn, message_id, outcome: suggestions.after_answer(conn, learner, message_id, outcome, now))

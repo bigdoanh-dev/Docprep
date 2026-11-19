@@ -17,7 +17,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Iterator, Literal
 
-from app.chat import clarify, trace
+from app.chat import adapt, clarify, personalize, trace
+from app.chat.personalize import Policy
 from app.chat.compose import Part, compose
 from app.chat.normalise import normalise
 from app.chat.postcheck import Claim, Evidence, check_tier1, resolve_ids
@@ -56,6 +57,9 @@ class ChatOutcome:
     searched: list[dict] = field(default_factory=list)
     nearest_chapter: dict | None = None
     cited_competencies: list[str] = field(default_factory=list)
+    adapted: bool | None = None            # None: no learner policy; False: the layout stage failed, stage A shown
+    adapt_failure: str | None = None       # why the layout stage failed (app/chat/adapt.py)
+    base_text: str | None = None           # stage A's answer, when a learner policy applied: what the layout must keep
 
 
 @dataclass
@@ -70,6 +74,8 @@ class Prepared:
     user: str = ""
     passages: list[Passage] = field(default_factory=list)
     check_text: dict[str, str] = field(default_factory=dict)
+    question: str = ""                  # the learner's question, for the layout stage
+    policy: Policy | None = None        # the learner's layout; None: shown as stage A wrote it
 
 
 @lru_cache
@@ -245,18 +251,32 @@ def generate(gw: Gateway, prepared: Prepared) -> Iterator[Event]:
     if not claims:
         yield ("done", _insufficient(retrieved_ids, result, claims_checked=produced, claims_removed=removed, searched=read))
         return
+    # Stage B, only now that stage A has answered: the learner's layout of the same claims, or stage A's.
+    adapted = failure = base_text = None
+    if prepared.policy is not None:
+        base_text = _assemble(claims, by_id)[0]
+        layout = adapt.render(lambda task, system, user: _ask_model(gw, task, system, user)[0],
+                              prepared.question, claims, passages, prepared.policy)
+        failure = layout.failure
+        if layout.claims is not None and any(_PREDICTION.search(c.text) for c in layout.claims):
+            failure = "prediction"
+        adapted = failure is None
+        if adapted:
+            claims = layout.claims
     text, citations = _assemble(claims, by_id)
     cited = list(dict.fromkeys(by_id[c["passage_id"]].competency_code for c in citations
                                if by_id[c["passage_id"]].competency_code))
     yield ("done", ChatOutcome("answered", text, citations, retrieved_ids, result,
                                notice=REMOVED_NOTICE.format(k=removed) if removed else None,
-                               claims_checked=produced, claims_removed=removed, cited_competencies=cited))
+                               claims_checked=produced, claims_removed=removed, cited_competencies=cited,
+                               adapted=adapted, adapt_failure=failure, base_text=base_text))
 
 
 def prepare_answer(conn, query: str, module_id: str | None = None, detail: bool = False,
-                   clarifying: bool = False, *, found=None) -> Iterator[Event]:
+                   clarifying: bool = False, *, found=None, learner_id: int | None = None) -> Iterator[Event]:
     """A chat question: pre-gate, normalise, retrieve. Yields the steps as they run, then
-    ("prepared", Prepared)."""
+    ("prepared", Prepared). With `learner_id`, a learner policy (app/chat/personalize.py) is attached
+    for the layout stage; the prompt that decides the answer is the same with or without it."""
     if is_patient_specific(query, _pregate_rules()):
         yield ("prepared", Prepared(ChatOutcome("declined", DECLINED_COPY, [], []), []))
         return
@@ -296,9 +316,11 @@ def prepare_answer(conn, query: str, module_id: str | None = None, detail: bool 
     parts.append(Part("instruction", "\n"))
     system = _prompt("answer_v1")
     sent = compose(parts, found.passages, system=system)
+    policy = personalize.for_turn(conn, learner_id, list(dict.fromkeys(
+        p.competency_code for p in sent.passages if p.competency_code)))
     yield from _end(steps, "read")
     yield ("prepared", Prepared(None, steps, "answer", system, sent.user, sent.passages,
-                                {p.id: p.text for p in sent.passages}))
+                                {p.id: p.text for p in sent.passages}, query, policy))
 
 
 def prepare_followup(conn, query, mode, session_id):
