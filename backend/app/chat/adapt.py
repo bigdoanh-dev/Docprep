@@ -22,7 +22,7 @@ from app.chat.compose import Part, compose
 from app.chat.personalize import Policy, profile_text
 from app.chat.postcheck import Claim, Evidence, check_tier1, numbers_in, resolve_ids
 from app.chat.retrieval import Passage
-from app.gateway import GatewayError
+from app.gateway import GatewayError, ModelUnavailable
 
 PROMPTS = Path(__file__).resolve().parents[1] / "prompts"
 # ask(task, system, user) -> parsed JSON or None; pipeline passes its own model call (one retry on bad JSON).
@@ -105,7 +105,7 @@ def render(ask: Ask, question: str, claims: list[Claim], passages: list[Passage]
         checks = _entailed(ask, [(s.text, "\n".join(f"[c{i}] {claims[i].text}" for i in s.claims) if s.claims
                                   else "\n".join(f"[{pid}] {by_id[pid].text}" for pid in sources[id(s)]))
                                  for s in sentences])
-    except GatewayError:
+    except (GatewayError, ModelUnavailable):   # the worker raises the latter for a refused call
         return Layout(None, "model_error")
     out = []
     for s, ok in zip(sentences, checks):

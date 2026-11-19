@@ -11,6 +11,7 @@ import pytest
 
 from app.chat.personalize import Policy, Signals, policy_for, profile_text
 from app.chat.pipeline import INSUFFICIENT_COPY, generate, prepare_answer
+from app.chat.worker import TurnModelUnavailable, TurnStopped
 from app.gateway import FakeGateway, GatewayError
 from app.repo import consent
 from tests.conftest import birth_dose_json
@@ -89,14 +90,14 @@ def _quote(conn) -> str:
     return re.search(r'"quote":"([^"]+)"', birth_dose_json(conn))[1]
 
 
-def model(conn, sentences=None, verdict=lambda i, text: "yes", answer=None, render_error=False):
+def model(conn, sentences=None, verdict=lambda i, text: "yes", answer=None, render_error=None):
     """A scripted model: stage A's answer, the layout, then the checker's verdicts."""
     def reply(task, messages):
         if task == "answer":
             return answer or birth_dose_json(conn)
         if task == "render":
             if render_error:
-                raise GatewayError("down")
+                raise render_error
             return json.dumps({"sentences": sentences}, ensure_ascii=False)
         claims = re.findall(r"^Claim (\d+): (.*)$", messages[0]["content"], re.M)
         return json.dumps({"verdicts": [{"i": int(i), "verdict": verdict(int(i), t)} for i, t in claims]})
@@ -168,10 +169,21 @@ def test_a_restatement_the_checker_rejects_falls_back(conn, learner):
     assert out.adapted is False and out.adapt_failure == "not_entailed" and out.text == stage_a_text(conn)
 
 
-def test_a_model_error_in_the_layout_stage_falls_back(conn, learner):
-    out = turn(conn, model(conn, render_error=True))
+@pytest.mark.parametrize("error", [GatewayError("down"), TurnModelUnavailable("model_unavailable")],
+                         ids=["gateway", "chat worker (quota, overload)"])
+def test_a_model_error_in_the_layout_stage_falls_back(conn, learner, error):
+    """In the chat worker a refused call arrives as TurnModelUnavailable, not GatewayError: it must not
+    throw away stage A's checked answer."""
+    out = turn(conn, model(conn, render_error=error))
     assert out.adapted is False and out.adapt_failure == "model_error"
     assert out.state == "answered" and out.text == stage_a_text(conn)
+
+
+@pytest.mark.parametrize("code", ["ai_cancelled", "ai_timeout", "ai_interrupted"])
+def test_a_stopped_turn_still_stops_in_the_layout_stage(conn, learner, code):
+    """A cancellation, a deadline or an uncertain call is not a refused call: the turn ends."""
+    with pytest.raises(TurnStopped, match=code):
+        turn(conn, model(conn, render_error=TurnStopped(code)))
 
 
 def test_an_unsupported_addition_is_dropped_and_the_rest_kept(conn, learner):

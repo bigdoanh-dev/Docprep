@@ -36,6 +36,13 @@ class GatewayError(Exception):
     pass
 
 
+class ModelUnavailable(Exception):
+    """The provider refused or failed a call that is known to have ended (quota, overload, bad
+    request). The chat worker raises it, as a TurnStopped, in place of GatewayError. An optional
+    model call (the learner layout) may catch it and carry on; a cancellation, a deadline or an
+    uncertain call is never this, and still ends the turn."""
+
+
 def replay_mode(value: str | bool | None) -> str:
     """Normalise DEMO_REPLAY (or a bool) to "off", "fallback" or "prefer"."""
     if value is True or value == "1":

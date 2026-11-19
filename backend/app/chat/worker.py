@@ -14,7 +14,7 @@ from app import events
 from app.chat import pipeline, trace
 from app.config import settings
 from app.errors import ApiError
-from app.gateway import GatewayError
+from app.gateway import GatewayError, ModelUnavailable
 from app.ollama_gateway import ModelCallUncertain, OllamaGateway
 from app.privacy import clean_tree, validate_prompt
 from app.repo import turns, chat, content, responses, units, practice, corpus
@@ -32,6 +32,10 @@ def utcnow():
 
 class TurnStopped(Exception):
     pass
+
+
+class TurnModelUnavailable(TurnStopped, ModelUnavailable):
+    """The turn's code stays "model_unavailable"; an optional call may still catch it (app/chat/adapt.py)."""
 
 
 class TurnGateway:
@@ -91,11 +95,13 @@ class TurnGateway:
             except GatewayError as exc:
                 known_finished = True  # explicit validation/acknowledged provider rejection
                 # Bypass pipeline's content-level GatewayError fallback: infrastructure has its own terminal state.
-                raise TurnStopped("model_unavailable") from exc
+                raise TurnModelUnavailable("model_unavailable") from exc
             except Exception as exc:
                 # An unexpected real-adapter failure cannot prove a remote call ended.
                 known_finished = not isinstance(gateway, OllamaGateway)
-                raise TurnStopped('model_unavailable' if known_finished else 'ai_interrupted') from exc
+                if known_finished:
+                    raise TurnModelUnavailable('model_unavailable') from exc
+                raise TurnStopped('ai_interrupted') from exc
         finally:
             # A local timeout/disconnect is NOT acknowledgement that remote generation stopped.
             with w.pool.connection() as conn:
