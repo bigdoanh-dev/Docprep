@@ -22,7 +22,7 @@ from app.ollama_gateway import ModelCallUncertain, OllamaConfig, OllamaGateway, 
 from app.privacy import validate_prompt
 
 API = 'https://generativelanguage.googleapis.com/v1beta'
-TASKS = ('answer', 'tutor', 'hint', 'quiz_chat')
+TASKS = ('answer', 'tutor', 'hint', 'quiz_chat', 'check', 'render')
 # Finish reasons that mean the answer was withheld, not completed.
 REFUSED = {'SAFETY', 'RECITATION', 'BLOCKLIST', 'PROHIBITED_CONTENT', 'SPII', 'IMAGE_SAFETY'}
 # Overload and rate-limit answers mean nothing was generated, so a retry cannot duplicate an answer.

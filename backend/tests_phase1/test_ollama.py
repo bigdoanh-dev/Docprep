@@ -45,7 +45,7 @@ def test_ollama_wire_payload_metadata_and_normalised_embeddings():
     assert calls[1][1]['model']=='bge-m3'
     assert calls[1][1]['truncate'] is False
     with pytest.raises(GatewayError,match='role_not_configured'):
-        gateway.complete('check','s',[],'check-v1')
+        gateway.complete('embed','s',[],'v1')
     with pytest.raises(GatewayError):gateway.embed(['a@example.org'])
     with pytest.raises(GatewayError):gateway.complete('answer','s',[{'role':'user','content':'at_private'}],'v1')
     assert len(calls)==2

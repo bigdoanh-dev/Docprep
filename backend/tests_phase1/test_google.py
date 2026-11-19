@@ -57,7 +57,7 @@ def test_identifiers_and_unknown_roles_never_reach_the_api():
     with pytest.raises(GatewayError):
         gw.complete('answer', 's', [{'role': 'user', 'content': 'gọi 0912 345 678'}], 'v1')
     with pytest.raises(GatewayError, match='role_not_configured'):
-        gw.complete('check', 's', [], 'check-v1')
+        gw.complete('embed', 's', [], 'v1')
     with pytest.raises(GatewayError, match='before_dispatch'):
         gw.complete('answer', 's', [{'role': 'user', 'content': 'q'}], 'v1',
                     deadline=datetime.now(timezone.utc) - timedelta(seconds=1))

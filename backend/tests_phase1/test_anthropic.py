@@ -70,8 +70,18 @@ def test_identifiers_and_unknown_roles_never_reach_the_api():
     with pytest.raises(GatewayError):
         gw.complete('answer', 's', [{'role': 'user', 'content': 'gọi 0912 345 678'}], 'v1')
     with pytest.raises(GatewayError, match='role_not_configured'):
-        gw.complete('check', 's', [], 'check-v1')
+        gw.complete('embed', 's', [], 'v1')
     assert messages.calls == []
+
+
+def test_haiku_is_called_without_a_server_side_fallback():
+    """Claude Haiku has none: "default" is a no-op there and a model list is a 400."""
+    messages = FakeMessages(reply())
+    gw = HostedGateway(OLLAMA, AnthropicConfig('claude-haiku-5-5', 'medium', 16000, 30),
+                       client=FakeClient(messages), transport=httpx.MockTransport(tags))
+    gw.complete('check', 's', [{'role': 'user', 'content': 'x'}], 'check-v1')
+    sent = messages.calls[0]
+    assert sent['model'] == 'claude-haiku-5-5' and 'fallbacks' not in sent and 'betas' not in sent
 
 
 def test_the_deadline_bounds_the_call_and_an_expired_one_does_not_dispatch():

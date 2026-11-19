@@ -21,7 +21,7 @@ from app.gateway import GatewayError, ModelResult
 from app.ollama_gateway import ModelCallUncertain, OllamaConfig, OllamaGateway, model_name
 from app.privacy import validate_prompt
 
-TASKS = ('answer', 'tutor', 'hint', 'quiz_chat')
+TASKS = ('answer', 'tutor', 'hint', 'quiz_chat', 'check', 'render')
 EFFORTS = ('low', 'medium', 'high', 'xhigh', 'max')
 # A policy decline is re-run on a model the API picks for that category, inside the same call.
 FALLBACK_BETA = 'server-side-fallback-2026-07-01'
@@ -89,11 +89,12 @@ class HostedGateway(OllamaGateway):
         validate_prompt(system, messages)
         budget = self._budget(deadline)
         started = time.monotonic()
+        # Claude Haiku has no server-side fallback: a decline there stays a decline, so none is asked for.
+        fallback = {} if self.hosted.model.startswith('claude-haiku') else {'betas': [FALLBACK_BETA], 'fallbacks': 'default'}
         try:
             response = self.client.with_options(timeout=budget).beta.messages.create(
                 model=self.hosted.model, max_tokens=self.hosted.max_tokens, system=system, messages=messages,
-                output_config={'effort': self.hosted.effort},
-                betas=[FALLBACK_BETA], fallbacks='default')
+                output_config={'effort': self.hosted.effort}, **fallback)
         except (anthropic.APITimeoutError, anthropic.APIConnectionError):
             # The request may have reached the API and still be generating.
             raise ModelCallUncertain('hosted_completion_unknown') from None
