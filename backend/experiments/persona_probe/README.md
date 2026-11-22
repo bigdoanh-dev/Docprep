@@ -36,3 +36,5 @@ Trên Git Bash ở Windows, thêm `MSYS_NO_PATHCONV=1` trước các lệnh `doc
   500 lượt/ngày; script tự dừng khi model lỗi 3 lần liên tiếp.
 - Bao phủ được chấm so với tầng A của cùng lượt, vì tầng A tự chọn ý khác nhau giữa các lần chạy.
 - Chỉ `out/20261119-final/` được commit; các lần chạy khác bị `.gitignore` bỏ qua.
+
+> **Đóng băng (2026-11-23):** bộ này đo cá nhân hoá v1 (mastery 3 mức) và chỉ chạy được trên commit `97e27dd`. Bản v2 (Bloom + scaffolding) được đo bằng `../pedagogy_eval/`, nơi v1 được giữ làm mốc so sánh.

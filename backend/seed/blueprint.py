@@ -129,6 +129,11 @@ def write_blueprint(conn, data: dict, foundation_weight: float) -> None:
             code = issue_code(i["id"])
             conn.execute(node, (code, group_code(g["id"]), 2, i["name"], weights[code], i["id"]))
 
+    # The prerequisite map (machine-made, unreviewed) on the fresh tree; a reviewed list is kept.
+    from app.prerequisites import statements
+    for sql in statements():
+        conn.execute(sql)
+
     ids = component_ids(data)
     for c in data["competencies"]:
         conn.execute(

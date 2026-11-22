@@ -84,7 +84,10 @@ def search(conn, n: Normalised, top_k: int, min_score: float, module_id: str | N
     return find(conn, n, top_k, min_score, module_id).passages
 
 
-def find(conn, n: Normalised, top_k: int, min_score: float, module_id: str | None = None) -> Found:
+def find(conn, n: Normalised, top_k: int, min_score: float, module_id: str | None = None,
+         competency_codes: list[str] | None = None) -> Found:
+    """Keyword search. `competency_codes` limits it to passages of those competencies (the layout
+    stage uses it for the prerequisite a learner is weak on, app/chat/personalize.py)."""
     corpus.scope(conn)
     if not n.terms:
         return Found([])
@@ -94,6 +97,9 @@ def find(conn, n: Normalised, top_k: int, min_score: float, module_id: str | Non
     if module_id:
         module_filter = "and p.competency_code = any(select unnest(competency_codes) from module where id = %s)"
         params.append(module_id)
+    if competency_codes is not None:
+        module_filter += " and p.competency_code = any(%s)"
+        params.append(competency_codes)
     rows = conn.execute(
         f"""select {_COLUMNS}, ts_rank_cd(p.tsv, to_tsquery('simple', %s), 1) as rank
             from passage p join document d on d.id = p.document_id

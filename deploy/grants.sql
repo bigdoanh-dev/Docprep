@@ -10,7 +10,7 @@ grant select on alembic_version, learner, auth_token, consent_record, exam_attem
   module, unit, unit_item, unit_session, practice_set, item_response, mastery,
   competency_node, document, passage, glossary_term, question, status_transition,
   session_addition, chat_session, chat_message, suggestion, ai_turn, ai_outbox,
-  ai_model_call, ai_purge to phase_chat;
+  ai_model_call, ai_purge, question_bloom_label to phase_chat;
 grant select (id,role,active) on staff_user to phase_chat;
 grant insert,update,delete on chat_session, chat_message, suggestion, ai_turn, ai_outbox, ai_model_call, ai_purge to phase_chat;
 grant insert on activity_event to phase_chat;

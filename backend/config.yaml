@@ -40,7 +40,7 @@ gateway:
   price_per_mtok:                 # USD, list prices cached 2026-09-25
     claude-sonnet-5-5: {in: 2.0, out: 10.0}
     claude-haiku-4-5: {in: 1.0, out: 5.0}
-prompt_versions: {answer: answer-v1, tutor: tutor-v1, check: check-v1, hint: hint-v1, quiz_chat: quiz-chat-v1, render: render-v1, rerank: rerank-v1}
+prompt_versions: {answer: answer-v1, tutor: tutor-v1, check: check-v1, hint: hint-v1, quiz_chat: quiz-chat-v1, render: render-v2, rerank: rerank-v1}
 # min_score = share of the question's content a passage must cover to count as evidence;
 # heading_boost = ranking bonus when the passage's heading names what was asked
 # Topic weights come from the blueprint (seed/blueprint.yaml): a core issue gets its group's midpoint
@@ -61,8 +61,13 @@ chat: {max_steps: 4, prompt_token_budget: 12000}
 # that counts as "remembers but does not apply"; min_bloom_items: answers per side before that gap is
 # trusted; additions: sentences beyond the verified claims (a definition, reason or example a passage
 # states) allowed per level, plus reason_additions when the gap rule applies.
-personalization: {enabled: true, min_responses: 10, low: 0.4, high: 0.75, recall_applied_gap: 0.3,
-                  min_bloom_items: 8, additions: {co_ban: 3, trung_binh: 0, nang_cao: 0}, reason_additions: 2}
+# Learner-adapted teaching (app/chat/personalize.py, v2): a Bloom profile on the passages' competencies
+# (a level is held at pass_accuracy with at least min_level_items answers), the frontier's way of
+# explaining, and scaffolding: a prerequisite bridge (prerequisite mastery below weak_mastery), the
+# learner's own misconceptions, a closing self-check. Additions are sentences a passage states.
+personalization: {enabled: true, min_responses: 6, min_level_items: 2, pass_accuracy: 0.7, scaffolding: true,
+                  weak_mastery: 0.4, max_misconceptions: 2, bridge_passages: 2,
+                  additions_by_frontier: {1: 2, 2: 2, 3: 2, 4: 1, 5: 1, 6: 0}}
 # After an answer: offer practice on a cited topic the learner answered wrongly in the last window_days,
 # with at most max_items questions.
 suggestions: {window_days: 14, max_items: 3}

@@ -1,0 +1,31 @@
+# Prerequisite map over competency_node (level 2). MACHINE-MADE, NOT REVIEWED:
+# kept only where Claude Haiku and Gemini Flash-Lite both proposed the edge
+# (experiments/prerequisites/propose.py, 2026-11-23). Loaded by migration 0021.
+# Removed after a read-through: CI-42 ← CI-41 and CI-43 ← CI-41 (parallel symptoms, not prior knowledge).
+
+CI-01: [FND]   # Bệnh truyền nhiễm có nguy cơ gây dịch ← Khái niệm cơ bản của y học dự phòng
+CI-02: [FND]   # Bệnh không lây nhiễm phổ biến ← Khái niệm cơ bản của y học dự phòng
+CI-03: [FND]   # Bệnh, tật học đường ← Khái niệm cơ bản của y học dự phòng
+CI-04: [CI-01]   # Tiêm phòng/Tiêm chủng trẻ em và người lớn ← Bệnh truyền nhiễm có nguy cơ gây dịch
+CI-05: [CI-01]   # Dự phòng HIV ← Bệnh truyền nhiễm có nguy cơ gây dịch
+CI-16: [CI-12]   # Bong gân, trật khớp ← Sơ cấp cứu chấn thương và tai nạn
+CI-17: [CI-06]   # Ngộ độc thực phẩm ← Ngộ độc cấp thường gặp
+CI-19: [FND]   # Thiếu dinh dưỡng ← Khái niệm cơ bản của y học dự phòng
+CI-20: [CI-05]   # Điều trị duy trì HIV và lao ← Dự phòng HIV
+CI-22: [CI-21]   # Sốt và phát ban ← Sốt
+CI-23: [CI-21]   # Hội chứng màng não ← Sốt
+CI-24: [CI-21]   # Hội chứng viêm đường hô hấp trên ← Sốt
+CI-28: [FND]   # Bệnh nghề nghiệp và bệnh liên quan đến nghề nghiệp ← Khái niệm cơ bản của y học dự phòng
+CI-29: [CI-28]   # Giảm thính lực/ù tai ← Bệnh nghề nghiệp và bệnh liên quan đến nghề nghiệp
+CI-30: [CI-24]   # Ho ← Hội chứng viêm đường hô hấp trên
+CI-31: [CI-30]   # Ho ra máu ← Ho
+CI-32: [CI-30]   # Khó thở mạn ← Ho
+CI-34: [CI-33]   # Ợ nóng/khó tiêu ← Đau bụng
+CI-35: [CI-33]   # Xuất huyết tiêu hóa ← Đau bụng
+CI-36: [CI-33]   # Táo bón ← Đau bụng
+CI-37: [CI-02]   # Rối loạn Lipid máu ← Bệnh không lây nhiễm phổ biến
+CI-38: [CI-02]   # Đái tháo đường típ 2 và tiền đái tháo đường ← Bệnh không lây nhiễm phổ biến
+CI-39: [CI-02]   # Tăng huyết áp ← Bệnh không lây nhiễm phổ biến
+CI-45: [CI-44]   # Mày đay ← Ngứa
+CI-49: [CI-50]   # Tự tử, tự gây thương tích ← Rối loạn lo âu/trầm cảm/căng thẳng
+CI-53: [CI-52]   # Giao tiếp với đồng nghiệp ← Giao tiếp với người bệnh và người nhà

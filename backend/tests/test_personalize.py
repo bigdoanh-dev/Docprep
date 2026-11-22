@@ -1,58 +1,135 @@
-"""Learner policy and layout stage (app/chat/personalize.py, app/chat/adapt.py).
+"""Learner policy and layout stage (app/chat/personalize.py v2, app/chat/adapt.py).
 
 Stage A (the grounded answer) never sees the learner and alone decides whether the passages answer.
-Stage B lays out stage A's verified claims for the learner; it may not drop a claim, change a number,
-say what the claims do not, or add what no passage states. Any failure shows stage A unchanged."""
+Stage B teaches stage A's verified claims toward the learner's Bloom frontier, with scaffolding; it may
+not drop a claim, change a number, say what the claims do not, or add what no passage states. Any
+failure shows stage A unchanged."""
 import dataclasses
 import json
 import re
 
 import pytest
 
-from app.chat.personalize import Policy, Signals, policy_for, profile_text
+from app.chat import personalize
+from app.chat.normalise import normalise
+from app.chat.personalize import FRONTIER_MOVES, Misconception, Policy, Signals, policy_for, profile, profile_text
 from app.chat.pipeline import INSUFFICIENT_COPY, generate, prepare_answer
 from app.chat.worker import TurnModelUnavailable, TurnStopped
 from app.gateway import FakeGateway, GatewayError
-from app.repo import consent
+from app.repo import consent, content
 from tests.conftest import birth_dose_json
 
-CFG = {"enabled": True, "min_responses": 10, "low": 0.4, "high": 0.75, "recall_applied_gap": 0.3,
-       "min_bloom_items": 8, "additions": {"co_ban": 3, "trung_binh": 0, "nang_cao": 0}, "reason_additions": 2}
+CFG = {"enabled": True, "min_responses": 6, "min_level_items": 2, "pass_accuracy": 0.7, "scaffolding": True,
+       "weak_mastery": 0.4, "max_misconceptions": 2, "bridge_passages": 2,
+       "additions_by_frontier": {1: 2, 2: 2, 3: 2, 4: 1, 5: 1, 6: 0}}
 Q = "Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?"
-WEAK = Policy("co_ban", 3, plain_wording=True, give_reasons=False, thresholds_first=False)
+WEAK = Policy(secure=1, frontier=2, scaffold=True, additions=3, check_question=True)
 RESTATED = "Trẻ sơ sinh được tiêm mũi vắc xin viêm gan B trong vòng 24 giờ đầu sau sinh."
 ADDED = "Đây là mũi tiêm viêm gan B dành cho trẻ sơ sinh."
+MISTAKE = Misconception("Mũi viêm gan B sơ sinh tiêm khi nào?", "Trong tháng đầu", "Phải tiêm trong 24 giờ đầu.",
+                        "Trong vòng 24 giờ")
 
 
-# ---- rules -----------------------------------------------------------------------------------------
+# ---- the Bloom profile -----------------------------------------------------------------------------
+
+@pytest.mark.parametrize("rungs,expected", [
+    ({1: (4, 4), 2: (4, 3), 3: (4, 1)}, (2, 3)),        # holds Nhớ and Hiểu, teach toward Vận dụng
+    ({1: (4, 2), 3: (4, 4)}, (0, 1)),                    # a gap low down comes first
+    ({2: (3, 3), 4: (3, 3)}, (4, 5)),                    # every observed level held: the next one
+    ({6: (2, 2)}, (6, 6)),
+    ({1: (1, 0), 2: (4, 4)}, (2, 3)),                    # one answer is not a level observed
+])
+def test_secure_and_frontier_come_from_the_answers_per_level(rungs, expected):
+    assert profile(rungs, CFG) == expected
+
 
 def test_too_little_known_means_no_policy():
-    assert policy_for(Signals(None, 0, None, None), CFG) is None
-    assert policy_for(Signals(0.1, 9, 0.9, 0.1), CFG) is None      # below min_responses
+    assert policy_for(Signals({}), CFG) is None
+    assert policy_for(Signals({1: (3, 3), 2: (2, 0)}), CFG) is None       # 5 answers < min_responses
+    assert policy_for(Signals({1: (1, 1), 2: (1, 0), 3: (1, 1), 4: (1, 0), 5: (1, 1), 6: (1, 1)}), CFG) is None
 
 
-@pytest.mark.parametrize("mastery,level,additions", [(0.2, "co_ban", 3), (0.39, "co_ban", 3),
-                                                     (0.4, "trung_binh", 0), (0.74, "trung_binh", 0),
-                                                     (0.75, "nang_cao", 0), (0.95, "nang_cao", 0)])
-def test_mastery_sets_the_level(mastery, level, additions):
-    p = policy_for(Signals(mastery, 50, None, None), CFG)
-    assert (p.level, p.additions) == (level, additions)
-    assert p.plain_wording == (level == "co_ban") and p.thresholds_first == (level == "nang_cao")
-    assert not p.give_reasons                                       # no Bloom data, no "why" rule
+def test_each_frontier_has_its_own_way_of_explaining():
+    for frontier in range(1, 7):
+        rungs = {lvl: (3, 3) for lvl in range(1, frontier)} | {frontier: (6, 0)}
+        p = policy_for(Signals(rungs), CFG)
+        assert p.frontier == frontier and FRONTIER_MOVES[frontier] in profile_text(p)
 
 
-def test_remembers_but_does_not_apply_asks_for_reasons():
-    p = policy_for(Signals(0.5, 50, 0.87, 0.33), CFG)
-    assert p.give_reasons and p.additions == 2
-    assert not policy_for(Signals(0.5, 50, 0.80, 0.60), CFG).give_reasons   # gap 0.2 < 0.3
+def test_a_weak_learner_gets_scaffolds_not_simpler_words():
+    s = Signals({1: (4, 4), 2: (4, 1)}, (("FND", "Khái niệm cơ bản"),), (MISTAKE,))
+    p = policy_for(s, CFG)
+    text = profile_text(p)
+    assert (p.secure, p.frontier, p.check_question) == (1, 2, True)
+    assert p.prerequisites == (("FND", "Khái niệm cơ bản"),) and p.misconceptions == (MISTAKE,)
+    assert p.additions == 2 + 1 + 1                                    # frontier's own, bridge, misconception
+    assert "không viết lại cho đơn giản hơn chỉ vì người học còn yếu" in text
+    assert "Trong tháng đầu" in text and "Phải tiêm trong 24 giờ đầu." in text and "tự kiểm tra" in text
+    assert "dễ hiểu" not in text and "câu ngắn" not in text
+
+
+def test_scaffolds_fade_as_the_learner_rises():
+    s = Signals({lvl: (3, 3) for lvl in range(1, 5)} | {5: (3, 0)}, (("FND", "Khái niệm cơ bản"),), (MISTAKE,))
+    p = policy_for(s, CFG)
+    assert p.frontier == 5 and p.prerequisites == () and p.check_question     # no bridge above Vận dụng
+    top = policy_for(Signals({lvl: (3, 3) for lvl in range(1, 7)}), CFG)
+    assert top.frontier == 6 and not top.check_question and top.additions == 0
+
+
+def test_bloom_only_is_the_ablation_without_scaffolds():
+    s = Signals({1: (4, 4), 2: (4, 1)}, (("FND", "Khái niệm cơ bản"),), (MISTAKE,))
+    p = policy_for(s, CFG, scaffold=False)
+    assert not p.scaffold and p.prerequisites == () and p.misconceptions == () and not p.check_question
+    assert FRONTIER_MOVES[2] in profile_text(p) and "tự kiểm tra" not in profile_text(p)
 
 
 def test_profile_block_says_what_to_do_not_who_the_learner_is():
     text = profile_text(WEAK)
     assert "Luôn giữ ý trả lời trực tiếp câu hỏi trước" in text and "không bao giờ bỏ ý nào" in text
-    assert "đủ ý" in text and "tối đa 3 câu bổ sung" in text and "Không tự nghĩ ra ví dụ" in text
-    assert "0.2" not in text and "mastery" not in text and "theta" not in text
-    assert "Không thêm câu bổ sung" in profile_text(Policy("nang_cao", 0, False, False, True))
+    assert "tối đa 3 câu bổ sung" in text and "Không tự nghĩ ra ví dụ" in text
+    assert not re.search(r"\d\.\d|mastery|theta|%", text)
+    assert "Không thêm câu bổ sung" in profile_text(Policy(6, 6, True, 0))
+
+
+# ---- reading the learner's records -----------------------------------------------------------------
+
+def _answer(conn, learner, qid, correct, chosen=None):
+    conn.execute("""insert into item_response(learner_id, question_id, question_version, context, chosen, correct)
+                    values (%s, %s, 1, 'diagnostic', %s, %s)""", (learner["id"], qid, chosen, correct))
+
+
+def test_signals_use_reviewed_then_machine_labels_then_the_band(conn, learner):
+    for q in ("q-dt-02", "q-dt-08", "q-dt-01", "q-dt-03"):                # bands 1, 1, 2, 2
+        _answer(conn, learner, q, True)
+    conn.execute("insert into question_bloom_label(question_id, question_version, level) values ('q-dt-08', 1, 1)")
+    conn.execute("insert into question_bloom_label(question_id, question_version, level) values ('q-dt-01', 1, 5)")
+    rungs = personalize.signals(conn, learner["id"], ["FND"]).rungs
+    assert rungs == {2: (1, 1), 1: (1, 1), 5: (1, 1), 3: (1, 1)}
+    assert personalize.signals(conn, learner["id"], ["CI-04"]).rungs == {}
+
+
+def test_a_wrong_answer_brings_its_rationale(conn, learner):
+    _answer(conn, learner, "q-dt-01", False, "b")
+    m = personalize.signals(conn, learner["id"], ["FND"]).misconceptions
+    assert len(m) == 1 and m[0].chosen == "5%" and "mẫu số" in m[0].why_wrong and m[0].correct == "2,5%"
+
+
+def test_a_weak_prerequisite_is_found_through_the_map(conn, learner):
+    conn.execute("update competency_node set prerequisite_codes = '{FND}' where code = 'CI-04'")
+    conn.execute("insert into mastery(learner_id, competency_code, theta, n_responses) values (%s, 'FND', -2, 20)",
+                 (learner["id"],))
+    weak = personalize.signals(conn, learner["id"], ["CI-04"]).weak_prerequisites
+    assert [code for code, _ in weak] == ["FND"]
+    conn.execute("update mastery set theta = 2 where learner_id = %s", (learner["id"],))
+    assert personalize.signals(conn, learner["id"], ["CI-04"]).weak_prerequisites == ()
+
+
+def test_the_bridge_passages_come_from_the_prerequisite_only(conn, learner):
+    p = Policy(1, 2, True, 3, prerequisites=(("FND", "Khái niệm cơ bản"),))
+    bridged = personalize.with_bridge(conn, p, normalise("tỷ lệ hiện mắc mẫu số dân số", content.glossary(conn)))
+    assert bridged.bridge and {b.competency_code for b in bridged.bridge} == {"FND"}
+    nothing = personalize.with_bridge(conn, p, normalise("xyzzy", content.glossary(conn)))
+    assert nothing.bridge == () and nothing.prerequisites == () and nothing.additions == 2
 
 
 # ---- stage A is the same with or without a learner -----------------------------------------------
@@ -61,23 +138,26 @@ def _prepared(conn, learner_id=None):
     return [v for k, v in prepare_answer(conn, Q, learner_id=learner_id) if k == "prepared"][0]
 
 
-def _make_known(conn, learner, theta: float, n: int = 40):
-    code = conn.execute("select competency_code from passage where id='tc-p02'").fetchone()["competency_code"]
-    conn.execute("""insert into mastery(learner_id, competency_code, theta, n_responses) values (%s,%s,%s,%s)
-                    on conflict (learner_id, competency_code) do update set theta=excluded.theta, n_responses=excluded.n_responses""",
-                 (learner["id"], code, theta, n))
+def _make_known(conn, learner):
+    """Answers on CI-04 (the passage's competency): band 1 all right, band 2 mostly wrong."""
+    qs = conn.execute("select id, bloom_level from question where competency_code = 'CI-04' and status = 'approved' "
+                      "order by id").fetchall()
+    by_band = {b: [q["id"] for q in qs if q["bloom_level"] == b] for b in (1, 2)}
+    for band, outcomes in ((1, (True,) * 4), (2, (True, False, False, False))):
+        for i, ok in enumerate(outcomes):
+            _answer(conn, learner, by_band[band][i % len(by_band[band])], ok)
 
 
 def test_the_answer_prompt_never_carries_the_profile(conn, learner, clock):
-    _make_known(conn, learner, -1.5)                                # mastery ≈ 0.18
+    _make_known(conn, learner)
     consent.give(conn, learner["id"], "personalization", "v1", clock.now)
     base, p = _prepared(conn), _prepared(conn, learner["id"])
     assert (p.user, p.system, p.passages, p.check_text) == (base.user, base.system, base.passages, base.check_text)
-    assert "Hồ sơ người học" not in p.user and p.policy.level == "co_ban" and p.question == Q
+    assert "Hồ sơ người học" not in p.user and (p.policy.secure, p.policy.frontier) == (2, 3) and p.question == Q
 
 
 def test_without_or_after_withdrawing_consent_there_is_no_policy(conn, learner, clock):
-    _make_known(conn, learner, -1.5)
+    _make_known(conn, learner)
     assert _prepared(conn, learner["id"]).policy is None
     consent.give(conn, learner["id"], "personalization", "v1", clock.now)
     consent.withdraw(conn, learner["id"], "personalization", clock.now)
@@ -196,6 +276,67 @@ def test_an_unsupported_addition_is_dropped_and_the_rest_kept(conn, learner):
 
 
 def test_additions_beyond_the_policy_are_dropped(conn, learner):
-    none_allowed = Policy("nang_cao", 0, False, False, True)
+    none_allowed = Policy(6, 6, True, 0)
     out = turn(conn, model(conn, [restated(), added(conn)]), policy=none_allowed)
     assert out.adapted is True and out.text == f"{RESTATED} [1]"
+
+
+def check(text="Mũi viêm gan B sơ sinh phải tiêm trong khoảng thời gian nào?", claims=(0,)):
+    return {"text": text, "claims": list(claims), "evidence": [], "kind": "check"}
+
+
+def test_the_self_check_question_closes_the_answer_without_a_citation(conn, learner):
+    gw = model(conn, [restated(), check()])
+    out = turn(conn, gw)
+    assert out.adapted is True
+    assert out.text == f"{RESTATED} [1] Tự kiểm tra: Mũi viêm gan B sơ sinh phải tiêm trong khoảng thời gian nào? "
+    checked = re.findall(r"^Claim \d+: (.*)$", gw.calls[2]["messages"][0]["content"], re.M)
+    assert checked == [RESTATED]                                    # a question is not entailment-checked
+
+
+@pytest.mark.parametrize("bad", [
+    pytest.param(check("Mũi này tiêm trong 12 giờ đầu phải không?"), id="a new number"),
+    pytest.param(check("Hãy nhớ tiêm trong 24 giờ."), id="not a question"),
+    pytest.param(check(claims=()), id="answered by no claim"),
+])
+def test_a_bad_self_check_is_dropped_and_the_rest_kept(conn, learner, bad):
+    out = turn(conn, model(conn, [restated(), bad]))
+    assert out.adapted is True and out.text == f"{RESTATED} [1]"
+
+
+def test_no_self_check_unless_the_policy_asks(conn, learner):
+    out = turn(conn, model(conn, [restated(), check()]), policy=Policy(6, 6, True, 0))
+    assert out.text == f"{RESTATED} [1]"
+
+
+def test_a_bridge_passage_may_back_an_addition_and_is_cited(conn, learner):
+    from app.chat.retrieval import get_passages
+    bridge = get_passages(conn, ["dt-p01"])["dt-p01"]
+    quote = bridge.text.split(".")[0]
+    policy = dataclasses.replace(WEAK, prerequisites=(("FND", "Khái niệm cơ bản"),), bridge=(bridge,))
+    gw = model(conn, [restated(), {"text": "Nền tảng: " + quote + ".", "claims": [],
+                                   "evidence": [{"passage_id": "dt-p01", "quote": quote}]}])
+    out = turn(conn, gw, policy=policy)
+    assert out.adapted is True and [c["passage_id"] for c in out.citations] == ["tc-p02", "dt-p01"]
+    assert "[dt-p01]" in gw.calls[1]["messages"][0]["content"]
+
+
+def test_a_step_label_is_not_a_changed_number_but_a_figure_still_is(conn, learner):
+    ok = turn(conn, model(conn, [restated("Bước 1: " + RESTATED)]))
+    assert ok.adapted is True and ok.text.startswith("Bước 1: Trẻ sơ sinh")
+    bad = turn(conn, model(conn, [restated("Bước 1: " + RESTATED.replace("24", "48"))]))
+    assert bad.adapted is False and bad.adapt_failure == "number_changed"
+    mid = turn(conn, model(conn, [restated(RESTATED + " Đây là bước 2.")]))
+    assert mid.adapt_failure == "number_changed"               # only a label at the start is ignored
+
+
+def test_a_rejected_restatement_is_shown_as_its_claim_and_the_rest_kept(conn, learner):
+    """Three claims, three restatements; the checker rejects one: that one is shown as its verified claim."""
+    three = json.loads(birth_dose_json(conn).strip().removeprefix("```json").removesuffix("```"))
+    claim = three["claims"][0]
+    three["claims"] = [claim, {**claim, "text": claim["text"] + " "}, {**claim, "text": " " + claim["text"]}]
+    gw = model(conn, [restated(claims=(0,)), restated("Bước đầu tiên là " + RESTATED.lower(), claims=(1,)),
+                      restated(claims=(2,))],
+               answer=json.dumps(three, ensure_ascii=False), verdict=lambda i, t: "no" if "Bước đầu tiên" in t else "yes")
+    out = turn(conn, gw)
+    assert out.adapted is True and "Bước đầu tiên" not in out.text and out.text.count("[1]") == 3

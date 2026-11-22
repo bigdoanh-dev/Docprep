@@ -255,6 +255,7 @@ def generate(gw: Gateway, prepared: Prepared) -> Iterator[Event]:
     adapted = failure = base_text = None
     if prepared.policy is not None:
         base_text = _assemble(claims, by_id)[0]
+        by_id = {**by_id, **{p.id: p for p in prepared.policy.bridge}}   # a prerequisite bridge may be cited
         layout = adapt.render(lambda task, system, user: _ask_model(gw, task, system, user)[0],
                               prepared.question, claims, passages, prepared.policy)
         failure = layout.failure
@@ -317,7 +318,7 @@ def prepare_answer(conn, query: str, module_id: str | None = None, detail: bool 
     system = _prompt("answer_v1")
     sent = compose(parts, found.passages, system=system)
     policy = personalize.for_turn(conn, learner_id, list(dict.fromkeys(
-        p.competency_code for p in sent.passages if p.competency_code)))
+        p.competency_code for p in sent.passages if p.competency_code)), normalised)
     yield from _end(steps, "read")
     yield ("prepared", Prepared(None, steps, "answer", system, sent.user, sent.passages,
                                 {p.id: p.text for p in sent.passages}, query, policy))

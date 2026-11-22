@@ -1,0 +1,145 @@
+{"question_id": "Q1", "profile": "P1_nen_yeu", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q1", "profile": "P1_nen_yeu", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q1", "profile": "P1_nen_yeu", "kind": "number_changed", "planted": "Theo phân độ, sốt xuất huyết Dengue có dấu hiệu cảnh báo khi có ít nhất 2 trong các dấu hiệu sau.", "failure": "number_changed", "caught": true}
+{"question_id": "Q1", "profile": "P1_nen_yeu", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q1", "profile": "P1_nen_yeu", "kind": "meaning_flip", "planted": "Gan to > 2cm dưới bờ sườn và tiểu ít không phải là dấu hiệu cảnh báo.", "failure": null, "caught": true}
+{"question_id": "Q1", "profile": "P1_nen_yeu", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q1", "profile": "P1_nen_yeu", "kind": "misquoted_addition", "planted": "Đau cơ và đau khớp là những triệu chứng ít gặp và không liên quan đến việc nhức hai hố mắt.", "failure": null, "caught": true}
+{"question_id": "Q1", "profile": "P2_van_dung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q1", "profile": "P2_van_dung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q1", "profile": "P2_van_dung", "kind": "number_changed", "planted": "Sốt xuất huyết Dengue có dấu hiệu cảnh báo khi có ít nhất 2 trong các dấu hiệu sau.", "failure": "number_changed", "caught": true}
+{"question_id": "Q1", "profile": "P2_van_dung", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q1", "profile": "P2_van_dung", "kind": "meaning_flip", "planted": "Bước 6: AST/ALT ≥ 400U/L (nếu có điều kiện thực hiện) và tràn dịch màng phổi, màng bụng trên siêu âm hoặc X-quang cũng là dấu hiệu cảnh báo ở người lớn.", "failure": null, "caught": true}
+{"question_id": "Q1", "profile": "P2_van_dung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q1", "profile": "P2_van_dung", "kind": "misquoted_addition", "planted": "Gan to dưới 2cm bờ sườn là dấu hiệu duy nhất cần lưu ý khi bệnh nhân có biểu hiện xuất huyết.", "failure": null, "caught": true}
+{"question_id": "Q1", "profile": "P3_phan_tich", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q1", "profile": "P3_phan_tich", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q1", "profile": "P3_phan_tich", "kind": "number_changed", "planted": "Tiêu chí về gan và tiểu: gan to > 3cm dưới bờ sườn và tiểu ít cũng là dấu hiệu cảnh báo.", "failure": "number_changed", "caught": true}
+{"question_id": "Q1", "profile": "P3_phan_tich", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q1", "profile": "P3_phan_tich", "kind": "meaning_flip", "planted": "Tiêu chí về gan và tiểu: gan to > 2cm dưới bờ sườn và tiểu ít luôn là dấu hiệu cảnh báo.", "failure": null, "caught": false}
+{"question_id": "Q1", "profile": "P3_phan_tich", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q1", "profile": "P3_phan_tich", "kind": "misquoted_addition", "planted": "AST hoặc ALT tăng trên 1000U/L luôn đi kèm với triệu chứng rối loạn thần kinh trung ương mức độ nặng.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P1_nen_yeu", "kind": "clean", "planted": "", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P1_nen_yeu", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q2", "profile": "P1_nen_yeu", "kind": "number_changed", "planted": "THA độ 4 là khi huyết áp tâm thu ≥ 180 mmHg và/hoặc huyết áp tâm trương ≥ 110 mmHg.", "failure": "number_changed", "caught": true}
+{"question_id": "Q2", "profile": "P1_nen_yeu", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q2", "profile": "P1_nen_yeu", "kind": "meaning_flip", "planted": "THA độ 2 là khi huyết áp tâm thu 160–179 mmHg và/hoặc huyết áp tâm trương 100–109 mmHg áp dụng riêng cho trẻ em dưới 15 tuổi.", "failure": "number_changed", "caught": true}
+{"question_id": "Q2", "profile": "P1_nen_yeu", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P1_nen_yeu", "kind": "misquoted_addition", "planted": "Hộp que thử đường huyết đã mở nắp chỉ được phép sử dụng tối đa trong thời gian 3 tháng và có thể bảo quản trong tủ lạnh để kéo dài hạn dùng.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P2_van_dung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q2", "profile": "P2_van_dung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q2", "profile": "P2_van_dung", "kind": "number_changed", "planted": "Bước 2: Xếp huyết áp tâm thu vào mức tương ứng: THA độ 2 khi tâm thu 140–159 mmHg; THA độ 2 khi tâm thu 160–179 mmHg; THA độ 3 khi tâm thu ≥ 180 mmHg.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P2_van_dung", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q2", "profile": "P2_van_dung", "kind": "meaning_flip", "planted": "Bước 2: Xếp huyết áp tâm thu vào mức tương ứng: THA độ 1 khi tâm thu 140–159 mmHg; THA độ 2 khi tâm thu 160–179 mmHg; THA độ 3 khi tâm thu < 180 mmHg.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P2_van_dung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P2_van_dung", "kind": "misquoted_addition", "planted": "Bệnh nhân có chỉ số huyết áp dưới 130/80 mmHg cần được theo dõi tại Trạm y tế với tần suất hàng tuần dù đã đạt mục tiêu điều trị.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P3_phan_tich", "kind": "clean", "planted": "", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P3_phan_tich", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q2", "profile": "P3_phan_tich", "kind": "number_changed", "planted": "Đối tượng được chẩn đoán THA tại trạm y tế xã gồm người từ 19 tuổi trở lên có huyết áp ≥ 140/90 mmHg, phát hiện tại cộng đồng hoặc khi khám tại trạm.", "failure": "number_changed", "caught": true}
+{"question_id": "Q2", "profile": "P3_phan_tich", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q2", "profile": "P3_phan_tich", "kind": "meaning_flip", "planted": "Khi huyết áp tâm thu và tâm trương ở các mức khác nhau, không nên lấy mức cao hơn để phân độ.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P3_phan_tich", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P3_phan_tich", "kind": "misquoted_addition", "planted": "Bệnh nhân có nguy cơ tim mạch cao dưới 1,8 cần được đánh giá lại tuyến trên từ 2 lần trở lên mỗi năm theo đúng chỉ định.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P4_vung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q2", "profile": "P4_vung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q2", "profile": "P4_vung", "kind": "number_changed", "planted": "Bước 1: Xác định đối tượng chẩn đoán THA: người từ 19 tuổi trở lên có huyết áp ≥ 140/90 mmHg, phát hiện tại cộng đồng hoặc khi khám tại trạm.", "failure": "number_changed", "caught": true}
+{"question_id": "Q2", "profile": "P4_vung", "kind": "meaning_flip", "planted": "Bước 2: Phân độ theo mức huyết áp đo được; khi huyết áp tâm thu và tâm trương ở các mức khác nhau, luôn luôn lấy mức cao hơn để phân độ.", "failure": null, "caught": false}
+{"question_id": "Q2", "profile": "P4_vung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q2", "profile": "P4_vung", "kind": "misquoted_addition", "planted": "Bệnh nhân nữ có nồng độ Triglycerid dưới 1,7 mmol/L chỉ cần đo lại định kỳ ba năm một lần tại tuyến địa phương theo chỉ định.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P1_nen_yeu", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q3", "profile": "P1_nen_yeu", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q3", "profile": "P1_nen_yeu", "kind": "number_changed", "planted": "Phản ứng Widal được làm 3 lần để đánh giá hiệu giá kháng thể.", "failure": "number_changed", "caught": true}
+{"question_id": "Q3", "profile": "P1_nen_yeu", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q3", "profile": "P1_nen_yeu", "kind": "meaning_flip", "planted": "Chẩn đoán xác định thương hàn ở trẻ em dựa trên cả phần lâm sàng và phần xét nghiệm.", "failure": null, "caught": false}
+{"question_id": "Q3", "profile": "P1_nen_yeu", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P1_nen_yeu", "kind": "misquoted_addition", "planted": "Dịch đục, tăng protein và tế bào, nuôi cấy có thể phân lập được trực khuẩn thương hàn bằng phương pháp xét nghiệm PCR nhanh.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P2_van_dung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q3", "profile": "P2_van_dung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q3", "profile": "P2_van_dung", "kind": "number_changed", "planted": null, "failure": "claim_missing", "caught": true}
+{"question_id": "Q3", "profile": "P2_van_dung", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q3", "profile": "P2_van_dung", "kind": "meaning_flip", "planted": "Bước 2: Về xét nghiệm, phân lập được trực khuẩn thương hàn từ các bệnh phẩm như máu, tủy xương, dịch não tủy, đờm, đào ban hoặc nước tiểu.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P2_van_dung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P2_van_dung", "kind": "misquoted_addition", "planted": "Triệu chứng đau đầu và chóng mặt thường chỉ xuất hiện ở những bệnh nhân trên 60 tuổi.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P3_phan_tich", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q3", "profile": "P3_phan_tich", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q3", "profile": "P3_phan_tich", "kind": "number_changed", "planted": null, "failure": "claim_missing", "caught": true}
+{"question_id": "Q3", "profile": "P3_phan_tich", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q3", "profile": "P3_phan_tich", "kind": "meaning_flip", "planted": "Phản ứng Widal được xem là có giá trị khi hiệu giá kháng thể trên 1:160 trong một mẫu lần 1, hoặc hiệu giá lần 2 không tăng gấp 4 lần so với lần 1.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P3_phan_tich", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P4_vung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q3", "profile": "P4_vung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q3", "profile": "P4_vung", "kind": "number_changed", "planted": "Tiêu chí đọc kết quả Widal: phản ứng Widal được xem là có giá trị khi hiệu giá kháng thể trên 2:160 trong một mẫu lần 1, hoặc hiệu giá lần 2 tăng gấp 4 lần so với lần 1.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P4_vung", "kind": "meaning_flip", "planted": "Tiêu chí đọc kết quả Widal: phản ứng Widal được xem là có giá trị khi hiệu giá kháng thể trên 1:160 trong một mẫu lần 1 ở trẻ em, hoặc hiệu giá lần 2 tăng gấp 4 lần so với lần 1.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P4_vung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q3", "profile": "P4_vung", "kind": "misquoted_addition", "planted": "Dịch đục, tăng protein và tế bào, nuôi cấy có thể phân lập được virus gây bệnh viêm gan B.", "failure": null, "caught": true}
+{"question_id": "Q4", "profile": "P1_nen_yeu", "kind": "clean", "planted": "", "failure": null, "caught": true}
+{"question_id": "Q4", "profile": "P1_nen_yeu", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q4", "profile": "P1_nen_yeu", "kind": "number_changed", "planted": "Bước 2: Nếu cải thiện lâm sàng, tiếp tục truyền Ringer lactate hoặc NaCl 1,9% với tốc độ 10 ml/kg/giờ trong 1 - 2 giờ, sau đó giảm tốc độ dần theo đáp ứng.", "failure": "number_changed", "caught": true}
+{"question_id": "Q4", "profile": "P1_nen_yeu", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q4", "profile": "P1_nen_yeu", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q4", "profile": "P2_van_dung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q4", "profile": "P2_van_dung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q4", "profile": "P2_van_dung", "kind": "number_changed", "planted": "Bước 3: Nếu cải thiện lâm sàng, tiếp tục truyền Ringer lactate hoặc NaCl 1,9% với tốc độ 10 ml/kg/giờ trong 1 - 2 giờ, sau đó giảm tốc độ dần theo đáp ứng.", "failure": "number_changed", "caught": true}
+{"question_id": "Q4", "profile": "P2_van_dung", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q4", "profile": "P2_van_dung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q4", "profile": "P3_phan_tich", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q4", "profile": "P3_phan_tich", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q4", "profile": "P3_phan_tich", "kind": "number_changed", "planted": "Khi người bệnh sốc nặng hoặc tụt huyết áp nặng, cần nằm đầu thấp, thở oxy và truyền nhanh Ringer lactate hoặc NaCl 1,9% với tốc độ 20 ml/kg trong vòng 15 phút.", "failure": "number_changed", "caught": true}
+{"question_id": "Q4", "profile": "P3_phan_tich", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q4", "profile": "P3_phan_tich", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q4", "profile": "P4_vung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q4", "profile": "P4_vung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q4", "profile": "P4_vung", "kind": "number_changed", "planted": "Bước 3: Nếu không cải thiện và Hct còn cao hoặc ≥ 41%, chuyển sang truyền cao phân tử 10 - 20 ml/kg/giờ trong 1 giờ; các loại được chọn là Dextran 40, Dextran 70 hoặc 6% HES 200.", "failure": "number_changed", "caught": true}
+{"question_id": "Q4", "profile": "P4_vung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q5", "profile": "P1_nen_yeu", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q5", "profile": "P1_nen_yeu", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q5", "profile": "P1_nen_yeu", "kind": "number_changed", "planted": "Người có triệu chứng tăng glucose máu và glucose tĩnh mạch bất kỳ ≥ 12,1 mmol/L cũng được chẩn đoán đái tháo đường.", "failure": "number_changed", "caught": true}
+{"question_id": "Q5", "profile": "P1_nen_yeu", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q5", "profile": "P1_nen_yeu", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q5", "profile": "P2_van_dung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q5", "profile": "P2_van_dung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q5", "profile": "P2_van_dung", "kind": "number_changed", "planted": "Tại trạm y tế xã, chẩn đoán đái tháo đường típ 3 được đặt ra khi đạt một trong các tiêu chuẩn sau: glucose huyết tương tĩnh mạch lúc đói (nhịn 8–12 giờ) ≥ 7,0 mmol/L (≥ 126 mg/dL), glucose 2 giờ NPDNG ≥ 11,1 mmol/L (≥ 200 mg/dL), hoặc HbA1c ≥ 6,5% (≥ 48 mmol/mol).", "failure": "number_changed", "caught": true}
+{"question_id": "Q5", "profile": "P2_van_dung", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q5", "profile": "P2_van_dung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q5", "profile": "P3_phan_tich", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q5", "profile": "P3_phan_tich", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q5", "profile": "P3_phan_tich", "kind": "number_changed", "planted": "Bước 2: Khi glucose máu không tăng rõ, điều kiện là cần 3 kết quả đạt chuẩn trên cùng một mẫu hoặc trên 2 mẫu ở ngày khác.", "failure": "number_changed", "caught": true}
+{"question_id": "Q5", "profile": "P3_phan_tich", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q5", "profile": "P3_phan_tich", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q5", "profile": "P4_vung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q5", "profile": "P4_vung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q5", "profile": "P4_vung", "kind": "number_changed", "planted": "Tại trạm y tế xã, chẩn đoán đái tháo đường típ 3 được đặt ra khi đạt một trong các tiêu chuẩn sau: glucose huyết tương tĩnh mạch lúc đói (nhịn 8–12 giờ) ≥ 7,0 mmol/L (≥ 126 mg/dL), glucose 2 giờ NPDNG ≥ 11,1 mmol/L (≥ 200 mg/dL), hoặc HbA1c ≥ 6,5% (≥ 48 mmol/mol).", "failure": "number_changed", "caught": true}
+{"question_id": "Q5", "profile": "P4_vung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q7", "profile": "P1_nen_yeu", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q7", "profile": "P1_nen_yeu", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q7", "profile": "P1_nen_yeu", "kind": "number_changed", "planted": null, "failure": "claim_missing", "caught": true}
+{"question_id": "Q7", "profile": "P1_nen_yeu", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q7", "profile": "P1_nen_yeu", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q7", "profile": "P2_van_dung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q7", "profile": "P2_van_dung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q7", "profile": "P2_van_dung", "kind": "number_changed", "planted": "Người bệnh tiêu chảy do vi khuẩn mất nước từ độ II trở lên mà không uống được thì bù dịch bằng đường tĩnh mạch, dung dịch được lựa chọn là Ringer lactat; có thể dùng thay thế NaCl 1,9% hoặc Glucose 5% với tỷ lệ 1:1.", "failure": "number_changed", "caught": true}
+{"question_id": "Q7", "profile": "P2_van_dung", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q7", "profile": "P2_van_dung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q7", "profile": "P4_vung", "kind": "clean", "planted": "", "failure": null, "caught": true}
+{"question_id": "Q7", "profile": "P4_vung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q7", "profile": "P4_vung", "kind": "number_changed", "planted": null, "failure": "claim_missing", "caught": true}
+{"question_id": "Q7", "profile": "P4_vung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q8", "profile": "P1_nen_yeu", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q8", "profile": "P1_nen_yeu", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q8", "profile": "P1_nen_yeu", "kind": "number_changed", "planted": "Ba mức trên cùng thang FEV2: FEV1 ≥ 80% được xếp vào mức nhẹ, còn FEV1 từ 50% đến dưới 80% được xếp vào mức trung bình.", "failure": "number_changed", "caught": true}
+{"question_id": "Q8", "profile": "P1_nen_yeu", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q8", "profile": "P1_nen_yeu", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q8", "profile": "P2_van_dung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q8", "profile": "P2_van_dung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q8", "profile": "P2_van_dung", "kind": "number_changed", "planted": "Bước 2: Đối chiếu giá trị FEV2 với từng khoảng. FEV1 ≥ 80% được xếp vào mức nhẹ.", "failure": "number_changed", "caught": true}
+{"question_id": "Q8", "profile": "P2_van_dung", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q8", "profile": "P2_van_dung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q8", "profile": "P3_phan_tich", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q8", "profile": "P3_phan_tich", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q8", "profile": "P3_phan_tich", "kind": "number_changed", "planted": "Bước 1: Mức nặng ứng với FEV2 từ 30% đến dưới 50%.", "failure": "number_changed", "caught": true}
+{"question_id": "Q8", "profile": "P3_phan_tich", "kind": "answer_not_first", "planted": "", "failure": "direct_answer_not_first", "caught": true}
+{"question_id": "Q8", "profile": "P3_phan_tich", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
+{"question_id": "Q8", "profile": "P4_vung", "kind": "clean", "planted": "", "failure": null, "caught": false}
+{"question_id": "Q8", "profile": "P4_vung", "kind": "drop_claim", "planted": "", "failure": "claim_missing", "caught": true}
+{"question_id": "Q8", "profile": "P4_vung", "kind": "number_changed", "planted": "Bước 2: FEV2 từ 50% đến dưới 80% được xếp vào mức trung bình; FEV1 từ 30% đến dưới 50% được xếp vào mức nặng.", "failure": "number_changed", "caught": true}
+{"question_id": "Q8", "profile": "P4_vung", "kind": "fabricated_addition", "planted": "Theo hướng dẫn, mọi trường hợp đều phải dùng kháng sinh dự phòng ngay từ đầu.", "failure": null, "caught": true}
