@@ -21,7 +21,7 @@ from app.gateway import GatewayError, ModelResult
 from app.ollama_gateway import ModelCallUncertain, OllamaConfig, OllamaGateway, model_name
 from app.privacy import validate_prompt
 
-TASKS = ('answer', 'tutor', 'hint', 'quiz_chat', 'check', 'render')
+TASKS = ('answer', 'tutor', 'hint', 'quiz_chat', 'check', 'render', 'rerank')
 EFFORTS = ('low', 'medium', 'high', 'xhigh', 'max')
 # A policy decline is re-run on a model the API picks for that category, inside the same call.
 FALLBACK_BETA = 'server-side-fallback-2026-07-01'

@@ -11,7 +11,7 @@ import uuid
 import redis
 from psycopg.types.json import Jsonb
 from app import events
-from app.chat import pipeline, trace
+from app.chat import pipeline, rerank, trace
 from app.config import settings
 from app.errors import ApiError
 from app.gateway import GatewayError, ModelUnavailable
@@ -386,9 +386,18 @@ class ChatWorker:
                     # Query embedding is model I/O, outside every database context.
                     vector = TurnGateway(self, turn).embed([turn['payload']['text']])
                     self.check(turn)
+                    rr = rerank.cfg()
                     with self.pool.connection() as conn:
                         session = chat.own_session(conn, learner['pseudonym_id'], turn['session_id'])
-                        found = embeddings.search(conn, normalised, vector, turn['payload'].get('_corpus_version',settings()['corpus_version']), session['module_id'])
+                        found = embeddings.search(conn, normalised, vector, turn['payload'].get('_corpus_version',settings()['corpus_version']),
+                                                  session['module_id'], limit=rr['pool'] if rr['enabled'] else settings()['retrieval']['top_k'])
+                    if rr['enabled']:
+                        # Rerank and the sufficiency gate are model I/O too: outside every database context.
+                        gw = TurnGateway(self, turn)
+                        found = rerank.apply(lambda system, user: pipeline._ask_model(gw, 'rerank', system, user)[0],
+                                             turn['payload']['text'], found).found
+                        self.check(turn)
+                    with self.pool.connection() as conn:
                         pending = []
                         for kind, data in pipeline.prepare_answer(conn, turn['payload']['text'], session['module_id'],
                                 turn['payload'].get('detail', False), turn['payload'].get('clarifies_message_id') is not None,

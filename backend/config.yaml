@@ -40,13 +40,16 @@ gateway:
   price_per_mtok:                 # USD, list prices cached 2026-09-25
     claude-sonnet-5-5: {in: 2.0, out: 10.0}
     claude-haiku-4-5: {in: 1.0, out: 5.0}
-prompt_versions: {answer: answer-v1, tutor: tutor-v1, check: check-v1, hint: hint-v1, quiz_chat: quiz-chat-v1, render: render-v1}
+prompt_versions: {answer: answer-v1, tutor: tutor-v1, check: check-v1, hint: hint-v1, quiz_chat: quiz-chat-v1, render: render-v1, rerank: rerank-v1}
 # min_score = share of the question's content a passage must cover to count as evidence;
 # heading_boost = ranking bonus when the passage's heading names what was asked
 # Topic weights come from the blueprint (seed/blueprint.yaml): a core issue gets its group's midpoint
 # shared among the group's issues. The foundation topic is outside the blueprint, so its weight is set here.
 blueprint: {foundation_weight: 2.0}    # TODO open issue 26
-retrieval: {top_k: 5, min_score: 0.45, heading_boost: 0.15}
+retrieval: {top_k: 5, min_score: 0.45, heading_boost: 0.15,
+           # hybrid path only (app/chat/rerank.py): a model scores the RRF top `pool` 0–3; the best `top_k`
+           # are sent; below `min_score` nothing is sent (sufficiency gate). Calibrated on the silver set.
+           rerank: {enabled: true, pool: 30, top_k: 5, min_score: 2, passage_chars: 1200}}
 postcheck: {tier2_enabled: false}
 # max_steps: the most lines the work trace of one answer may show (handover/04, "Work trace").
 # prompt_token_budget: an estimate (app/chat/compose.py) the user message plus system prompt may not exceed;

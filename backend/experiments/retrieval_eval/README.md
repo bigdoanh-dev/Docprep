@@ -55,3 +55,19 @@ Trên Git Bash ở Windows, thêm `MSYS_NO_PATHCONV=1` trước các lệnh `doc
 
 Tạo lại bộ câu hỏi (`build_set.py`) tốn khoảng 200 lượt gọi Haiku (dưới 0,5 USD). Chỉ tạo lại khi
 release thay đổi; còn để so các phiên bản tìm kiếm thì giữ nguyên bộ.
+
+## Rerank bằng LLM (`rerank_eval.py`)
+
+Lấy top 30 của tìm kiếm kết hợp, cho model chấm mỗi đoạn 0–3, rồi đo lại Hit@k/MRR và cổng
+"điểm cao nhất ≥ ngưỡng". Chạy giống `run_eval.py`, thêm `--provider google|anthropic`.
+Kết quả 2026-11-22 (`out/*-rerank-*`):
+
+| | Hit@1 | Hit@5 | MRR@10 | Cổng ≥2: câu hợp lệ bị chặn / câu ngoài phạm vi bị chặn |
+|---|---|---|---|---|
+| RRF hiện tại | 38% | 81% | 0.56 | (không có cổng) |
+| Gemini Flash-Lite | 96% | 100% | 0.98 | 0/79 · 24/24 |
+| Claude Haiku | 92% | 100% | 0.96 | 0/86 · 25/25 |
+
+Lưu ý: nhãn silver do Haiku gắn nên số của Haiku được lợi một phần. Gemini lỗi 8 lượt vì giới hạn
+tốc độ, nên các lượt đó bị loại khỏi phép tính. Mỗi câu tốn thêm 1 lượt gọi, trung vị khoảng 4–5 giây.
+Luồng chat dùng cấu hình này qua `retrieval.rerank` trong `config.yaml` (`app/chat/rerank.py`).
