@@ -55,7 +55,15 @@ def main() -> int:
     ap.add_argument("--provider", choices=["google", "anthropic"], default="google")
     ap.add_argument("--workers", type=int, default=3)
     ap.add_argument("--out", default=str(HERE / "out"))
+    ap.add_argument("--from", dest="from_", help="re-summarise an existing results.jsonl, no model calls")
     args = ap.parse_args()
+    if args.from_:
+        src = Path(args.from_)
+        rows = [json.loads(l) for l in src.read_text(encoding="utf-8").splitlines() if l.strip()]
+        text = summary(rows, args.provider)
+        (src.parent / "summary.md").write_text(text, encoding="utf-8")
+        print(text)
+        return 0
     items = [json.loads(l) for l in open(args.set, encoding="utf-8") if l.strip()]
     from common import gateway
     embedder, gw = gateway(), make(args.provider)
@@ -101,8 +109,18 @@ def summary(rows, provider) -> str:
     for name, key in (("RRF hiện tại", "rrf_rank"), ("Sau rerank", "rerank_rank")):
         h1, h5, mrr = m(key)
         L.append(f"| {name} | {h1:.0%} | {h5:.0%} | {mrr:.2f} |")
+    styles = sorted({r["style"] for r in ins if r.get("style")})
+    if len(styles) > 1:
+        L += ["", "## Theo kiểu câu hỏi", "", "| Kiểu | Số câu | Đoạn đúng trong 30 đoạn lấy về | Hit@5 RRF | Hit@5 sau rerank | Bị cổng chặn nhầm (≥2) |",
+              "|---|---|---|---|---|---|"]
+        for st in styles:
+            g = [r for r in ins if r.get("style") == st]
+            pct = lambda f: f"{sum(1 for r in g if f(r)) / len(g):.0%}"
+            L.append(f"| {st} | {len(g)} | {pct(lambda r: r['rrf_rank'] is not None)} | {pct(lambda r: (r['rrf_rank'] or 99) <= 5)} "
+                     f"| {pct(lambda r: (r['rerank_rank'] or 99) <= 5)} | {sum(r['top_score'] < 2 for r in g)} |")
     pos, neg = [r["top_score"] for r in ins], [r["top_score"] for r in oos]
-    L += ["", "## Cổng theo điểm cao nhất (0–3)", "", f"AUC {auc(pos, neg):.2f}.", "",
+    a = auc(pos, neg)
+    L += ["", "## Cổng theo điểm cao nhất (0–3)", "", f"AUC {a:.2f}." if a is not None else "Bộ này không có câu ngoài phạm vi.", "",
           "| Cho qua khi điểm cao nhất ≥ | Câu hợp lệ bị chặn nhầm | Câu ngoài phạm vi bị chặn đúng |", "|---|---|---|"]
     for t in (1, 2, 3):
         L.append(f"| {t} | {sum(p < t for p in pos)}/{len(pos)} | {sum(n < t for n in neg)}/{len(neg)} |")

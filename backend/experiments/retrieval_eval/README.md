@@ -71,3 +71,21 @@ Kết quả 2026-11-22 (`out/*-rerank-*`):
 Lưu ý: nhãn silver do Haiku gắn nên số của Haiku được lợi một phần. Gemini lỗi 8 lượt vì giới hạn
 tốc độ, nên các lượt đó bị loại khỏi phép tính. Mỗi câu tốn thêm 1 lượt gọi, trung vị khoảng 4–5 giây.
 Luồng chat dùng cấu hình này qua `retrieval.rerank` trong `config.yaml` (`app/chat/rerank.py`).
+
+## Bộ câu khó (`build_hard.py`, `hard_set.jsonl`)
+
+50 câu trong phạm vi, viết theo cách sinh viên hay gõ: viết tắt, không dấu, từ đồng nghĩa / tiếng Anh,
+chỉ từ khoá, hỏi gián tiếp. Đoạn nguồn không trùng với `silver_set.jsonl`; gắn nhãn cùng cách
+(khoảng 110 lượt gọi Haiku). Chấm: `run_eval.py --set hard_set.jsonl`, `rerank_eval.py --set hard_set.jsonl`.
+Tóm tắt lại từ kết quả có sẵn, không gọi model: `rerank_eval.py --from out/<lượt>/results.jsonl`.
+
+Kết quả 2026-11-22:
+
+| | Hit@5 RRF | Đoạn đúng trong 30 đoạn lấy về | Hit@5 sau rerank (Gemini / Haiku) |
+|---|---|---|---|
+| Tất cả | 84% | 100% | 100% / 100% |
+| Hỏi gián tiếp | 55% | 100% | 100% / 100% |
+| Viết tắt, không dấu, đồng nghĩa | 90–91% | 100% | 100% / 100% |
+
+Kết luận: với kho hiện tại, 30 đoạn lấy về luôn chứa đoạn đúng, kể cả câu khó, và reranker đưa đoạn đúng lên top 5.
+Vì vậy chưa cần tách từ, từ đồng nghĩa hay chunking lại. Nên đo lại khi kho lớn thêm, hoặc khi có câu hỏi thật của sinh viên.
