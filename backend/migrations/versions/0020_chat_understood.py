@@ -6,7 +6,7 @@ down_revision = "0019"
 
 
 def upgrade():
-    run_sql("alter table chat_message add column understood boolean;")
+    run_sql("alter table chat_message add column if not exists understood boolean;")
 
 
 def downgrade():

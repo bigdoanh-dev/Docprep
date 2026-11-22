@@ -15,7 +15,7 @@ down_revision = "0020"
 
 def upgrade():
     run_sql("""
-    create table question_bloom_label (
+    create table if not exists question_bloom_label (
       question_id text not null,
       question_version int not null,
       level smallint not null check (level between 1 and 6),
