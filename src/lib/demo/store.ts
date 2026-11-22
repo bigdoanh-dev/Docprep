@@ -1279,7 +1279,8 @@ export async function demoRequest(
       const id = Number(p.split("/")[2]);
       for (const c of s.chats) {
         const m = c.messages.find((m: any) => m.id === id);
-        if (m) m.helpful = body.helpful;
+        if (m && body.helpful != null) m.helpful = body.helpful;
+        if (m && body.understood != null) m.understood = body.understood;
       }
       return { ok: true };
     }

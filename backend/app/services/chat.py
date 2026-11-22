@@ -122,9 +122,10 @@ def passage(conn, passage_id: str) -> dict:
     return view
 
 
-def rate(conn, learner: dict, message_id: int, helpful: bool) -> dict:
-    """ "Hữu ích": the learner's verdict on an answer they were given. The last one stands."""
-    if not repo.rate_answer(conn, learner["pseudonym_id"], message_id, helpful):
+def rate(conn, learner: dict, message_id: int, helpful: bool | None, understood: bool | None = None) -> dict:
+    """ "Hữu ích" and "Tôi đã hiểu / chưa hiểu": the learner's verdicts on an answer they were given.
+    The last one of each stands."""
+    if not repo.rate_answer(conn, learner["pseudonym_id"], message_id, helpful, understood):
         raise ApiError(404, "message_not_found", "Không tìm thấy tin nhắn.")
     return {"ok": True}
 

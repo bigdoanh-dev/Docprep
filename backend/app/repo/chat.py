@@ -66,7 +66,7 @@ def sessions(conn, learner_pid: str, before: tuple[datetime, int] | None, limit:
 def messages(conn, session_id: int, after_id: int, limit: int) -> list[dict]:
     return conn.execute(
         """select id, role, text, created_at, state, format, citations, notice, clarify_options, searched,
-                  nearest_chapter, helpful, claims_checked, claims_removed, trace
+                  nearest_chapter, helpful, understood, claims_checked, claims_removed, trace
            from chat_message where session_id = %s and id > %s order by id limit %s""",
         (session_id, after_id, limit)).fetchall()
 
@@ -83,9 +83,11 @@ def has_answer(conn, session_id: int) -> bool:
                         (session_id,)).fetchone() is not None
 
 
-def rate_answer(conn, learner_pid: str, message_id: int, helpful: bool) -> bool:
-    """Set "Hữu ích" on an answer given to this learner, in chat or by the tutor. False when there is no such answer."""
+def rate_answer(conn, learner_pid: str, message_id: int, helpful: bool | None, understood: bool | None = None) -> bool:
+    """Set "Hữu ích" and/or "Tôi đã hiểu / chưa hiểu" on an answer given to this learner, in chat or by the
+    tutor; a field left out keeps its value. False when there is no such answer."""
     return conn.execute(
-        """update chat_message m set helpful = %s from chat_session s
+        """update chat_message m set helpful = coalesce(%s, m.helpful), understood = coalesce(%s, m.understood)
+           from chat_session s
            where m.id = %s and m.role = 'assistant' and s.id = m.session_id and s.learner_pid = %s returning m.id""",
-        (helpful, message_id, learner_pid)).fetchone() is not None
+        (helpful, understood, message_id, learner_pid)).fetchone() is not None

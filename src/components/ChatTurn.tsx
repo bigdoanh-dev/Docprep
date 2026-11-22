@@ -90,6 +90,15 @@ export function AssistantTurn({
             Gia sư AI
           </div>
           <AnswerText result={result} onCite={onCite} />
+          {!quiz && latest && view.messageId !== null && (
+            <AnswerFeedback
+              messageId={view.messageId}
+              initial={view.understood}
+              busy={busy}
+              onExplainMore={onExplainMore}
+              onMove={onMove}
+            />
+          )}
           {view.citations.length > 0 && (
             <details className="tutor-sources">
               <summary>
@@ -122,14 +131,8 @@ export function AssistantTurn({
               flexWrap: "wrap",
             }}
           >
-            {quiz ? (
+            {quiz && (
               <QuizActions back={quiz.back} suggestions={view.suggestions} />
-            ) : (
-              latest && (
-                <button className="btn" onClick={onExplainMore} disabled={busy}>
-                  Giải thích thêm
-                </button>
-              )
             )}
             <span className="grow" />
             <button
@@ -446,6 +449,91 @@ function TraceChip({ view }: { view: TurnView }) {
 }
 
 // "Hữu ích": the learner's verdict on this answer, kept with it.
+// The four replies a learner gives an answer instead of "ok" or "?" (FR-LRN-06): two say whether it
+// landed and are stored on the answer; three ask for it again, more fully, shorter or more simply,
+// from the same sources. "Tôi chưa hiểu" does both.
+const FEEDBACK_MOVES = {
+  ngan_gon: "Trả lời ngắn gọn hơn giúp mình",
+  don_gian: "Mình chưa hiểu, giải thích đơn giản hơn giúp mình",
+};
+
+function AnswerFeedback({
+  messageId,
+  initial,
+  busy,
+  onExplainMore,
+  onMove,
+}: {
+  messageId: number;
+  initial: boolean | null;
+  busy: boolean;
+  onExplainMore: () => void;
+  onMove: (text: string, mode: string) => void;
+}) {
+  const [understood, setUnderstood] = useState<boolean | null>(initial);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const mark = async (value: boolean) => {
+    setSaving(true);
+    setError("");
+    try {
+      await api.post(`/messages/${messageId}/rating`, { understood: value });
+      setUnderstood(value);
+      return true;
+    } catch {
+      setError("Chưa lưu được phản hồi. Vui lòng thử lại.");
+      return false;
+    } finally {
+      setSaving(false);
+    }
+  };
+  const off = busy || saving;
+  return (
+    <div className="tutor-feedback" role="group" aria-label="Phản hồi câu trả lời">
+      <div className="tutor-move-row">
+        <button
+          className={`chip${understood === true ? " is-selected" : ""}`}
+          aria-pressed={understood === true}
+          disabled={off || understood === true}
+          onClick={() => mark(true)}
+        >
+          Tôi đã hiểu
+        </button>
+        <button
+          className={`chip${understood === false ? " is-selected" : ""}`}
+          aria-pressed={understood === false}
+          disabled={off}
+          onClick={async () => {
+            if (await mark(false)) onMove(FEEDBACK_MOVES.don_gian, "don_gian");
+          }}
+        >
+          Tôi chưa hiểu
+        </button>
+        <button className="chip" disabled={off} onClick={onExplainMore}>
+          Giải thích kỹ hơn
+        </button>
+        <button
+          className="chip"
+          disabled={off}
+          onClick={() => onMove(FEEDBACK_MOVES.ngan_gon, "ngan_gon")}
+        >
+          Ngắn gọn hơn
+        </button>
+      </div>
+      {understood === true && (
+        <p className="small muted" role="status">
+          Đã ghi nhận. Bạn có thể ôn lại bằng các gợi ý bên dưới.
+        </p>
+      )}
+      {error && (
+        <p className="small" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function Helpful({
   messageId,
   initial,

@@ -15,6 +15,10 @@ def helpful(conn, message_id: int):
     return conn.execute("select helpful from chat_message where id = %s", (message_id,)).fetchone()["helpful"]
 
 
+def understood(conn, message_id: int):
+    return conn.execute("select understood from chat_message where id = %s", (message_id,)).fetchone()["understood"]
+
+
 def test_the_last_rating_of_an_answer_is_kept_and_shown(learner_api, conn, fake_gw):
     sid, message_id = answered(learner_api, conn, fake_gw)
     assert helpful(conn, message_id) is None
@@ -45,6 +49,19 @@ def test_only_ones_own_answers_can_be_rated(api, learner_api, conn, fake_gw, tok
         assert r.status_code == 404 and r.json()["error"]["code"] == "message_not_found" and r.json()["error"]["message_vi"]
     assert helpful(conn, theirs) is None and helpful(conn, own_question) is None and helpful(conn, message_id) is None
     assert learner_api.post(f"/v1/messages/{message_id}/rating", json={}).status_code == 422
+
+
+def test_understood_and_helpful_are_kept_apart(learner_api, conn, fake_gw):
+    """"Tôi đã hiểu / chưa hiểu" is its own signal: sending one never clears "Hữu ích", and the last of each stands."""
+    sid, message_id = answered(learner_api, conn, fake_gw)
+    rate = lambda body: learner_api.post(f"/v1/messages/{message_id}/rating", json=body)
+    assert rate({"helpful": True}).status_code == 200
+    assert rate({"understood": False}).status_code == 200
+    assert (helpful(conn, message_id), understood(conn, message_id)) == (True, False)
+    assert rate({"understood": True}).status_code == 200 and understood(conn, message_id) is True
+    assert helpful(conn, message_id) is True
+    assert learner_api.get(f"/v1/chat/sessions/{sid}/messages").json()["items"][1]["understood"] is True
+    assert rate({"helpful": None, "understood": None}).status_code == 422
 
 
 def test_mock_mode_still_serves_the_example(mock_client):

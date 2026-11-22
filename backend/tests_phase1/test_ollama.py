@@ -210,12 +210,12 @@ def test_tutor_modes_keep_owned_evidence_history_and_default_idempotency(world):
     repeat = other.post(path, json={'text':'Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?', 'mode':'auto'},
                         headers={'Idempotency-Key':'default-mode'})
     assert repeat.headers['x-turn-id'] == first.headers['x-turn-id']
-    for mode in ('giai_thich','so_sanh','vi_du','tom_tat'):
+    for mode in ('giai_thich','so_sanh','vi_du','tom_tat','ngan_gon','don_gian'):
         response = other.post(path, json={'text':'Làm rõ kiến thức trong nguồn', 'mode':mode},
                               headers={'Idempotency-Key':mode})
         assert parse(response)[-1][1]['mode'] == mode
         assert parse(response)[-1][1]['state'] == 'answered'
-    assert c.get(path).json()['items'][-1]['mode'] == 'tom_tat'
+    assert c.get(path).json()['items'][-1]['mode'] == 'don_gian'
     for mode in ('kiem_tra','cham'):
         assert c.post(path, json={'text':'nội dung', 'mode':mode}).status_code == 501
 

@@ -336,7 +336,20 @@ def prepare_followup(conn, query, mode, session_id):
         return
     instructions = {'giai_thich':'Giải thích rõ hơn.', 'so_sanh':'So sánh các khái niệm trong nguồn.',
                     'vi_du':'Minh họa cách áp dụng nguồn; không tư vấn ca bệnh thật hoặc tự đặt ngưỡng y khoa.',
-                    'tom_tat':'Tóm tắt các ý chính để ôn tập.'}
+                    'tom_tat':'Tóm tắt các ý chính để ôn tập.',
+                    # The two answer-feedback buttons. Both keep the direct answer and every figure; neither adds facts.
+                    'ngan_gon':'Viết lại câu trả lời trước cho ngắn gọn: câu đầu trả lời thẳng câu hỏi; nếu câu trả lời là một danh '
+                               'sách thì vẫn nêu đủ từng mục chính, gộp gọn trong một hoặc hai câu; giữ nguyên mọi con số, '
+                               'ngưỡng và liều; bỏ phần giải thích phụ; không thêm ý mới.',
+                    'don_gian':'Người học chưa hiểu câu trả lời trước. Viết lại bằng lời đơn giản hơn, từng bước: câu đầu trả lời '
+                               'thẳng câu hỏi, rồi nêu lại đủ từng ý, giải thích thuật ngữ khó bằng chính nội dung trong nguồn; '
+                               'không bỏ ý nào, không tự nghĩ ra ví dụ hay số liệu.',
+                    }
+    # Both feedback rewrites must stand alone: the learner reads them in place of the earlier answer.
+    standalone = ('Viết như một câu trả lời độc lập: không nhắc tới "câu trả lời trước", không viết "các dấu hiệu được '
+                  'liệt kê" hay "như trên" mà nêu thẳng nội dung.')
+    if mode in ('ngan_gon', 'don_gian'):
+        instructions[mode] += ' ' + standalone
     steps=[]
     yield from _begin(steps,trace.read_step(passages))
     yield from _end(steps,'read')

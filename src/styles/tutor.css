@@ -879,6 +879,19 @@
 .tutor-follow-ups {
   gap: 6px;
 }
+/* The four replies under an answer: understood, not understood, more fully, shorter. */
+.tutor-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tutor-feedback p {
+  margin: 0;
+}
+.tutor-feedback .chip.is-selected {
+  border-color: var(--accent, currentColor);
+  font-weight: 600;
+}
 .tutor-follow-ups .btn {
   justify-content: flex-start;
   text-align: left;

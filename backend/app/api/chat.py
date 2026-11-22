@@ -91,6 +91,6 @@ def get_passage(request: Request, passage_id: str, conn=Conn):
     return mock_example(request, PassageView) or chat_service.passage(conn, passage_id)
 
 
-@router.post("/messages/{message_id}/rating", response_model=Ok, summary="Mark an answer helpful or not", **LEARNER)
+@router.post("/messages/{message_id}/rating", response_model=Ok, summary="Mark an answer helpful or not, understood or not", **LEARNER)
 def rate_message(request: Request, message_id: int, body: RatingRequest, conn=Conn, learner=Learner):
-    return mock_example(request, Ok) or chat_service.rate(conn, learner, message_id, body.helpful)
+    return mock_example(request, Ok) or chat_service.rate(conn, learner, message_id, body.helpful, body.understood)

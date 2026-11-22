@@ -2933,7 +2933,7 @@ paths:
     post:
       tags:
       - chat
-      summary: Mark an answer helpful or not
+      summary: Mark an answer helpful or not, understood or not
       operationId: rate_message
       parameters:
       - name: message_id
@@ -8929,6 +8929,8 @@ components:
             - tom_tat
             - kiem_tra
             - cham
+            - ngan_gon
+            - don_gian
             type: string
           - type: 'null'
           default: null
@@ -9152,6 +9154,8 @@ components:
             - tom_tat
             - kiem_tra
             - cham
+            - ngan_gon
+            - don_gian
           - type: 'null'
           title: Mode
         role:
@@ -9228,6 +9232,11 @@ components:
           - type: boolean
           - type: 'null'
           title: Helpful
+        understood:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Understood
         trace:
           items:
             $ref: '#/components/schemas/StepEvent'
@@ -9252,6 +9261,7 @@ components:
       - nearest_chapter
       - suggestions
       - helpful
+      - understood
       - trace
       title: ChatMessage
     ChatMessageList:
@@ -9423,6 +9433,8 @@ components:
           - tom_tat
           - kiem_tra
           - cham
+          - ngan_gon
+          - don_gian
           title: Mode
           default: auto
         detail:
@@ -9471,12 +9483,19 @@ components:
     RatingRequest:
       properties:
         helpful:
-          type: boolean
+          anyOf:
+          - type: boolean
+          - type: 'null'
           title: Helpful
+          description: '"Hữu ích".'
+        understood:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Understood
+          description: '"Tôi đã hiểu" (true) or "Tôi chưa hiểu" (false).'
       additionalProperties: false
       type: object
-      required:
-      - helpful
       title: RatingRequest
       examples:
       - helpful: true

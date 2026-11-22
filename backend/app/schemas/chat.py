@@ -2,13 +2,13 @@
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 
 from app.schemas.base import RequestSchema, Schema, with_example
 from app.schemas.common import Citation
 
 ChatState = Literal["answered", "insufficient_evidence", "declined", "needs_clarification"]
-TutorMode = Literal['auto','giai_thich','so_sanh','vi_du','tom_tat','kiem_tra','cham']
+TutorMode = Literal['auto','giai_thich','so_sanh','vi_du','tom_tat','kiem_tra','cham','ngan_gon','don_gian']
 # "table" and "calc" are reserved: R1.0 only ever sends "text".
 AnswerFormat = Literal["text", "table", "calc"]
 
@@ -173,6 +173,7 @@ class ChatMessage(Schema):
     nearest_chapter: NearestChapter | None = None
     suggestions: list[ChatSuggestion] = []
     helpful: bool | None = None
+    understood: bool | None = None
     trace: list[StepEvent] = Field(default=[], description="The steps of an answer, as sent when it was made, in their done form.")
 
 
@@ -185,11 +186,11 @@ class ChatMessageList(Schema):
             {"id": 57, "role": "user", "text": "Vắc xin viêm gan B mũi sơ sinh tiêm khi nào?",
              "created_at": "2026-10-09T08:11:40Z", "state": None, "format": None, "citations": [], "notice": None,
              "trace_summary": None, "clarify_options": [], "searched": [], "nearest_chapter": None,
-             "suggestions": [], "helpful": None, "trace": []},
+             "suggestions": [], "helpful": None, "understood": None, "trace": []},
             {"id": 58, "role": "assistant", "text": _ANSWER_TEXT, "created_at": "2026-10-09T08:12:00Z",
              "state": "answered", "format": "text", "citations": [_CITATION], "notice": None,
              "trace_summary": _TRACE, "clarify_options": [], "searched": [], "nearest_chapter": None,
-             "suggestions": _SUGGESTIONS, "helpful": True,
+             "suggestions": _SUGGESTIONS, "helpful": True, "understood": None,
              "trace": [{"id": "s1", "kind": "search", "label_vi": "Đã tìm trong 9 tài liệu", "status": "done"},
                        {"id": "s2", "kind": "read", "label_vi": "Đã đọc: Lịch tiêm chủng mở rộng tr. 8", "status": "done"},
                        {"id": "s3", "kind": "check", "label_vi": "Đã kiểm tra 1 nhận định", "status": "done"}]},
@@ -207,9 +208,16 @@ class SuggestionAccepted(Schema):
 
 
 class RatingRequest(RequestSchema):
-    helpful: bool
+    helpful: bool | None = Field(default=None, description='"Hữu ích".')
+    understood: bool | None = Field(default=None, description='"Tôi đã hiểu" (true) or "Tôi chưa hiểu" (false).')
 
     model_config = with_example({"helpful": True})
+
+    @model_validator(mode="after")
+    def says_something(self):
+        if self.helpful is None and self.understood is None:
+            raise ValueError("send helpful or understood")
+        return self
 
 
 class PassageView(Schema):

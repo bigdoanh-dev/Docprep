@@ -53,6 +53,7 @@ export type StoredMessage = {
   nearest_chapter: NearestChapter | null;
   suggestions: ChatSuggestion[];
   helpful: boolean | null;
+  understood?: boolean | null;
   trace: StepEvent[];
   // The server-owned tutor mode that produced the answer and optional questions the
   // tutor suggests asking next.
@@ -75,6 +76,7 @@ export type TurnView = {
   nearestChapter: NearestChapter | null;
   suggestions: ChatSuggestion[];
   helpful: boolean | null;
+  understood: boolean | null;
   error: string | null;
   mode: string | null;
   followUps: string[];
@@ -96,6 +98,7 @@ export function startTurn(): TurnView {
     nearestChapter: null,
     suggestions: [],
     helpful: null,
+    understood: null,
     error: null,
     mode: null,
     followUps: [],
@@ -185,6 +188,7 @@ export function fromStored(message: StoredMessage): TurnView {
     nearestChapter: message.nearest_chapter,
     suggestions: message.suggestions,
     helpful: message.helpful,
+    understood: message.understood ?? null,
     mode: message.mode ?? null,
     followUps: message.follow_ups ?? [],
   };
