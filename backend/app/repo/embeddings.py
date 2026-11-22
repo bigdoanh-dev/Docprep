@@ -69,7 +69,8 @@ def ready(conn, model, revision, version):
         and vector_dims(e.embedding)=%s) limit 1""", (model,revision,version,metadata['dimensions'])).fetchone()
 
 
-def search(conn, normalised, result, version, module_id=None):
+def search(conn, normalised, result, version, module_id=None, limit=5):
+    """Bge-m3 vector top 30 + full text top 30, fused by RRF; the best `limit` (the chat sends 5)."""
     if not ready(conn, result.model, result.revision, version):
         raise ApiError(503, 'retrieval_index_not_ready', 'Chỉ mục nguồn chưa sẵn sàng. Cần lập lại index.')
     dimension = len(result.vectors[0])
@@ -95,7 +96,7 @@ def search(conn, normalised, result, version, module_id=None):
     for ranking in (dense, sparse):
         for rank, row in enumerate(ranking, 1):
             scores[row['id']] = scores.get(row['id'], 0) + 1/(60+rank)
-    ids = sorted(scores, key=lambda pid: (-scores[pid],pid))[:5]
+    ids = sorted(scores, key=lambda pid: (-scores[pid],pid))[:limit]
     if not ids: return Found([])
     rows = {r['id']:r for r in conn.execute(f'select {_COLUMNS} from passage p join document d on d.id=p.document_id where p.id=any(%s)', (ids,))}
     return Found([_passage(rows[pid], scores[pid]) for pid in ids])
