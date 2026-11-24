@@ -107,15 +107,22 @@ def publish(conn,package,actor):
         conn.execute('''insert into document(id,title,edition,demo_label) values(%s,%s,%s,%s) on conflict(id) do nothing''',
             (did,d['title'],str(d.get('publication_year') or ''),'Nguồn local/dev; chưa nghiệm thu corpus ký số'))
         from app.text import unaccent
-        loc=c['location'];context=d['title']+'\n'+' › '.join(loc.get('section_path',[]))
+        loc=c['location'];augmentation=loc.get('augmentation') or {}
+        context=augmentation.get('contextual_header') or d['title']+'\n'+' › '.join(loc.get('section_path',[]))
         pages=loc.get('printed_pages') or [];page=int(pages[0]) if pages and str(pages[0]).isdigit() else None
+        article=' › '.join(loc.get('section_path',[])) or loc.get('anchor')
+        if augmentation.get('figure_asset'):
+            article=context
         conn.execute('''insert into passage(id,document_id,chapter,section,article,page_start,competency_code,content_type,
             text,text_unaccented,corpus_version,context,context_unaccented,release_id)
             values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',
-            (pid,did,(loc.get('section_path') or [None])[0],loc.get('anchor'),' › '.join(loc.get('section_path',[])) or loc.get('anchor'),page,code,c['classification']['content_type'],
+            (pid,did,(loc.get('section_path') or [None])[0],loc.get('anchor'),article,page,code,c['classification']['content_type'],
              c['text'],unaccent(c['text']),m['version'],context,unaccent(context),rid))
+        snapshot=c['classification']
+        if augmentation:
+            snapshot={**snapshot,'augmentation':{**augmentation,'source_chunk_id':c['source_chunk_id']}}
         conn.execute('insert into corpus_release_member values(%s,%s,%s,%s,%s,%s,%s)',
-            (rid,pid,c['id'],c['revision'],c['source_hash'],Jsonb(c['classification']),Jsonb(proofs)))
+            (rid,pid,c['id'],c['revision'],c['source_hash'],Jsonb(snapshot),Jsonb(proofs)))
     return {'release_id':str(rid),'reused':False,'passages':len(seen)}
 
 

@@ -88,7 +88,7 @@ def _merge_locs(blocks: list[Block]) -> Loc:
                printed_pages=pages or None, image_indices=images or None)
 
 
-def _section_pieces(blocks: list[Block], count) -> list[tuple[ChunkKind, str, list[Block]]]:
+def _section_pieces(blocks: list[Block], count, preserve_limit: bool) -> list[tuple[ChunkKind, str, list[Block]]]:
     pieces: list[tuple[ChunkKind, str, list[Block]]] = []
     buf: list[Block] = []
     used = 0
@@ -118,7 +118,8 @@ def _section_pieces(blocks: list[Block], count) -> list[tuple[ChunkKind, str, li
 
     merged: list[tuple[ChunkKind, str, list[Block]]] = []
     for kind, text, blks in pieces:
-        if kind == "text" and merged and merged[-1][0] == "text" and count(text) < TAIL_MIN:
+        if (kind == "text" and merged and merged[-1][0] == "text" and count(text) < TAIL_MIN
+                and (not preserve_limit or count(merged[-1][1] + "\n\n" + text) <= TARGET_MAX)):
             _, prev_text, prev_blks = merged[-1]
             merged[-1] = ("text", f"{prev_text}\n\n{text}", prev_blks + blks)
         else:
@@ -127,7 +128,7 @@ def _section_pieces(blocks: list[Block], count) -> list[tuple[ChunkKind, str, li
 
 
 def chunk_doc(doc: ParsedDoc, source: Source,
-              count: Callable[[str], int]) -> list[Chunk]:
+              count: Callable[[str], int], *, preserve_limit: bool = False) -> list[Chunk]:
     skip = [re.compile(p) for p in source.skip_sections]
     chunks: list[Chunk] = []
     for anchor, group in groupby(doc.blocks, key=lambda b: b.loc.anchor):
@@ -136,7 +137,7 @@ def chunk_doc(doc: ParsedDoc, source: Source,
         if not path or path[0] == FRONT_MATTER or any(r.search(path[0]) for r in skip):
             continue
         n = sum(1 for c in chunks if c.loc.anchor == anchor)
-        for kind, text, blks in _section_pieces(blocks, count):
+        for kind, text, blks in _section_pieces(blocks, count, preserve_limit):
             if kind == "text" and XREF_ONLY.match(text.strip()):
                 continue
             n += 1

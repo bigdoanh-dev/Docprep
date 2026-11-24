@@ -1,5 +1,5 @@
 from app.chat.normalise import normalise
-from app.chat.retrieval import get_passages, search
+from app.chat.retrieval import get_passages, search, with_section_context
 from app.config import settings
 from tests.conftest import glossary
 
@@ -57,3 +57,34 @@ def test_concept_written_with_a_dash_in_the_corpus_is_found(conn, learner):  # f
 def test_two_concept_question_brings_both_definition_passages(conn, learner):  # final review, Important 5
     ids = [h.id for h in find(conn, "Phân biệt tỷ lệ hiện mắc và tỷ lệ mới mắc")]
     assert {"dt-p01", "dt-p02", "dt-p03"} <= set(ids)
+
+
+def test_section_expansion_keeps_separate_citation_and_revision(conn, learner):
+    from uuid import uuid4
+    from psycopg.types.json import Jsonb
+    from app.repo.corpus import pinned
+
+    rid = uuid4()
+    conn.execute("insert into corpus_release(id,version,manifest,manifest_sha256,trust,status) "
+                 "values(%s,'test-rechunk','{}','test-hash','local_dev','ready')", (rid,))
+    code = conn.execute("select code from competency_node limit 1").fetchone()["code"]
+    conn.execute("insert into document(id,title,edition,demo_label) values('test-rechunk-doc','Nguồn thử','','test')")
+    for key, revision, source_id, body, meta in [
+        ("hit", "rev1", "table", "anphacandidate", {"context_child_id": "note"}),
+        ("note", "rev1", "note", "nội dung ghi chú", {}),
+        ("other", "rev2", "note", "phiên bản khác", {}),
+    ]:
+        pid = "yhdp:" + key
+        conn.execute("""insert into passage(id,document_id,competency_code,content_type,text,text_unaccented,release_id,corpus_version)
+                        values(%s,'test-rechunk-doc',%s,'regulation',%s,%s,%s,'test-rechunk')""", (pid, code, body, body, rid))
+        info = {"augmentation": {"parent_id": "parent", "source_chunk_id": source_id,
+                                 "keywords": ["forbiddenmetadata"], **meta}}
+        conn.execute("insert into corpus_release_member values(%s,%s,%s,%s,'source',%s,'[]')",
+                     (rid, pid, key, revision, Jsonb(info)))
+    with pinned("test-rechunk"):
+        hits = find(conn, "anphacandidate")
+        assert [p.id for p in hits] == ["yhdp:hit"]
+        assert [(p.id, p.text) for p in with_section_context(conn, hits)] == [
+            ("yhdp:hit", "anphacandidate"), ("yhdp:note", "nội dung ghi chú"),
+        ]
+        assert find(conn, "forbiddenmetadata") == []

@@ -55,6 +55,34 @@ def test_import_idempotency_current_hash_and_no_learner_data(workspace):
         assert conn.execute('select count(*) n from content_user').fetchone()['n']==2
 
 
+def test_original_rechunk_is_a_new_pending_revision(workspace, tmp_path):
+    from docx import Document
+    from app.content.rechunk_import import apply
+    from app.content_tools.rechunk import build, registry
+
+    _, user, _ = workspace
+    original = tmp_path / 'qd2760.docx'
+    word = Document()
+    word.add_heading('Đề mục thử nghiệm', level=1)
+    word.add_paragraph('Nội dung được lấy từ tài liệu thử nghiệm và cần người biên tập duyệt.')
+    word.save(original)
+    source = registry(Path(os.environ['CONTENT_TEST_SOURCE']))['qd2760']
+    output = tmp_path / 'generated'
+    report, chunks = build(source, original, output)
+    batch = [(source, original, output, report, chunks)]
+    with db.connect() as conn:
+        load(conn, user)
+        first, = apply(conn, user, batch)
+        replay, = apply(conn, user, batch)
+        assert first['revision_no'] == 2 and replay == {**first, 'reused': True}
+        row = conn.execute("""select s.*, c.location from chunk_state s join document_chunk c on c.id=s.chunk_id
+                              where c.revision_id=%s""", (first['revision_id'],)).fetchone()
+        assert row['classification_status'] == 'unclassified' and row['content_status'] == 'pending'
+        assert row['location']['augmentation']['parent_id'] == chunks[0]['location']['augmentation']['parent_id']
+        assert conn.execute('select count(*) n from chunk_review_task where chunk_id=%s', (row['chunk_id'],)).fetchone()['n'] == 2
+        assert conn.execute("select count(*) n from source_asset where role='original'").fetchone()['n'] == 1
+
+
 def test_independent_decisions_stale_version_and_retries(workspace):
     _,user,_=workspace
     with db.connect() as conn:

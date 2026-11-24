@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from app.chat.normalise import Normalised, fold_dashes, tokens
 from app.config import settings
 from app.repo import corpus
+from app.text import unaccent
 
 _COLUMNS = """p.id, p.document_id, d.title as document_title, p.chapter, p.section, p.page_start, p.article,
               p.text, p.text_unaccented, p.context, p.context_unaccented, p.competency_code"""
@@ -101,8 +102,10 @@ def find(conn, n: Normalised, top_k: int, min_score: float, module_id: str | Non
         module_filter += " and p.competency_code = any(%s)"
         params.append(competency_codes)
     rows = conn.execute(
-        f"""select {_COLUMNS}, ts_rank_cd(p.tsv, to_tsquery('simple', %s), 1) as rank
+        f"""select {_COLUMNS}, ts_rank_cd(p.tsv, to_tsquery('simple', %s), 1) as rank,
+              m.classification_snapshot->'augmentation' as augmentation
             from passage p join document d on d.id = p.document_id
+            left join corpus_release_member m on m.release_id=p.release_id and m.passage_id=p.id
             where p.tsv @@ to_tsquery('simple', %s) and not d.is_synthetic and corpus_passage_visible(p.id) {module_filter}""", params).fetchall()
     if not rows:
         return Found([])
@@ -119,7 +122,12 @@ def find(conn, n: Normalised, top_k: int, min_score: float, module_id: str | Non
         text = fold_dashes((row["text_unaccented"] if n.plain else row["text"]).lower())
         coverage = _coverage(n, f"{context} {text}", idf)
         if coverage >= min_score:
-            scored.append((coverage + heading_boost * _coverage(n, context, idf), row["rank"], row))
+            meta = row.get("augmentation") or {}
+            metadata = " ".join(meta.get("keywords", []) + [q["question"] for q in meta.get("questions", [])])
+            metadata = unaccent(metadata) if n.plain else metadata
+            # Draft metadata can break a close ranking tie. It cannot admit unsupported evidence.
+            boost = 0.03 * _coverage(n, fold_dashes(metadata.lower()), idf) if metadata else 0
+            scored.append((coverage + heading_boost * _coverage(n, context, idf) + boost, row["rank"], row))
         elif coverage > 0:
             missed.append((coverage, row["rank"], row))
     scored.sort(key=lambda s: (-s[0], -s[1], s[2]["id"]))
@@ -127,6 +135,29 @@ def find(conn, n: Normalised, top_k: int, min_score: float, module_id: str | Non
         return Found([_passage(row, score) for score, _rank, row in scored[:top_k]])
     missed.sort(key=lambda s: (-s[0], -s[1], s[2]["id"]))
     return Found([], _passage(missed[0][2], missed[0][0]) if missed else None)
+
+
+def with_section_context(conn, passages: list[Passage]) -> list[Passage]:
+    """Add at most one short sibling as a distinct citable passage in the same release and revision."""
+    if not passages or not any(p.id.startswith("yhdp:") for p in passages):
+        return passages
+    ids = [p.id for p in passages]
+    row = conn.execute(
+        f"""select {_COLUMNS} from passage p join document d on d.id=p.document_id
+            join corpus_release_member sibling on sibling.release_id=p.release_id and sibling.passage_id=p.id
+            join corpus_release_member hit on hit.release_id=sibling.release_id
+              and hit.source_revision_ref=sibling.source_revision_ref
+              and hit.classification_snapshot->'augmentation'->>'parent_id'
+                  = sibling.classification_snapshot->'augmentation'->>'parent_id'
+              and hit.classification_snapshot->'augmentation'->>'context_child_id'
+                  = sibling.classification_snapshot->'augmentation'->>'source_chunk_id'
+            join passage source on source.id=hit.passage_id and source.document_id=p.document_id
+              and source.competency_code=p.competency_code
+            where hit.passage_id=any(%s) and not(p.id=any(%s)) and not d.is_synthetic
+              and length(p.text)<=1800 and corpus_passage_visible(p.id)
+            order by array_position(%s::text[], hit.passage_id), p.id limit 1""", (ids, ids, ids),
+    ).fetchone()
+    return [*passages, _passage(row, 0.0)] if row else passages
 
 
 def get_passages(conn, ids: list[str]) -> dict[str, Passage]:

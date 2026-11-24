@@ -1,8 +1,29 @@
 """Versioned parser-to-chunker contract; source YHDP c661586. No content approval implied."""
+import re
+import unicodedata
 from pathlib import Path
 from typing import Literal
 from pydantic import BaseModel
+
+from .numbering import parse_numbering
 BlockKind = Literal["para", "list", "table", "figure", "formula", "box", "heading"]
+
+def ascii_slug(text: str, max_len: int = 30) -> str:
+    text = unicodedata.normalize("NFD", text.replace("đ", "d").replace("Đ", "D"))
+    text = "".join(c for c in text if unicodedata.category(c) != "Mn").lower()
+    return re.sub(r"[^a-z0-9]+", "-", text).strip("-")[:max_len].rstrip("-")
+
+
+def heading_token(heading: str) -> str:
+    """'IV. ĐIỀU TRỊ' -> 'IV', 'C.1. …' -> 'C.1', 'Phụ lục 8: …' -> 'pl8', else a slug."""
+    heading = unicodedata.normalize("NFC", heading.strip())
+    numbering = parse_numbering(heading)
+    return numbering.token if numbering else ascii_slug(heading)
+
+
+def make_anchor(section_path: list[str]) -> str:
+    return "/".join(heading_token(h) for h in section_path) or "root"
+
 
 class Loc(BaseModel):
     section_path: list[str]

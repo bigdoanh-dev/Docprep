@@ -24,7 +24,57 @@ def main():
         p=sub.add_parser(name);p.add_argument('--version',required=True);p.add_argument('--reason',required=True);p.add_argument('--channel',default='local')
     p=sub.add_parser('mapping-template');p.add_argument('--output',required=True)
     p=sub.add_parser('export-openapi');p.add_argument('--output',required=True)
+    p=sub.add_parser('rechunk',help='Build review candidates from original DOCX files')
+    p.add_argument('package', help='data.zip providing data/sources.yaml')
+    p.add_argument('--sources',required=True,help='Folder with <doc_id>.docx')
+    p.add_argument('--output',required=True,help='New directory for review artifacts')
+    p.add_argument('--document',action='append',help='Source ID. Repeat to choose several')
+    p.add_argument('--tesseract')
+    p.add_argument('--ocr-languages',default='vie+eng')
+    p.add_argument('--ocr-workers',type=int,default=4)
+    p.add_argument('--apply',action='store_true',help='Create pending revisions in the content DB')
     args=parser.parse_args()
+    if args.command=='rechunk':
+        from app.content_tools.rechunk import build, registry, write_json
+        sources=registry(Path(args.package))
+        ids=list(dict.fromkeys(args.document or sources))
+        if unknown := set(ids) - sources.keys():
+            parser.error(f'Unknown source IDs: {", ".join(sorted(unknown))}')
+        files=[(sources[doc],Path(args.sources)/f'{doc}.docx') for doc in ids]
+        for source,path in files:
+            if not path.is_file() or not path.stat().st_size:
+                parser.error(f'Missing original: {path}')
+            if source.format=='scan' and not args.tesseract:
+                parser.error(f'{source.doc_id} requires --tesseract')
+        output=Path(args.output)
+        output.mkdir(parents=True,exist_ok=False)
+        prepared=[]
+        for source,path in files:
+            folder=output/source.doc_id
+            report,rows=build(source,path,folder,tesseract=args.tesseract,
+                              ocr_languages=args.ocr_languages,workers=args.ocr_workers)
+            prepared.append((source,path,folder,report,rows))
+        result={'documents':[p[3] for p in prepared]}
+        if args.apply:
+            import zipfile
+            import yaml
+            from .rechunk_import import apply
+            with zipfile.ZipFile(args.package) as source_zip:
+                info=source_zip.getinfo('data/blueprint/qd51.yaml')
+                if info.file_size>1024**2:
+                    parser.error('Source taxonomy is too large')
+                taxonomy=yaml.safe_load(source_zip.read(info))
+            with db.connect() as conn:
+                db.check_ready(conn)
+                username=os.environ.get('CONTENT_USERNAME') or input('Content username: ')
+                password=os.environ.get('CONTENT_PASSWORD') or getpass.getpass('Content password: ')
+                user=auth.password_user(conn,username,password)
+                user['roles']=auth.roles(conn,user['id'])
+                result['revisions']=apply(conn,user,prepared,taxonomy)
+        write_json(output/'report.json',result)
+        print(json.dumps({'output':str(output),'documents':ids,'chunks':sum(len(p[4]) for p in prepared),
+                          'revisions':result.get('revisions',[])},ensure_ascii=False))
+        return
     if args.command=='migrate':db.migrate();print('Content schema ready');return
     if args.command=='export-openapi':
         import yaml

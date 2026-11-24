@@ -23,7 +23,7 @@ from app.chat.compose import Part, compose
 from app.chat.normalise import normalise
 from app.chat.postcheck import Claim, Evidence, check_tier1, resolve_ids
 from app.chat.pregate import PREGATE_PATH, is_patient_specific, load_patterns
-from app.chat.retrieval import Passage, find, get_passages
+from app.chat.retrieval import Passage, find, get_passages, with_section_context
 from app.chat.trace import Step
 from app.config import settings
 from app.gateway import Gateway, GatewayError, ModelResult
@@ -310,13 +310,14 @@ def prepare_answer(conn, query: str, module_id: str | None = None, detail: bool 
                                     steps))
         return
 
-    yield from _begin(steps, trace.read_step(found.passages))
+    passages = with_section_context(conn, found.passages)
+    yield from _begin(steps, trace.read_step(passages))
     parts = [Part("question", f"Câu hỏi: {query}\n")]
     if detail:
         parts.append(Part("instruction", "Yêu cầu thêm: giải thích chi tiết hơn câu trả lời trước.\n"))
     parts.append(Part("instruction", "\n"))
     system = _prompt("answer_v1")
-    sent = compose(parts, found.passages, system=system)
+    sent = compose(parts, passages, system=system)
     policy = personalize.for_turn(conn, learner_id, list(dict.fromkeys(
         p.competency_code for p in sent.passages if p.competency_code)), normalised)
     yield from _end(steps, "read")
