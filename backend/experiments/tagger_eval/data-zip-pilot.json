@@ -1,0 +1,910 @@
+{
+  "schema": "yhdp.tagger-pilot.v1",
+  "source_archive_sha256": "9b14631c832b5f2cbe15b800a75d40a337d7a567b72e1333b43111a438e9b549",
+  "taxonomy_file": "data/blueprint/qd51.yaml",
+  "taxonomy_sha256": "314379ccdf14668a469f0ae4a1f8780de8ecc869ae570fa81f24ee633dc7a25e",
+  "purpose": "reviewer_ground_truth_candidates_only",
+  "sample_policy": "20 per document and 10 per legacy machine status per document; diversified block kinds; deterministic chunk ID ranking; unique content hash",
+  "samples": [
+    {
+      "sample_id": "TAG-001",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl10/2#c01",
+      "content_hash": "badc20fd6056be2a1a9d6ed0dabfedd4b8d46000",
+      "kind": "text",
+      "section_path": [
+        "Phụ lục 10: ĐIỀU KIỆN CHUYỂN TỪ CAO PHÂN TỬ SANG DUNG DỊCH ĐIỆN GIẢI VÀ NGƯỢC LẠI",
+        "2. Điều kiện chuyển trở lại dung dịch CPT"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-002",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl22/1/1.3#c03",
+      "content_hash": "f0a412cd5abdc3ac889ec79fb346b33d5b4cbfee",
+      "kind": "table",
+      "section_path": [
+        "Phụ lục 22: HƯỚNG DẪN CHĂM SÓC SỐT XUẤT HUYẾT DENGUE TRẺ EM (< 16 TUỔI)",
+        "1. Đại cương",
+        "1.3. Điều trị SXHD theo phân độ"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-003",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-5-hen-phe-quan-hpq-o-nguo/pl5.1#c01",
+      "content_hash": "21505546eee713cec120a4659390aa951a5d79cd",
+      "kind": "text",
+      "section_path": [
+        "Phần 5. Hen phế quản (HPQ) ở người lớn tại trạm y tế xã",
+        "Phụ lục 5.1. Cách sử dụng lưu lượng đỉnh kế"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-004",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#IV/C/C.1/C.1.5#c01",
+      "content_hash": "094de107eccda6de17129a96ff662966fc4086b1",
+      "kind": "text",
+      "section_path": [
+        "IV. ĐIỀU TRỊ",
+        "C. Điều trị sốt xuất huyết Dengue nặng",
+        "C.1. Điều trị sốt xuất huyết Dengue nặng trẻ em",
+        "C.1.5. Điều trị suy tạng nặng"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-005",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-2-dai-thao-duong-tai-tram/buoc-5-dieu-tri-quan-ly/D#c01",
+      "content_hash": "3135bf3f0ffaabb14cbfe7e32a7ef6973c7e104f",
+      "kind": "text",
+      "section_path": [
+        "Phần 2. Đái tháo đường tại trạm y tế xã",
+        "Bước 5. Điều trị, quản lý",
+        "D. Giáo dục, tư vấn"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-006",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl22/5#c01",
+      "content_hash": "550fc58743f4e5c84dfd0797d45a6aed7bf3c0d5",
+      "kind": "text",
+      "section_path": [
+        "Phụ lục 22: HƯỚNG DẪN CHĂM SÓC SỐT XUẤT HUYẾT DENGUE TRẺ EM (< 16 TUỔI)",
+        "5. Kế hoạch chăm sóc sốc sốt xuất huyết Dengue"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-007",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#IV/C/C.2/C.2.3#c01",
+      "content_hash": "f5b7ad5bdb7d5c0c184bde545e2da2bad62d9597",
+      "kind": "text",
+      "section_path": [
+        "IV. ĐIỀU TRỊ",
+        "C. Điều trị sốt xuất huyết Dengue nặng",
+        "C.2. Điều trị sốt xuất huyết Dengue nặng người lớn",
+        "C.2.3. Điều trị tái sốc"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-008",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl22/4/4.1#c01",
+      "content_hash": "869c0d7c8a5c6f13280a78d4950852c39164cbc8",
+      "kind": "text",
+      "section_path": [
+        "Phụ lục 22: HƯỚNG DẪN CHĂM SÓC SỐT XUẤT HUYẾT DENGUE TRẺ EM (< 16 TUỔI)",
+        "4. Kế hoạch chăm sóc sốt xuất huyết Dengue có dấu hiệu cảnh báo",
+        "4.1. Nguy cơ giảm thể tích tuần hoàn do thiếu dịch hậu quả của tăng tính thấm thành mạch và nôn ói trong sốt xuất huyết Dengue cảnh báo"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-009",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-4-benh-phoi-tac-nghen-man/buoc-1-hoi-benh#c01",
+      "content_hash": "98c3c7fd47b99e24e27cb7d3acd53a9f490d6333",
+      "kind": "text",
+      "section_path": [
+        "Phần 4. Bệnh phổi tắc nghẽn mạn tính (BPTNMT) tại trạm y tế xã",
+        "Bước 1. Hỏi bệnh"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-010",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-cum-mua/4/4.2#c01",
+      "content_hash": "f783c764376b3cc992914a599afd278f0b167a6b",
+      "kind": "text",
+      "section_path": [
+        "BỆNH CÚM MÙA",
+        "4. ĐIỀU TRỊ",
+        "4.2. Xử trí theo mức độ bệnh"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-011",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-2-dai-thao-duong-tai-tram/buoc-3-chan-doan#c02",
+      "content_hash": "3920fc4ee1e8a7847309de452f03cbefae19fbda",
+      "kind": "table",
+      "section_path": [
+        "Phần 2. Đái tháo đường tại trạm y tế xã",
+        "Bước 3. Chẩn đoán"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-012",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-sot-mo/6#c01",
+      "content_hash": "cd12ad346abd65806570240647ac341d26975127",
+      "kind": "text",
+      "section_path": [
+        "BỆNH SỐT MÒ",
+        "6. DỰ PHÒNG"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-013",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl22/1/1.1#c01",
+      "content_hash": "2d04f715aca49e9713b1e39810b67e29ec1ce338",
+      "kind": "text",
+      "section_path": [
+        "Phụ lục 22: HƯỚNG DẪN CHĂM SÓC SỐT XUẤT HUYẾT DENGUE TRẺ EM (< 16 TUỔI)",
+        "1. Đại cương",
+        "1.1. Bệnh sốt xuất huyết Dengue"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-014",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-cum-mua/4/4.3#c01",
+      "content_hash": "646ed2c57e7f7e14be8f12e3cc72dc34c20fcc5d",
+      "kind": "text",
+      "section_path": [
+        "BỆNH CÚM MÙA",
+        "4. ĐIỀU TRỊ",
+        "4.3. Điều trị thuốc kháng virus"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-015",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-2-dai-thao-duong-tai-tram/buoc-3-chan-doan#c01",
+      "content_hash": "163d75589e25045dc8ed1c83c6266a8b3b975ea1",
+      "kind": "text",
+      "section_path": [
+        "Phần 2. Đái tháo đường tại trạm y tế xã",
+        "Bước 3. Chẩn đoán"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-016",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-3-quan-ly-long-ghep-tha-v/pl3.3#c05",
+      "content_hash": "36414be5d350602e1df30858c421c77631975ae0",
+      "kind": "table",
+      "section_path": [
+        "Phần 3. Quản lý lồng ghép THA và ĐTĐ tại trạm y tế xã",
+        "Phụ lục 3.3. Dinh dưỡng với bệnh nhân ĐTĐ"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-017",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#IV/C/C.1/C1.2#c01",
+      "content_hash": "af3a0116b133cd9058cb5f3a621b1b410e5387be",
+      "kind": "text",
+      "section_path": [
+        "IV. ĐIỀU TRỊ",
+        "C. Điều trị sốt xuất huyết Dengue nặng",
+        "C.1. Điều trị sốt xuất huyết Dengue nặng trẻ em",
+        "C1.2. Điều trị sốc sốt xuất huyết Dengue nặng"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-018",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-ly-truc-khuan/2#c01",
+      "content_hash": "9a0cfbf5346c4cb3400f2e1573399f28568e2795",
+      "kind": "text",
+      "section_path": [
+        "BỆNH LỴ TRỰC KHUẨN",
+        "2. NGUYÊN NHÂN"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-019",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-3-quan-ly-long-ghep-tha-v/pl3.3#c01",
+      "content_hash": "fc264e50f57a027710b4fef0df8c47d8c4451186",
+      "kind": "text",
+      "section_path": [
+        "Phần 3. Quản lý lồng ghép THA và ĐTĐ tại trạm y tế xã",
+        "Phụ lục 3.3. Dinh dưỡng với bệnh nhân ĐTĐ"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-020",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-cum-mua/5/5.5#c01",
+      "content_hash": "5f42e140be2a530af0d2e8a63df1064bab1e771f",
+      "kind": "text",
+      "section_path": [
+        "BỆNH CÚM MÙA",
+        "5. DỰ PHÒNG",
+        "5.5. Dự phòng bằng thuốc"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-021",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl22/5/5.7#c02",
+      "content_hash": "5e3880b785f1da86e06edc2e9c31cc261ba55fec",
+      "kind": "table",
+      "section_path": [
+        "Phụ lục 22: HƯỚNG DẪN CHĂM SÓC SỐT XUẤT HUYẾT DENGUE TRẺ EM (< 16 TUỔI)",
+        "5. Kế hoạch chăm sóc sốc sốt xuất huyết Dengue",
+        "5.7. Thân nhân lo lắng về tình trạng bệnh"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-022",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-viem-mang-nao-nhiem-khuan/4/4.2#c01",
+      "content_hash": "ab7ff050e3fda6ba6806c67bf94800fd816d3611",
+      "kind": "text",
+      "section_path": [
+        "BỆNH VIÊM MÀNG NÃO NHIỄM KHUẨN",
+        "4. ĐIỀU TRỊ",
+        "4.2. Điều trị cụ thể"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-023",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-2-dai-thao-duong-tai-tram/buoc-5-dieu-tri-quan-ly/A#c01",
+      "content_hash": "97f96a445357962f2525e5b8e9e20f422aad1f40",
+      "kind": "text",
+      "section_path": [
+        "Phần 2. Đái tháo đường tại trạm y tế xã",
+        "Bước 5. Điều trị, quản lý",
+        "A. Mục tiêu glucose máu"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-024",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-5-hen-phe-quan-hpq-o-nguo/pl5.3/4#c01",
+      "content_hash": "eaeefb2edddf262151ce0d53589070cb7fd86970",
+      "kind": "text",
+      "section_path": [
+        "Phần 5. Hen phế quản (HPQ) ở người lớn tại trạm y tế xã",
+        "Phụ lục 5.3. Cách sử dụng các dụng cụ phun hít",
+        "4. Bình hít Accuhaler"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-025",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#nhiem-khuan-huyet/3/3.2#c03",
+      "content_hash": "60aab94d1b7da26b46d945a82eef7aba489cb5c2",
+      "kind": "text",
+      "section_path": [
+        "NHIỄM KHUẨN HUYẾT",
+        "3. ĐIỀU TRỊ",
+        "3.2. Điều trị cụ thể"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-026",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-4-benh-phoi-tac-nghen-man/buoc-5-dieu-tri-quan-ly#c01",
+      "content_hash": "d4ec79e622845c88dd3fb23b468480982161b34a",
+      "kind": "text",
+      "section_path": [
+        "Phần 4. Bệnh phổi tắc nghẽn mạn tính (BPTNMT) tại trạm y tế xã",
+        "Bước 5. Điều trị, quản lý"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-027",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-4-benh-phoi-tac-nghen-man/buoc-5-dieu-tri-quan-ly/A#c02",
+      "content_hash": "86e20077c0b2b4d752db11ddfbd3ea6bffcbab01",
+      "kind": "table",
+      "section_path": [
+        "Phần 4. Bệnh phổi tắc nghẽn mạn tính (BPTNMT) tại trạm y tế xã",
+        "Bước 5. Điều trị, quản lý",
+        "A. Giai đoạn ổn định"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-028",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-5-hen-phe-quan-hpq-o-nguo/pl5.2/2#c01",
+      "content_hash": "543468ec082a3f248050977012e9957df43006ff",
+      "kind": "table",
+      "section_path": [
+        "Phần 5. Hen phế quản (HPQ) ở người lớn tại trạm y tế xã",
+        "Phụ lục 5.2. Thuốc thiết yếu điều trị HPQ tại trạm y tế xã",
+        "2. Thuốc kiểm soát"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-029",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl7#c01",
+      "content_hash": "2e9b7fde9ea5fd99737848a0f92bba362506b77b",
+      "kind": "text",
+      "section_path": [
+        "Phụ lục 7: ĐIỀU TRỊ SUY HÔ HẤP CẤP"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-030",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-4-benh-phoi-tac-nghen-man/buoc-5-dieu-tri-quan-ly/B#c02",
+      "content_hash": "f5388b063701af496e567f3f4281b692cd2b7f6e",
+      "kind": "table",
+      "section_path": [
+        "Phần 4. Bệnh phổi tắc nghẽn mạn tính (BPTNMT) tại trạm y tế xã",
+        "Bước 5. Điều trị, quản lý",
+        "B. Đợt cấp BPTNMT"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-031",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-tieu-chay-do-vi-khuan/4/4.2/4.2.3#c01",
+      "content_hash": "869569264d3c80184de94a645a58ea3a626df191",
+      "kind": "text",
+      "section_path": [
+        "BỆNH TIÊU CHẢY DO VI KHUẨN",
+        "4. ĐIỀU TRỊ",
+        "4.2. Điều trị cụ thể",
+        "4.2.3. Điều trị triệu chứng"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-032",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-5-hen-phe-quan-hpq-o-nguo/pl5.3/5#c01",
+      "content_hash": "1915685e1b14855ad9a6ab3048857c1a2c39b105",
+      "kind": "text",
+      "section_path": [
+        "Phần 5. Hen phế quản (HPQ) ở người lớn tại trạm y tế xã",
+        "Phụ lục 5.3. Cách sử dụng các dụng cụ phun hít",
+        "5. Bình xịt Respimat"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-033",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-viem-mang-nao-tang-bach-c/2#c01",
+      "content_hash": "e793ef78756de77fa487197cbdf51bea689c04b8",
+      "kind": "text",
+      "section_path": [
+        "BỆNH VIÊM MÀNG NÃO TĂNG BẠCH CẦU ÁI TOAN",
+        "2. NGUYÊN NHÂN"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-034",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-5-hen-phe-quan-hpq-o-nguo/pl5.3/1#c01",
+      "content_hash": "cd5b4edb28afb0fff0ca56c26e031388c6ab87bc",
+      "kind": "text",
+      "section_path": [
+        "Phần 5. Hen phế quản (HPQ) ở người lớn tại trạm y tế xã",
+        "Phụ lục 5.3. Cách sử dụng các dụng cụ phun hít",
+        "1. Bình xịt định liều"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-035",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-thuy-dau/4/4.3#c01",
+      "content_hash": "ab90cf10dc4afd38394e1615d1c52f650b4ed213",
+      "kind": "text",
+      "section_path": [
+        "BỆNH THỦY ĐẬU",
+        "4. ĐIỀU TRỊ",
+        "4.3. Điều trị hỗ trợ"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-036",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-uon-van/3/3.4#c01",
+      "content_hash": "d12cd56702958f801f1bd4d18eb29ff0b9dc638c",
+      "kind": "text",
+      "section_path": [
+        "BỆNH UỐN VÁN",
+        "3. CHẨN ĐOÁN",
+        "3.4. Phân loại thể bệnh"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-037",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-tieu-chay-do-vi-khuan/3/3.1#c04",
+      "content_hash": "9471b6b6871a793ae1aba1674e587386b49b68b7",
+      "kind": "table",
+      "section_path": [
+        "BỆNH TIÊU CHẢY DO VI KHUẨN",
+        "3. CHẨN ĐOÁN",
+        "3.1. Lâm sàng: biểu hiện đa dạng tùy thuộc vào căn nguyên gây bệnh."
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-038",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#IV/C/C.1/C1.1#c02",
+      "content_hash": "26321d774b6aeeb04890368e65716f525f0c77e2",
+      "kind": "text",
+      "section_path": [
+        "IV. ĐIỀU TRỊ",
+        "C. Điều trị sốt xuất huyết Dengue nặng",
+        "C.1. Điều trị sốt xuất huyết Dengue nặng trẻ em",
+        "C1.1. Điều trị sốc sốt xuất huyết Dengue"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-039",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl24/III#c02",
+      "content_hash": "df14862350ba2eae4a8f767b94c5336eb57e2824",
+      "kind": "text",
+      "section_path": [
+        "Phụ lục 24: LƯU Ý MỘT SỐ QUY TRÌNH KỸ THUẬT TRONG CHĂM SÓC SỐT XUẤT HUYẾT DENGUE",
+        "III. KỸ THUẬT TIÊM TRUYỀN TĨNH MẠCH TRONG ĐIỀU TRỊ SỐT XUẤT HUYẾT DENGUE"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-040",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-sot-mo/3/3.4#c01",
+      "content_hash": "9ec5d576d9d38cf55a6d54714a956acedfa7f4c1",
+      "kind": "text",
+      "section_path": [
+        "BỆNH SỐT MÒ",
+        "3. CHẨN ĐOÁN",
+        "3.4. Chẩn đoán phân biệt"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-041",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-thuy-dau/5#c01",
+      "content_hash": "622b1169895ca84acb99b1eddb5640fc6908e803",
+      "kind": "text",
+      "section_path": [
+        "BỆNH THỦY ĐẬU",
+        "5. TIẾN TRIỂN VÀ BIẾN CHỨNG"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-042",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-viem-mang-nao-tang-bach-c/5#c01",
+      "content_hash": "15a4bd9c7cb37decd56ed109d7ea63c27d2f0b6a",
+      "kind": "text",
+      "section_path": [
+        "BỆNH VIÊM MÀNG NÃO TĂNG BẠCH CẦU ÁI TOAN",
+        "5. TIẾN TRIỂN VÀ BIẾN CHỨNG"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-043",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-viem-nao-do-virus-herpes/5#c01",
+      "content_hash": "f2784f064b674f4dc3d2a667d2a897491c46ad97",
+      "kind": "text",
+      "section_path": [
+        "BỆNH VIÊM NÃO DO VIRUS HERPES SIMPLEX",
+        "5. TIẾN TRIỂN VÀ BIẾN CHỨNG"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-044",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl3#c01",
+      "content_hash": "0010fbb1ff71fa104ea58b1001423541dd415c9a",
+      "kind": "figure",
+      "section_path": [
+        "Phụ lục 3: SƠ ĐỒ PHÂN NHÓM ĐIỀU TRỊ NGƯỜI BỆNH SỐT XUẤT HUYẾT DENGUE"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-045",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#IV/C/C.2/C.2.1#c01",
+      "content_hash": "a857dda5b648287db76b90850b42b8ac9681b8c2",
+      "kind": "text",
+      "section_path": [
+        "IV. ĐIỀU TRỊ",
+        "C. Điều trị sốt xuất huyết Dengue nặng",
+        "C.2. Điều trị sốt xuất huyết Dengue nặng người lớn",
+        "C.2.1. Điều trị sốc sốt xuất huyết Dengue"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-046",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl22/4/4.6#c02",
+      "content_hash": "ae2f93db738c753fb262f8287e1b74714879f605",
+      "kind": "table",
+      "section_path": [
+        "Phụ lục 22: HƯỚNG DẪN CHĂM SÓC SỐT XUẤT HUYẾT DENGUE TRẺ EM (< 16 TUỔI)",
+        "4. Kế hoạch chăm sóc sốt xuất huyết Dengue có dấu hiệu cảnh báo",
+        "4.6. Thiếu kiến thức về chăm sóc, theo dõi, phòng ngừa trẻ bệnh sốt xuất huyết Dengue do thiếu thông tin"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-047",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-ly-truc-khuan/1#c01",
+      "content_hash": "254ebdc426478413dba29cb5109f96d6205e385b",
+      "kind": "text",
+      "section_path": [
+        "BỆNH LỴ TRỰC KHUẨN",
+        "1. ĐẠI CƯƠNG"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-048",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl23/I#c03",
+      "content_hash": "5a80494b2b8e2ad8951dda7bd3f7b3a103dfa9d9",
+      "kind": "text",
+      "section_path": [
+        "Phụ lục 23: HƯỚNG DẪN CHĂM SÓC SỐT XUẤT HUYẾT DENGUE NGƯỜI LỚN (≥ 16 TUỔI)",
+        "I. CHĂM SÓC SỐT XUẤT HUYẾT DENGUE KHÔNG SỐC Ở NGƯỜI LỚN"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-049",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-thuong-han/5/5.7#c01",
+      "content_hash": "6897d355390f515d887c54c22b3f52003d857998",
+      "kind": "text",
+      "section_path": [
+        "BỆNH THƯƠNG HÀN",
+        "5. TIẾN TRIỂN VÀ BIẾN CHỨNG",
+        "5.7. Người mang khuẩn mạn tính"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-050",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-5-hen-phe-quan-hpq-o-nguo/buoc-4-chuyen-tuyen/B#c01",
+      "content_hash": "ec4c3123d5744f7462288cddf8f523e10b6b6f5a",
+      "kind": "text",
+      "section_path": [
+        "Phần 5. Hen phế quản (HPQ) ở người lớn tại trạm y tế xã",
+        "Bước 4. Chuyển tuyến",
+        "B. Tuyến trên chuyển về"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-051",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl18#c02",
+      "content_hash": "e0ffa59572e124708ed162688a4c2e0d719870ee",
+      "kind": "text",
+      "section_path": [
+        "Phụ lục 18: LƯU ĐỒ XỬ TRÍ SỐC SXHD KHÔNG ĐÁP ỨNG DỊCH TRUYỀN"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-052",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl21#c01",
+      "content_hash": "b98460765429d998124af740244030bc25ed45d9",
+      "kind": "figure",
+      "section_path": [
+        "Phụ lục 21: PHÁT HIỆN VÀ XỬ TRÍ SỐT XUẤT HUYẾT DENGUE Ở TUYẾN CƠ SỞ KHI CÓ DỊCH"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-053",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl22/1/1.2#c01",
+      "content_hash": "88e4c97f3dd9fb66112328d74b7b0a8f141b6dce",
+      "kind": "text",
+      "section_path": [
+        "Phụ lục 22: HƯỚNG DẪN CHĂM SÓC SỐT XUẤT HUYẾT DENGUE TRẺ EM (< 16 TUỔI)",
+        "1. Đại cương",
+        "1.2. Phân độ trẻ bệnh sốt xuất huyết Dengue"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-054",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-4-benh-phoi-tac-nghen-man/buoc-4-chuyen-tuyen/A#c01",
+      "content_hash": "26ced3cbfc4a9e085cb4250f8688309f5ae739bc",
+      "kind": "text",
+      "section_path": [
+        "Phần 4. Bệnh phổi tắc nghẽn mạn tính (BPTNMT) tại trạm y tế xã",
+        "Bước 4. Chuyển tuyến",
+        "A. Chuyển tuyến trên"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-055",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-5-hen-phe-quan-hpq-o-nguo/buoc-3-chan-doan#c01",
+      "content_hash": "16b29cf193c2c7c394a534d961c6d6934429a7d5",
+      "kind": "text",
+      "section_path": [
+        "Phần 5. Hen phế quản (HPQ) ở người lớn tại trạm y tế xã",
+        "Bước 3. Chẩn đoán"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-056",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-5-hen-phe-quan-hpq-o-nguo/buoc-5-dieu-tri-quan-ly/B#c01",
+      "content_hash": "0a6d7d1cbb365c207e08f74874b9ae9fe4fd4df0",
+      "kind": "text",
+      "section_path": [
+        "Phần 5. Hen phế quản (HPQ) ở người lớn tại trạm y tế xã",
+        "Bước 5. Điều trị, quản lý",
+        "B. Quản lý người bệnh HPQ"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-057",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#benh-viem-mang-nao-nhiem-khuan/4/4.2#c02",
+      "content_hash": "3de719f7092d0d85dcd91504d4a3032ccc054419",
+      "kind": "table",
+      "section_path": [
+        "BỆNH VIÊM MÀNG NÃO NHIỄM KHUẨN",
+        "4. ĐIỀU TRỊ",
+        "4.2. Điều trị cụ thể"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-058",
+      "doc_id": "qd2760",
+      "chunk_id": "qd2760#pl22/2/2.2#c02",
+      "content_hash": "4c4e9b1d36e336aad564a4c97009d908938f3b31",
+      "kind": "table",
+      "section_path": [
+        "Phụ lục 22: HƯỚNG DẪN CHĂM SÓC SỐT XUẤT HUYẾT DENGUE TRẺ EM (< 16 TUỔI)",
+        "2. Theo dõi, đánh giá tình trạng người bệnh sốt xuất huyết Dengue",
+        "2.2. Thăm khám"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-059",
+      "doc_id": "qd5642",
+      "chunk_id": "qd5642#nhiem-khuan-huyet/3/3.2#c04",
+      "content_hash": "c4aed30649a0cf6f304e24601309b3290d012b23",
+      "kind": "table",
+      "section_path": [
+        "NHIỄM KHUẨN HUYẾT",
+        "3. ĐIỀU TRỊ",
+        "3.2. Điều trị cụ thể"
+      ],
+      "source_status_for_sampling": "review",
+      "review_status": "pending",
+      "reviewed_labels": null
+    },
+    {
+      "sample_id": "TAG-060",
+      "doc_id": "qd5904",
+      "chunk_id": "qd5904#phan-3-quan-ly-long-ghep-tha-v/pl3.3#c04",
+      "content_hash": "810712912e6e4bb4615242b7fa1e1454fb253e7f",
+      "kind": "formula",
+      "section_path": [
+        "Phần 3. Quản lý lồng ghép THA và ĐTĐ tại trạm y tế xã",
+        "Phụ lục 3.3. Dinh dưỡng với bệnh nhân ĐTĐ"
+      ],
+      "source_status_for_sampling": "auto",
+      "review_status": "pending",
+      "reviewed_labels": null
+    }
+  ],
+  "ocr_source_pages_for_layout_pilot_only": {
+    "ngodoc": [
+      "data/derived/ngodoc/pages/0026.jpg",
+      "data/derived/ngodoc/pages/0051.jpg",
+      "data/derived/ngodoc/pages/0076.jpg",
+      "data/derived/ngodoc/pages/0101.jpg",
+      "data/derived/ngodoc/pages/0127.jpg",
+      "data/derived/ngodoc/pages/0152.jpg",
+      "data/derived/ngodoc/pages/0177.jpg",
+      "data/derived/ngodoc/pages/0202.jpg"
+    ],
+    "dtch": [
+      "data/derived/dtch/pages/0026.jpg",
+      "data/derived/dtch/pages/0052.jpg",
+      "data/derived/dtch/pages/0078.jpg",
+      "data/derived/dtch/pages/0104.jpg",
+      "data/derived/dtch/pages/0130.jpg",
+      "data/derived/dtch/pages/0156.jpg",
+      "data/derived/dtch/pages/0182.jpg",
+      "data/derived/dtch/pages/0208.jpg"
+    ]
+  }
+}

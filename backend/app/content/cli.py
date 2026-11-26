@@ -32,6 +32,8 @@ def main():
     p.add_argument('--tesseract')
     p.add_argument('--ocr-languages',default='vie+eng')
     p.add_argument('--ocr-workers',type=int,default=4)
+    p.add_argument('--tessdata',help='Folder with vie/eng .traineddata (Tesseract --tessdata-dir)')
+    p.add_argument('--ocr-cache',help='Folder reusing Tesseract TSV per page image (keyed by image hash)')
     p.add_argument('--apply',action='store_true',help='Create pending revisions in the content DB')
     args=parser.parse_args()
     if args.command=='rechunk':
@@ -52,7 +54,8 @@ def main():
         for source,path in files:
             folder=output/source.doc_id
             report,rows=build(source,path,folder,tesseract=args.tesseract,
-                              ocr_languages=args.ocr_languages,workers=args.ocr_workers)
+                              ocr_languages=args.ocr_languages,workers=args.ocr_workers,
+                              ocr_cache=args.ocr_cache,tessdata=args.tessdata)
             prepared.append((source,path,folder,report,rows))
         result={'documents':[p[3] for p in prepared]}
         if args.apply:

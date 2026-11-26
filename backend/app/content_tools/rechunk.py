@@ -14,12 +14,14 @@ import yaml
 
 from .augment import augment
 from .chunk import TARGET_MAX, chunk_doc
-from .model import Block, Loc, ParsedDoc
+from .model import ParsedDoc
+from .ocr_layout import Line, Word, format_scan, formatted_markdown
+from .ocr_outline import OUTLINES, TOPICS
 from .parse_docx import parse_docx
 from .scans import extract_pages
 from .sources import Source
 
-VERSION = "yhdp-original-rechunk.v1"
+VERSION = "yhdp-original-rechunk.v2"
 MAX_DOCX = 120 * 1024**2
 _PILOT_CAPTIONS = {
     "2dd6cec54376b05c8e7952306b4e232d3d81caa5694dcf4a6ba84b69366a70ad": "Bảng cân nặng chống sốc SXH dành cho nam",
@@ -50,58 +52,85 @@ def approx_tokens(text: str) -> int:
     return len(re.findall(r"\w+|[^\w\s]", text)) * 2
 
 
-def _scan_page(source, page, assets, tesseract, ocr_languages):
-    loc = Loc(section_path=[f"Ảnh trang {page.index}"], anchor=f"scan-{page.index:04d}",
-              image_indices=[page.index])
-    if page.blank:
-        return [], {"page": page.index, "status": "blank"}
+def ocr_setup(tesseract, ocr_languages, tessdata=None):
+    """Fail early when a requested language model is missing.
+
+    Tesseract silently falls back to the remaining languages, so a missing vie.traineddata yields
+    English-only OCR without diacritics. Returns the base command and a fingerprint of the models used.
+    """
+    command = [tesseract] + (["--tessdata-dir", str(tessdata)] if tessdata else [])
+    listing = subprocess.run(command + ["--list-langs"], capture_output=True, encoding="utf-8",
+                             errors="replace", timeout=60, check=False)
+    output = listing.stdout + listing.stderr
+    folder = re.search(r'languages in "([^"]+)"', output)
+    available = {ln.strip() for ln in output.splitlines()[1:] if ln.strip()}
+    wanted = [lang for lang in ocr_languages.split("+") if lang]
+    if listing.returncode or not folder or (missing := [lang for lang in wanted if lang not in available]):
+        raise ValueError(f"Tesseract language data missing: {', '.join(missing) if folder else output.strip()[:200]}."
+                         " Pass --tessdata pointing at a folder with the .traineddata files.")
+    digest = hashlib.sha256()
+    for lang in wanted:
+        digest.update(lang.encode() + b"\0" + (Path(folder.group(1)) / f"{lang}.traineddata").read_bytes())
+    return command, digest.hexdigest()
+
+
+def _ocr_tsv(source, page, assets, ocr, ocr_languages, cache):
+    command, models = ocr
+    image = assets / "pages" / page.file
+    cached = None
+    if cache:
+        # Keyed by image bytes, languages and model files, so changing any of them OCRs the page again.
+        key = hashlib.sha256(image.read_bytes() + b"\0" + ocr_languages.encode() + b"\0" + models.encode()).hexdigest()
+        cached = Path(cache) / f"{key}.tsv"
+        if cached.is_file():
+            return cached.read_text(encoding="utf-8")
     result = subprocess.run(
-        [tesseract, str(assets / "pages" / page.file), "stdout", "-l", ocr_languages, "-c", "tessedit_create_tsv=1"],
+        command + [str(image), "stdout", "-l", ocr_languages, "-c", "tessedit_create_tsv=1"],
         capture_output=True, encoding="utf-8", errors="replace", timeout=180, check=False,
     )
     if result.returncode:
         raise RuntimeError(f"OCR failed for {source.doc_id} image page {page.index}: {result.stderr.strip()[:300]}")
+    if cached:
+        cached.parent.mkdir(parents=True, exist_ok=True)
+        cached.write_text(result.stdout, encoding="utf-8")
+    return result.stdout
+
+
+def _scan_page(source, page, assets, ocr, ocr_languages, cache=None):
+    if page.blank:
+        return [], {"page": page.index, "status": "blank"}
+    stdout = _ocr_tsv(source, page, assets, ocr, ocr_languages, cache)
     lines, confidences = {}, []
-    tsv = csv.DictReader(io.StringIO(result.stdout.lstrip("\ufeff")), delimiter="\t", quoting=csv.QUOTE_NONE)
-    if not tsv.fieldnames or not {"level", "text", "conf", "block_num", "par_num", "line_num"} <= set(tsv.fieldnames):
+    tsv = csv.DictReader(io.StringIO(stdout.lstrip("\ufeff")), delimiter="\t", quoting=csv.QUOTE_NONE)
+    fields = {"level", "text", "conf", "block_num", "par_num", "line_num", "left", "top", "width", "height"}
+    if not tsv.fieldnames or not fields <= set(tsv.fieldnames):
         raise RuntimeError(f"OCR returned invalid TSV for {source.doc_id} image page {page.index}")
     for row in tsv:
         word = (row.get("text") or "").strip()
         if row["level"] != "5" or not word:
             continue
         key = tuple(row[k] for k in ("block_num", "par_num", "line_num"))
-        lines.setdefault(key, []).append(word)
+        lines.setdefault(key, []).append(
+            Word(word, *(int(row[field]) for field in ("left", "top", "width", "height")))
+        )
         confidences.append(float(row["conf"]))
-    text = "\n".join(" ".join(line) for line in lines.values())
-    for pattern in source.strip_patterns:
-        text = re.sub(pattern, "", text)
-    text = text.strip()
     confidence = round(sum(confidences) / len(confidences), 1) if confidences else None
-    flags = ["ocr_requires_review", "printed_page_unverified", "scan_layout_unverified"]
-    if confidence is not None and confidence < 70:
-        flags.append("ocr_low_confidence")
-    if not text:
+    if not lines:
         return [], {"page": page.index, "status": "unreadable", "confidence": confidence}
-    paragraphs = {}
-    for key, words in lines.items():
-        paragraphs.setdefault(key[:2], []).append(" ".join(words))
-    blocks = []
-    for lines_in_paragraph in paragraphs.values():
-        paragraph = "\n".join(lines_in_paragraph)
-        for pattern in source.strip_patterns:
-            paragraph = re.sub(pattern, "", paragraph)
-        if paragraph.strip():
-            blocks.append(Block(kind="para", text=paragraph.strip(), loc=loc, needs_review=flags))
-    return blocks, {"page": page.index, "status": "text", "confidence": confidence}
+    return [Line(key[:2], tuple(words)) for key, words in lines.items()], {
+        "page": page.index, "width": page.width, "status": "text", "confidence": confidence,
+    }
 
 
-def _build_scan(source, path, assets, tesseract, ocr_languages, workers):
+def _build_scan(source, path, assets, tesseract, ocr_languages, workers, outline, topics=None, cache=None,
+                tessdata=None):
+    ocr = ocr_setup(tesseract, ocr_languages, tessdata)
     pages = extract_pages(path, assets / "pages")
     if not pages:
         raise ValueError(f"{source.doc_id}: no image pages in scanned Word document")
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        result = list(pool.map(lambda page: _scan_page(source, page, assets, tesseract, ocr_languages), pages))
-    blocks = [block for batch, _ in result for block in batch]
+        result = list(pool.map(lambda page: _scan_page(source, page, assets, ocr, ocr_languages, cache), pages))
+    blocks = format_scan(result, source.strip_patterns, outline, topics)
     return ParsedDoc(doc_id=source.doc_id, blocks=blocks), [status for _, status in result]
 
 
@@ -131,7 +160,8 @@ def _split_long_text(parsed):
     return parsed.model_copy(update={"blocks": blocks})
 
 
-def build(source, path, output, *, tesseract=None, ocr_languages="vie+eng", workers=4):
+def build(source, path, output, *, tesseract=None, ocr_languages="vie+eng", workers=4, ocr_cache=None,
+          tessdata=None):
     path, output = Path(path), Path(output)
     if not path.is_file() or not 0 < path.stat().st_size <= MAX_DOCX:
         raise ValueError(f"{source.doc_id}: Word file missing, empty or too large")
@@ -147,7 +177,9 @@ def build(source, path, output, *, tesseract=None, ocr_languages="vie+eng", work
     assets.mkdir()
     source_hash = hashlib.sha256(path.read_bytes()).hexdigest()
     if source.format == "scan":
-        parsed, page_report = _build_scan(source, path, assets, tesseract, ocr_languages, workers)
+        parsed, page_report = _build_scan(source, path, assets, tesseract, ocr_languages, workers,
+                                          OUTLINES.get(source_hash), TOPICS.get(source_hash), ocr_cache, tessdata)
+        (output / "formatted.md").write_text(formatted_markdown(parsed.blocks), encoding="utf-8")
     else:
         parsed, page_report = parse_docx(path, source, assets / "figures"), []
         _word_captions(parsed, assets)
@@ -177,6 +209,7 @@ def build(source, path, output, *, tesseract=None, ocr_languages="vie+eng", work
         "parents": len(parents), "question_drafts": sum(bool(r["location"]["augmentation"]["questions"]) for r in records),
         "quality_flags": dict(Counter(f for r in records for f in r["needs_review"])),
         "scan_pages": page_report, "printed_page_verified_chunks": sum(bool(r["location"]["printed_pages"]) for r in records),
+        "heading_blocks": sum(b.kind == "heading" for b in parsed.blocks),
         "state": "review_required",
     }
     write_json(output / "report.json", report)

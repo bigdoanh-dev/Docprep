@@ -83,6 +83,27 @@ def test_original_rechunk_is_a_new_pending_revision(workspace, tmp_path):
         assert conn.execute("select count(*) n from source_asset where role='original'").fetchone()['n'] == 1
 
 
+def test_automatic_proposal_can_be_saved_without_creating_ground_truth(workspace):
+    from app.content.tagger import save_proposal
+    from experiments.tagger_eval.evaluate import references
+
+    _, user, _ = workspace
+    with db.connect() as conn:
+        report = load(conn, user)
+        row = conn.execute("""select c.id,c.revision_id,s.row_version,s.proposed_tag_set_id
+                              from document_chunk c join chunk_state s on s.chunk_id=c.id limit 1""").fetchone()
+        labels = service.tag_view(conn, row["proposed_tag_set_id"])
+        labels = {k: labels[k] for k in ("van_de", "mien", "bloom_ceiling", "content_type", "population", "ly_do")}
+        conn.execute("update chunk_state set proposed_tag_set_id=null where chunk_id=%s", (row["id"],))
+        assert save_proposal(conn, user["id"], row, report["taxonomy_version"], labels, {"strategy": "legacy_exact"})
+        assert not save_proposal(conn, user["id"], row, report["taxonomy_version"], labels, {"strategy": "legacy_exact"})
+        state = service.state(conn, row["id"])
+        assert state["classification_status"] == "unclassified"
+        assert state["content_status"] == "pending"
+        assert state["proposed_tag_set_id"] is not None and state["confirmed_tag_set_id"] is None
+        assert references(conn, [row["revision_id"]], report["taxonomy_version"]) == []
+
+
 def test_independent_decisions_stale_version_and_retries(workspace):
     _,user,_=workspace
     with db.connect() as conn:

@@ -1,0 +1,26 @@
+flowchart TB
+    word["3 file Word có văn bản"]
+    scan["2 file Word dạng ảnh scan"]
+    readWord["Đọc heading, bảng, đoạn văn và ảnh"]
+    readScan["OCR tiếng Việt · giữ vị trí ảnh trang"]
+    layout["Dự kiến · dựng chương, mục, tiểu mục và bảng từ OCR"]
+    chunk["Chia chunk theo đơn vị nguồn"]
+    metadata["Gắn header, mã mục cha, từ khóa và câu hỏi nháp"]
+    draft[("DB biên tập · phiên bản mới chờ phân loại")]
+    tagger["Dự kiến · kế thừa nhãn khớp hoặc dùng model đề xuất nhãn"]
+    approved["Reviewer xác nhận nhãn, nội dung và mapping"]
+    release["Xuất và nhập release thử nghiệm"]
+    runtime["Lập chỉ mục embedding, kích hoạt ở môi trường thử"]
+    compare["Dự kiến · so release cũ và mới trên Chat thật"]
+    word --> readWord --> chunk
+    scan --> readScan
+    readScan -->|"Luồng hiện tại: chia theo ảnh trang"| chunk
+    readScan -.-> layout
+    layout -. "Luồng dự kiến: chia theo heading" .-> chunk
+    chunk --> metadata --> draft
+    draft -.-> tagger
+    tagger -.-> approved
+    approved --> release --> runtime
+    runtime -.-> compare
+    classDef planned fill:#fff4db,stroke:#a66218,stroke-dasharray:5 4,color:#41280b
+    class layout,tagger,compare planned

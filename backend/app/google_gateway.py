@@ -22,7 +22,7 @@ from app.ollama_gateway import ModelCallUncertain, OllamaConfig, OllamaGateway, 
 from app.privacy import validate_prompt
 
 API = 'https://generativelanguage.googleapis.com/v1beta'
-TASKS = ('answer', 'tutor', 'hint', 'quiz_chat', 'check', 'render', 'rerank')
+TASKS = ('answer', 'tutor', 'hint', 'quiz_chat', 'check', 'render', 'rerank', 'content_tag')
 # Finish reasons that mean the answer was withheld, not completed.
 REFUSED = {'SAFETY', 'RECITATION', 'BLOCKLIST', 'PROHIBITED_CONTENT', 'SPII', 'IMAGE_SAFETY'}
 # Overload and rate-limit answers mean nothing was generated, so a retry cannot duplicate an answer.
@@ -100,7 +100,8 @@ class GoogleGateway(OllamaGateway):
             'generationConfig': {'responseMimeType': 'application/json', 'maxOutputTokens': self.hosted.max_tokens},
         }
         started = time.monotonic()
-        for attempt in range(len(RETRY_DELAYS) + 1):
+        delays = () if task == 'content_tag' else RETRY_DELAYS
+        for attempt in range(len(delays) + 1):
             budget = self._budget(deadline)
             try:
                 with httpx.Client(transport=self.api_transport, trust_env=False,
@@ -111,9 +112,9 @@ class GoogleGateway(OllamaGateway):
                 raise GatewayError('hosted_connection_unavailable') from None   # nothing was sent
             except httpx.HTTPError:
                 raise ModelCallUncertain('hosted_completion_unknown') from None  # may still be generating
-            if response.status_code not in RETRY_STATUS or attempt == len(RETRY_DELAYS):
+            if response.status_code not in RETRY_STATUS or attempt == len(delays):
                 break
-            delay = RETRY_DELAYS[attempt]
+            delay = delays[attempt]
             if deadline is not None and (deadline - datetime.now(timezone.utc)).total_seconds() <= delay + 1:
                 break
             self.sleep(delay)

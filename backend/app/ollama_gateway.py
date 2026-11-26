@@ -134,7 +134,7 @@ class OllamaGateway:
         return asyncio.run(self._request(path, body, budget))
 
     def complete(self, task, system, messages, prompt_version, *, deadline=None):
-        if task not in ('answer', 'tutor', 'hint', 'quiz_chat', 'check', 'render', 'rerank'):
+        if task not in ('answer', 'tutor', 'hint', 'quiz_chat', 'check', 'render', 'rerank', 'content_tag'):
             raise GatewayError('model_role_not_configured')
         validate_prompt(system, messages)
         revision = self.revisions(fresh=True)[self.cfg.generator]

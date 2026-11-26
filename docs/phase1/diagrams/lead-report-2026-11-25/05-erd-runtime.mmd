@@ -1,0 +1,44 @@
+erDiagram
+    learner ||--o{ unit_session : learns
+    learner ||--o{ exam_attempt : takes
+    learner ||--o{ card : reviews
+    learner o|--o{ ai_turn : requests
+    chat_session o|--o{ ai_turn : groups
+    chat_session ||--o{ chat_message : stores
+    ai_turn ||--o| ai_outbox : dispatches
+    ai_turn o|--o{ chat_message : produces
+    document ||--o{ passage : contains
+    competency_node o|--o{ passage : classifies
+    corpus_release o|--o{ passage : projects
+    corpus_release ||--o{ corpus_release_member : records
+    passage ||--o{ corpus_release_member : references
+    corpus_release ||--o{ corpus_activation : activates
+    passage ||--o{ passage_embedding : indexes
+    embedding_index ||--o{ passage_embedding : groups
+    ai_turn {
+        uuid id PK
+        int learner_id FK
+        int session_id FK
+        text status
+        jsonb payload
+    }
+    chat_message {
+        int id PK
+        int session_id FK
+        uuid ai_turn_id FK
+        jsonb citations
+        text corpus_version
+    }
+    passage {
+        text id PK
+        text document_id FK
+        uuid release_id FK
+        text competency_code FK
+        int page_start
+    }
+    corpus_release_member {
+        uuid release_id PK,FK
+        text passage_id PK,FK
+        text source_chunk_ref
+        text source_revision_ref
+    }

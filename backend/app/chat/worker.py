@@ -4,6 +4,7 @@ from contextlib import contextmanager
 from datetime import datetime, timezone, timedelta
 import json
 import logging
+import os
 import threading
 import time
 import uuid
@@ -364,6 +365,7 @@ class ChatWorker:
                 self.index_corpus(turn)
                 return
             generated = False
+            retrieval_eval = None
             if turn["kind"] == "hint":
                 outcome, steps, generated = self.make_hint(turn)
             else:
@@ -391,12 +393,30 @@ class ChatWorker:
                         session = chat.own_session(conn, learner['pseudonym_id'], turn['session_id'])
                         found = embeddings.search(conn, normalised, vector, turn['payload'].get('_corpus_version',settings()['corpus_version']),
                                                   session['module_id'], limit=rr['pool'] if rr['enabled'] else settings()['retrieval']['top_k'])
+                    before_rerank = [p.id for p in found.passages]
+                    rerank_model = None
+                    rerank_failure = None
+                    rerank_gated = False
                     if rr['enabled']:
                         # Rerank and the sufficiency gate are model I/O too: outside every database context.
                         gw = TurnGateway(self, turn)
-                        found = rerank.apply(lambda system, user: pipeline._ask_model(gw, 'rerank', system, user)[0],
-                                             turn['payload']['text'], found).found
+
+                        def classify(system, user):
+                            nonlocal rerank_model
+                            data, result = pipeline._ask_model(gw, 'rerank', system, user)
+                            rerank_model = result.model
+                            return data
+
+                        ranked = rerank.apply(classify, turn['payload']['text'], found)
+                        found = ranked.found
+                        rerank_failure, rerank_gated = ranked.failure, ranked.gated
                         self.check(turn)
+                    retrieval_eval = {
+                        "provider": self.cfg.provider, "embedding_model": vector.model, "embedding_revision": vector.revision,
+                        "rerank": rr, "rerank_model": rerank_model, "rerank_failure": rerank_failure,
+                        "rerank_gated": rerank_gated, "before_rerank": before_rerank,
+                        "after_rerank": [p.id for p in found.passages],
+                    }
                     with self.pool.connection() as conn:
                         pending = []
                         for kind, data in pipeline.prepare_answer(conn, turn['payload']['text'], session['module_id'],
@@ -422,9 +442,15 @@ class ChatWorker:
                     raise TurnStopped("ai_cancelled")
                 model = outcome.model
                 outcome.text = clean_tree(outcome.text)
+                steps_snapshot = trace.stored(steps)
+                if retrieval_eval and os.environ.get("APP_ENV") in ("dev", "test"):
+                    for step in steps_snapshot:
+                        if step["kind"] == "search":
+                            step["_retrieval_eval"] = retrieval_eval
+                            break
                 mid = chat.add_message(conn, turn["session_id"], "assistant", outcome.text, utcnow(),
                     state=outcome.state, answer_format="text", citations=outcome.citations,
-                    retrieved_passage_ids=outcome.retrieved_ids, notice=outcome.notice, trace=trace.stored(steps),
+                    retrieved_passage_ids=outcome.retrieved_ids, notice=outcome.notice, trace=steps_snapshot,
                     claims_checked=outcome.claims_checked, claims_removed=outcome.claims_removed,
                     clarify_options=clean_tree(outcome.clarify_options), searched=outcome.searched,
                     nearest_chapter=outcome.nearest_chapter, model_version=model.model if model else None,

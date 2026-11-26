@@ -1,0 +1,33 @@
+flowchart TB
+    learner["Người học · giao diện React"]
+    editor["Người biên tập và reviewer · Content Workspace"]
+    subgraph runtime["Môi trường Runtime"]
+        proxy["Caddy · cổng local 18880"]
+        business["Business API ×2 · FastAPI"]
+        chat["Chat API ×2 · FastAPI và worker"]
+        redis[("Redis · hàng đợi, lease, sự kiện SSE")]
+        runtimeDb[("PostgreSQL 16 + pgvector · runtime")]
+        model["Model Gateway · trả lời, embedding, rerank theo cấu hình"]
+    end
+    subgraph authoring["Môi trường biên tập"]
+        contentWeb["Caddy content · cổng local 18882"]
+        contentApi["Content API"]
+        importer["CLI · xử lý và nhập học liệu gốc"]
+        contentDb[("PostgreSQL 16 · content_workspace")]
+        assets[("Kho tệp gốc và ảnh")]
+        publish["Publisher CLI · xuất và kích hoạt release"]
+    end
+    learner -->|"REST và SSE"| proxy
+    proxy -->|"Tài khoản, học tập, thi, ôn"| business
+    proxy -->|"Chat, gợi ý, giải thích, trích dẫn"| chat
+    business --> runtimeDb
+    chat --> runtimeDb
+    chat --> redis
+    chat -. "Khi cấu hình provider phù hợp" .-> model
+    editor --> contentWeb --> contentApi
+    contentApi --> contentDb
+    contentApi --> assets
+    importer --> contentDb
+    importer --> assets
+    contentDb -->|"Chunk, nhãn và nội dung đã duyệt"| publish
+    publish -->|"Release có phiên bản"| runtimeDb

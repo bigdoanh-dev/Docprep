@@ -1,0 +1,44 @@
+erDiagram
+    source_document ||--o{ source_document_revision : versions
+    content_import_batch ||--o{ source_document_revision : creates
+    source_document_revision ||--o{ source_asset : stores
+    source_document_revision ||--o{ document_chunk : contains
+    document_chunk ||--o| chunk_state : tracks
+    document_chunk ||--o{ chunk_tag_set : has
+    taxonomy_snapshot ||--o{ chunk_tag_set : defines
+    chunk_tag_set ||--o{ chunk_issue_tag : contains
+    chunk_tag_set ||--o{ chunk_domain_tag : contains
+    document_chunk ||--o{ chunk_review_task : needs
+    chunk_review_task ||--o{ chunk_review_decision : records
+    content_user ||--o{ chunk_review_decision : reviews
+    chunk_tag_set o|--o| chunk_state : proposed
+    chunk_tag_set o|--o| chunk_state : confirmed
+    source_document_revision {
+        uuid id PK
+        uuid document_id FK
+        uuid batch_id FK
+        int revision_no
+        text artifact_sha256
+    }
+    document_chunk {
+        uuid id PK
+        uuid revision_id FK
+        text source_chunk_id
+        text kind
+        text text
+        jsonb location
+    }
+    chunk_tag_set {
+        uuid id PK
+        uuid chunk_id FK
+        text taxonomy_version FK
+        text source
+        text bloom_ceiling
+    }
+    chunk_state {
+        uuid chunk_id PK,FK
+        text classification_status
+        text content_status
+        uuid proposed_tag_set_id FK
+        uuid confirmed_tag_set_id FK
+    }

@@ -1,0 +1,36 @@
+sequenceDiagram
+    autonumber
+    actor learner as Người học
+    participant api as Caddy và Chat API
+    participant db as PostgreSQL runtime
+    participant queue as Redis
+    participant worker as Chat worker
+    participant model as Model Gateway
+    learner->>api: Gửi câu hỏi kèm khóa chống gửi trùng
+    api->>db: Kiểm tra quyền, lưu turn và outbox
+    db-->>api: ID lượt hỏi và phiên bản corpus
+    api-->>learner: Trả ID lượt và mở luồng SSE
+    worker->>db: Đọc outbox hoặc phục hồi lượt cần xử lý
+    worker->>queue: Đưa việc vào hàng đợi và nhận lease
+    worker->>db: Kiểm tra lại lượt, quyền và khóa corpus
+    alt Chat tự động với provider và chỉ mục tương thích
+        worker->>model: Tạo embedding cho câu hỏi
+        worker->>db: Tìm theo từ khóa và vector, hợp nhất bằng RRF
+        opt Rerank được bật
+            worker->>model: Xếp hạng lại và kiểm tra bằng chứng
+        end
+    else Nhánh tìm kiếm từ khóa phù hợp cấu hình
+        worker->>db: Tìm đoạn theo từ khóa
+    end
+    opt Có bảng kèm đoạn lưu ý đủ điều kiện
+        worker->>db: Lấy tối đa một đoạn liên quan trong cùng mục
+    end
+    alt Đủ nguồn và cho phép sinh câu trả lời
+        worker->>model: Sinh và kiểm tra câu trả lời từ đoạn nguồn
+    else Không đủ nguồn hoặc lượt bị chặn
+        worker->>worker: Chọn trạng thái từ chối hoặc thiếu bằng chứng
+    end
+    worker->>db: Kiểm tra quyền sở hữu lượt, lưu kết quả và nguồn trích dẫn
+    worker->>queue: Phát sự kiện kết quả
+    api->>queue: Đọc sự kiện theo ID lượt và mốc tiếp tục
+    api-->>learner: SSE chuyển tiến độ và kết quả
