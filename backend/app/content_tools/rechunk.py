@@ -21,7 +21,7 @@ from .parse_docx import parse_docx
 from .scans import extract_pages
 from .sources import Source
 
-VERSION = "yhdp-original-rechunk.v2"
+VERSION = "yhdp-original-rechunk.v3"
 MAX_DOCX = 120 * 1024**2
 _PILOT_CAPTIONS = {
     "2dd6cec54376b05c8e7952306b4e232d3d81caa5694dcf4a6ba84b69366a70ad": "Bảng cân nặng chống sốc SXH dành cho nam",

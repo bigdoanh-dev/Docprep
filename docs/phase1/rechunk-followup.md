@@ -11,7 +11,7 @@ Thực hiện tiếp từ [bản rechunk đầu tiên](rechunk-review.md). Học
 
 ## 1. Dựng lại cấu trúc OCR
 
-Lệnh `rechunk` tạo phiên bản pipeline `yhdp-original-rechunk.v2`. Tesseract trả chữ và tọa độ. Bộ xử lý gom chữ thành dòng, dựng ngăn xếp heading qua các trang, giữ đoạn văn và thử nhận dạng bảng khi có chú thích, tiêu đề cột và các hàng căn thẳng. Các mốc chương của hai nguồn được lưu theo hash của file Word để tránh nhận nhầm tiêu đề chạy hoặc mục lục thành chương chính. Mốc chương và các đề mục phát hiện từ OCR cần được rà cùng ảnh gốc.
+Lệnh `rechunk` tạo phiên bản pipeline `yhdp-original-rechunk.v3` (v2 là bản 25/11 chưa dùng mục lục). Tesseract trả chữ và tọa độ. Bộ xử lý gom chữ thành dòng, dựng ngăn xếp heading qua các trang, giữ đoạn văn và thử nhận dạng bảng khi có chú thích, tiêu đề cột và các hàng căn thẳng. Các mốc chương của hai nguồn được lưu theo hash của file Word để tránh nhận nhầm tiêu đề chạy hoặc mục lục thành chương chính. Mốc chương và các đề mục phát hiện từ OCR cần được rà cùng ảnh gốc.
 
 Output mỗi tài liệu scan có các file `formatted.md`, `parsed.json`, `chunks.jsonl` và `parents.json`. `section_path` và `parent_id` dùng cấu trúc heading. `image_indices` giữ ảnh trang nguồn, còn `printed_pages` để trống nếu chưa xác minh số in. Bảng chưa nhận dạng chắc chắn giữ văn bản OCR và được đánh dấu `ocr_table_unresolved`. Bảng dựng được cũng có cờ chờ rà vì căn tọa độ chưa bảo đảm từng ô chính xác. Các bảng phức tạp, ô gộp và bảng kéo qua nhiều trang cần đối chiếu thêm.
 
