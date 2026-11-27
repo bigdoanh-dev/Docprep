@@ -32,9 +32,9 @@ def test_content_is_valid(directory):
 def test_seed_content_keeps_its_size_and_labels():
     c = seed_content()
     passages = [p for d in c["documents"] for p in d["passages"]]
-    assert len(passages) >= 30 and len(c["questions"]) == 42 and len(c["glossary"]) >= 20
-    assert all(d["demo_label"] == "Tài liệu demo – chưa thẩm định" for d in c["documents"])
-    assert {q["competency_code"] for q in c["questions"]} == {"FND", "CI-01", "CI-04"}
+    assert len(passages) >= 30 and len(c["questions"]) == 62 and len(c["glossary"]) >= 20
+    assert all(d["demo_label"].endswith("chưa thẩm định") for d in c["documents"])
+    assert {q["competency_code"] for q in c["questions"]} == {"FND", "CI-01", "CI-04", "CI-06", "CI-22", "CI-38", "CI-39"}
     assert {f["kind"] for f in c["exam_forms"]} == {"demo_short", "diagnostic", "assembled"}
 
 
@@ -76,7 +76,7 @@ def test_law_passages_hold_statute_text_only():
 def test_every_topic_has_enough_questions_to_assemble_from():
     from collections import Counter
     per_topic = Counter(q["competency_code"] for q in seed_content()["questions"])
-    assert set(per_topic) == {"FND", "CI-01", "CI-04"}
+    assert set(per_topic) == {"FND", "CI-01", "CI-04", "CI-06", "CI-22", "CI-38", "CI-39"}
     assert min(per_topic.values()) >= 5, per_topic
 
 
@@ -154,8 +154,8 @@ def test_assembled_form_needs_a_size_the_bank_can_fill():
 def test_seed_loads_blueprint_content_and_dev_data(conn):
     run_seed(conn)
     assert count(conn, "core_issue") == 54 and count(conn, "passage") >= 30
-    assert count(conn, "question where status = 'approved'") == 42 == count(conn, "question")
-    assert count(conn, "module") == 8 and count(conn, "module where not coming_soon") == 1
+    assert count(conn, "question where status = 'approved'") == 62 == count(conn, "question")
+    assert count(conn, "module") == 8 and count(conn, "module where not coming_soon") == 4
     g1 = conn.execute("select * from module where id = 'g1'").fetchone()
     assert g1["short_name"] == "Sức khỏe quần thể và dự phòng" and "FND" in g1["competency_codes"]
     assert g1["core_issue_group_id"] == 1 and "CI-05" in g1["competency_codes"]
@@ -183,7 +183,8 @@ def test_every_approval_is_backed_by_two_demo_decisions(conn):
 def test_core_issue_comes_from_the_competency_node(conn):
     run_seed(conn)
     rows = conn.execute("select competency_code, core_issue_id from question").fetchall()
-    assert {(r["competency_code"], r["core_issue_id"]) for r in rows} == {("FND", None), ("CI-01", 1), ("CI-04", 4)}
+    assert {(r["competency_code"], r["core_issue_id"]) for r in rows} == {("FND", None), ("CI-01", 1), ("CI-04", 4),
+        ("CI-06", 6), ("CI-22", 22), ("CI-38", 38), ("CI-39", 39)}
 
 
 def test_seeding_twice_changes_nothing(conn):

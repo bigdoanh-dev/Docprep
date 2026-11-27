@@ -593,3 +593,311 @@
   bloom_level: 1
   difficulty: de
   sources: [lt-p04]
+
+# ---- Demo học phần G2/G4/G6 (27/11/2026): written with AI help from the guideline excerpts in
+# documents.yaml; NOT reviewed by a medical expert. ----
+
+# ---- Unit u-nd-01 (G2, ngộ độc cấp) ----
+- id: q-nd-01
+  stem: "Người bệnh được đưa đến trạm y tế sau khi uống nhiều viên thuốc ngủ: hôn mê, thở chậm 8 lần/phút. Việc cần làm trước tiên là gì?"
+  options:
+    - {key: a, text: "Gây nôn để tống thuốc ra ngoài", correct: false, rationale: "Gây nôn chống chỉ định khi người bệnh lờ đờ, hôn mê hay co giật vì dễ sặc vào phổi."}
+    - {key: b, text: "Khai thông đường thở, bảo đảm thông khí và cho thở oxy", correct: true, rationale: "Ổn định chức năng sống là ưu tiên số 1; thở chậm do thuốc ngủ là tình huống hô hấp phải xử trí ngay."}
+    - {key: c, text: "Cho uống than hoạt 1 g/kg", correct: false, rationale: "Người bệnh hôn mê không uống được; khi đã có triệu chứng, ưu tiên hồi sức trước biện pháp hạn chế hấp thu."}
+    - {key: d, text: "Hỏi kỹ người nhà loại thuốc rồi mới xử trí", correct: false, rationale: "Hỏi bệnh rất quan trọng cho chẩn đoán nguyên nhân nhưng không được làm chậm cấp cứu chức năng sống."}
+  explanation: "Khi người bệnh đã có triệu chứng, ưu tiên nhóm 1: ổn định hô hấp, tuần hoàn, thần kinh ngay trong vài phút đầu. Thở chậm do thuốc ngủ cần khai thông đường thở, bảo đảm thông khí, thở oxy."
+  competency_code: CI-06
+  exam_competency_component: 9
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: trung_binh
+  sources: [nd-p01, nd-p02]
+
+- id: q-nd-02
+  stem: "Trường hợp nào dưới đây được chỉ định gây nôn?"
+  options:
+    - {key: a, text: "Vừa uống nhầm thuốc trừ sâu 15 phút, còn tỉnh táo, chưa có triệu chứng", correct: true, rationale: "Gây nôn chỉ định khi mới uống chất độc, nạn nhân còn tỉnh, chưa có triệu chứng ngộ độc."}
+    - {key: b, text: "Uống nhầm nước tẩy rửa có axit mạnh", correct: false, rationale: "Ngộ độc axit hay kiềm mạnh là chống chỉ định gây nôn."}
+    - {key: c, text: "Đang co giật sau khi uống thuốc", correct: false, rationale: "Nạn nhân co giật là chống chỉ định gây nôn."}
+    - {key: d, text: "Lờ đờ, gọi hỏi trả lời chậm", correct: false, rationale: "Nạn nhân lờ đờ là chống chỉ định gây nôn vì nguy cơ sặc."}
+  explanation: "Chỉ gây nôn khi mới uống, còn tỉnh, chưa có triệu chứng. Chống chỉ định: lờ đờ, hôn mê, co giật, ngộ độc axit hay kiềm mạnh."
+  competency_code: CI-06
+  exam_competency_component: 9
+  bloom_level: 1
+  bloom_level_6: 2
+  difficulty: de
+  sources: [nd-p03]
+
+- id: q-nd-03
+  stem: "Người lớn nặng 50 kg uống nhầm thuốc, còn tỉnh. Liều than hoạt và sorbitol phù hợp là?"
+  options:
+    - {key: a, text: "50 g than hoạt kèm 100 g sorbitol", correct: true, rationale: "Than hoạt 1 g/kg = 50 g; sorbitol luôn kèm với lượng gấp 2 lần than hoạt = 100 g."}
+    - {key: b, text: "50 g than hoạt, không cần sorbitol", correct: false, rationale: "Kèm theo than hoạt bao giờ cũng phải cho sorbitol."}
+    - {key: c, text: "100 g than hoạt kèm 50 g sorbitol", correct: false, rationale: "Đảo ngược tỷ lệ: than hoạt 1 g/kg, sorbitol gấp 2 lần than hoạt."}
+    - {key: d, text: "5 g than hoạt kèm 10 g sorbitol", correct: false, rationale: "Liều 0,1 g/kg quá thấp; liều đúng là 1 g/kg."}
+  explanation: "Than hoạt 1 g/kg hòa 100 ml nước; sorbitol gấp 2 lần than hoạt. Với 50 kg: 50 g than hoạt và 100 g sorbitol."
+  competency_code: CI-06
+  exam_competency_component: 8
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: trung_binh
+  sources: [nd-p03]
+
+# ---- Unit u-sx-01 (G4, sốt xuất huyết Dengue) ----
+- id: q-sx-01
+  stem: "Người bệnh 25 tuổi sốt ngày thứ 4, nôn 4 lần trong 1 giờ qua, đau bụng nhiều vùng gan; mạch, huyết áp bình thường. Phân độ phù hợp là?"
+  options:
+    - {key: a, text: "Sốt xuất huyết Dengue (chưa có dấu hiệu cảnh báo)", correct: false, rationale: "Nôn từ 3 lần/giờ và đau bụng nhiều vùng gan đều là dấu hiệu cảnh báo."}
+    - {key: b, text: "Sốt xuất huyết Dengue có dấu hiệu cảnh báo", correct: true, rationale: "Chỉ cần 1 dấu hiệu cảnh báo; người bệnh có 2 dấu hiệu và chưa có sốc hay suy tạng."}
+    - {key: c, text: "Sốt xuất huyết Dengue nặng", correct: false, rationale: "Mức nặng cần sốc, ứ dịch suy hô hấp, xuất huyết nặng hoặc suy tạng; mạch, huyết áp ở đây bình thường."}
+    - {key: d, text: "Chưa phân độ được khi chưa có kết quả tiểu cầu", correct: false, rationale: "Dấu hiệu cảnh báo lâm sàng đủ để phân độ, không phải chờ xét nghiệm."}
+  explanation: "Nôn ói nhiều từ 3 lần/1 giờ và đau bụng nhiều, tăng cảm giác đau vùng gan là dấu hiệu cảnh báo. Không có sốc hay suy tạng nên chưa phải SXHD nặng."
+  competency_code: CI-22
+  exam_competency_component: 5
+  bloom_level: 3
+  bloom_level_6: 4
+  difficulty: trung_binh
+  sources: [sx-p01]
+
+- id: q-sx-02
+  stem: "Trẻ 20 kg sốt xuất huyết Dengue, sốt 39°C, điều trị ngoại trú. Chọn cách hạ sốt đúng."
+  options:
+    - {key: a, text: "Paracetamol 200–300 mg/lần, cách 4–6 giờ, không quá 1.200 mg/24 giờ", correct: true, rationale: "10–15 mg/kg/lần × 20 kg = 200–300 mg; tối đa 60 mg/kg/24 giờ = 1.200 mg."}
+    - {key: b, text: "Ibuprofen 200 mg/lần khi sốt", correct: false, rationale: "Không dùng ibuprofen vì có thể gây xuất huyết, toan máu."}
+    - {key: c, text: "Aspirin liều hạ sốt", correct: false, rationale: "Không dùng aspirin vì có thể gây xuất huyết, toan máu."}
+    - {key: d, text: "Paracetamol 500 mg mỗi 2 giờ đến khi hết sốt", correct: false, rationale: "Liều và khoảng cách vượt khuyến cáo, có thể vượt 60 mg/kg/24 giờ."}
+  explanation: "Thuốc hạ nhiệt duy nhất là paracetamol đơn chất 10–15 mg/kg/lần, cách 4–6 giờ, tổng không quá 60 mg/kg/24 giờ; kèm lau mát bằng nước ấm."
+  competency_code: CI-22
+  exam_competency_component: 8
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: trung_binh
+  sources: [sx-p02]
+
+- id: q-sx-03
+  stem: "Người bệnh sốt xuất huyết Dengue điều trị ngoại trú, ngày thứ 5 hết sốt nhưng mệt lả, bứt rứt, tay chân lạnh ẩm. Hướng xử trí đúng là?"
+  options:
+    - {key: a, text: "Hết sốt là đã khỏi, tiếp tục nghỉ ở nhà", correct: false, rationale: "Khó chịu hơn dù hết sốt là dấu hiệu nặng; sốc thường xuất hiện lúc giảm sốt."}
+    - {key: b, text: "Đến khám lại ngay để đánh giá và nhập viện", correct: true, rationale: "Mệt lả, bứt rứt, tay chân lạnh ẩm thuộc nhóm dấu hiệu phải khám lại ngay; có dấu hiệu cảnh báo thì nhập viện."}
+    - {key: c, text: "Tăng liều paracetamol và chờ đến lịch tái khám", correct: false, rationale: "Người bệnh không sốt; trì hoãn có thể bỏ lỡ sốc."}
+    - {key: d, text: "Uống nước xá xị cho đủ nước", correct: false, rationale: "Không dùng thực phẩm màu nâu, đỏ; và đây là tình huống cần khám ngay."}
+  explanation: "Người bệnh phải khám lại ngay khi khó chịu hơn dù hết sốt, mệt lả, bứt rứt, tay chân lạnh ẩm. Có dấu hiệu cảnh báo thì cho nhập viện."
+  competency_code: CI-22
+  exam_competency_component: 10
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: de
+  sources: [sx-p03]
+
+# ---- Unit u-tha-01 (G6, tăng huyết áp) ----
+- id: q-tha-01
+  stem: "Huyết áp đo đúng quy trình tại phòng khám là 165/95 mmHg. Phân độ là?"
+  options:
+    - {key: a, text: "THA độ 1", correct: false, rationale: "95 mmHg tâm trương thuộc độ 1, nhưng tâm thu 165 mmHg thuộc độ 2; lấy mức cao hơn."}
+    - {key: b, text: "THA độ 2", correct: true, rationale: "Tâm thu 160–179 là độ 2; khi hai chỉ số ở hai mức khác nhau thì lấy mức cao hơn."}
+    - {key: c, text: "THA độ 3", correct: false, rationale: "Độ 3 cần tâm thu từ 180 hoặc tâm trương từ 110."}
+    - {key: d, text: "Huyết áp bình thường cao", correct: false, rationale: "Bình thường cao là 130–139/85–89 mmHg."}
+  explanation: "Tâm thu 165 thuộc độ 2, tâm trương 95 thuộc độ 1. Khi hai chỉ số khác mức thì lấy mức cao hơn: THA độ 2."
+  competency_code: CI-39
+  exam_competency_component: 5
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: de
+  sources: [tha-p01]
+
+- id: q-tha-02
+  stem: "Nam 55 tuổi, THA độ 2 vừa được khẳng định chẩn đoán, chưa điều trị. Xử trí phù hợp tại trạm y tế xã là?"
+  options:
+    - {key: a, text: "Thay đổi lối sống 3 tháng rồi mới cân nhắc thuốc", correct: false, rationale: "Chỉ THA độ 1 nguy cơ thấp mới thử thay đổi lối sống 1–3 tháng trước."}
+    - {key: b, text: "Thay đổi lối sống kèm dùng thuốc hạ huyết áp ngay", correct: true, rationale: "THA độ 2–3: thay đổi lối sống và dùng thuốc ngay trong mọi trường hợp."}
+    - {key: c, text: "Chỉ dùng thuốc, không cần thay đổi lối sống", correct: false, rationale: "Luôn kết hợp thay đổi lối sống với thuốc hạ huyết áp."}
+    - {key: d, text: "Chuyển tuyến trên vì trạm không quản lý THA độ 2", correct: false, rationale: "THA có thể quản lý tại trạm; chuyển chuyên khoa khi THA kháng trị hoặc có chỉ định chuyển tuyến."}
+  explanation: "Với THA độ 2–3, thay đổi lối sống kèm thuốc ngay. Mục tiêu HA tâm thu 120 đến dưới 130 mmHg ở người dưới 65 tuổi, đạt trong 1–3 tháng."
+  competency_code: CI-39
+  exam_competency_component: 10
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: trung_binh
+  sources: [tha-p02]
+
+- id: q-tha-03
+  stem: "Người bệnh 60 tuổi THA độ 2, không có chỉ định ưu tiên. Phác đồ khởi trị khuyến cáo là?"
+  options:
+    - {key: a, text: "Phối hợp 2 thuốc trong 1 viên: ức chế men chuyển hoặc ức chế thụ thể kèm chẹn kênh canxi hoặc lợi tiểu thiazide", correct: true, rationale: "Khởi trị phối hợp A + C hoặc A + D trong 1 viên."}
+    - {key: b, text: "Đơn trị chẹn beta", correct: false, rationale: "Chẹn beta chỉ thêm ở bước sau khi 3 thuốc chưa đạt; đơn trị dành cho THA độ 1 nguy cơ thấp, người từ 80 tuổi hoặc dễ tổn thương."}
+    - {key: c, text: "Phối hợp ngay 4 thuốc có spironolacton", correct: false, rationale: "Spironolacton là bước thứ tư khi A + C + D chưa đạt mục tiêu."}
+    - {key: d, text: "Đơn trị lợi tiểu thiazide liều thấp", correct: false, rationale: "Đơn trị không phù hợp với THA độ 2 ở người 60 tuổi không thuộc nhóm dễ tổn thương."}
+  explanation: "Khởi trị phối hợp 2 thuốc (1 viên) A + C hoặc A + D. Chưa đạt thì A + C + D, rồi thêm spironolacton hoặc thuốc khác; THA kháng trị chuyển chuyên khoa."
+  competency_code: CI-39
+  exam_competency_component: 8
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: kho
+  sources: [tha-p03]
+
+# ---- Unit u-dtd-01 (G6, đái tháo đường típ 2) ----
+- id: q-dtd-01
+  stem: "Xét nghiệm glucose huyết tương tĩnh mạch: lúc đói 6,2 mmol/L; 2 giờ sau nghiệm pháp dung nạp glucose 75 g là 8,6 mmol/L. Kết luận phù hợp là?"
+  options:
+    - {key: a, text: "Đái tháo đường", correct: false, rationale: "Cần lúc đói từ 7,0 hoặc 2 giờ từ 11,1 mmol/L."}
+    - {key: b, text: "Tiền đái tháo đường (rối loạn dung nạp glucose)", correct: true, rationale: "2 giờ NPDNG 7,8–11,0 mmol/L kèm lúc đói 5,6–6,9 mmol/L."}
+    - {key: c, text: "Bình thường", correct: false, rationale: "Lúc đói từ 5,6 và 2 giờ từ 7,8 mmol/L đều đã vượt ngưỡng bình thường."}
+    - {key: d, text: "Không kết luận được nếu chưa có HbA1c", correct: false, rationale: "Glucose lúc đói và NPDNG đủ để phân loại; HbA1c là một tiêu chuẩn thay thế, không bắt buộc."}
+  explanation: "Glucose 2 giờ NPDNG 7,8–11,0 mmol/L là rối loạn dung nạp glucose, thuộc tiền ĐTĐ; cần dự phòng và theo dõi."
+  competency_code: CI-38
+  exam_competency_component: 4
+  bloom_level: 2
+  bloom_level_6: 4
+  difficulty: trung_binh
+  sources: [dtd-p01]
+
+- id: q-dtd-02
+  stem: "Người 50 tuổi không có triệu chứng, glucose huyết tương tĩnh mạch lúc đói lần đầu là 7,4 mmol/L. Bước tiếp theo là?"
+  options:
+    - {key: a, text: "Chẩn đoán đái tháo đường ngay và bắt đầu thuốc", correct: false, rationale: "Khi glucose không tăng rõ và không có triệu chứng, cần 2 kết quả đạt chuẩn."}
+    - {key: b, text: "Làm lại xét nghiệm (cùng mẫu hoặc ngày khác); vẫn đạt chuẩn thì chẩn đoán ĐTĐ", correct: true, rationale: "Cần 2 kết quả đạt chuẩn ở cùng mẫu hoặc 2 mẫu ở ngày khác."}
+    - {key: c, text: "Kết luận tiền đái tháo đường", correct: false, rationale: "7,4 mmol/L đã từ ngưỡng 7,0 của ĐTĐ, không thuộc khoảng 5,6–6,9 của tiền ĐTĐ."}
+    - {key: d, text: "Bỏ qua, đo lại sau 1 năm", correct: false, rationale: "Đo lại hằng năm chỉ khi glucose lúc đói dưới 5,6 mmol/L."}
+  explanation: "Glucose lúc đói từ 7,0 mmol/L nhưng không có triệu chứng: làm thêm hoặc làm lại xét nghiệm; vẫn đạt chuẩn thì chẩn đoán ĐTĐ."
+  competency_code: CI-38
+  exam_competency_component: 5
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: trung_binh
+  sources: [dtd-p01]
+
+- id: q-dtd-03
+  stem: "Người bệnh 45 tuổi mới chẩn đoán đái tháo đường típ 2, chức năng thận bình thường. Thuốc uống lựa chọn đầu tiên tại trạm y tế xã là?"
+  options:
+    - {key: a, text: "Sulfonylurea", correct: false, rationale: "Sulfonylurea dùng thay hoặc thêm khi metformin chống chỉ định hoặc đơn trị không đạt mục tiêu."}
+    - {key: b, text: "Metformin, chỉnh liều đến khi đạt mục tiêu", correct: true, rationale: "Metformin là thuốc đầu tiên."}
+    - {key: c, text: "Insulin ngay từ đầu", correct: false, rationale: "Hướng dẫn tại trạm bắt đầu bằng thuốc uống metformin."}
+    - {key: d, text: "Chỉ ăn kiêng, không dùng thuốc", correct: false, rationale: "Hướng dẫn chỉ định thuốc uống, metformin đầu tiên, kèm chế độ ăn và vận động."}
+  explanation: "Metformin là thuốc uống đầu tiên. Người bệnh từ 40 tuổi còn được chỉ định statin. Mục tiêu HbA1c dưới 7% với đa số bệnh nhân."
+  competency_code: CI-38
+  exam_competency_component: 8
+  bloom_level: 1
+  bloom_level_6: 2
+  difficulty: de
+  sources: [dtd-p02]
+
+# ---- Bank questions for the demo topics (each topic needs at least five to assemble from) ----
+- id: q-nd-04
+  stem: "Hóa chất bắn vào mắt một công nhân. Sơ cứu đúng trước khi đưa đi khám chuyên khoa mắt là?"
+  options:
+    - {key: a, text: "Rửa mắt liên tục 15 phút bằng dòng nước muối 0,9%", correct: true, rationale: "Đây là biện pháp hạn chế hấp thu qua niêm mạc mắt theo hướng dẫn."}
+    - {key: b, text: "Nhỏ thuốc mỡ kháng sinh rồi băng kín mắt", correct: false, rationale: "Phải loại bỏ chất độc bằng rửa liên tục trước; băng kín giữ hóa chất lại trong mắt."}
+    - {key: c, text: "Chuyển ngay đến chuyên khoa mắt, không rửa để giữ nguyên hiện trạng", correct: false, rationale: "Rửa mắt phải làm ngay, trước khi đưa đi khám chuyên khoa."}
+    - {key: d, text: "Rửa nhanh 1–2 phút bằng bất kỳ nước nào có sẵn rồi thôi", correct: false, rationale: "Hướng dẫn yêu cầu rửa liên tục 15 phút bằng nước muối 0,9%."}
+  explanation: "Chất độc bắn vào mắt: rửa liên tục 15 phút bằng dòng nước muối 0,9% chảy liên tục trước khi đưa đi khám chuyên khoa mắt."
+  competency_code: CI-06
+  exam_competency_component: 9
+  bloom_level: 1
+  bloom_level_6: 1
+  difficulty: de
+  sources: [nd-p03]
+
+- id: q-nd-05
+  stem: "Người bệnh hôn mê nghi do ngộ độc, chưa rõ chất độc; đường thở đã được bảo đảm. Theo hướng dẫn xử trí hôn mê, nên làm gì tiếp?"
+  options:
+    - {key: a, text: "Glucose ưu trương 30% 50 ml tĩnh mạch kèm vitamin B1, naloxon 0,4 mg tĩnh mạch chậm", correct: true, rationale: "Đây là các biện pháp xử trí hôn mê; naloxon để loại trừ quá liều heroin."}
+    - {key: b, text: "Gây nôn để lấy chất độc ra", correct: false, rationale: "Gây nôn chống chỉ định khi người bệnh hôn mê."}
+    - {key: c, text: "Cho uống than hoạt qua đường miệng", correct: false, rationale: "Người bệnh hôn mê không uống được và có nguy cơ sặc."}
+    - {key: d, text: "Chờ kết quả xét nghiệm độc chất rồi mới điều trị", correct: false, rationale: "Ổn định chức năng sống phải làm ngay, không chờ xét nghiệm."}
+  explanation: "Xử trí hôn mê trong ngộ độc: glucose ưu trương 30% 50 ml tĩnh mạch kèm vitamin B1, naloxon 0,4 mg tĩnh mạch chậm, chống tụt lưỡi và hít phải dịch trào ngược."
+  competency_code: CI-06
+  exam_competency_component: 8
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: kho
+  sources: [nd-p02]
+
+- id: q-sx-04
+  stem: "Phụ nữ có thai 28 tuần được chẩn đoán sốt xuất huyết Dengue, chưa có dấu hiệu cảnh báo. Hướng xử trí phù hợp là?"
+  options:
+    - {key: a, text: "Điều trị ngoại trú như mọi người bệnh chưa có dấu hiệu cảnh báo", correct: false, rationale: "Phụ nữ có thai thuộc nhóm cần xem xét chỉ định nhập viện."}
+    - {key: b, text: "Xem xét chỉ định nhập viện", correct: true, rationale: "Phụ nữ có thai là một trong các trường hợp được xem xét nhập viện dù chưa có dấu hiệu cảnh báo."}
+    - {key: c, text: "Hẹn tái khám sau 3 ngày", correct: false, rationale: "Người bệnh điều trị ngoại trú cũng phải tái khám và làm xét nghiệm hằng ngày."}
+    - {key: d, text: "Cho ibuprofen hạ sốt và theo dõi tại nhà", correct: false, rationale: "Không dùng ibuprofen trong sốt xuất huyết Dengue."}
+  explanation: "Xem xét nhập viện khi: sống một mình, nhà xa cơ sở y tế, gia đình không theo dõi sát được, trẻ nhũ nhi, dư cân, béo phì, phụ nữ có thai, người từ 60 tuổi, có bệnh mạn tính đi kèm."
+  competency_code: CI-22
+  exam_competency_component: 10
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: trung_binh
+  sources: [sx-p03]
+
+- id: q-sx-05
+  stem: "Ở người bệnh sốt xuất huyết Dengue, dấu hiệu nào dưới đây xếp vào mức NẶNG?"
+  options:
+    - {key: a, text: "AST 450 U/L", correct: false, rationale: "AST/ALT từ 400 U/L là dấu hiệu cảnh báo; mức nặng là từ 1000 U/L."}
+    - {key: b, text: "Gan to 3 cm dưới bờ sườn", correct: false, rationale: "Gan to trên 2 cm là dấu hiệu cảnh báo."}
+    - {key: c, text: "AST 1.200 U/L", correct: true, rationale: "AST hoặc ALT từ 1000 U/L là suy tạng (gan), thuộc mức nặng."}
+    - {key: d, text: "Nôn 4 lần trong 6 giờ", correct: false, rationale: "Nôn từ 4 lần/6 giờ là dấu hiệu cảnh báo."}
+  explanation: "Mức nặng: thoát huyết tương nặng (sốc, ứ dịch suy hô hấp), xuất huyết nặng hoặc suy tạng như AST/ALT từ 1000 U/L, rối loạn ý thức."
+  competency_code: CI-22
+  exam_competency_component: 5
+  bloom_level: 2
+  bloom_level_6: 4
+  difficulty: kho
+  sources: [sx-p01]
+
+- id: q-tha-04
+  stem: "Người bệnh có HA đo lại đúng quy trình tại phòng khám là 150/92 mmHg; trung bình tự đo tại nhà là 128/80 mmHg. Kết luận phù hợp là?"
+  options:
+    - {key: a, text: "THA độ 1", correct: false, rationale: "HA ngoài phòng khám dưới 135/85 mmHg nên chưa khẳng định THA."}
+    - {key: b, text: "THA \"áo choàng trắng\"", correct: true, rationale: "Tại phòng khám từ 140/90 nhưng tự đo tại nhà dưới 135/85 mmHg."}
+    - {key: c, text: "Không tăng huyết áp, không cần theo dõi", correct: false, rationale: "HA tại phòng khám vẫn từ 140/90; đây là THA áo choàng trắng, không phải bình thường."}
+    - {key: d, text: "THA độ 2", correct: false, rationale: "150/92 nếu là THA thì cũng chỉ ở độ 1, và ở đây HA tại nhà dưới ngưỡng."}
+  explanation: "Sơ đồ khẳng định: HA tại phòng khám từ 140/90 thì đo ngoài phòng khám; từ 135/85 là THA, dưới 135/85 là THA \"áo choàng trắng\"."
+  competency_code: CI-39
+  exam_competency_component: 5
+  bloom_level: 3
+  bloom_level_6: 4
+  difficulty: kho
+  sources: [tha-p01]
+
+- id: q-tha-05
+  stem: "Mục tiêu huyết áp tâm thu khi điều trị THA cho người bệnh 70 tuổi là bao nhiêu?"
+  options:
+    - {key: a, text: "120 đến dưới 130 mmHg", correct: false, rationale: "Đây là mục tiêu cho người dưới 65 tuổi."}
+    - {key: b, text: "130 đến dưới 140 mmHg", correct: true, rationale: "Mục tiêu cho người từ 65 tuổi, có thể thấp hơn nếu dung nạp."}
+    - {key: c, text: "Dưới 150 mmHg", correct: false, rationale: "Hướng dẫn đặt mục tiêu 130 đến dưới 140 mmHg cho người từ 65 tuổi."}
+    - {key: d, text: "Dưới 110 mmHg", correct: false, rationale: "Thấp hơn nhiều so với mục tiêu khuyến cáo."}
+  explanation: "HA tâm thu mục tiêu: 120 đến dưới 130 mmHg (dưới 65 tuổi), 130 đến dưới 140 mmHg (từ 65 tuổi); HA tâm trương 70 đến dưới 80 mmHg."
+  competency_code: CI-39
+  exam_competency_component: 10
+  bloom_level: 1
+  bloom_level_6: 1
+  difficulty: de
+  sources: [tha-p02]
+
+- id: q-dtd-04
+  stem: "Mục tiêu HbA1c cho đa số người bệnh đái tháo đường típ 2 quản lý tại trạm y tế xã là?"
+  options:
+    - {key: a, text: "Dưới 6%", correct: false, rationale: "Hướng dẫn đặt mục tiêu dưới 7% cho đa số người bệnh."}
+    - {key: b, text: "Dưới 7%", correct: true, rationale: "HbA1c dưới 7% với đa số bệnh nhân."}
+    - {key: c, text: "Dưới 8,5%", correct: false, rationale: "Cao hơn mục tiêu khuyến cáo cho đa số người bệnh."}
+    - {key: d, text: "Dưới 10%", correct: false, rationale: "10 mmol/L là mục tiêu glucose sau ăn, không phải HbA1c."}
+  explanation: "Mục tiêu: glucose lúc đói 4,4–7,2 mmol/L, sau ăn 1–2 giờ dưới 10 mmol/L, HbA1c dưới 7% với đa số bệnh nhân."
+  competency_code: CI-38
+  exam_competency_component: 10
+  bloom_level: 1
+  bloom_level_6: 1
+  difficulty: de
+  sources: [dtd-p02]
+
+- id: q-dtd-05
+  stem: "Người bệnh đái tháo đường típ 2 có tăng huyết áp và protein niệu. Nhóm thuốc hạ áp nên chọn đầu tiên là?"
+  options:
+    - {key: a, text: "Ức chế men chuyển hoặc ức chế thụ thể", correct: true, rationale: "Là lựa chọn đầu tiên khi đã có tổn thương thận (protein niệu)."}
+    - {key: b, text: "Chẹn beta", correct: false, rationale: "Không phải lựa chọn đầu tiên trong tình huống có protein niệu theo hướng dẫn."}
+    - {key: c, text: "Lợi tiểu thiazide đơn trị", correct: false, rationale: "Hướng dẫn ưu tiên ức chế men chuyển hoặc ức chế thụ thể khi có protein niệu."}
+    - {key: d, text: "Spironolacton", correct: false, rationale: "Spironolacton chỉ thêm ở bước sau khi phối hợp 3 thuốc chưa đạt mục tiêu."}
+  explanation: "ĐTĐ có THA: điều trị theo hướng dẫn THA; ức chế men chuyển hoặc ức chế thụ thể là lựa chọn đầu tiên nếu đã có tổn thương thận (protein niệu)."
+  competency_code: CI-38
+  exam_competency_component: 8
+  bloom_level: 2
+  bloom_level_6: 3
+  difficulty: trung_binh
+  sources: [dtd-p02]

@@ -459,3 +459,173 @@
       text: >-
         Bộ trưởng Bộ Y tế quyết định điều chỉnh, bổ sung danh mục bệnh truyền nhiễm thuộc các nhóm quy
         định tại khoản 1 Điều này.
+
+# ---- Demo học phần G2/G4/G6 (27/11/2026) ----
+# Short excerpts of the public Bộ Y tế guidelines in the local release yhdp-rechunk-demo-v1, lightly
+# cleaned of OCR errors. The lessons and questions built on them were written with AI help for a funding
+# demo and are NOT reviewed by a medical expert. `article` is the section path in the guideline.
+- id: BYT-NGODOC-DEMO
+  title: Hướng dẫn chẩn đoán và xử trí ngộ độc (trích lược)
+  edition: Bộ Y tế
+  demo_label: Trích hướng dẫn Bộ Y tế – chưa thẩm định
+  excerpt_limit: null
+  passages:
+    - id: nd-p01
+      chapter: "Chương 1. Các biện pháp chung"
+      section: "Chẩn đoán và xử trí chung với ngộ độc cấp – Đại cương"
+      article: "Chương 1 › Chẩn đoán và xử trí chung với ngộ độc cấp › 1. Đại cương"
+      competency_code: CI-06
+      text: >-
+        Xử trí bệnh nhân ngộ độc cấp gồm 2 nhóm công việc. Nhóm 1 là các biện pháp hồi sức và điều trị
+        triệu chứng: cấp cứu ban đầu; hỏi bệnh, khám, định hướng chẩn đoán; các biện pháp điều trị hỗ trợ
+        toàn diện. Nhóm 2 là các biện pháp chống độc đặc hiệu: hạn chế hấp thu, tăng đào thải độc chất và
+        thuốc giải độc đặc hiệu. Khi bệnh nhân đã có triệu chứng, ưu tiên các biện pháp nhóm 1 và thuốc giải
+        độc (nếu có); khi bệnh nhân đến sớm chưa có triệu chứng, ưu tiên các biện pháp nhóm 2.
+    - id: nd-p02
+      chapter: "Chương 1. Các biện pháp chung"
+      section: "Xử trí cụ thể – Cấp cứu ban đầu"
+      article: "Chương 1 › Chẩn đoán và xử trí chung với ngộ độc cấp › 2. Xử trí cụ thể › a. Cấp cứu ban đầu"
+      competency_code: CI-06
+      text: >-
+        Cấp cứu ban đầu, ổn định các chức năng sống là ưu tiên số 1: ngay trong vài phút đầu tiếp xúc với
+        bệnh nhân, bằng cách nhìn bệnh nhân, sờ mạch và lay gọi, xác định và thực hiện ngay các biện pháp
+        bảo đảm tính mạng, không để bệnh nhân tử vong trong khi đang thăm khám. Các tình huống cần giải quyết
+        ngay thuộc 3 hệ cơ quan sống còn: hô hấp, tuần hoàn và thần kinh. Về hô hấp, độc chất có thể gây thở
+        chậm, ngừng thở (heroin, morphin, thuốc ngủ, an thần), liệt cơ hô hấp (phospho hữu cơ, cá nóc) hoặc
+        tổn thương phổi; mục đích can thiệp là khai thông đường thở, bảo đảm thông khí, thở oxy. Về tuần
+        hoàn, cần xử trí loạn nhịp và tụt huyết áp. Về thần kinh, cần cắt cơn co giật và xử trí hôn mê:
+        glucose ưu trương 30% 50 ml tĩnh mạch kèm vitamin B1, naloxon 0,4 mg tĩnh mạch chậm để loại trừ quá
+        liều heroin, chống tụt lưỡi và hít phải dịch trào ngược. Khoảng 95% chẩn đoán nguyên nhân ngộ độc dựa
+        vào hỏi bệnh; cần đề nghị người nhà mang đến vật chứng như vỏ lọ, bao bì thuốc, hóa chất.
+    - id: nd-p03
+      chapter: "Chương 1. Các biện pháp chung"
+      section: "Xử trí cụ thể – Hạn chế hấp thu"
+      article: "Chương 1 › Chẩn đoán và xử trí chung với ngộ độc cấp › 2. Xử trí cụ thể › c. Hạn chế hấp thu"
+      competency_code: CI-06
+      text: >-
+        Chất độc qua đường hô hấp: đưa nạn nhân ra khỏi nơi nguy hiểm, đến vùng thoáng khí. Qua da, niêm
+        mạc: cởi bỏ quần áo bẩn, tắm rửa bằng xối nước ấm và xà phòng, gội đầu; khi chất độc bắn vào mắt,
+        rửa mắt liên tục 15 phút bằng dòng nước muối 0,9% trước khi đưa đi khám chuyên khoa mắt. Qua đường
+        tiêu hóa: gây nôn chỉ định khi nạn nhân mới uống, ăn phải chất độc, còn tỉnh táo, chưa có triệu
+        chứng ngộ độc; chống chỉ định khi nạn nhân lờ đờ, hôn mê hay co giật, hoặc ngộ độc axit hay kiềm
+        mạnh. Uống than hoạt liều 1 g/kg cân nặng hòa trong 100 ml nước sạch, sau 2 giờ có thể nhắc lại nếu
+        cần; kèm theo than hoạt bao giờ cũng phải cho sorbitol với lượng gấp 2 lần than hoạt. Rửa dạ dày
+        hiệu quả nhất trong 60 phút đầu, chống chỉ định sau uống các chất ăn mòn như axit, kiềm mạnh.
+
+- id: BYT-QD2760-DEMO
+  title: Hướng dẫn chẩn đoán, điều trị sốt xuất huyết Dengue (QĐ 2760/QĐ-BYT, trích lược)
+  edition: "2023"
+  demo_label: Trích hướng dẫn Bộ Y tế – chưa thẩm định
+  excerpt_limit: null
+  passages:
+    - id: sx-p01
+      chapter: "Phụ lục 2"
+      section: "Phân độ sốt xuất huyết Dengue"
+      article: "Phụ lục 2: Phân độ sốt xuất huyết Dengue"
+      competency_code: CI-22
+      text: >-
+        Sốt xuất huyết Dengue (SXHD) chia 3 mức độ. SXHD: sống hoặc đi đến vùng có dịch, sốt không quá 7
+        ngày và có 2 trong các dấu hiệu: buồn nôn, nôn; phát ban; đau cơ, đau khớp, nhức hai hố mắt; xuất
+        huyết da hoặc dấu hiệu dây thắt dương tính; Hct bình thường hoặc tăng; bạch cầu, tiểu cầu bình
+        thường hoặc giảm. SXHD có dấu hiệu cảnh báo: ít nhất 1 trong các dấu hiệu vật vã, lừ đừ, li bì; đau
+        bụng nhiều và liên tục hoặc tăng cảm giác đau vùng gan; nôn ói nhiều từ 3 lần trong 1 giờ hoặc từ 4
+        lần trong 6 giờ; xuất huyết niêm mạc (chảy máu chân răng, mũi, nôn ra máu, tiêu phân đen hoặc có máu,
+        xuất huyết âm đạo, tiểu máu); gan to trên 2 cm dưới bờ sườn; tiểu ít; Hct tăng kèm tiểu cầu giảm
+        nhanh; AST/ALT từ 400 U/L; tràn dịch màng phổi, màng bụng. SXHD nặng: ít nhất 1 trong các dấu hiệu
+        thoát huyết tương nặng dẫn tới sốc hoặc ứ dịch kèm suy hô hấp; xuất huyết nặng; suy tạng (AST hoặc
+        ALT từ 1000 U/L, rối loạn ý thức, tổn thương tim và các cơ quan khác).
+    - id: sx-p02
+      chapter: "IV. Điều trị"
+      section: "A. Điều trị sốt xuất huyết Dengue – Điều trị triệu chứng và bù dịch"
+      article: "IV. Điều trị › A. Điều trị sốt xuất huyết Dengue › 1. Điều trị triệu chứng; 2. Bù dịch"
+      competency_code: CI-22
+      text: >-
+        Nếu sốt cao từ 38,5°C, cho thuốc hạ nhiệt, nới lỏng quần áo và lau mát bằng nước ấm. Thuốc hạ nhiệt
+        chỉ được dùng là paracetamol đơn chất, liều 10–15 mg/kg cân nặng/lần, cách nhau mỗi 4–6 giờ; tổng
+        liều paracetamol không quá 60 mg/kg cân nặng/24 giờ. Không dùng aspirin (acetylsalicylic acid),
+        analgin, ibuprofen để điều trị vì có thể gây xuất huyết, toan máu. Bù dịch sớm bằng đường uống:
+        khuyến khích người bệnh uống nhiều nước oresol hoặc nước trái cây (nước dừa, cam, chanh) hoặc nước
+        cháo loãng với muối; không ăn uống thực phẩm có màu nâu hoặc đỏ như xá xị, sô cô la.
+    - id: sx-p03
+      chapter: "IV. Điều trị"
+      section: "A. Điều trị sốt xuất huyết Dengue – Theo dõi ngoại trú"
+      article: "IV. Điều trị › A. Điều trị sốt xuất huyết Dengue; 3. Theo dõi"
+      competency_code: CI-22
+      text: >-
+        Phần lớn các trường hợp được điều trị ngoại trú và theo dõi tại y tế cơ sở, chủ yếu là điều trị
+        triệu chứng và phải theo dõi chặt chẽ để phát hiện sớm sốc. Xem xét nhập viện khi người bệnh sống một
+        mình, nhà xa cơ sở y tế, gia đình không có khả năng theo dõi sát, trẻ nhũ nhi, dư cân, béo phì, phụ
+        nữ có thai, người từ 60 tuổi, có bệnh mạn tính đi kèm. Tái khám và làm xét nghiệm hằng ngày; nếu xuất
+        hiện dấu hiệu cảnh báo thì cho nhập viện. Người bệnh đến khám lại ngay khi thấy khó chịu hơn mặc dù
+        sốt giảm hoặc hết sốt; không ăn, uống được; nôn ói nhiều; đau bụng nhiều; tay chân lạnh, ẩm; mệt lả,
+        bứt rứt; chảy máu mũi, miệng hoặc xuất huyết âm đạo; không tiểu trên 6 giờ; lú lẫn, tăng kích thích,
+        vật vã hoặc li bì.
+
+- id: BYT-QD5904-DEMO
+  title: Hướng dẫn chẩn đoán, điều trị và quản lý một số bệnh không lây nhiễm tại trạm y tế xã (QĐ 5904/QĐ-BYT, trích lược)
+  edition: "2019"
+  demo_label: Trích hướng dẫn Bộ Y tế – chưa thẩm định
+  excerpt_limit: null
+  passages:
+    - id: tha-p01
+      chapter: "Phần 1. Tăng huyết áp tại trạm y tế xã"
+      section: "Bước 3. Chẩn đoán – Phân độ THA; Phụ lục 1.2"
+      article: "Phần 1 › Bước 3. Chẩn đoán › A. Phân độ THA; Phụ lục 1.2. Sơ đồ khẳng định chẩn đoán THA"
+      competency_code: CI-39
+      text: >-
+        Phân độ huyết áp (mmHg): tối ưu dưới 120/80; bình thường 120–129 và/hoặc 80–84; bình thường cao
+        130–139 và/hoặc 85–89; THA độ 1: 140–159 và/hoặc 90–99; THA độ 2: 160–179 và/hoặc 100–109; THA độ 3:
+        từ 180 và/hoặc từ 110. Khi huyết áp tâm thu và tâm trương ở hai mức khác nhau thì lấy mức cao hơn.
+        Khẳng định chẩn đoán: khi phát hiện HA từ 140/90 mmHg, nếu HA từ 180/110 mmHg thì chẩn đoán THA; nếu
+        thấp hơn thì đo lại tại phòng khám đúng quy trình: dưới 140/90 là không THA; từ 140/90 thì đo ngoài
+        phòng khám (tự đo tại nhà): từ 135/85 là THA, dưới 135/85 là THA "áo choàng trắng".
+    - id: tha-p02
+      chapter: "Phần 1. Tăng huyết áp tại trạm y tế xã"
+      section: "Bước 5. Điều trị, quản lý – Nguyên tắc điều trị"
+      article: "Phần 1 › Bước 5. Điều trị, quản lý › A. Nguyên tắc điều trị"
+      competency_code: CI-39
+      text: >-
+        Điều trị đúng và đủ hằng ngày, quản lý, theo dõi đều, điều trị lâu dài. Mục tiêu HA tâm thu 120 đến
+        dưới 130 mmHg ở người dưới 65 tuổi, 130 đến dưới 140 mmHg ở người từ 65 tuổi; HA tâm trương 70 đến
+        dưới 80 mmHg. Khởi trị sớm, tích cực để đạt mục tiêu trong 1–3 tháng; luôn kết hợp thay đổi lối sống
+        với thuốc hạ HA khi có chỉ định. Thời điểm khởi trị thuốc: HA từ 140/90 mmHg ở người dưới 80 tuổi,
+        hoặc từ 160/90 mmHg ở người từ 80 tuổi. Theo mức HA: bình thường cao thì thay đổi lối sống, cân nhắc
+        thuốc khi nguy cơ tim mạch rất cao; THA độ 1 thì thay đổi lối sống, dùng thuốc ngay nếu nguy cơ cao
+        hoặc rất cao, có tổn thương cơ quan đích hoặc bệnh thận, nguy cơ thấp thì cân nhắc thuốc nếu không
+        kiểm soát sau 1–3 tháng thay đổi lối sống; THA độ 2–3 thì thay đổi lối sống kèm thuốc ngay trong mọi
+        trường hợp.
+    - id: tha-p03
+      chapter: "Phần 1. Tăng huyết áp tại trạm y tế xã"
+      section: "Bước 5. Điều trị, quản lý – Phác đồ chung"
+      article: "Phần 1 › Bước 5. Điều trị, quản lý › B. Phác đồ chung khi không có chỉ định ưu tiên"
+      competency_code: CI-39
+      text: >-
+        Ký hiệu: A là ức chế men chuyển hoặc ức chế thụ thể AT1; C là chẹn kênh canxi; D là lợi tiểu
+        thiazide. Khởi trị phối hợp 2 thuốc trong 1 viên: A + C hoặc A + D. Đơn trị cho THA độ 1 nguy cơ thấp
+        (HA tâm thu dưới 150 mmHg), người rất già (từ 80 tuổi) hoặc dễ tổn thương. Chưa đạt mục tiêu thì phối
+        hợp 3 thuốc A + C + D; chưa đạt nữa thì thêm spironolacton hoặc lợi tiểu khác, chẹn alpha, chẹn beta.
+        THA kháng trị thì chuyển khám chuyên khoa tim mạch.
+    - id: dtd-p01
+      chapter: "Phần 2. Đái tháo đường tại trạm y tế xã"
+      section: "Bước 3. Chẩn đoán – Tiêu chuẩn chẩn đoán"
+      article: "Phần 2 › Bước 3. Chẩn đoán › Tiêu chuẩn chẩn đoán"
+      competency_code: CI-38
+      text: >-
+        Chẩn đoán đái tháo đường (ĐTĐ) khi có một trong các tiêu chuẩn: glucose huyết tương tĩnh mạch lúc
+        đói (nhịn 8–12 giờ) từ 7,0 mmol/L (126 mg/dL); glucose 2 giờ sau nghiệm pháp dung nạp glucose
+        (NPDNG) 75 g từ 11,1 mmol/L (200 mg/dL); HbA1c từ 6,5%; glucose bất kỳ từ 11,1 mmol/L kèm triệu
+        chứng tăng glucose máu. Nếu glucose máu không tăng rõ, cần 2 kết quả đạt chuẩn ở cùng mẫu hoặc 2 mẫu
+        ở ngày khác. Tiền ĐTĐ: glucose lúc đói 5,6–6,9 mmol/L (rối loạn glucose lúc đói); glucose 2 giờ
+        NPDNG 7,8–11,0 mmol/L (rối loạn dung nạp glucose); hoặc HbA1c 5,7–6,4%. Glucose mao mạch nghi ĐTĐ
+        thì chuyển tuyến có xét nghiệm glucose huyết tương tĩnh mạch để xác định.
+    - id: dtd-p02
+      chapter: "Phần 2. Đái tháo đường tại trạm y tế xã"
+      section: "Bước 5. Điều trị, quản lý – Mục tiêu và thuốc uống"
+      article: "Phần 2 › Bước 5. Điều trị, quản lý › A. Mục tiêu glucose máu; B. Thuốc uống"
+      competency_code: CI-38
+      text: >-
+        Mục tiêu glucose máu lúc đói hoặc trước ăn 4,4–7,2 mmol/L; sau ăn 1–2 giờ dưới 10 mmol/L; HbA1c dưới
+        7% với đa số bệnh nhân. Thuốc uống: metformin đầu tiên, chỉnh liều đến khi đạt mục tiêu; chống chỉ
+        định hoặc không đạt với metformin đơn trị thì thay hoặc thêm sulfonylurea. Có THA thì điều trị theo
+        hướng dẫn; ức chế men chuyển hoặc ức chế thụ thể là lựa chọn đầu tiên nếu đã có tổn thương thận
+        (protein niệu). Statin cho mọi bệnh nhân ĐTĐ típ 2 từ 40 tuổi.

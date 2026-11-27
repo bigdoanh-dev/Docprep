@@ -212,9 +212,9 @@ def test_sessions_and_messages_are_paged(learner_api, fake_gw, conn):
 
 
 def test_a_session_opened_from_a_hoc_phan_searches_only_it(learner_api, fake_gw, conn):
-    sid = learner_api.post("/v1/chat/sessions", json={"module_id": "g2"}).json()["id"]
+    sid = learner_api.post("/v1/chat/sessions", json={"module_id": "g3"}).json()["id"]
     events = sse_events(learner_api.post(f"/v1/chat/sessions/{sid}/messages", json={"text": Q}).text)
-    assert events[-1][1]["state"] == "insufficient_evidence" and fake_gw.calls == []      # g2 has no passages yet
+    assert events[-1][1]["state"] == "insufficient_evidence" and fake_gw.calls == []      # g3 has no passages yet
     r = learner_api.post("/v1/chat/sessions", json={"module_id": "g99"})
     assert r.status_code == 404 and r.json()["error"]["code"] == "module_not_found"
     fake_gw.responses = [birth_dose_json(conn)]

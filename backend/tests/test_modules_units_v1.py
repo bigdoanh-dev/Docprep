@@ -100,7 +100,8 @@ def test_modules_list_and_detail(learner_api):
     ms = {m["id"]: m for m in learner_api.get("/v1/modules").json()["items"]}
     assert list(ms)[0] == "g1"
     assert (ms["g1"]["coming_soon"], ms["g1"]["units_total"], ms["g1"]["units_done"]) == (False, 2, 0)
-    assert ms["g3"]["coming_soon"] is True and ms["g2"]["units_total"] == 0
+    assert ms["g3"]["coming_soon"] is True and ms["g3"]["units_total"] == 0
+    assert (ms["g2"]["coming_soon"], ms["g4"]["units_total"], ms["g6"]["units_total"]) == (False, 1, 2)
     walk_unit(learner_api, "u-dt-01")
     assert learner_api.get("/v1/modules").json()["items"][0]["units_done"] == 1
     detail = learner_api.get("/v1/modules/g1").json()
@@ -119,7 +120,9 @@ def test_the_eight_hoc_phan_are_listed_in_blueprint_order(learner_api):
     assert items[0] == {"id": "g1", "name": "Vấn đề sức khỏe quần thể cần can thiệp ở cấp ban đầu để ngăn ngừa tiến triển",
                         "short_name": "Sức khỏe quần thể và dự phòng", "core_issue_group": 1, "coming_soon": False,
                         "units_total": 2, "units_done": 0, "topics_total": 5}
-    assert all(m["coming_soon"] and m["units_total"] == 0 for m in items[1:])
+    opened = {"g2": 1, "g4": 1, "g6": 2}  # demo units, AI-assisted and not expert-reviewed
+    assert {m["id"]: m["units_total"] for m in items if not m["coming_soon"]} == {"g1": 2, **opened}
+    assert all(m["units_total"] == 0 for m in items if m["coming_soon"])
 
 
 @pytest.mark.parametrize("params,expected", [
@@ -127,7 +130,7 @@ def test_the_eight_hoc_phan_are_listed_in_blueprint_order(learner_api):
     ({"q": "Sức khỏe"}, ["g1", "g2", "g5", "g6", "g7"]),
     ({"group": 6}, ["g6"]),
     ({"core_issue": 20}, ["g4"]),
-    ({"level": 3}, ["g1"]),
+    ({"level": 3}, ["g1", "g4", "g6"]),
     ({"status": "not_started"}, [f"g{n}" for n in range(1, 9)]),
     ({"status": "done"}, []),
     ({"group": 6, "q": "truyen nhiem"}, []),

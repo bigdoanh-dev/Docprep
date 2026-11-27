@@ -42,19 +42,19 @@ def test_first_assembled_exam_follows_the_blueprint_with_new_questions(learner_a
     assert conn.execute("select count(*) c from question where id = any(%s) and status = 'approved'", (ids,)).fetchone()["c"] == 10
     per_topic = {r["competency_code"]: r["n"] for r in conn.execute(
         "select competency_code, count(*) as n from question where id = any(%s) group by 1", (ids,))}
-    # shares: weight x 0.5 (unassessed) x 0.5 (content not completed) = FND 0.5, CI-04 0.9, CI-01 0.9
-    assert per_topic == {"FND": 2, "CI-04": 4, "CI-01": 4}
+    # shares: weight x 0.5 (unassessed) x 0.5 (content not completed), spread over the seven topics of the bank
+    assert per_topic == {"FND": 1, "CI-01": 2, "CI-04": 2, "CI-06": 1, "CI-22": 2, "CI-38": 1, "CI-39": 1}
 
 
 def test_after_a_test_the_next_one_mixes_new_wrong_and_review(learner_api):
     # four wrong answers across the three topics, six correct
     done = sit_fixed_form(learner_api, wrong={"q-dt-07", "q-dt-10", "q-tc-01", "q-tc-04"})
     plan = forms(learner_api)[AUTO]["plan"]
-    assert plan["composition"] == {"new": 5, "wrong": 3, "review": 2}
+    assert plan["composition"] == {"new": 6, "wrong": 3, "review": 1}
     a = learner_api.post(f"/v1/exams/{AUTO}/attempts", json={}).json()
     ids = {q["id"] for q in a["questions"]}
-    assert len(ids & set(done["wrong"])) == 3 and len(ids & set(done["ok"])) == 2
-    assert len(ids - set(done["wrong"]) - set(done["ok"])) == 5
+    assert len(ids & set(done["wrong"])) == 3 and len(ids & set(done["ok"])) == 1
+    assert len(ids - set(done["wrong"]) - set(done["ok"])) == 6
 
 
 def test_plan_shown_beforehand_is_what_the_attempt_gets(learner_api, conn):
@@ -95,10 +95,9 @@ def test_each_new_assembled_test_avoids_what_was_just_asked(learner_api):
     second = learner_api.post(f"/v1/exams/{AUTO}/attempts", json={}).json()
     overlap = {q["id"] for q in first["questions"]} & {q["id"] for q in second["questions"]}
     # With no wrong answers to bring back, their share is split between new and review: 7 new, 3 review.
-    # The greedy pick ends at 5 new, 5 review: CI-01 keeps 3 of the 10 places and has one unseen question
-    # left, and by then the review places were spent on other topics. A 7/3 split inside the same topic
-    # split exists, so 5 is what the current rule gives, not what it must give (open issue 29).
-    assert len(overlap) == 5
+    # With seven topics in the bank every topic still has unseen questions, so the greedy pick reaches the
+    # 7/3 split. (With three topics it ended at 5/5 because CI-01 ran out of unseen questions; open issue 29.)
+    assert len(overlap) == 3
 
 
 def test_assembled_exam_scores_and_lists_like_any_other(learner_api):

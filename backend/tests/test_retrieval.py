@@ -34,9 +34,9 @@ def test_out_of_corpus_returns_nothing(conn, learner):
 
 
 def test_module_filter_limits_to_module_topics(conn, learner):
-    # All stopgap content sits in học phần 1; the other học phần have none yet.
+    # The epidemiology stopgap content sits in học phần 1; học phần 3 has none yet.
     assert find(conn, "tỷ lệ", module_id="g1")
-    assert find(conn, "tỷ lệ", module_id="g2") == []
+    assert find(conn, "tỷ lệ", module_id="g3") == []
 
 
 def test_empty_terms_returns_nothing(conn, learner):

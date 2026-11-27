@@ -90,3 +90,186 @@
 
               > **Độ đặc hiệu** = âm tính thật ÷ tổng số người không có bệnh
         - {id: u2-q3, kind: quiz, question: q-dt-06}
+
+# ---- Demo học phần G2/G4/G6 (27/11/2026) ----
+# Written with AI help from short excerpts of the Bộ Y tế guidelines (documents.yaml) for a funding demo.
+# NOT reviewed by a medical expert; review before any real learner uses them.
+- module: g2
+  units:
+    - id: u-nd-01
+      topic: Ngộ độc cấp – xử trí ban đầu
+      competency_code: CI-06
+      items:
+        - id: und-c1
+          kind: content
+          content:
+            id: ci-nd-01
+            title: Làm gì trước?
+            sources: [nd-p01, nd-p02]
+            body: |
+              Xử trí ngộ độc cấp có **2 nhóm việc**:
+
+              1. **Hồi sức, điều trị triệu chứng**: cấp cứu ban đầu, hỏi bệnh – khám, hỗ trợ toàn diện.
+              2. **Chống độc đặc hiệu**: hạn chế hấp thu, tăng đào thải, thuốc giải độc.
+
+              > Đã có triệu chứng → ưu tiên **nhóm 1** (và thuốc giải độc nếu có). Đến sớm, chưa triệu chứng → ưu tiên **nhóm 2**.
+
+              Trong vài phút đầu, kiểm tra **hô hấp – tuần hoàn – thần kinh** bằng nhìn, sờ mạch, lay gọi.
+        - {id: und-q1, kind: quiz, question: q-nd-01}
+        - id: und-r1
+          kind: remediation
+          after: und-q1
+          note: người bệnh đã có triệu chứng
+          content:
+            id: ci-nd-01r
+            title: Vì sao hô hấp trước?
+            sources: [nd-p02]
+            body: |
+              Thuốc ngủ, an thần, heroin, morphin ức chế thần kinh trung ương → **thở chậm, ngừng thở**.
+
+              Người bệnh hôn mê: không gây nôn, không cho uống. Việc đầu tiên là **khai thông đường thở, bảo đảm thông khí, thở oxy**; sau đó mới đến hỏi bệnh và các biện pháp chống độc.
+        - id: und-c2
+          kind: content
+          content:
+            id: ci-nd-02
+            title: Hạn chế hấp thu
+            sources: [nd-p03]
+            body: |
+              - **Hô hấp**: đưa ra vùng thoáng khí.
+              - **Da**: cởi quần áo bẩn, xối nước ấm và xà phòng. **Mắt**: rửa liên tục 15 phút bằng NaCl 0,9%.
+              - **Gây nôn**: chỉ khi mới uống, còn tỉnh, chưa có triệu chứng. Không gây nôn khi lờ đờ, hôn mê, co giật, axit hay kiềm mạnh.
+              - **Than hoạt** 1 g/kg + **sorbitol** gấp 2 lần than hoạt.
+        - {id: und-q2, kind: quiz, question: q-nd-02}
+        - {id: und-q3, kind: quiz, question: q-nd-03}
+- module: g4
+  units:
+    - id: u-sx-01
+      topic: Sốt xuất huyết Dengue – phân độ và điều trị ngoại trú
+      competency_code: CI-22
+      items:
+        - id: usx-c1
+          kind: content
+          content:
+            id: ci-sx-01
+            title: Ba mức độ
+            sources: [sx-p01]
+            body: |
+              - **SXHD**: sốt ≤ 7 ngày + 2 dấu hiệu: nôn, phát ban, đau cơ khớp, xuất huyết da, dây thắt (+)…
+              - **Có dấu hiệu cảnh báo**: ≥ 1 dấu hiệu: lừ đừ/vật vã, đau bụng nhiều vùng gan, nôn ≥ 3 lần/giờ, xuất huyết niêm mạc, gan to > 2 cm, tiểu ít, Hct tăng + tiểu cầu giảm nhanh.
+              - **Nặng**: sốc hoặc ứ dịch suy hô hấp; xuất huyết nặng; suy tạng.
+        - {id: usx-q1, kind: quiz, question: q-sx-01}
+        - id: usx-r1
+          kind: remediation
+          after: usx-q1
+          note: chỉ cần một dấu hiệu cảnh báo
+          content:
+            id: ci-sx-01r
+            title: Cảnh báo hay nặng?
+            sources: [sx-p01]
+            body: |
+              Chỉ cần **1 dấu hiệu cảnh báo** là đủ xếp vào "có dấu hiệu cảnh báo".
+
+              Mức **nặng** đòi hỏi **sốc**, ứ dịch kèm suy hô hấp, xuất huyết nặng hoặc suy tạng. Mạch, huyết áp còn bình thường thì chưa phải sốc.
+        - id: usx-c2
+          kind: content
+          content:
+            id: ci-sx-02
+            title: Hạ sốt và bù dịch
+            sources: [sx-p02]
+            body: |
+              > Chỉ dùng **paracetamol đơn chất** 10–15 mg/kg/lần, cách 4–6 giờ, **≤ 60 mg/kg/24 giờ**.
+
+              **Không** dùng aspirin, analgin, ibuprofen (gây xuất huyết, toan máu).
+
+              Uống nhiều oresol, nước trái cây, cháo loãng có muối; tránh đồ uống màu nâu, đỏ.
+        - {id: usx-q2, kind: quiz, question: q-sx-02}
+        - id: usx-c3
+          kind: content
+          content:
+            id: ci-sx-03
+            title: Theo dõi ngoại trú
+            sources: [sx-p03]
+            body: |
+              Phần lớn điều trị ngoại trú, **tái khám và xét nghiệm hằng ngày**.
+
+              Dặn người bệnh **khám lại ngay** khi: khó chịu hơn dù hết sốt, không ăn uống được, nôn nhiều, đau bụng nhiều, tay chân lạnh ẩm, mệt lả, bứt rứt, chảy máu, không tiểu > 6 giờ, thay đổi hành vi.
+        - {id: usx-q3, kind: quiz, question: q-sx-03}
+- module: g6
+  units:
+    - id: u-tha-01
+      topic: Tăng huyết áp tại trạm y tế xã
+      competency_code: CI-39
+      items:
+        - id: utha-c1
+          kind: content
+          content:
+            id: ci-tha-01
+            title: Phân độ và khẳng định chẩn đoán
+            sources: [tha-p01]
+            body: |
+              - Bình thường cao: 130–139 và/hoặc 85–89 mmHg
+              - **THA độ 1**: 140–159 và/hoặc 90–99
+              - **THA độ 2**: 160–179 và/hoặc 100–109
+              - **THA độ 3**: ≥ 180 và/hoặc ≥ 110
+
+              > Hai chỉ số khác mức → **lấy mức cao hơn**.
+
+              HA ≥ 180/110 → chẩn đoán ngay. Thấp hơn → đo lại đúng quy trình, rồi đo tại nhà (≥ 135/85 là THA).
+        - {id: utha-q1, kind: quiz, question: q-tha-01}
+        - id: utha-r1
+          kind: remediation
+          after: utha-q1
+          note: hãy xét cả hai chỉ số
+          content:
+            id: ci-tha-01r
+            title: Ví dụ · Hai chỉ số khác mức
+            sources: [tha-p01]
+            body: |
+              1. Tâm thu **165** → khoảng 160–179 → **độ 2**
+              2. Tâm trương **95** → khoảng 90–99 → độ 1
+              3. Lấy mức cao hơn → **THA độ 2**
+        - id: utha-c2
+          kind: content
+          content:
+            id: ci-tha-02
+            title: Khi nào dùng thuốc, dùng gì?
+            sources: [tha-p02, tha-p03]
+            body: |
+              - **Độ 1** nguy cơ thấp: thay đổi lối sống 1–3 tháng, chưa đạt mới dùng thuốc.
+              - **Độ 1** nguy cơ cao, tổn thương cơ quan đích, bệnh thận; **độ 2–3**: lối sống **+ thuốc ngay**.
+
+              Phác đồ chung: **A + C** hoặc **A + D** (1 viên) → A + C + D → thêm spironolacton/khác → kháng trị thì chuyển chuyên khoa.
+
+              > A: ức chế men chuyển/thụ thể · C: chẹn kênh canxi · D: lợi tiểu thiazide
+        - {id: utha-q2, kind: quiz, question: q-tha-02}
+        - {id: utha-q3, kind: quiz, question: q-tha-03}
+    - id: u-dtd-01
+      topic: Đái tháo đường típ 2 tại trạm y tế xã
+      competency_code: CI-38
+      items:
+        - id: udtd-c1
+          kind: content
+          content:
+            id: ci-dtd-01
+            title: Tiêu chuẩn chẩn đoán
+            sources: [dtd-p01]
+            body: |
+              - **Đái tháo đường**: lúc đói ≥ 7,0 mmol/L · 2 giờ NPDNG 75 g ≥ 11,1 · HbA1c ≥ 6,5%
+              - **Tiền ĐTĐ**: lúc đói 5,6–6,9 · 2 giờ NPDNG 7,8–11,0 · HbA1c 5,7–6,4%
+
+              Glucose bất kỳ ≥ 11,1 mmol/L **kèm triệu chứng** cũng là ĐTĐ. Không tăng rõ → cần **2 kết quả** đạt chuẩn.
+        - {id: udtd-q1, kind: quiz, question: q-dtd-01}
+        - {id: udtd-q2, kind: quiz, question: q-dtd-02}
+        - id: udtd-c2
+          kind: content
+          content:
+            id: ci-dtd-02
+            title: Mục tiêu và thuốc uống
+            sources: [dtd-p02]
+            body: |
+              > Mục tiêu: lúc đói 4,4–7,2 mmol/L · sau ăn < 10 · **HbA1c < 7%**
+
+              1. **Metformin** đầu tiên, chỉnh liều đến khi đạt mục tiêu.
+              2. Chống chỉ định hoặc không đạt → thay hoặc thêm **sulfonylurea**.
+              3. **Statin** cho mọi người bệnh ĐTĐ típ 2 từ 40 tuổi.
+        - {id: udtd-q3, kind: quiz, question: q-dtd-03}
