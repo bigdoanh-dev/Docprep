@@ -1,3 +1,4 @@
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -176,3 +177,120 @@ def test_ocr_setup_rejects_missing_language_model(monkeypatch, tmp_path):
         returncode=0, stdout=listing.replace("(1):\neng", "(2):\neng\nvie"), stderr=""))
     command, fingerprint = rechunk.ocr_setup("tesseract", "vie+eng", tmp_path)
     assert command == ["tesseract", "--tessdata-dir", str(tmp_path)] and len(fingerprint) == 64
+
+
+def test_tagger_skips_heading_only_and_form_lines_but_keeps_short_content():
+    loc = {"section_path": ["Chương 1. Các biện pháp chung", "2. XỬ TRÍ CỤ THỂ"]}
+    assert tagger.too_thin({"kind": "text", "text": ". CHƯƠNG 1: CÁC BIỆN PHÁP CHUNG", "location": loc})
+    assert tagger.too_thin({"kind": "text", "text": "Ngày …… tháng …… năm ……", "location": loc})
+    assert not tagger.too_thin({"kind": "text", "text": "- Ciprofloxacin x 400-800 mg/ngày. - Ceftriaxon 2 g/ngày.",
+                                "location": loc})
+    assert not tagger.too_thin({"kind": "formula", "text": "$$x = 1$$", "location": loc})
+
+
+def test_tagger_skips_chunk_made_of_several_heading_lines():
+    loc = {"section_path": ["Chương 2. Các trường hợp ngộ độc cụ thể"]}
+    text = "CHƯƠNG 2: CÁC TRƯỜNG HỢP NGỘ ĐỘC CỤ THỂ Phần 2.1. Thuốc tân dược"
+    assert tagger.too_thin({"kind": "text", "text": text, "location": loc})
+    assert not tagger.too_thin({"kind": "text", "location": loc,
+                                "text": text + " Barbiturat ức chế thần kinh trung ương, gây tụt huyết áp khi quá liều."})
+
+
+TAX = {"van_de": [{"id": 22, "name": "Sốt và phát ban"}, {"id": 6, "name": "Ngộ độc cấp"}],
+       "mien": [{"sub": [{"id": "2.3", "name": "Chẩn đoán"}]}]}
+
+
+def test_manual_answers_are_read_from_chat_text():
+    from app.content.manual_tagging import extract_answers
+    chat = 'Đây là kết quả:\n```json\n[{"id": "c01", "abstain": true}]\n```\nCần gì thêm cứ hỏi.'
+    assert extract_answers(chat) == [{"id": "c01", "abstain": True}]
+    assert extract_answers('[{"id": "c02", "abstain": true}]')[0]["id"] == "c02"
+    with pytest.raises(ValueError):
+        extract_answers('{"id": "c01"}')
+
+
+def test_manual_import_validates_each_answer_and_reports_redo(monkeypatch):
+    from app.content import manual_tagging
+    good = {"primary_issue": 22, "secondary_issues": [], "domains": ["2.3"], "bloom": "Áp dụng",
+            "content_type": "chẩn_đoán", "population": [], "rationale": "Phân độ SXH."}
+    manifest = {"taxonomy_version": "t1", "prompt_version": "p", "batches": {"batch-001": {
+        sid: {"chunk_id": f"id-{sid}", "row_version": 1, "content_sha256": "h"} for sid in ("c01", "c02", "c03", "c04", "c05")}}}
+    answer = json.dumps([{"id": "c01", **good}, {"id": "c02", **good, "primary_issue": 99},
+                         {"id": "c03", "abstain": True}, {"id": "c05", **good}])
+
+    class Conn:
+        def execute(self, sql, params):
+            cid = params[0]
+            # c05 was edited by a reviewer after export
+            return SimpleNamespace(fetchone=lambda: {"id": cid, "content_sha256": "h",
+                                                     "row_version": 2 if cid == "id-c05" else 1})
+
+    saved = []
+    monkeypatch.setattr(manual_tagging.service, "validate_tags", lambda *a: None)
+    monkeypatch.setattr(manual_tagging.tagger, "save_proposal", lambda conn, actor, row, v, labels, prov: saved.append(
+        (row["id"], prov["strategy"], prov["model"])) or True)
+    outcomes, error = manual_tagging.import_batch(Conn(), "u", manifest, "batch-001", answer, TAX, True, "gemini-pro-web")
+    assert error is None and saved == [("id-c01", "manual_chat", "gemini-pro-web")]
+    assert outcomes == {"c01": "proposed", "c02": "invalid_label", "c03": "abstain",
+                        "c04": "missing_in_answer", "c05": "chunk_changed_since_export"}
+
+
+def test_internal_epidemiology_section_extends_without_touching_official_issues():
+    from app.content.taxonomy_ext import extend
+    base = {"source": "QĐ 51", "de_muc": [{"id": 1, "name": "Cộng đồng"}],
+            "van_de": [{"id": 1, "de_muc": 1, "name": "Dịch", "description": "Giám sát"}],
+            "mien": [{"sub": [{"id": "1.2", "name": "YHDP"}]}]}
+    ext = extend(base)
+    assert base["van_de"] == [{"id": 1, "de_muc": 1, "name": "Dịch", "description": "Giám sát"}]
+    assert [v["id"] for v in ext["van_de"]] == [1, 55, 56, 57, 58]
+    assert all(v["internal"] and v["de_muc"] == 9 for v in ext["van_de"][1:])
+    with pytest.raises(ValueError):
+        extend(ext)
+    labels = tagger.parse_prediction({"primary_issue": 57, "secondary_issues": [], "domains": ["1.2"], "bloom": "Áp dụng",
+                                      "content_type": "khác", "population": [], "rationale": "Khoảng tin cậy."}, ext)
+    assert labels["van_de"] == [{"id": 57, "primary": True}]
+    with pytest.raises(ValueError):
+        tagger.parse_prediction({"primary_issue": 57, "secondary_issues": [], "domains": ["1.2"], "bloom": "Áp dụng",
+                                 "content_type": "khác", "population": [], "rationale": "x"}, base)
+    assert "Đề mục 9" in tagger.system_prompt(ext) and "57. Thống kê y sinh cơ bản" in tagger.system_prompt(ext)
+
+
+def test_snapshot_payload_accepts_source_or_its_internal_extension():
+    from app.content.taxonomy_ext import extend
+    base = {"source": "QĐ 51", "de_muc": [{"id": 1, "name": "A"}], "van_de": [{"id": 1, "de_muc": 1, "name": "x"}],
+            "mien": [{"sub": [{"id": "1.2", "name": "y"}]}]}
+    for stored, ok in ((base, True), (extend(base), True), ({**base, "source": "khác"}, False)):
+        conn = SimpleNamespace(execute=lambda sql, params, s=stored: SimpleNamespace(fetchone=lambda: {"payload": s}))
+        assert (tagger.snapshot_payload(conn, "v", base) is not None) is ok
+
+
+def test_second_internal_extension_goes_under_official_de_muc():
+    from app.content.taxonomy_ext import extend
+    base = {"source": "QĐ 51", "de_muc": [{"id": 4, "name": "Truyền nhiễm"}, {"id": 6, "name": "YHGĐ"}],
+            "van_de": [{"id": 22, "de_muc": 4, "name": "Sốt và phát ban"}, {"id": 44, "de_muc": 6, "name": "Ngứa"}],
+            "mien": [{"sub": [{"id": "3.2", "name": "Thuốc"}]}]}
+    both = extend(extend(base), "noi-bo-benh-truyen-nhiem-bo-sung-v1")
+    assert both["extensions"] == ["noi-bo-dich-te-thong-ke-v1", "noi-bo-benh-truyen-nhiem-bo-sung-v1"]
+    assert [(v["id"], v["de_muc"]) for v in both["van_de"] if v["id"] >= 59] == [(59, 4), (60, 4)]
+    prompt = tagger.system_prompt(both)
+    assert prompt.index("22. Sốt và phát ban") < prompt.index("59. Uốn ván") < prompt.index("### Đề mục 6")
+
+
+def test_release_finds_mapping_approved_for_same_taxonomy_payload():
+    from app.content import publication
+    from app.errors import ApiError
+    approved = {"approved": True, "version": "map-1", "issues": {"22": {"runtime_issue_id": 22}}}
+
+    class Conn:
+        def __init__(self, others):
+            self.others = others
+
+        def execute(self, sql, params):
+            if "where version=" in sql:
+                return SimpleNamespace(fetchone=lambda: {"version": params[0], "sha256": "p1", "mapping": {}})
+            return SimpleNamespace(fetchall=lambda: [{"mapping": m} for m in self.others])
+
+    assert publication.approved_mapping(Conn([approved]), "tag-version") == approved
+    assert publication.approved_mapping(Conn([]), "tag-version") == {}
+    with pytest.raises(ApiError, match="mapping_ambiguous"):
+        publication.approved_mapping(Conn([approved, {**approved, "version": "map-2"}]), "tag-version")

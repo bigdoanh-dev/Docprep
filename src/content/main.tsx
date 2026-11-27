@@ -55,10 +55,15 @@ type Taxonomy = {
   version: string;
   mapping: { approved?: boolean };
   payload: {
-    van_de: { id: number; name: string }[];
+    van_de: { id: number; name: string; internal?: boolean }[];
     mien: { sub: { id: string; name: string }[] }[];
+    extensions?: string[];
   };
 };
+// New chunks default to the snapshot that carries the internal extensions (most issues), not the first by name.
+function defaultTaxonomy(items: Taxonomy[]) {
+  return [...items].sort((a, b) => b.payload.van_de.length - a.payload.van_de.length)[0]?.version || "";
+}
 type Catalog = {
   items: Taxonomy[];
   content_types: string[];
@@ -159,7 +164,7 @@ function Editor({
 }) {
   const t = chunk.proposed_tags;
   const [taxonomy, setTaxonomy] = useState(
-    t?.taxonomy_version || catalog.items[0]?.version || "",
+    t?.taxonomy_version || defaultTaxonomy(catalog.items),
   );
   const [primary, setPrimary] = useState(
     t?.van_de.find((v) => v.primary)?.id || 1,
@@ -225,6 +230,7 @@ function Editor({
               <option key={v.version} value={v.version}>
                 {v.version}
                 {v.mapping.approved ? " · có mapping" : " · chưa mapping"}
+                {v.payload.extensions?.length ? " · có phần dịch tễ – thống kê nội bộ" : ""}
               </option>
             ))}
           </select>
@@ -243,6 +249,7 @@ function Editor({
             {selected?.payload.van_de.map((v) => (
               <option key={v.id} value={v.id}>
                 {v.id}. {v.name}
+                {v.internal ? " (nội bộ)" : ""}
               </option>
             ))}
           </select>
@@ -263,6 +270,7 @@ function Editor({
               .map((v) => (
                 <option key={v.id} value={v.id}>
                   {v.id}. {v.name}
+                  {v.internal ? " (nội bộ)" : ""}
                 </option>
               ))}
           </select>

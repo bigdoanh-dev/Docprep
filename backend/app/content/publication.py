@@ -21,6 +21,22 @@ class SignatureVerifier:
         raise RuntimeError('No Lead-approved signature protocol/key configured')
 
 
+def approved_mapping(conn,taxonomy_version):
+    """The approved mapping for the taxonomy a tag was made with.
+
+    Approving a mapping stores it on a new snapshot whose payload equals an existing one, so labels made
+    earlier with that payload must find it: own snapshot first, else the single approved mapping recorded for
+    the same payload (sha256). Two different approved mappings for one payload are refused, never guessed.
+    """
+    snap=conn.execute('select * from taxonomy_snapshot where version=%s',(taxonomy_version,)).fetchone()
+    if not snap:return {}
+    if snap['mapping'].get('approved') and snap['mapping'].get('version'):return snap['mapping']
+    found=conn.execute("""select distinct mapping from taxonomy_snapshot where sha256=%s
+        and mapping->>'approved'='true' and coalesce(mapping->>'version','')<>''""",(snap['sha256'],)).fetchall()
+    if len(found)>1:fail('mapping_ambiguous','Có nhiều mapping đã duyệt khác nhau cho cùng taxonomy.',409)
+    return found[0]['mapping'] if found else {}
+
+
 def export_release(conn,user,version,chunk_ids):
     dev_only();require(user,'publisher')
     if not re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9._-]{0,79}',version):
@@ -37,8 +53,7 @@ def export_release(conn,user,version,chunk_ids):
         if not row or row['classification_status']!='classified' or row['content_status']!='approved':
             fail('not_publishable','Chunk chưa được xác nhận nhãn và nội dung.',409)
         tag=tag_view(conn,row['confirmed_tag_set_id'])
-        taxonomy=conn.execute('select * from taxonomy_snapshot where version=%s',(tag['taxonomy_version'],)).fetchone()
-        mapping=taxonomy['mapping']
+        mapping=approved_mapping(conn,tag['taxonomy_version'])
         if not mapping.get('approved') or not mapping.get('version'):
             fail('mapping_not_approved','Cần mapping có version được reviewer xác nhận trước khi phát hành.',409)
         decisions=conn.execute('select * from chunk_review_decision where id=any(%s)',

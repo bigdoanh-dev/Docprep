@@ -16,9 +16,10 @@ def main():
         if name=='create-user':p.add_argument('--name',required=True);p.add_argument('--roles',nargs='+',required=True)
     for name in ('preview','import'):
         p=sub.add_parser(name);p.add_argument('package');p.add_argument('--document');p.add_argument('--mapping')
-    p=sub.add_parser('taxonomy');p.add_argument('--mapping',required=True)
+    p=sub.add_parser('taxonomy');p.add_argument('--mapping',required=True);p.add_argument('--base',help='Taxonomy version whose payload gets the mapping')
+    p=sub.add_parser('taxonomy-extend',help='New snapshot = base snapshot + internal dịch tễ/thống kê section');p.add_argument('--base',required=True);p.add_argument('--extension',default='noi-bo-dich-te-thong-ke-v1')
     p=sub.add_parser('accept-baseline');p.add_argument('package');p.add_argument('--reason',required=True);p.add_argument('--apply',action='store_true')
-    p=sub.add_parser('export');p.add_argument('--version',required=True);p.add_argument('--chunks',nargs='+',required=True);p.add_argument('--output',required=True)
+    p=sub.add_parser('export');p.add_argument('--version',required=True);g=p.add_mutually_exclusive_group(required=True);g.add_argument('--chunks',nargs='+');g.add_argument('--chunks-file',help='File with one chunk id per line');p.add_argument('--output',required=True)
     p=sub.add_parser('publish');p.add_argument('package');p.add_argument('--verify-only',action='store_true')
     for name in ('activate','revoke'):
         p=sub.add_parser(name);p.add_argument('--version',required=True);p.add_argument('--reason',required=True);p.add_argument('--channel',default='local')
@@ -134,14 +135,26 @@ def main():
             package=importer.Package(args.package)
             try:result=baseline.accept(conn,package,user,args.reason,args.apply)
             finally:package.close()
+        elif args.command=='taxonomy-extend':
+            from .taxonomy_ext import EXTENSIONS, extend
+            if args.extension not in EXTENSIONS:raise ValueError('Unknown extension')
+            auth.require(user,'editor')
+            base=conn.execute('select payload from taxonomy_snapshot where version=%s',(args.base,)).fetchone()
+            if not base:raise ValueError('Unknown base taxonomy version')
+            # The extension is a draft catalogue: no approved runtime mapping travels with it.
+            version=importer.add_taxonomy(conn,extend(base['payload'],args.extension))
+            auth.audit(conn,user['id'],'taxonomy_extended',version,{'base':args.base,'extension':args.extension})
+            result={'taxonomy_version':version,'base':args.base,'extension':args.extension}
         elif args.command=='taxonomy':
             auth.require(user,'reviewer')
-            previous=conn.execute('select payload from taxonomy_snapshot limit 1').fetchone()
+            previous=(conn.execute('select payload from taxonomy_snapshot where version=%s',(args.base,)).fetchone() if args.base
+                      else conn.execute('select payload from taxonomy_snapshot limit 1').fetchone())
             if not previous:raise ValueError('Import source taxonomy first')
             version=importer.add_taxonomy(conn,previous['payload'],json.loads(Path(args.mapping).read_text(encoding='utf-8')),user)
             auth.audit(conn,user['id'],'mapping_snapshot',version);result={'taxonomy_version':version}
         else:
-            result=publication.export_release(conn,user,args.version,args.chunks)
+            chunks=args.chunks or [x.strip() for x in Path(args.chunks_file).read_text(encoding='utf-8').splitlines() if x.strip()]
+            result=publication.export_release(conn,user,args.version,chunks)
             Path(args.output).write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
             result={'output':args.output,'manifest_sha256':result['manifest_sha256'],'trust':'local_dev'}
         print(json.dumps(result,ensure_ascii=False))
