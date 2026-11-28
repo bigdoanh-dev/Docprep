@@ -17,11 +17,12 @@ from .chunk import TARGET_MAX, chunk_doc
 from .model import ParsedDoc
 from .ocr_layout import Line, Word, format_scan, formatted_markdown
 from .ocr_outline import OUTLINES, TOPICS
+from .page_maps import printed_pages
 from .parse_docx import parse_docx
 from .scans import extract_pages
 from .sources import Source
 
-VERSION = "yhdp-original-rechunk.v3"
+VERSION = "yhdp-original-rechunk.v4"
 MAX_DOCX = 120 * 1024**2
 _PILOT_CAPTIONS = {
     "2dd6cec54376b05c8e7952306b4e232d3d81caa5694dcf4a6ba84b69366a70ad": "Bảng cân nặng chống sốc SXH dành cho nam",
@@ -122,15 +123,24 @@ def _scan_page(source, page, assets, ocr, ocr_languages, cache=None):
     }
 
 
+def apply_page_map(blocks, source_hash):
+    """Printed pages from the page profile checked against this exact file; without one they stay unverified."""
+    for block in blocks:
+        if printed := printed_pages(source_hash, block.loc.image_indices):
+            block.loc.printed_pages = printed
+            block.needs_review = [f for f in block.needs_review if f != "printed_page_unverified"]
+    return blocks
+
+
 def _build_scan(source, path, assets, tesseract, ocr_languages, workers, outline, topics=None, cache=None,
-                tessdata=None):
+                tessdata=None, source_hash=None):
     ocr = ocr_setup(tesseract, ocr_languages, tessdata)
     pages = extract_pages(path, assets / "pages")
     if not pages:
         raise ValueError(f"{source.doc_id}: no image pages in scanned Word document")
     with ThreadPoolExecutor(max_workers=workers) as pool:
         result = list(pool.map(lambda page: _scan_page(source, page, assets, ocr, ocr_languages, cache), pages))
-    blocks = format_scan(result, source.strip_patterns, outline, topics)
+    blocks = apply_page_map(format_scan(result, source.strip_patterns, outline, topics), source_hash)
     return ParsedDoc(doc_id=source.doc_id, blocks=blocks), [status for _, status in result]
 
 
@@ -178,7 +188,8 @@ def build(source, path, output, *, tesseract=None, ocr_languages="vie+eng", work
     source_hash = hashlib.sha256(path.read_bytes()).hexdigest()
     if source.format == "scan":
         parsed, page_report = _build_scan(source, path, assets, tesseract, ocr_languages, workers,
-                                          OUTLINES.get(source_hash), TOPICS.get(source_hash), ocr_cache, tessdata)
+                                          OUTLINES.get(source_hash), TOPICS.get(source_hash), ocr_cache, tessdata,
+                                          source_hash)
         (output / "formatted.md").write_text(formatted_markdown(parsed.blocks), encoding="utf-8")
     else:
         parsed, page_report = parse_docx(path, source, assets / "figures"), []

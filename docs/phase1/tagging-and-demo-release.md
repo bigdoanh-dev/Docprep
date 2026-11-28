@@ -40,4 +40,29 @@ Quyết định do người vận hành ghi bằng tài khoản reviewer, chính
 - `cli taxonomy --mapping <file> --base <version>` gắn mapping cho đúng phiên bản; `cli export --chunks-file` nhận danh sách chunk dài.
 - Release `yhdp-rechunk-demo-v1`: 942 chunk chỉ dùng vấn đề 1–54, đã publish và activate trên kênh `local`. Thu hồi bằng `publisher revoke --version yhdp-rechunk-demo-v1 --channel local --reason ...`.
 
-Còn lại: mã năng lực runtime cho 55–60 (427 chunk), mở học phần G2/G4/G6 để trình diễn, provider sinh câu trả lời, chỉ mục embedding `bge-m3`, số trang cho chunk.
+Còn lại: mã năng lực runtime cho 55–60 (427 chunk), mở học phần G2/G4/G6 để trình diễn, provider sinh câu trả lời, chỉ mục embedding `bge-m3`. Số trang cho chunk OCR: xong ngày 28/11, xem mục "Số trang cho tài liệu OCR" bên dưới.
+
+## Số trang cho tài liệu OCR (28/11/2026)
+
+**Bảng trang.** `app/content_tools/page_maps.py` ánh xạ "ảnh thứ N trong file Word" sang số trang in. Bảng gắn theo sha256 của đúng file gốc.
+
+| Tài liệu | Trang thân sách | Phần đầu sách |
+|---|---|---|
+| Ngộ độc (`ngodoc-pages-v1`) | ảnh 8–228 → tr. 1–221 (trừ 7) | ảnh 1–7 không có số |
+| Dịch tễ (`dtch-pages-v1`) | ảnh 18–234 → tr. 1–217 (trừ 17) | ảnh 4–16 → iii–xv |
+
+**Cách kiểm tra.**
+- OCR phần đầu và chân của mọi ảnh. Mọi ảnh đọc được số đều khớp quy tắc: ngộ độc 218/221, dịch tễ 211/217.
+- Các ảnh không đọc được số đã được xem bằng mắt: ngộ độc ảnh 54, 147, 149 in số 47, 140, 142; dịch tễ ảnh 33, 83, 123, 143, 161, 193 là trang trắng giữa các chương.
+- Đã xem thêm vài trang mẫu để đối chiếu số trang với nội dung chunk.
+
+**Áp dụng.**
+- Rechunk từ pipeline `yhdp-original-rechunk.v4` tự điền `printed_pages` vào location.
+- Với chunk đã duyệt trước đó, location nằm trong hash nội dung nên không được sửa. Khi xuất release, `export` thêm `page_map: {printed_pages, version}` bên cạnh chunk (manifest có hash). `publish` dùng nó để đặt `passage.page_start`.
+- Chat trích "tr. N" qua `page_start` như sẵn có.
+
+**Release.**
+- `yhdp-rechunk-demo-v2` gồm đúng 942 chunk, nội dung và nhãn của v1, thêm số trang cho 455 chunk OCR (ngộ độc 381, dịch tễ 74).
+- Đã publish và activate trên kênh `local` thay cho v1.
+- Quay lại v1: `publisher activate --version yhdp-rechunk-demo-v1 --channel local --reason ...`.
+

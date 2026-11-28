@@ -7,6 +7,7 @@ from uuid import UUID, uuid4
 import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
+from app.content_tools import page_maps
 from .auth import require, audit
 from .service import canonical, sha, tag_view, fail
 
@@ -37,6 +38,18 @@ def approved_mapping(conn,taxonomy_version):
     return found[0]['mapping'] if found else {}
 
 
+def derived_pages(row):
+    """Printed pages from the checked page profile of the source file, for a scan chunk approved without them.
+
+    The approved location (part of the content hash) is never rewritten: the pages travel next to it in the
+    manifest, together with the profile version they came from.
+    """
+    location=row['location'] or {}
+    if row['citation_mode']!='page' or location.get('printed_pages'):return None
+    pages=page_maps.printed_pages(row['source_sha256'],location.get('image_indices'))
+    return {'printed_pages':pages,'version':page_maps.version(row['source_sha256'])} if pages else None
+
+
 def export_release(conn,user,version,chunk_ids):
     dev_only();require(user,'publisher')
     if not re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9._-]{0,79}',version):
@@ -47,8 +60,10 @@ def export_release(conn,user,version,chunk_ids):
     chunks=[]
     for cid in sorted(chunk_ids):
         row=conn.execute('''select c.*,s.*,d.title,d.external_doc_id,d.issuer,d.publication_year,d.source_kind,
-            d.citation_mode,r.source_availability from document_chunk c join chunk_state s on s.chunk_id=c.id
+            d.citation_mode,r.source_availability,b.report->>'source_sha256' as source_sha256
+            from document_chunk c join chunk_state s on s.chunk_id=c.id
             join source_document_revision r on r.id=c.revision_id join source_document d on d.id=r.document_id
+            left join content_import_batch b on b.id=r.batch_id
             where c.id=%s for update of s''',(cid,)).fetchone()
         if not row or row['classification_status']!='classified' or row['content_status']!='approved':
             fail('not_publishable','Chunk chưa được xác nhận nhãn và nội dung.',409)
@@ -64,6 +79,7 @@ def export_release(conn,user,version,chunk_ids):
             'source_hash':row['content_sha256'], 'taxonomy_version':tag['taxonomy_version'],
             'classification':{k:tag[k] for k in ('van_de','mien','bloom_ceiling','content_type','population','ly_do')},
             'mapping':mapping,'approvals':json.loads(json.dumps(decisions,default=str))})
+        if pages:=derived_pages(row):chunks[-1]['page_map']=pages
     policies={d['policy_version'] for c in chunks for d in c['approvals']}
     policy=next(iter(policies)) if len(policies)==1 else 'mixed-v1'
     manifest={'schema':'content.release.v1','version':version,'trust':'local_dev','policy':policy,'chunks':chunks}
@@ -124,7 +140,7 @@ def publish(conn,package,actor):
         from app.text import unaccent
         loc=c['location'];augmentation=loc.get('augmentation') or {}
         context=augmentation.get('contextual_header') or d['title']+'\n'+' › '.join(loc.get('section_path',[]))
-        pages=loc.get('printed_pages') or [];page=int(pages[0]) if pages and str(pages[0]).isdigit() else None
+        pages=loc.get('printed_pages') or (c.get('page_map') or {}).get('printed_pages') or [];page=int(pages[0]) if pages and str(pages[0]).isdigit() else None
         article=' › '.join(loc.get('section_path',[])) or loc.get('anchor')
         if augmentation.get('figure_asset'):
             article=context

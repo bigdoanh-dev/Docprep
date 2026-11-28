@@ -93,7 +93,7 @@ Theo tài liệu: ngộ độc 26/27, dịch tễ 25/27, SXHD 19/20, bệnh truy
    Chỉ cần một đoạn như vậy lọt vào 30 ứng viên là cả lượt bị chặn (`prompt_identifiers_blocked`), và người học chỉ thấy báo lỗi. Hướng sửa (cần nhóm thống nhất vì là module bảo mật):
    - (a) loại hoặc che riêng đoạn corpus vi phạm thay vì chặn cả lượt;
    - (b) thu hẹp mẫu IP/số điện thoại để không khớp số mục và liều thuốc.
-2. **Chưa có số trang.** 0/1.369 chunk có `printed_pages`. 2 tài liệu OCR (ngộ độc, dịch tễ) có chế độ trích dẫn theo trang, nên Chat chưa trích được số trang như thuyết minh yêu cầu.
+2. **Chưa có số trang** (lúc đánh giá). 0/1.369 chunk có `printed_pages`, nên Chat chưa trích được số trang cho 2 tài liệu OCR. *Cập nhật 28/11: đã xong. Release `yhdp-rechunk-demo-v2` có số trang cho cả 455 chunk OCR (xem `tagging-and-demo-release.md`).*
 3. **Khoảng trống trong bộ câu hỏi:** chưa có câu cho tài liệu OCR, nên đánh giá này chưa đo được phần anh Khanh lo nhất.
 
 **Giới hạn của bản sơ bộ**
@@ -119,10 +119,12 @@ Theo tài liệu: ngộ độc 26/27, dịch tễ 25/27, SXHD 19/20, bệnh truy
 
 Một test về pool kết nối (`test_review_fixes_4a`) từng lỗi một lần do canh thời gian. Chạy lại thì đạt.
 
+*Cập nhật 28/11:* bộ `tests_phase1` (chạy trong stack Phase 1) đạt 118/119. Test lỗi là `test_ollama.py::test_index_and_hybrid_chat_are_durable_scoped_and_hash_pinned`: câu hỏi seed trả "không đủ bằng chứng" thay vì "đã trả lời". Test này lỗi y hệt trên commit `2d9dd7a` và `cb07326`, tức trước phần số trang, nên là lỗi có sẵn và cần tìm nguyên nhân riêng.
+
 ## 5. Việc còn lại, theo thứ tự ưu tiên
 
 1. Sửa lỗi bộ lọc quyền riêng tư chặn nhầm (mục 3, vấn đề 1).
-2. Thêm số trang cho chunk OCR để trích dẫn theo trang.
+2. ~~Thêm số trang cho chunk OCR để trích dẫn theo trang.~~ Xong 28/11 (release v2).
 3. Nhờ người có chuyên môn y gắn nhãn mù khoảng 100 chunk để có kappa đúng nghĩa. Đồng thời duyệt lại nội dung học phần G2/G4/G6 và các nhãn đã "duyệt với hỗ trợ AI".
 4. Khi server lab hoạt động: chạy lại đánh giá Chat với Qwen và bge-m3 của server, thêm câu hỏi cho tài liệu OCR, và chạy A/B với bộ chunk cũ. Chạy thử luôn fallback Ollama của tagger.
 5. Đưa vấn đề 55–60 vào runtime (core issue và competency node) để phát hành 427 chunk còn lại.

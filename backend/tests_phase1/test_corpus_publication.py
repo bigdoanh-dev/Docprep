@@ -45,6 +45,18 @@ def test_candidate_hidden_then_active_and_durable_citations(world):
     assert b.get('/v1/modules').status_code==200
 
 
+def test_page_map_sets_page_start_without_touching_approved_location(world):
+    _,_,_,url=world
+    with connect(url) as conn:
+        p=package(conn,'content-test-pages');c=p['manifest']['chunks'][0]
+        c['page_map']={'printed_pages':['23','24'],'version':'ngodoc-pages-v1'}
+        p['manifest_sha256']=sha(canonical(p['manifest']))
+        r=publication.publish(conn,p,'operator')
+        row=conn.execute('''select p.page_start from passage p join corpus_release_member m on m.passage_id=p.id
+            where m.release_id=%s''',(r['release_id'],)).fetchone()
+        assert row['page_start']==23 and 'printed_pages' not in c['location']
+
+
 def test_pin_activation_rollback_revocation_and_late_worker(world):
     _,_,_,url=world
     with connect(url) as conn:
